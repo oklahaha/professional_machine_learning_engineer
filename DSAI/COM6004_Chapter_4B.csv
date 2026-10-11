@@ -1,0 +1,30 @@
+What is generalization error in classification?,It is the expected error of a classification model over random records selected from the underlying data distribution.
+How do training error and test error differ?,"Training error is calculated on the training dataset, whereas test error is calculated on a separate, unseen test dataset."
+What defines model underfitting in classification?,"Underfitting occurs when a model is too simple, resulting in high errors on both the training set and the test set."
+What defines model overfitting in classification?,"Overfitting occurs when a model is overly complex, yielding a small training error but a high test error."
+How does increasing the training sample size affect model overfitting?,Increasing training data size reduces the difference between training error and test error for a given model complexity.
+What is the primary purpose of a validation set during model building?,A validation set is used to estimate generalization error and tune model complexity without exposing the test set.
+How does Occam's Razor apply to classification model selection?,"Given models with similar generalization error, Occam's Razor dictates choosing the simpler model over the more complex one."
+What is the formula for classification accuracy using confusion matrix terms?,$\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}$
+Why is standard accuracy a misleading performance metric for heavily imbalanced datasets?,A trivial model predicting only the majority class achieves high accuracy while failing to detect any rare class instances.
+How does $k$-fold cross-validation partition and evaluate data?,"It divides data into $k$ disjoint subsets, iteratively training on $k-1$ folds and testing on the remaining fold."
+How does stratified cross-validation differ from standard $k$-fold cross-validation?,Stratified cross-validation guarantees that each fold maintains the same class label proportions as the original dataset.
+What defines leave-one-out cross-validation?,"It is an extreme form of $k$-fold cross-validation where $k$ equals the total sample size $n$, testing on one instance at a time."
+Which performance metrics form the axes of an ROC curve?,The y-axis represents the True Positive Rate (TPR) and the x-axis represents the False Positive Rate (FPR).
+What is the formula for True Positive Rate (TPR)?,$\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}$
+What is the formula for False Positive Rate (FPR)?,$\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}$
+"In an ROC plot formatted as $(\text{TPR}, \text{FPR})$, what does the coordinate $(0,0)$ represent?",It represents a classifier that predicts every record to belong to the negative class.
+"In an ROC plot formatted as $(\text{TPR}, \text{FPR})$, what does the coordinate $(1,1)$ represent?",It represents a classifier that predicts every record to belong to the positive class.
+"In an ROC plot formatted as $(\text{TPR}, \text{FPR})$, what does the coordinate $(1,0)$ represent?",It represents an ideal classifier with perfect true positive detection and zero false positives.
+What performance level is indicated by the diagonal line in an ROC curve?,The diagonal line represents the expected performance of random guessing.
+How is the Area Under the ROC Curve (AUC) interpreted for model quality?,"An ideal classifier has an AUC of $1.0$, whereas random guessing yields an AUC of $0.5$."
+How are continuous classifier outputs used to construct a discrete step ROC curve?,"Test records are sorted by score in decreasing order, and unique scores serve as thresholds to compute $(\text{TPR}, \text{FPR})$ points."
+What defines a class imbalance problem in data mining?,It occurs when records from one majority class heavily outnumber instances of a rare target class.
+What is the cost matrix notation $C(i|j)$?,$C(i|j)$ denotes the cost associated with misclassifying an instance of actual class $j$ as predicted class $i$.
+"In cost-sensitive classification, under what condition is a test record classified as positive?",A record is classified as positive when the expected cost of predicting positive is strictly less than predicting negative ($\ meast{Cost}(+) < \text{Cost}(-)$).
+How do under-sampling and over-sampling techniques differ in handling class imbalance?,"Under-sampling removes instances from the majority class, whereas over-sampling replicates or adds instances to the rare class."
+Which confusion matrix outcomes bias the Precision metric?,Precision is biased towards True Positives ($C(\text{Yes}|\text{Yes})$) and False Positives ($C(\text{Yes}|\text{No})$).
+Which confusion matrix outcomes bias the Recall metric?,Recall is biased towards True Positives ($C(\text{Yes}|\text{Yes})$) and False Negatives ($C(\text{No}|\text{Yes})$).
+"In hypothesis testing terms applied to confusion matrices, what corresponds to a Type I error ($\alpha$)?","A Type I error ($\alpha$) corresponds to a False Positive ($\text{FP}$), which is rejecting a true null hypothesis."
+"In hypothesis testing terms applied to confusion matrices, what corresponds to a Type II error ($\beta$)?","A Type II error ($\beta$) corresponds to a False Negative ($\text{FN}$), which is accepting a false null hypothesis."
+What is the strategy of class-based ordering for handling imbalanced class rules?,It assigns higher priority to classification rules that predict the rare class.

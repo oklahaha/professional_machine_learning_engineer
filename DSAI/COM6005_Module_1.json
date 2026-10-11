@@ -1,0 +1,350 @@
+[
+  {
+    "question": "A researcher calculates the average salary and draws a bar chart of income levels for a sample of 100 employees. Which branch of statistics is being directly applied in this task?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Descriptive statistics",
+        "Explanation": "Summarizing and presenting observed sample data using numerical measures, charts, and tables is the primary objective of descriptive statistics."
+      },
+      {
+        "label": "B",
+        "text": "Inferential statistics",
+        "Explanation": "Inferential statistics goes beyond summarizing observed data to make estimations or test claims about a broader population."
+      },
+      {
+        "label": "C",
+        "text": "Hypothesis testing",
+        "Explanation": "Hypothesis testing is a specific inferential procedure used to evaluate claims about population parameters rather than summarize observed data."
+      },
+      {
+        "label": "D",
+        "text": "Predictive modeling",
+        "Explanation": "Predictive modeling uses known input variables to estimate unknown future target outcomes rather than describing observed sample characteristics."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider whether the goal is to summarize existing observed data or to draw conclusions about an unseen larger group.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "Which of the following summary metrics represents a measure of dispersion rather than a location parameter?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Interquartile range (IQR)",
+        "Explanation": "The interquartile range quantifies the spread or variability within the middle $50\\%$ of a dataset, making it a dispersion characteristic."
+      },
+      {
+        "label": "B",
+        "text": "Median",
+        "Explanation": "The median identifies the middle value of an ordered dataset, serving as a measure of central position or location."
+      },
+      {
+        "label": "C",
+        "text": "Arithmetic mean",
+        "Explanation": "The mean calculates the central average of all values, describing where the center of the distribution lies."
+      },
+      {
+        "label": "D",
+        "text": "Mode",
+        "Explanation": "The mode indicates the most frequently occurring value, representing a point of concentration or location in the data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about which parameter describes how spread out data points are rather than where the center of the dataset is located.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "A data scientist builds a model where the target outcome variable $Y$ represents a customer's total annual spending in dollars. What type of prediction model is appropriate for this scenario?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Regression",
+        "Explanation": "When the outcome variable $Y$ is a continuous numerical value like financial expenditure, a regression model must be used."
+      },
+      {
+        "label": "B",
+        "text": "Classification",
+        "Explanation": "Classification models are suited for outcomes that represent discrete categories or qualitative labels rather than continuous numeric quantities."
+      },
+      {
+        "label": "C",
+        "text": "Principal Component Analysis",
+        "Explanation": "Principal Component Analysis is an exploratory dimension-reduction technique rather than a target-prediction model."
+      },
+      {
+        "label": "D",
+        "text": "Hypothesis Testing",
+        "Explanation": "Hypothesis testing evaluates statistical claims about population characteristics rather than predicting numerical outcome values for individual cases."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look at whether the target variable being predicted is a continuous quantity or a discrete qualitative label.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "In a tabular dataset used to train a predictive model, what do $n$ and $p$ specifically denote?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$n$ is the number of sample rows (observations) and $p$ is the number of predictor columns (features).",
+        "Explanation": "In standard statistical modeling terminology, $n$ represents the sample size or row count, while $p$ denotes the count of input predictor variables."
+      },
+      {
+        "label": "B",
+        "text": "$n$ is the number of predictor columns and $p$ is the number of sample rows.",
+        "Explanation": "This reverses the conventional notation where rows correspond to observations $n$ and columns correspond to features $p$."
+      },
+      {
+        "label": "C",
+        "text": "$n$ is the number of missing values and $p$ is the number of target variables.",
+        "Explanation": "The parameters $n$ and $p$ describe dataset dimensions rather than missing data counts or target variable quantities."
+      },
+      {
+        "label": "D",
+        "text": "$n$ is the number of target categories and $p$ is the number of evaluation metrics.",
+        "Explanation": "The notation $n$ specifically counts sample instances in the training set rather than qualitative category labels."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall how data matrix dimensions are defined when organizing training observations and input features.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "An image dataset consists of black-and-white handwritten digits, where each image has a resolution of $28 \\times 28$ pixels. What is the total number of predictor variables ($p$) for each image case?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$784$",
+        "Explanation": "Flattening a two-dimensional $28 \\times 28$ pixel grid yields $28 \\times 28 = 784$ individual pixel input variables."
+      },
+      {
+        "label": "B",
+        "text": "$28$",
+        "Explanation": "This value represents the length of a single side of the square image array, not the total count of pixel features."
+      },
+      {
+        "label": "C",
+        "text": "$56$",
+        "Explanation": "Adding the grid width and height does not account for the total number of pixel inputs across the entire surface."
+      },
+      {
+        "label": "D",
+        "text": "$10$",
+        "Explanation": "Ten represents the number of distinct target digit categories ($0$ through $9$) rather than the number of input features $p$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Calculate the total number of individual pixel elements that compose a single $28 \\times 28$ image array.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "When analyzing modern datasets where the feature count $p$ is extremely large relative to sample size $n$ (such as $p = 6000$ gene expression levels for $n = 50$ subjects), which statistical techniques are highlighted to address this high-dimensional challenge?",
+    "options": [
+      {
+        "label": "A",
+        "text": "PCA and LASSO",
+        "Explanation": "Principal Component Analysis (PCA) and LASSO are key methods designed specifically for handling large $p$ dimensionality problems."
+      },
+      {
+        "label": "B",
+        "text": "Simple Linear Regression and Mode calculation",
+        "Explanation": "Simple linear regression cannot directly accommodate settings where the feature count $p$ far exceeds the observation count $n$."
+      },
+      {
+        "label": "C",
+        "text": "K-nearest neighbors and Arithmetic Mean",
+        "Explanation": "While K-NN performs classification, PCA and LASSO are the primary techniques highlighted for dimensionality reduction and sparse feature selection."
+      },
+      {
+        "label": "D",
+        "text": "Standard Deviation and Confidence Intervals",
+        "Explanation": "These represent standard univariate summary and inference metrics rather than high-dimensional feature management strategies."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Identify techniques used to reduce dimensionality or perform feature selection when $p$ is very large.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "What is the core idea behind the naïve method for making predictions in a simple regression setting with a single predictor ($p = 1$)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Plotting the training data and drawing a straight line that fits the data well.",
+        "Explanation": "For a single predictor variable, fitting a straight line through the plotted $(X,Y)$ data points provides a visual and intuitive way to predict unseen $Y$ values."
+      },
+      {
+        "label": "B",
+        "text": "Computing Euclidean distances to isolate the $k$ nearest training cases.",
+        "Explanation": "Finding closest neighbors using Euclidean distance is the foundational mechanism of $k$-NN classification rather than simple line fitting."
+      },
+      {
+        "label": "C",
+        "text": "Calculating the mode of the target variable across all training samples.",
+        "Explanation": "Predicting the mode ignores the underlying functional relationship between the input predictor $X$ and response $Y$."
+      },
+      {
+        "label": "D",
+        "text": "Establishing a confidence interval for the population mean.",
+        "Explanation": "Confidence intervals quantify estimation uncertainty for parameters rather than projecting individual outcome values along a trend line."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how a linear relationship between two continuous variables is visually estimated on a two-dimensional plot.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "In a $k$-nearest neighbor classification model with $k = 5$, how is the predicted class for a new data point determined?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By locating the 5 closest training points using Euclidean distance and assigning the majority class category among them.",
+        "Explanation": "The $k$-NN algorithm evaluates distance to all training instances, identifies the $k$ nearest points, and selects the class with the highest proportion."
+      },
+      {
+        "label": "B",
+        "text": "By averaging all $X$ and $Y$ coordinates across the training set to locate a single central centroid.",
+        "Explanation": "The algorithm relies on local proximity to specific neighboring instances rather than calculating a global dataset mean."
+      },
+      {
+        "label": "C",
+        "text": "By fitting a logistic regression decision line through the 5 nearest observations.",
+        "Explanation": "K-NN is an instance-based non-parametric approach that counts local category votes rather than fitting a parametric decision line."
+      },
+      {
+        "label": "D",
+        "text": "By selecting 5 random points from the dataset and averaging their target values.",
+        "Explanation": "Neighbors must be selected based on minimum distance in feature space rather than random selection."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on how distance measurements and category voting among local neighboring data points are combined.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "The Euclidean distance between two points $(x_1, y_1)$ and $(x_2, y_2)$ is given by $\\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}$. What is a primary practical sensitivity of using unstandardized Euclidean distance?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is highly sensitive to the measurement scale of the variables.",
+        "Explanation": "Variables measured on larger numerical scales (e.g., $1750\\text{ mm}$ vs $75\\text{ kg}$) disproportionately dominate the calculated distance unless scaled."
+      },
+      {
+        "label": "B",
+        "text": "It cannot be computed when the feature dimension $p$ equals 2.",
+        "Explanation": "Euclidean distance is straightforward to compute in two-dimensional space as well as higher dimensions."
+      },
+      {
+        "label": "C",
+        "text": "It yields negative output values whenever coordinates are negative.",
+        "Explanation": "Because difference terms are squared prior to taking the square root, Euclidean distance is strictly non-negative."
+      },
+      {
+        "label": "D",
+        "text": "It requires target labels $Y$ to be continuous numerical values.",
+        "Explanation": "Distance calculations operate strictly on predictor input coordinates $X$ and are independent of whether $Y$ is categorical or numerical."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how changing units from meters to millimeters drastically alters numerical magnitudes in the distance formula.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "Which linear algebra concepts are specifically noted as mathematical prerequisites for executing Principal Component Analysis (PCA)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Eigenvalues and eigenvectors",
+        "Explanation": "Eigenvalue and eigenvector decompositions of covariance or correlation matrices form the core mathematical basis of PCA."
+      },
+      {
+        "label": "B",
+        "text": "Derivatives and optimization limits",
+        "Explanation": "Derivatives belong to calculus and function minimization rather than matrix spectral decomposition in PCA."
+      },
+      {
+        "label": "C",
+        "text": "Interquartile ranges and percentiles",
+        "Explanation": "Percentiles and interquartile ranges are non-parametric descriptive statistics rather than linear algebra operations."
+      },
+      {
+        "label": "D",
+        "text": "Hypothesis tests and $p$-values",
+        "Explanation": "Hypothesis tests and $p$-values are inferential statistical tools used for testing claims rather than matrix algebraic transformations."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall which matrix transformation concepts from linear algebra are listed alongside PCA.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "According to the course materials, what is a primary task performed during initial data preparation using software like Python?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reading data, specifying data types (numerical vs. categorical), and drawing visualization graphs.",
+        "Explanation": "Python workflows begin by importing raw data, defining variable types appropriately, and plotting visual distributions."
+      },
+      {
+        "label": "B",
+        "text": "Guaranteeing that sample calculations exactly match population parameters.",
+        "Explanation": "Sample estimates inherently contain sampling variability, which software cannot completely eliminate."
+      },
+      {
+        "label": "C",
+        "text": "Eliminating the need to consider feature scales when calculating distances.",
+        "Explanation": "Software executes instructions as programmed; users must still explicitly manage scale and preprocessing."
+      },
+      {
+        "label": "D",
+        "text": "Replacing inferential statistics with purely manual calculation tables.",
+        "Explanation": "Python automates complex inferential modeling and machine learning algorithms rather than restricting analysis to manual tables."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about the basic workflow steps introduced for handling datasets in computational tutorials.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "In inferential statistics, what does a $P$-value evaluate during hypothesis testing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The probability that observed sample results occurred purely due to random luck rather than a real effect.",
+        "Explanation": "A $p$-value measures the probability of obtaining sample results at least as extreme as those observed, assuming chance alone is operating."
+      },
+      {
+        "label": "B",
+        "text": "The exact proportion of sample data within one standard deviation of the mean.",
+        "Explanation": "This describes empirical distribution properties of normal curves rather than hypothesis significance metrics."
+      },
+      {
+        "label": "C",
+        "text": "The geometric distance between a new observation and its nearest neighbor.",
+        "Explanation": "Distance between points is a spatial metric used in distance-based classification algorithms, not inferential significance testing."
+      },
+      {
+        "label": "D",
+        "text": "The ratio of input features $p$ to observation rows $n$ in training data.",
+        "Explanation": "The ratio $p/n$ reflects dataset dimensionality, whereas $p$-values quantify statistical evidence against a null claim."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider what hypothesis testing aims to assess regarding whether observed patterns are genuine or accidental.",
+    "course": "COM6005",
+    "week": "1"
+  }
+]

@@ -1,0 +1,17 @@
+What does the Atomicity property guarantee in database transactions?,"It guarantees that a transaction executes in an all-or-nothing manner, where either all operations complete or none take effect."
+What is the primary objective of the Consistency property in an RDBMS transaction?,It ensures that a transaction transitions the database from one valid state to another valid state.
+How does the Isolation property affect concurrently executing database transactions?,"It ensures concurrent transactions execute independently without exposing intermediate, uncommitted state to each other."
+What does the Durability property guarantee once a transaction commits?,"It guarantees that committed changes persist permanently in the database, even in the event of a system failure."
+Which lock type must a transaction acquire before reading a data item?,A transaction must acquire a readlock on the data item prior to reading it.
+Which lock type is required before a transaction can execute a write operation on a data item?,A transaction must acquire a writelock on the data item prior to writing.
+Under what condition do two lock requests on the same variable NOT conflict with each other?,Two lock requests do not conflict when both transactions request a readlock on the variable.
+What occurs when a transaction requests a writelock on a data item currently held under a readlock by another transaction?,"A lock conflict occurs, requiring the requesting transaction to either wait or roll back."
+What is a lock upgrade in database concurrency control?,It is the conversion of an existing readlock held by a transaction into a writelock on the same variable.
+What permission restriction characterizes the growing phase of Two-Phase Locking (2PL)?,"The transaction can acquire new locks, but it is strictly forbidden from releasing any locks."
+What restriction applies to a transaction during the shrinking phase of Two-Phase Locking (2PL)?,"The transaction can release existing locks, but it cannot acquire any new locks."
+What defines a database deadlock during concurrent transaction processing?,"A state where two or more transactions are blocked indefinitely, each waiting for a lock held by the other."
+How is a deadlock identified in a transaction precedence dependency graph?,A deadlock is indicated by the existence of a cycle in the precedence graph.
+How does a database system resolve an active deadlock once it is detected?,The system aborts and rolls back one of the involved transactions to release its held locks.
+What causes a cascading rollback in database concurrency control?,It occurs when rolling back one transaction forces other transactions that read its uncommitted updates to also roll back.
+What are the two primary strategic options for a transaction encountering a lock conflict?,The transaction can either wait for the lock to be released or abort and roll back.
+What primary operational purpose does the Two-Phase Locking (2PL) protocol fulfill?,It prevents shared data corruption by ensuring serializable execution among concurrent transactions.

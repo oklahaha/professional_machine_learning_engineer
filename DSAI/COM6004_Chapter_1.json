@@ -1,0 +1,292 @@
+[
+  {
+    "question": "Data mining is an interdisciplinary field drawing from multiple domains. Which of the following is NOT explicitly identified in the source text as one of its foundational disciplines?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Quantum Computing",
+        "Explanation": "Quantum computing is not listed among the core contributing fields that form the origins of data mining."
+      },
+      {
+        "label": "B",
+        "text": "Statistics",
+        "Explanation": "Statistics provides mathematical foundation and inference techniques central to data mining."
+      },
+      {
+        "label": "C",
+        "text": "Database Systems",
+        "Explanation": "Database technology, parallel computing, and distributed computing provide the infrastructure needed to store and manage large-scale data for mining."
+      },
+      {
+        "label": "D",
+        "text": "Machine Learning and Artificial Intelligence",
+        "Explanation": "Machine learning, AI, and pattern recognition contribute key algorithmic ideas for model building and pattern extraction."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the classic computing and mathematical fields depicted in the interdisciplinary diagram of data mining origins.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "According to the source material, what expectation accompanies the 'new mantra' of gathering whatever data you can, whenever and wherever possible?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The gathered data will have value either for its original collected purpose or for an unenvisioned purpose.",
+        "Explanation": "Organizations collect expansive data with the belief that it holds intrinsic present or future utility beyond its initial scope."
+      },
+      {
+        "label": "B",
+        "text": "Gathered data will automatically organize itself into structured relational databases upon ingestion.",
+        "Explanation": "Data collection technology gathers raw data, but automated self-structuring is not an expectation outlined in the text."
+      },
+      {
+        "label": "C",
+        "text": "All collected data will lose its utility if not processed within twenty-four hours.",
+        "Explanation": "Data warehousing allows large-scale data to be stored long-term for offline or batch analytical discovery."
+      },
+      {
+        "label": "D",
+        "text": "Data collection costs will permanently eliminate the need for data preprocessing techniques.",
+        "Explanation": "Increasing data volume often increases data quality challenges, making preprocessing even more necessary."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how data collected today might serve unexpected future applications.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "What fundamental distinction separates predictive data mining tasks from descriptive data mining tasks?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Predictive tasks use variables to forecast unknown or future values, while descriptive tasks find human-interpretable patterns describing the data.",
+        "Explanation": "Predictive tasks focus on target estimation and forecasting, whereas descriptive tasks aim to extract underlying structure or relationships within existing data."
+      },
+      {
+        "label": "B",
+        "text": "Predictive tasks only process numerical attributes, whereas descriptive tasks only handle categorical attributes.",
+        "Explanation": "Both predictive and descriptive methods can handle quantitative (numerical) and categorical variables depending on the specific algorithm."
+      },
+      {
+        "label": "C",
+        "text": "Predictive tasks focus exclusively on historical summaries, whereas descriptive tasks attempt to automate future decision-making.",
+        "Explanation": "This reverses the roles, as descriptive tasks summarize data while predictive tasks inform future decisions."
+      },
+      {
+        "label": "D",
+        "text": "Descriptive tasks require supervised training labels, while predictive tasks are strictly unsupervised.",
+        "Explanation": "Predictive tasks typically rely on target labels (supervised learning), whereas descriptive tasks like clustering are usually unsupervised."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Reflect on whether the primary goal is forecasting an unknown target attribute or summarizing existing data structures.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "A data scientist needs to forecast future continuous values, such as predicting wind velocities based on temperature, humidity, and air pressure. Which data mining task is appropriate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Regression",
+        "Explanation": "Regression models dependency functions to predict continuous-valued variables from input predictors."
+      },
+      {
+        "label": "B",
+        "text": "Classification",
+        "Explanation": "Classification predicts discrete, categorical class labels rather than continuous numerical values."
+      },
+      {
+        "label": "C",
+        "text": "Cluster Analysis",
+        "Explanation": "Clustering groups similar unlabeled data points together rather than predicting a specific numeric output variable."
+      },
+      {
+        "label": "D",
+        "text": "Association Rule Discovery",
+        "Explanation": "Association rule discovery uncovers co-occurrence relationships among discrete items rather than continuous numerical target variables."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the task designed specifically for predicting continuous-valued target variables rather than discrete categories.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "Which statement correctly characterizes the core goal of predictive classification modeling?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Learning a model to predict a discrete class attribute based on the values of other input attributes.",
+        "Explanation": "Classification algorithms build a predictive model mapping predictor attributes to a target categorical class attribute."
+      },
+      {
+        "label": "B",
+        "text": "Finding natural groupings in unlabeled data by calculating distance metrics.",
+        "Explanation": "Grouping unlabeled objects based on distance metrics describes cluster analysis, not classification modeling."
+      },
+      {
+        "label": "C",
+        "text": "Extracting dependencies that reveal which items are frequently co-purchased together.",
+        "Explanation": "Finding co-purchased item combinations describes market-basket association rule mining."
+      },
+      {
+        "label": "D",
+        "text": "Estimating continuous numeric outputs using linear or nonlinear dependency functions.",
+        "Explanation": "Estimating continuous output variables corresponds to regression modeling."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on what type of target attribute (e.g., fraud vs. fair, buy vs. don't buy) classification algorithms aim to assign.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "In cluster analysis, what spatial distance relationship should ideal clusters exhibit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Inter-cluster distances are maximized while intra-cluster distances are minimized.",
+        "Explanation": "Effective clustering ensures objects in different groups are as far apart as possible (maximized inter-cluster distance) while objects in the same group are as close as possible (minimized intra-cluster distance)."
+      },
+      {
+        "label": "B",
+        "text": "Intra-cluster distances are maximized while inter-cluster distances are minimized.",
+        "Explanation": "Maximizing intra-cluster distance would make objects within the same cluster dissimilar, contradicting the purpose of clustering."
+      },
+      {
+        "label": "C",
+        "text": "Both inter-cluster and intra-cluster distances are maximized simultaneously.",
+        "Explanation": "Intra-cluster distances must be kept small so that objects within a group remain highly similar."
+      },
+      {
+        "label": "D",
+        "text": "Both inter-cluster and intra-cluster distances are set to zero.",
+        "Explanation": "Setting inter-cluster distance to zero would mean distinct clusters overlap completely, failing to separate different groups."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how close objects within the same group should be to each other compared to objects in different groups.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "Given an association rule $\\{\\text{Bagels}\\} \\rightarrow \\{\\text{Potato Chips}\\}$, what specific insight does the antecedent ($\\{\\text{Bagels}\\}$) provide to a retailer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It helps determine which other items might experience a drop in sales if bagels are discontinued.",
+        "Explanation": "Items in the antecedent indicate primary drivers that, if removed or altered, can impact sales of linked consequent products."
+      },
+      {
+        "label": "B",
+        "text": "It specifies the exact discount rate needed to clear remaining potato chip inventory.",
+        "Explanation": "Association rules reveal co-occurrence probabilities rather than precise pricing or discount algorithms."
+      },
+      {
+        "label": "C",
+        "text": "It proves a direct cause-and-effect relationship where purchasing bagels forces a customer to buy chips.",
+        "Explanation": "Association rules discover correlation and conditional occurrence patterns, not causal proof."
+      },
+      {
+        "label": "D",
+        "text": "It identifies the demographic segment of high-income shoppers across department stores.",
+        "Explanation": "Market-basket rules evaluate item transaction sets rather than individual customer demographic profiling."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the role of the item on the left side of an association rule when evaluating product dependency and inventory changes.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "According to the source material on applications, how does big data analytics enhance healthcare decision-making?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By enabling evidence-based personalized treatment that incorporates patient history, lifestyle, and past trials.",
+        "Explanation": "Big data allows medical professionals to cross-reference patient histories, genetics, lifestyle factors, and trial data for tailored clinical care."
+      },
+      {
+        "label": "B",
+        "text": "By completely replacing human medical practitioners with autonomous diagnostic hardware.",
+        "Explanation": "Data mining serves as a supportive decision tool for doctors rather than a complete physical replacement."
+      },
+      {
+        "label": "C",
+        "text": "By eliminating the requirement for clinical trials in approving new pharmaceutical products.",
+        "Explanation": "Analytics evaluates past and current trial data to assist decisions, but does not eliminate clinical testing requirements."
+      },
+      {
+        "label": "D",
+        "text": "By restricting treatment choices strictly to real-time sensor streams without historical context.",
+        "Explanation": "Healthcare analytics relies heavily on combining historical records, trial trends, and genetic data alongside current readings."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look at how doctors can leverage comprehensive patient data and past medical trials for tailored care.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "Which of the following is listed in the source material as a primary technical challenge facing modern data mining?",
+    "options": [
+      {
+        "label": "A",
+        "text": "High dimensionality and scalability across massive datasets.",
+        "Explanation": "Handling massive data volumes (scalability) and a high number of features (high dimensionality) are major algorithmic challenges."
+      },
+      {
+        "label": "B",
+        "text": "A scarcity of available commercial and scientific data.",
+        "Explanation": "The source material emphasizes that large-scale data is everywhere and growing exponentially."
+      },
+      {
+        "label": "C",
+        "text": "Inability to execute parallel or distributed computing architectures.",
+        "Explanation": "Data mining actively draws upon parallel and distributed computing to process large-scale databases."
+      },
+      {
+        "label": "D",
+        "text": "Absence of interest from commercial enterprise and research organizations.",
+        "Explanation": "Commercial competitive pressure and scientific interest in automated discovery are primary drivers of data mining."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about the difficulties that arise when datasets contain massive numbers of features and records.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "Which social challenge associated with big data and data mining is explicitly highlighted in the context of personal data usage?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Privacy preservation and potential data discrimination.",
+        "Explanation": "Profiling personal data poses ethical risks around individual privacy, personal data brokerage, and biased discrimination."
+      },
+      {
+        "label": "B",
+        "text": "The rapid collapse of physical storage capacity in enterprise servers.",
+        "Explanation": "Hardware storage has become cheaper and more powerful, making storage availability a driver rather than a social challenge."
+      },
+      {
+        "label": "C",
+        "text": "Over-regulation restricting all forms of academic data sharing.",
+        "Explanation": "The sources explicitly note that few legal protections currently exist for individuals regarding data brokerage and profiling."
+      },
+      {
+        "label": "D",
+        "text": "The inability to generate customer profiles for targeted marketing.",
+        "Explanation": "Businesses can already build detailed customer profiles, which creates the underlying privacy concerns."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the ethical and legal concerns individuals face when their personal information is brokered and analyzed.",
+    "course": "COM6004",
+    "week": "1"
+  }
+]

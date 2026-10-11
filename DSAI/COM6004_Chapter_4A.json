@@ -1,0 +1,350 @@
+[
+  {
+    "question": "A decision tree node contains 6 instances of Class 0 and 4 instances of Class 1. What is the Gini Index of this node?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.48$",
+        "Explanation": "Using the formula $\\text{Gini} = 1 - \\sum p_i^2$, we calculate $1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48$."
+      },
+      {
+        "label": "B",
+        "text": "$0.52$",
+        "Explanation": "This value represents the sum of squared class probabilities $\\sum p_i^2$ rather than subtracting that sum from 1."
+      },
+      {
+        "label": "C",
+        "text": "$0.40$",
+        "Explanation": "This represents the classification error measure $1 - \\max(p_i) = 1 - 0.6 = 0.40$, rather than the Gini Index."
+      },
+      {
+        "label": "D",
+        "text": "$0.24$",
+        "Explanation": "This is the product of the class proportions $0.6 \\times 0.4$, which is not the correct formulation for Gini Index."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall that Gini Index subtracts the sum of squared class proportions from 1.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A parent node with 20 instances splits into two child nodes: Node 1 has 10 instances with an impurity of $0.2$, and Node 2 has 10 instances with an impurity of $0.4$. What is the weighted impurity $M$ after splitting?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.30$",
+        "Explanation": "The weighted impurity is computed as $M = \\frac{10}{20}(0.2) + \\frac{10}{20}(0.4) = 0.1 + 0.2 = 0.30$."
+      },
+      {
+        "label": "B",
+        "text": "$0.60$",
+        "Explanation": "This result incorrectly sums the child node impurities directly without weighting them by their respective record counts."
+      },
+      {
+        "label": "C",
+        "text": "$0.20$",
+        "Explanation": "This value takes only the minimum impurity child node rather than computing a weighted average across both children."
+      },
+      {
+        "label": "D",
+        "text": "$0.15$",
+        "Explanation": "This result occurs if the weighted sum is incorrectly divided by two twice."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Calculate the average of the child impurities weighted by the fraction of records in each child node.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "Why do standard decision tree algorithms struggle to construct optimal decision boundaries for linearly separable datasets with diagonal boundary lines?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each split in a standard decision tree evaluates only a single attribute at a time, resulting in step-like, axis-aligned boundaries.",
+        "Explanation": "Standard decision trees make orthogonal splits along individual feature axes, requiring many splits to approximate diagonal boundaries."
+      },
+      {
+        "label": "B",
+        "text": "Decision trees rely on non-linear kernel transformations that distort simple linear separation lines.",
+        "Explanation": "Decision trees do not utilize kernel transformations; this concept applies to kernel-based methods like Support Vector Machines."
+      },
+      {
+        "label": "C",
+        "text": "Greedy split selection causes the algorithm to stop expanding as soon as a continuous variable is selected.",
+        "Explanation": "Selecting a continuous variable does not stop tree expansion; continuous variables can be split multiple times."
+      },
+      {
+        "label": "D",
+        "text": "Decision tree induction requires all continuous attributes to be converted into binary attributes prior to training.",
+        "Explanation": "Trees can perform dynamic binary splitting on continuous attributes directly without requiring mandatory global discretization."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how standard decision tree split conditions test individual feature dimensions.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "An unknown instance is evaluated using a distance-weighted $k$-NN classifier with weighting factor $w = \\frac{1}{d^2}$. The 3 nearest neighbors are: Neighbor 1 at distance $d=1$ (Class A), Neighbor 2 at distance $d=2$ (Class B), and Neighbor 3 at distance $d=2$ (Class B). Which class is predicted and what is its weighted vote total?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Class A, with a weighted vote total of $1.0$.",
+        "Explanation": "Class A receives $w_1 = \\frac{1}{1^2} = 1.0$, while Class B receives $w_2 + w_3 = \\frac{1}{2^2} + \\frac{1}{2^2} = 0.25 + 0.25 = 0.50$, making Class A the winner."
+      },
+      {
+        "label": "B",
+        "text": "Class B, because it has a majority count of 2 out of 3 neighbors.",
+        "Explanation": "This uses unweighted majority voting rather than distance-weighted voting where weights are proportional to $\\frac{1}{d^2}$."
+      },
+      {
+        "label": "C",
+        "text": "Class B, with a weighted vote total of $1.0$.",
+        "Explanation": "The sum of weights for Class B is $0.25 + 0.25 = 0.50$, not $1.0$."
+      },
+      {
+        "label": "D",
+        "text": "Class A, with a weighted vote total of $0.50$.",
+        "Explanation": "A distance of $d=1$ yields a weight of $\\frac{1}{1^2} = 1.0$, not $0.50$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Calculate $w = \\frac{1}{d^2}$ for each neighbor and sum the weights for each class label.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "Why is attribute scaling or normalization (such as Z-score transformation) essential prior to training a $k$-Nearest Neighbor ($k$-NN) model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To prevent attributes with larger numerical ranges from dominating the distance calculations.",
+        "Explanation": "Distance metrics like Euclidean distance are sensitive to feature scales, so larger range attributes can dwarf smaller range attributes if unscaled."
+      },
+      {
+        "label": "B",
+        "text": "To transform non-linear class boundaries into linearly separable decision hyperplanes.",
+        "Explanation": "Scaling changes feature magnitude, not the fundamental geometric separability or linearity of data distributions."
+      },
+      {
+        "label": "C",
+        "text": "To eliminate conditional dependencies between attributes required for majority voting.",
+        "Explanation": "$k$-NN does not make independence assumptions; conditional independence is a key requirement for Naive Bayes."
+      },
+      {
+        "label": "D",
+        "text": "To reduce the computational memory complexity of storing training instances during inference.",
+        "Explanation": "Scaling individual feature values does not change the number of stored training instances or memory required."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how Euclidean distance treats attributes measured in thousands versus single units.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "In Naïve Bayes classification, what core assumption simplifies the estimation of the joint conditional probability $P(X_1, X_2, \\dots, X_d \\mid Y)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Attributes are conditionally independent of each other given the class label $Y$.",
+        "Explanation": "This naïve assumption allows the joint class-conditional probability to be decomposed into the product of individual conditional probabilities $\\prod P(X_i \\mid Y)$."
+      },
+      {
+        "label": "B",
+        "text": "The class prior probabilities $P(Y)$ are assumed to be equal across all classes.",
+        "Explanation": "Class priors are estimated directly from training frequencies and are not assumed to be equal."
+      },
+      {
+        "label": "C",
+        "text": "All continuous attributes follow a uniform distribution across the input domain.",
+        "Explanation": "Continuous attributes in Naive Bayes are commonly modeled using Gaussian (normal) distributions, not uniform distributions."
+      },
+      {
+        "label": "D",
+        "text": "Every attribute must be categorical or discretized into binary bins prior to modeling.",
+        "Explanation": "Continuous attributes can be modeled directly using probability density functions without requiring discretization."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how Naïve Bayes calculates $P(\\mathbf{X} \\mid Y)$ as a product of individual attribute probabilities.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A Naïve Bayes classifier encounters an attribute value $X_i = c$ that never appeared in class $y$ during training ($n_c = 0$). If class $y$ has $n = 7$ total records and attribute $X_i$ has $v = 3$ possible distinct values, what is the Laplace estimate for $P(X_i = c \\mid y)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.10$",
+        "Explanation": "The Laplace estimate formula is $P(X_i = c \\mid y) = \\frac{n_c + 1}{n + v} = \\frac{0 + 1}{7 + 3} = \\frac{1}{10} = 0.10$."
+      },
+      {
+        "label": "B",
+        "text": "$0.00$",
+        "Explanation": "This is the unadjusted sample frequency $\\frac{0}{7}$, which causes the zero-probability problem in Naïve Bayes multiplications."
+      },
+      {
+        "label": "C",
+        "text": "$0.14$",
+        "Explanation": "This calculation incorrectly uses $\\frac{1}{n} = \\frac{1}{7}$ without adding $v$ to the denominator."
+      },
+      {
+        "label": "D",
+        "text": "$0.33$",
+        "Explanation": "This value reflects the uniform prior $\\frac{1}{v} = \\frac{1}{3}$ rather than applying Laplace smoothing to the training data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Apply the Laplace smoothing formula $P(X_i = c \\mid y) = \\frac{n_c + 1}{n + v}$.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "When applying Naïve Bayes to a continuous attribute $X_i$ using a Gaussian distribution, the sample mean for Class $y$ is $\\mu_{iy} = 110$ and the sample variance is $\\sigma_{iy}^2 = 2975$. What is the exponent term in the Gaussian probability density formula when evaluating an instance with $X_i = 120$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$-0.0168$",
+        "Explanation": "The Gaussian exponent term is $-\\frac{(X_i - \\mu_{iy})^2}{2\\sigma_{iy}^2} = -\\frac{(120 - 110)^2}{2(2975)} = -\\frac{100}{5950} \\approx -0.0168$."
+      },
+      {
+        "label": "B",
+        "text": "$-0.0336$",
+        "Explanation": "This error occurs if the denominator is calculated as $\\sigma_{iy}^2$ instead of $2\\sigma_{iy}^2$."
+      },
+      {
+        "label": "C",
+        "text": "$-0.1681$",
+        "Explanation": "This is off by a factor of 10, resulting from miscalculating $(120-110)^2$ as $1000$."
+      },
+      {
+        "label": "D",
+        "text": "$-0.0017$",
+        "Explanation": "This results from taking $(120-110) = 10$ without squaring the difference in the numerator."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Evaluate the exponent part $-\\frac{(X_i - \\mu_{iy})^2}{2\\sigma_{iy}^2}$ using the given mean and variance.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "In a linear Support Vector Machine (SVM), the separating hyperplane is expressed as $\\mathbf{w} \\cdot \\mathbf{x} + b = 0$, with bounding hyperplanes $\\mathbf{w} \\cdot \\mathbf{x} + b = 1$ and $\\mathbf{w} \\cdot \\mathbf{x} + b = -1$. What is the geometric margin distance between these bounding hyperplanes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{2}{\\|\\mathbf{w}\\|}$",
+        "Explanation": "The geometric margin width between the bounding hyperplanes $\\mathbf{w} \\cdot \\mathbf{x} + b = 1$ and $\\mathbf{w} \\cdot \\mathbf{x} + b = -1$ is mathematically defined as $\\frac{2}{\\|\\mathbf{w}\\|}$."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{1}{\\|\\mathbf{w}\\|^2}$",
+        "Explanation": "This expression resembles part of the objective function to minimize, $\\frac{\\|\\mathbf{w}\\|^2}{2}$, rather than the margin distance."
+      },
+      {
+        "label": "C",
+        "text": "$2 \\|\\mathbf{w}\\|$",
+        "Explanation": "The margin distance is inversely proportional to the norm $\\|\\mathbf{w}\\|$, not directly proportional."
+      },
+      {
+        "label": "D",
+        "text": "$\\frac{b}{\\|\\mathbf{w}\\|}$",
+        "Explanation": "This formula represents the perpendicular distance from the origin to the separating hyperplane, not the margin width."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall that maximizing the margin distance corresponds to minimizing $\\frac{\\|\\mathbf{w}\\|^2}{2}$.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "What is the primary role of slack variables $\\xi_i$ in soft-margin Support Vector Machines (SVM)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To allow for training record misclassifications or margin boundary violations when data is not linearly separable.",
+        "Explanation": "Slack variables $\\xi_i \\ge 0$ relax the hard margin constraints, allowing points to fall inside the margin or on the wrong side of the boundary."
+      },
+      {
+        "label": "B",
+        "text": "To scale continuous attributes dynamically to a zero-mean and unit-variance range.",
+        "Explanation": "Attribute scaling is a data preprocessing step, whereas slack variables are optimization parameters within the SVM formulation."
+      },
+      {
+        "label": "C",
+        "text": "To non-linearly map input features into higher-dimensional vector spaces.",
+        "Explanation": "Mapping features into higher dimensions is performed by kernel functions, not slack variables."
+      },
+      {
+        "label": "D",
+        "text": "To compute the posterior class probabilities $P(Y \\mid \\mathbf{X})$ for decision classification.",
+        "Explanation": "SVMs are linear/geometric margin classifiers that do not directly compute probabilistic posteriors using slack variables."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how SVM handles overlapping data distributions or noisy points that cross margin lines.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "Which classification model is characterized as a 'Lazy Learner' with high memory usage and slow prediction speed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$k$-Nearest Neighbor ($k$-NN)",
+        "Explanation": "$k$-NN defers model construction until prediction time (lazy learning), storing all training records in memory and making inference computationally slow."
+      },
+      {
+        "label": "B",
+        "text": "Decision Tree",
+        "Explanation": "Decision trees build an eager explicit model during training, offering fast prediction speed and low memory usage."
+      },
+      {
+        "label": "C",
+        "text": "Naïve Bayes",
+        "Explanation": "Naïve Bayes is an eager probabilistic classifier with very fast training and prediction speed and a low memory footprint."
+      },
+      {
+        "label": "D",
+        "text": "Support Vector Machine (SVM)",
+        "Explanation": "SVM is an eager geometric classifier; while training speed can be slow, prediction speed is fast and memory usage is moderate."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Identify the classifier that stores all training data and delays computations until a test instance arrives.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "According to Hunt's Algorithm for decision tree induction, when is a node $t$ designated as a leaf node without requiring further splitting?",
+    "options": [
+      {
+        "label": "A",
+        "text": "When all training records $D_t$ reaching node $t$ belong to the same class.",
+        "Explanation": "If all records in $D_t$ belong to the single class $y_t$, node $t$ becomes a leaf node labeled as $y_t$."
+      },
+      {
+        "label": "B",
+        "text": "When the maximum depth of the tree reaches the total number of input attributes.",
+        "Explanation": "Hunt's basic algorithm focuses on node purity $D_t$, rather than restricting tree depth by attribute count."
+      },
+      {
+        "label": "C",
+        "text": "When the Gini Index of node $t$ reaches its maximum possible value of $1.0$.",
+        "Explanation": "A pure node has a Gini Index of $0.0$, indicating no impurity."
+      },
+      {
+        "label": "D",
+        "text": "When the weighted impurity after a potential split is greater than zero.",
+        "Explanation": "A weighted impurity greater than zero indicates impurity, encouraging further splitting rather than creating a leaf node."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about the condition of class purity for the records present at node $t$.",
+    "course": "COM6004",
+    "week": "4A"
+  }
+]

@@ -1,0 +1,27 @@
+What is the primary function of the DISTINCT keyword in a SQL query?,It eliminates duplicate records from the query result set.
+"To remove duplicate major names from the Student table, complete the query: SELECT _____ Major FROM Student;",DISTINCT
+"In standard SQL, which comparison operator is used to test if a value is not equal to another value?",The $<>$ operator (or $\ne$).
+How must string literal parameters be formatted in a SQL WHERE clause compared to integer parameters?,"String parameters must be enclosed in quotes (e.g., 'Mary'), whereas integer parameters do not use quotes."
+How does the AND logical operator differ from the OR logical operator in a SQL WHERE clause?,"AND requires all combined conditions to be satisfied, whereas OR requires at least one condition to be satisfied."
+Which logical operator is used to reverse or negate a condition in a SQL WHERE clause?,The NOT operator.
+"In a SQL ORDER BY clause, what is the default sorting direction if no direction keyword is specified?",Ascending order (ASC).
+What keyword must be added after an attribute in an ORDER BY clause to sort results in descending order?,DESC
+"How does SQL evaluate an ORDER BY clause containing multiple columns, such as ORDER BY Grade DESC, Name DESC?","It sorts the results by Grade first, and uses Name in descending order as a tiebreaker for identical Grade values."
+Where must the ORDER BY clause be placed in relation to the WHERE clause in a SQL statement?,The ORDER BY clause must be placed after the WHERE clause.
+What is the function of the LIMIT clause in a SQL query?,It restricts the maximum number of records returned by the query.
+What is the function of the OFFSET clause in a SQL query?,It skips a specified number of rows in the result set before returning any records.
+What rows are returned by a query ending with LIMIT 10 OFFSET 10?,It skips the first 10 records and returns the 11th through 20th records.
+Concept: CASE Statement,Definition: A conditional expression in SQL that evaluates conditions in order and returns a specific value when the first true condition is met.
+"In a SQL CASE statement, which keyword marks the end of the conditional expression block?",The END keyword.
+"In a CASE expression, which clause provides a default return value when none of the WHEN conditions are met?",The ELSE clause.
+"Complete the SQL CASE statement structure:
+CASE
+    WHEN condition1 THEN result1
+    _____ default_result
+END",ELSE
+How can you assign a column alias to the output of a CASE statement?,By placing the AS keyword followed by the alias name immediately after the END keyword.
+What is the fundamental difference between the WHERE clause and the HAVING clause regarding filtering order?,"WHERE filters rows before the GROUP BY operation, while HAVING filters aggregated data after the GROUP BY operation."
+"In SQL logical execution order, which clause runs immediately before WHERE?",The FROM clause (including JOINs).
+"In SQL logical execution order, does ORDER BY execute before or after SELECT projection?",ORDER BY executes after the SELECT projection step.
+"Complete the filtering condition to find records where ID is greater than 100 and less than 102:
+SELECT * FROM Student WHERE ID _____ 100 _____ ID _____ 102;",> AND < (forming ID > 100 AND ID < 102)

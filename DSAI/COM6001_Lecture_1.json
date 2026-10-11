@@ -1,0 +1,350 @@
+[
+  {
+    "question": "What is the correct syntax in Python to directly define and execute an anonymous lambda function that calculates $x - y$ for input values $x = 10$ and $y = 4$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "(lambda x, y: x - y)(10, 4)",
+        "Explanation": "Enclosing the lambda expression in parentheses allows it to be called immediately by appending the input arguments in a subsequent set of parentheses."
+      },
+      {
+        "label": "B",
+        "text": "lambda (x, y): x - y (10, 4)",
+        "Explanation": "Placing parentheses around parameter names inside the lambda definition creates invalid syntax for variable argument binding."
+      },
+      {
+        "label": "C",
+        "text": "def lambda(x, y): return x - y (10, 4)",
+        "Explanation": "Combining the 'def' keyword with 'lambda' is invalid syntax because lambda expressions are anonymous constructs created without standard function declarations."
+      },
+      {
+        "label": "D",
+        "text": "lambda x, y: x - y, (10, 4)",
+        "Explanation": "Separating the lambda definition and arguments with a comma creates a tuple containing a function object and data rather than invoking the function."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall how anonymous function expressions must be enclosed to accept arguments immediately after definition.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Given a list of student IDs `ids = ['b003', 'a005', 'a002']`, what does the operation `ids.sort(key=lambda x: int(x[-3:]), reverse=True)` accomplish?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It sorts the list in descending order based on the numeric value extracted from the last three characters of each ID.",
+        "Explanation": "The lambda function slices the last three characters, converts them into an integer sorting key, and `reverse=True` orders the list from highest to lowest."
+      },
+      {
+        "label": "B",
+        "text": "It sorts the list in ascending alphabetical order based on the initial class letter.",
+        "Explanation": ""
+      },
+      {
+        "label": "C",
+        "text": "It reverses the original positions of elements in the list without performing any value evaluation.",
+        "Explanation": "Reversing element positions without evaluation is achieved using `list.reverse()`, while `.sort()` evaluates the provided key function."
+      },
+      {
+        "label": "D",
+        "text": "It sorts the list in ascending order based on string length.",
+        "Explanation": "Converting the slice to an integer ensures numerical evaluation rather than length or string comparisons."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pay attention to what string slice `x[-3:]` extracts and how `reverse=True` affects sorting order.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Why is `%pip install package_name` recommended over `!pip install package_name` when managing packages inside a Jupyter notebook?",
+    "options": [
+      {
+        "label": "A",
+        "text": "%pip ensures that the package is installed into the exact environment currently used by the active Jupyter kernel.",
+        "Explanation": "Using `%pip` guarantees installation within the active notebook kernel environment, whereas `!pip` might run against a system Python environment outside the notebook."
+      },
+      {
+        "label": "B",
+        "text": "!pip is deprecated syntax and causes an immediate execution error in modern Jupyter notebooks.",
+        "Explanation": "Subprocess execution using `!` remains valid syntax, though it risks targeting a different Python environment."
+      },
+      {
+        "label": "C",
+        "text": "%pip bypasses package dependency checks to make installation significantly faster.",
+        "Explanation": "Installation speed and dependency resolving mechanisms are managed by the pip installer regardless of the magic prefix used."
+      },
+      {
+        "label": "D",
+        "text": "!pip requires administrator privileges, whereas %pip runs without system permissions.",
+        "Explanation": "File permissions depend on directory ownership of the active Python environment rather than the command prefix."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how Jupyter notebook kernels manage virtual environments compared to standard system terminal commands.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Which characteristic uniquely distinguishes a Pandas Series from a standard Python list?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A Series possesses an explicit, customizable index attached to its elements and supports vectorized operations.",
+        "Explanation": "Unlike Python lists, Series feature customizable axis labels and allow element-wise computations like vectorized arithmetic directly across array items."
+      },
+      {
+        "label": "B",
+        "text": "A Series can store heterogeneous data types, whereas a Python list can only store elements of a single data type.",
+        "Explanation": "Both Python lists and Pandas Series can store heterogeneous objects, although Series perform best with homogeneous numerical data."
+      },
+      {
+        "label": "C",
+        "text": "A Series dynamically grows in memory, whereas a Python list has a fixed memory size upon creation.",
+        "Explanation": "Python lists are dynamic arrays, whereas Pandas Series rely on underlying NumPy arrays with fixed memory allocations upon creation."
+      },
+      {
+        "label": "D",
+        "text": "A Series can only be indexed using zero-based integer positional indices.",
+        "Explanation": "Series support flexible label-based indexing beyond positional integer offsets."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how axis labels in Pandas allow data access beyond simple 0-based integer positions.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Suppose a Pandas Series $s = \\text{pd.Series}([10, 20, 30])$ with default index `[0, 1, 2]` is used to construct a DataFrame via `pd.DataFrame({'col': s}, index=['a', 'b', 'c'])`. What will be contained in column `'col'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "All values in column `'col'` will be NaN.",
+        "Explanation": "Pandas aligns data strictly by index labels during DataFrame creation; because the Series labels `[0, 1, 2]` do not match `['a', 'b', 'c']`, alignment fails and yields `NaN`."
+      },
+      {
+        "label": "B",
+        "text": "Column `'col'` will contain values 10, 20, and 30 aligned with rows 'a', 'b', and 'c'.",
+        "Explanation": "Automatic positional alignment does not occur when explicit index labels mismatch during dictionary-to-DataFrame construction."
+      },
+      {
+        "label": "C",
+        "text": "Pandas will raise a ValueError due to mismatched index lengths and types.",
+        "Explanation": "Index label mismatches do not throw errors; instead, missing values (`NaN`) are inserted where label alignment fails."
+      },
+      {
+        "label": "D",
+        "text": "The index of the original Series will override the index parameter supplied to the DataFrame constructor.",
+        "Explanation": "Explicitly passing `index` to `pd.DataFrame` sets the DataFrame's index, attempting to align existing Series data against those new labels."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Remember that Pandas alignment relies on matching explicit index label keys rather than positional order.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "What issue arises when assigning the string label `\"NA\"` instead of `np.nan` to represent missing numeric values in a Pandas Series?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It coerces the data type of the Series to object, leading to reduced computational performance and warnings.",
+        "Explanation": "Assigning a string into a float Series forces Pandas to cast the column dtype to `object`, disabling efficient numeric vectorized operations."
+      },
+      {
+        "label": "B",
+        "text": "It automatically converts all other numeric values in the Series to integer representations.",
+        "Explanation": "Inserting a string forces object type coercion rather than integer type casting."
+      },
+      {
+        "label": "C",
+        "text": "It immediately deletes the corresponding row index entry from the Series.",
+        "Explanation": "Assigning a missing value label updates the data value at that position but leaves the row index intact."
+      },
+      {
+        "label": "D",
+        "text": "It raises an immediate TypeError and cancels the assignment operation.",
+        "Explanation": "Pandas permits mixed object storage in Series, though it triggers type incompatibility warnings."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how Pandas handles mixed data types in a single-column array compared to standard floating-point representations.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Which of the following is an attribute of a Pandas DataFrame used to inspect structure without parentheses, rather than a method?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df.dtypes",
+        "Explanation": "`dtypes` is a structural property (attribute) that returns the data types of each column without needing function execution parentheses."
+      },
+      {
+        "label": "B",
+        "text": "df.head()",
+        "Explanation": "`head()` is an action-oriented method used to retrieve the first $n$ rows of a DataFrame."
+      },
+      {
+        "label": "C",
+        "text": "df.info()",
+        "Explanation": "`info()` is a summary method that prints detailed DataFrame metadata."
+      },
+      {
+        "label": "D",
+        "text": "df.describe()",
+        "Explanation": "`describe()` is a method that computes statistical metrics across numerical columns."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Attributes describe static properties or metadata of an object, whereas methods perform executable actions.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "What is the key structural difference between `df['city']` and `df[['city']]` when selecting data from a Pandas DataFrame?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df['city'] returns a 1D Pandas Series, whereas df[['city']] returns a 2D Pandas DataFrame.",
+        "Explanation": "Passing a single string extracts a 1D Series object, while passing a list containing the column name returns a 2D DataFrame object."
+      },
+      {
+        "label": "B",
+        "text": "df['city'] selects a row with label 'city', while df[['city']] selects a column.",
+        "Explanation": "Both single and double bracket indexing target columns when provided string column names."
+      },
+      {
+        "label": "C",
+        "text": "df['city'] creates a deep copy of the data, while df[['city']] creates a shallow view.",
+        "Explanation": "The single vs. double bracket syntax dictates output structural type rather than memory copying strategies."
+      },
+      {
+        "label": "D",
+        "text": "df['city'] returns a standard Python list, while df[['city']] returns a NumPy array.",
+        "Explanation": "Both indexing operations return native Pandas objects (Series and DataFrame respectively)."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Notice the structural difference between passing a single string key versus passing a list of keys to the indexing operator.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "What is a primary technical advantage of saving a Pandas DataFrame as a Pickle file (`.pkl`) rather than a CSV file (`.csv`)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pickle files preserve exact Pandas-specific column data types, such as category and string dtypes, upon reloading.",
+        "Explanation": "Pickle serializes the exact binary state of the object, completely preserving data types like `category` or custom dtypes that CSV format loses."
+      },
+      {
+        "label": "B",
+        "text": "Pickle files can be directly edited using plain text editors and spreadsheet applications.",
+        "Explanation": "Pickle files store binary data, making them unreadable in text editors or standard spreadsheet programs."
+      },
+      {
+        "label": "C",
+        "text": "Pickle files automatically convert all data into standardized human-readable text strings.",
+        "Explanation": "CSV files store data in human-readable plain text, whereas Pickle files store binary streams."
+      },
+      {
+        "label": "D",
+        "text": "Pickle files can be safely opened from any unknown online source without security vulnerabilities.",
+        "Explanation": "Loading Pickle files from unverified sources carries security risks due to potential arbitrary code execution."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider what structural metadata is lost when converting complex object data types into plain text rows and columns.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "How does `pd.concat([df1, df2], axis=0, ignore_index=True)` combine two DataFrames?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It stacks the DataFrames vertically along rows and re-indexes the resulting DataFrame with sequential integers starting from 0.",
+        "Explanation": "`axis=0` specifies vertical row concatenation, while `ignore_index=True` discards existing row labels and creates a new sequential range index."
+      },
+      {
+        "label": "B",
+        "text": "It joins the DataFrames horizontally along columns while maintaining their original column labels.",
+        "Explanation": "Horizontal column-wise concatenation requires setting `axis=1`."
+      },
+      {
+        "label": "C",
+        "text": "It performs a relational key matching operation based on shared column values.",
+        "Explanation": "Matching rows by shared values across columns is performed by `pd.merge()`, whereas `concat()` stitches arrays along an axis."
+      },
+      {
+        "label": "D",
+        "text": "It merges rows by matching identical index labels across both DataFrames.",
+        "Explanation": "When `ignore_index=True` is active, existing index labels are overridden rather than matched."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall which dimension $axis=0$ represents and what parameter resets row label numbering.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Why can `pd.merge(df1, df2, on='hero_names', how='inner')` yield fewer rows than `pd.concat([df1, df2], axis=1, join='inner')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "merge matches rows based on matching string values in 'hero_names', whereas concat(axis=1) joins rows strictly by row index position regardless of column values.",
+        "Explanation": "`merge()` evaluates row content within the join key column and drops non-matching entries, while `concat(axis=1)` pairs rows by index position."
+      },
+      {
+        "label": "B",
+        "text": "merge automatically drops rows that contain NaN missing values in any non-key column.",
+        "Explanation": "`merge()` retains rows with `NaN` values in non-key columns as long as the join key condition is satisfied."
+      },
+      {
+        "label": "C",
+        "text": "concat(axis=1) automatically eliminates duplicate column names prior to combining tables.",
+        "Explanation": "`concat(axis=1)` keeps all columns from both DataFrames, preserving duplicate column names if present."
+      },
+      {
+        "label": "D",
+        "text": "merge generates a Cartesian cross product across all columns in both DataFrames.",
+        "Explanation": "An inner merge performs relational key lookups, generating a cross product only when `how='cross'` is specified."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the difference between content-based value matching and index-positional table concatenation.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "When using `df.rename(mapper=..., axis='columns')`, why does `mapper=lambda x: x.upper` fail to convert column names to uppercase?",
+    "options": [
+      {
+        "label": "A",
+        "text": "x.upper references the string method object without calling it with parentheses, resulting in method pointers instead of uppercase strings.",
+        "Explanation": "Omitting `()` returns the bound method object reference (`<built-in method upper...>`) rather than executing the method to return an updated string."
+      },
+      {
+        "label": "B",
+        "text": "Lambda functions are not supported inside the df.rename method.",
+        "Explanation": "Lambda functions are fully supported as mappers within `df.rename()` provided they return valid string names."
+      },
+      {
+        "label": "C",
+        "text": "The mapper parameter only accepts dictionary mappings, not callable functions.",
+        "Explanation": "The `mapper` argument accepts callable functions (including lambdas and built-in methods) as well as dictionaries."
+      },
+      {
+        "label": "D",
+        "text": "The axis parameter must be specified as axis=1 when using custom lambda functions.",
+        "Explanation": "`axis='columns'` and `axis=1` are functionally identical string and integer representations in Pandas."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Distinguish between referencing a method by name versus invoking it with parentheses to execute its code and return a result.",
+    "course": "COM6001",
+    "week": "1"
+  }
+]

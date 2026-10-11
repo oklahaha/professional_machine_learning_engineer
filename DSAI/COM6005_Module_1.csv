@@ -1,0 +1,16 @@
+"In statistical dataset notation, what do $n$ and $p$ represent?","$n$ represents the number of sample rows (observations), and $p$ represents the number of predictor columns (features)."
+How is a multivariate dataset defined in terms of the number of predictors $p$?,A dataset is considered multivariate when the number of predictor columns $p$ is greater than $1$.
+How does the modern data situation differ from the classical situation regarding $n$ and $p$?,"The classical situation features small $p$ and large $n$, whereas the modern situation features large $p$ where $p$ can even exceed $n$."
+Which two techniques are specifically highlighted in the source material for handling modern large-$p$ problems?,Principal Component Analysis (PCA) and LASSO.
+"In image-based predictive modeling, how are individual pixels represented as input variables $X$?",Each pixel location in the image acts as an individual predictor feature $X_j$.
+"For a $28 \times 28$ pixel image dataset of handwritten digits, what is the total number of predictors $p$?","$p = 784$ predictors, corresponding to each of the $28 \times 28$ individual image pixels."
+Why is handwritten digit recognition classified as a classification problem rather than a regression problem?,Because the target variable $Y$ represents discrete categories (single digits between $0$ and $9$) rather than a continuous numerical value.
+What makes microarray gene expression data a classic example of a high-dimensional dataset?,It contains thousands of gene expression predictors ($p = 6000$) for a small sample size of patients ($n = 50$).
+Predicting whether a patient is healthy or has cancer based on microarray gene expression data is an example of what type of prediction problem?,Classification.
+What type of statistical model is used when predicting a continuous numeric target variable like sales or fuel consumption?,Regression.
+What regression model is specifically designated for classification problems with categorical outcomes?,Logistic Regression.
+"In the $k$-nearest neighbor ($k$-NN) classification algorithm, how is a new observation categorized?",It is predicted based on the majority category proportion among its $k$ closest training points.
+"What is the standard formula for Euclidean distance between two points $(x_1, y_1)$ and $(x_2, y_2)$?",$\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}$
+Why is Euclidean distance sensitive to feature measurement scales?,Variables measured on larger numerical scales dominate the total distance calculation over variables with smaller scales.
+What is the primary operational difference between descriptive and inferential statistics?,"Descriptive statistics summarize observed data, while inferential statistics use sample data to draw conclusions about a population."
+"In supervised machine learning, what key information is missing in testing data compared to training data?","Testing data provides only predictor variables $X$, leaving target outcome $Y$ to be predicted."

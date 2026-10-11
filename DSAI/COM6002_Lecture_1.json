@@ -1,0 +1,321 @@
+[
+  {
+    "question": "What primary limitation of file-based data management systems is resolved by introducing a Database Management System (DBMS)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "File-based management requires complex relational tables, whereas DBMS simplifies storage using flat CSV files.",
+        "Explanation": "Flat CSV files are characteristic of file-based management; DBMS introduces structured relational models to manage complexity."
+      },
+      {
+        "label": "B",
+        "text": "File-based management lacks built-in concurrency control and atomic transactions, leading to potential corruption during simultaneous writes.",
+        "Explanation": "DBMS decouples data access from application logic to enforce concurrency control, isolate users, and ensure atomic state transitions upon system failures."
+      },
+      {
+        "label": "C",
+        "text": "File-based management relies on vertical scaling, while DBMS relies strictly on horizontal scaling across server networks.",
+        "Explanation": "Scaling strategies apply to system architecture capacity expansion rather than the fundamental distinction between flat files and DBMS software."
+      },
+      {
+        "label": "D",
+        "text": "File-based management enforces strict schema validation, preventing unformatted data updates.",
+        "Explanation": "Custom file management often lacks automatic fine-grained access control and schema enforcement across separate application files."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider what happens when multiple applications attempt to modify the same file at the exact same time without administrative oversight.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "In distributed data systems, how does horizontal scaling (\"Scale Out\") differ fundamentally from vertical scaling (\"Scale Up\")?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Horizontal scaling upgrades hardware components on a single machine, while vertical scaling adds new server nodes.",
+        "Explanation": "Upgrading individual machine components such as CPU or RAM represents vertical scaling rather than horizontal expansion."
+      },
+      {
+        "label": "B",
+        "text": "Horizontal scaling adds more physical or virtual nodes to a network cluster to distribute workloads.",
+        "Explanation": "Scale Out expands workload capacity across multiple networked machines, though it introduces challenges like network latency and node failures."
+      },
+      {
+        "label": "C",
+        "text": "Horizontal scaling is only compatible with centralized relational databases, whereas vertical scaling is used for NoSQL stores.",
+        "Explanation": "Both scaling paradigms apply across different database architectures, with NoSQL systems frequently leveraging horizontal expansion."
+      },
+      {
+        "label": "D",
+        "text": "Horizontal scaling eliminates the need for data partitioning and synchronization protocols across network nodes.",
+        "Explanation": "Adding nodes across a network increases the necessity for synchronization protocols and failure recovery mechanisms."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about whether system capacity is expanded by building a larger single computer or by assembling a team of connected computers.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "Which of the 4 V's of Big Data directly addresses issues surrounding data trustworthiness, accuracy, and the rule of \"Garbage In, Garbage Out\" (GIGO)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Volume",
+        "Explanation": "Volume pertains specifically to the absolute quantity or size of generated dataset storage requirement."
+      },
+      {
+        "label": "B",
+        "text": "Velocity",
+        "Explanation": "Velocity refers to the speed at which data is continuously generated and processed in real time."
+      },
+      {
+        "label": "C",
+        "text": "Variety",
+        "Explanation": "Variety focuses on the diversity of data formats, including structured tables, semi-structured JSON, and unstructured media."
+      },
+      {
+        "label": "D",
+        "text": "Veracity",
+        "Explanation": "Veracity represents data quality, validity, and truthfulness, highlighting that low-quality inputs produce unreliable analytical outputs."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "This characteristic measures data quality and how reliable the collected information is before performing analytics.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "Which category of data format includes flexible, self-describing structures like JSON, XML, and YAML that utilize key-value pairs or tags instead of rigid table schemas?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Structured data",
+        "Explanation": "Structured data requires fixed-schema layouts, such as standardized SQL relational tables and traditional spreadsheets."
+      },
+      {
+        "label": "B",
+        "text": "Semi-structured data",
+        "Explanation": "Semi-structured data does not conform to rigid tabular relations but contains internal organizational markers and tags for field parsing."
+      },
+      {
+        "label": "C",
+        "text": "Unstructured data",
+        "Explanation": "Unstructured data lacks both internal structural markers and defined schemas, as seen in raw video or audio files."
+      },
+      {
+        "label": "D",
+        "text": "Relational data",
+        "Explanation": "Relational data relies strictly on pre-defined column schemas and key constraints organized into mathematical relations."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about formats that contain organizational tags or keys to identify fields, yet do not fit neatly into fixed row-and-column tables.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "In a modern Big Data Analytics Pipeline, which specific layer is tasked with scheduling, coordinating dependencies, and monitoring workflow tasks as Directed Acyclic Graphs (DAGs)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ingestion Layer",
+        "Explanation": "The ingestion layer is responsible for extracting raw data from original sources and landing it in central storage."
+      },
+      {
+        "label": "B",
+        "text": "Processing Layer",
+        "Explanation": "The processing layer handles computationally intensive transformations, data cleansing, and aggregations on raw inputs."
+      },
+      {
+        "label": "C",
+        "text": "Orchestration Layer",
+        "Explanation": "Tools like Apache Airflow operating in the orchestration layer organize task execution sequences and dependencies across the end-to-end pipeline."
+      },
+      {
+        "label": "D",
+        "text": "Serving Layer",
+        "Explanation": "The serving layer stores cleaned, business-ready data optimized for downstream application querying and reporting dashboards."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Identify the pipeline component that acts as a conductor, directing task timing and workflow execution flows.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "How does a Data Lakehouse architectural pattern build upon the capabilities of conventional Data Warehouses and Data Lakes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It restricts stored datasets exclusively to structured relational tables, ignoring raw multi-media formats.",
+        "Explanation": "A Lakehouse preserves the ability of Data Lakes to ingest diverse structured, semi-structured, and unstructured formats."
+      },
+      {
+        "label": "B",
+        "text": "It forces all ingested data to undergo immediate physical transformation into proprietary data marts before storage.",
+        "Explanation": "Physical movement into distinct data marts is typical of traditional warehouse setups rather than open lakehouse storage."
+      },
+      {
+        "label": "C",
+        "text": "It implements a transaction and metadata layer directly over open object storage to enable schema enforcement and ACID properties.",
+        "Explanation": "A Lakehouse combines the cost-effective scalability of Data Lakes with database features like transactional consistency and management protocols."
+      },
+      {
+        "label": "D",
+        "text": "It replaces batch analytics capabilities entirely with low-latency streaming endpoints.",
+        "Explanation": "Lakehouses unify diverse workloads, supporting concurrent streaming analytics, machine learning, and historical batch processing."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Look for the hybrid solution that brings transactional integrity and metadata governance directly to scalable open cloud object storage.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "According to industry surveys discussed in the course material, what proportion of time do data scientists typically spend on data loading and data cleansing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Approximately 10% to 15%",
+        "Explanation": "Model training, selection, and deployment tasks consume smaller percentages, leaving data preparation as the dominant workload."
+      },
+      {
+        "label": "B",
+        "text": "Approximately 25% to 30%",
+        "Explanation": "Visualization and reporting components account for lower portions of total preparation effort."
+      },
+      {
+        "label": "C",
+        "text": "Up to nearly 80% (or around 45% combining loading and cleansing specifically)",
+        "Explanation": "Preparing raw inputs—specifically loading and cleansing data—occupies the vast majority of practical data science workflows."
+      },
+      {
+        "label": "D",
+        "text": "100% automated by AI pipelines",
+        "Explanation": "Data prep remains a heavily manual process across industries despite modern pipeline tools."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Recall the widespread industry observation regarding where the main bottleneck lies before model building and visualization can begin.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "What is a key structural distinction between a RESTful API and a Streaming API?",
+    "options": [
+      {
+        "label": "A",
+        "text": "RESTful APIs keep persistent socket connections open, while Streaming APIs initiate a new handshake for every message.",
+        "Explanation": "Streaming APIs maintain persistent connections, whereas RESTful APIs execute independent request-response cycles per call."
+      },
+      {
+        "label": "B",
+        "text": "Streaming APIs operate on a server-push model over a persistent connection, delivering updates continuously as events occur.",
+        "Explanation": "By retaining an open connection, streaming endpoints eliminate repeated HTTP header handshake overheads for real-time delivery."
+      },
+      {
+        "label": "C",
+        "text": "RESTful APIs are strictly stateful, whereas Streaming APIs are completely stateless.",
+        "Explanation": "RESTful calls are stateless because each request is self-contained, while streaming connections inherently manage state over time."
+      },
+      {
+        "label": "D",
+        "text": "Streaming APIs require client polling every few seconds to pull data deltas from the server.",
+        "Explanation": "Client polling is a workaround used with request-response models, unlike push-based streams which push data proactively."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Focus on how connection management differs between discrete request-response cycles and event-driven data pushing.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "When comparing event delivery mechanisms, what advantage does a Publish-Subscribe (Pub/Sub) system like Apache Kafka have over direct Webhooks?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pub/Sub requires the message producer to directly manage individual HTTP connections for every active destination.",
+        "Explanation": "Managing individual HTTP destination calls describes Webhook fan-out challenges, whereas Pub/Sub offloads this to a distributed broker."
+      },
+      {
+        "label": "B",
+        "text": "Pub/Sub systems store events persistently on disk, enabling message replayability and decoupling producers from consumers.",
+        "Explanation": "Centralized message brokers persist event logs, allowing multiple downstream subscribers to consume or replay historical data independently."
+      },
+      {
+        "label": "C",
+        "text": "Webhooks provide built-in message queuing and historical data replay out of the box.",
+        "Explanation": "Webhooks push notifications directly to HTTP endpoints; if a destination server is offline, the message payload is generally lost."
+      },
+      {
+        "label": "D",
+        "text": "Webhooks enforce a 3-party architecture involving producers, centralized brokers, and consumers.",
+        "Explanation": "Webhooks follow a 2-party source-to-destination architecture, whereas Pub/Sub utilizes a broker intermediate layer."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider the architectural benefits of using an intermediate broker that writes event records to disk.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "In a centralized relational database utilizing a $B^+$ tree index, why are range queries (such as searching for items where $10 \\le \\text{value} \\le 16$) executed efficiently?",
+    "options": [
+      {
+        "label": "A",
+        "text": "All data record pointers are stored exclusively at the root node, avoiding tree traversal.",
+        "Explanation": "Root and non-leaf nodes in $B^+$ trees contain index separators rather than complete set pointer records."
+      },
+      {
+        "label": "B",
+        "text": "Record pointers are positioned at leaf nodes, which are sequentially linked to sibling leaves via pointers.",
+        "Explanation": "After searching the tree structure to locate the lower bound key, the DBMS traverses linked leaf node pointers directly to retrieve adjacent values."
+      },
+      {
+        "label": "C",
+        "text": "Non-leaf nodes keep duplicate copies of all table data records for fast parallel scanning.",
+        "Explanation": "Data records reside at the leaf layer; non-leaf nodes only maintain key separators to guide search decisions."
+      },
+      {
+        "label": "D",
+        "text": "The index reduces range query worst-case search complexity to $\\mathcal{O}(1)$ time regardless of database size.",
+        "Explanation": "Initial positioning within a $B^+$ tree requires $\\mathcal{O}(\\lg n)$ logarithmic search steps rather than constant time."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about how leaf nodes in this specific tree variant are connected horizontally to allow sequential scanning without re-navigating from the top.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "Which fundamental ACID property guarantees that all database operations within a single transaction are completed entirely, or none are applied at all?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Atomicity",
+        "Explanation": "Atomicity ensures the 'all-or-nothing' execution rule, preventing partial writes from leaving the database in an incomplete state."
+      },
+      {
+        "label": "B",
+        "text": "Consistency",
+        "Explanation": "Consistency ensures that a transaction moves the database from one valid state conforming to all defined rules to another."
+      },
+      {
+        "label": "C",
+        "text": "Isolation",
+        "Explanation": "Isolation guarantees that concurrently executing transactions do not interfere with or observe intermediate states of one another."
+      },
+      {
+        "label": "D",
+        "text": "Durability",
+        "Explanation": "Durability guarantees that once a transaction commits, its changes survive any subsequent system failures or power outages."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "This property prevents partial updates, such as deducting money from one bank account without crediting another.",
+    "course": "COM6002",
+    "week": "1"
+  }
+]

@@ -1,0 +1,4072 @@
+[
+  {
+    "id": "3005ce1d4521",
+    "front": "What is the syntax for defining an anonymous lambda function in Python?",
+    "back": "`lambda arguments: expression`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "c8d6020963e1",
+    "front": "How do you immediately invoke a Python lambda function without assigning it to a named variable?",
+    "back": "Wrap the lambda expression in parentheses and append the arguments in a second pair of parentheses, such as `(lambda x, y: x + y)(3, 5)`.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "98c3d2ee1ed9",
+    "front": "Why is `%pip install` preferred over `!pip install` when installing packages inside a Jupyter notebook?",
+    "back": "`%pip` guarantees installation directly into the specific environment running the active notebook kernel.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "fed16d19cffa",
+    "front": "Which `%pip` command displays version and location details for an installed Python package?",
+    "back": "`%pip show package_name`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "28afeabd6e70",
+    "front": "How does a Pandas Series differ structurally from a Pandas DataFrame?",
+    "back": "A Series is a one-dimensional labeled array, whereas a DataFrame is a two-dimensional tabular structure with row and column labels.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "764844740f13",
+    "front": "What default index is assigned when creating a Pandas Series without passing an explicit `index` argument?",
+    "back": "An integer RangeIndex starting at 0 up to `N - 1`.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "91660a14190f",
+    "front": "What result occurs when a DataFrame is created from Series whose index labels do not match the specified DataFrame `index` parameter?",
+    "back": "The DataFrame populates with `NaN` values due to index mis-alignment.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "0a1fc840a791",
+    "front": "Why is assigning a string like `\"NA\"` to an element in a float-typed Pandas Series discouraged?",
+    "back": "It forces an inefficient type conversion on the numeric Series and triggers a deprecation warning.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "a913c5338458",
+    "front": "What tuple structure is returned by the `df.shape` attribute of a Pandas DataFrame?",
+    "back": "`(number_of_rows, number_of_columns)`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "d77bd9baafe1",
+    "front": "What is the main distinction between the outputs of `df.info()` and `df.describe()`?",
+    "back": "`df.info()` summarizes structural metadata and non-null counts, whereas `df.describe()` calculates descriptive statistics for numeric columns.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "e90d8bde9aaf",
+    "front": "Which parameter of `pd.read_csv()` is required and has no default value?",
+    "back": "`filepath_or_buffer`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "e8eb685ecb16",
+    "front": "Which parameter in `pd.read_excel()` specifies a target worksheet tab from an Excel file?",
+    "back": "`sheet_name`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "0e45e881ed1e",
+    "front": "What is the main advantage of saving a DataFrame using `.to_pickle()` instead of `.to_csv()`?",
+    "back": "Pickle files preserve all exact Pandas column data types (`dtypes`) upon re-loading.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "bc17176c79a6",
+    "front": "Which Pandas data type is optimized to store categorical variables with a limited set of fixed values?",
+    "back": "`category`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "93e95c82eb64",
+    "front": "What structural change occurs when setting `axis=1` in `pd.concat([df1, df2])`?",
+    "back": "It concatenates the DataFrames horizontally along columns rather than vertically along rows.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "a9e268c4bae3",
+    "front": "Which parameter in `pd.concat()` re-indexes the combined DataFrame sequentially from 0 to N-1?",
+    "back": "`ignore_index=True`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "ff4cb84be712",
+    "front": "Under what condition should `pd.merge()` be used instead of `pd.concat()`?",
+    "back": "Use `pd.merge()` when joining tables based on matching key values in shared columns rather than stacking by index or position.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "305759884722",
+    "front": "Which `pd.merge()` parameters specify join keys when key columns have different names in the left and right DataFrames?",
+    "back": "`left_on` and `right_on`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "600e24df2f8c",
+    "front": "What output is produced by `pd.merge(left, right, how='cross')`?",
+    "back": "A Cartesian product containing every pair combination of rows from the left and right DataFrames.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "b0a5498dbdd9",
+    "front": "What data entries are retained when performing a `pd.merge()` with `how='outer'`?",
+    "back": "All records from both DataFrames are retained, filling non-matching entries with `NaN`.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "2b7da036f3e5",
+    "front": "Why must element-wise string transformations on a Pandas Series be called via the `.str` accessor?",
+    "back": "String methods belong to Python string objects, so `.str` exposes vectorized string operations across Series elements.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "4c18bf0cfe16",
+    "front": "Why does `df.rename(mapper=lambda x: x.upper, axis='columns')` produce method representation outputs instead of upper-case strings?",
+    "back": "It evaluates to the uncalled method object `x.upper` rather than invoking `x.upper()` to return transformed string values.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "700fd23f44f7",
+    "front": "What is the correct syntax for converting all DataFrame column names to uppercase using `df.rename()` and a built-in method?",
+    "back": "`df.rename(columns=str.upper)`",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "be2c7a17bfd7",
+    "front": "How can `list.sort()` order a list of strings based on custom numerical criteria using a lambda function?",
+    "back": "Pass a lambda function extracting the integer component to the `key` parameter, such as `key_list.sort(key=lambda x: int(x[1:]))`.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "b61214ee69ab",
+    "front": "Scenario: In Week 2, a student asks GenAI to 'Write the complete code to solve Question 1 of Lab 2.' Is this ethical AI use or academic misconduct?",
+    "back": "Academic misconduct; requesting direct code solutions for assignment questions is strictly prohibited in Weeks 2–3.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "248c9e45a62a",
+    "front": "Scenario: A student paste a Python error message into GenAI during Week 2 and asks, 'Explain what this error means and how to fix it.' Is this permitted?",
+    "back": "Ethical AI use; requesting code and error explanations is explicitly allowed during the beginner stage.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "840b6f7bb627",
+    "front": "Scenario: During Week 5, a student asks GenAI to explain how a Pandas method works and provide a 4-line sample snippet. Is this permitted?",
+    "back": "Ethical AI use; requesting function suggestions and short code snippets of less than 10 lines is allowed in Weeks 4–11.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "3fe7be5cdca5",
+    "front": "Scenario: During Week 6, a student asks GenAI to 'Generate the full code for Question 4 of the lab assignment.' Is this permitted?",
+    "back": "Academic misconduct; asking GenAI to directly provide the answer code for a question is prohibited in Weeks 4–11.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "4d7a63305190",
+    "front": "Scenario: During the final project in Week 13, a student asks GenAI to brainstorm analysis ideas and suggest relevant Python libraries. Is this permitted?",
+    "back": "Ethical AI use; ideation, potential analysis ideas, and API or library suggestions are encouraged during the project stage.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "7be572a260d9",
+    "front": "Scenario: A student asks GenAI to execute the complete data analysis and write the final insights for their group project report. Is this permitted?",
+    "back": "Academic misconduct; GenAI must not directly implement the analysis or draw conclusions for you.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "77d4ecc3155a",
+    "front": "Scenario: A student relies on GenAI to write code without understanding it or verifying its correctness. What core guideline does this violate?",
+    "back": "It violates the requirement to double-check AI outputs and ensure personal mastery of the skills.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "85053fa1d276",
+    "front": "According to the course policy, what is the appropriate general relationship between a student and Generative AI?",
+    "back": "GenAI should function as your worker guided by proper prompts, not as your manager.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "26c7079d21d7",
+    "front": "Why is relying entirely on GenAI for lab work risky for a student's overall assessment performance?",
+    "back": "It prevents gaining the knowledge required for closed-book paper tests, exams, and oral presentations.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "4f1ae02083b0",
+    "front": "What is the maximum recommended length for sample code snippets provided by GenAI during Weeks 4–11?",
+    "back": "Fewer than 10 lines of code.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "1fcf2dfd3087",
+    "front": "Scenario: A student pastes a full assignment answer generated by AI into their submission without attribution. Which university system detects this for plagiarism?",
+    "back": "VeriGuide",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "f1199f2ccd8f",
+    "front": "According to PEP 8 style guidelines, which casing style should be used for variable and function names in Python?",
+    "back": "snake_case",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "4ee83df4a830",
+    "front": "According to PEP 8 style guidelines, which casing style should be used for Python classes?",
+    "back": "PascalCase",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "0a02113b3b61",
+    "front": "According to PEP 8 style guidelines, which casing style should be used for Python constants?",
+    "back": "UPPER_SNAKE_CASE",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "26d9347f1043",
+    "front": "According to PEP 8 style guidelines, how many spaces should be used per indentation level in Python?",
+    "back": "4 spaces",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "ce5e7ce93f36",
+    "front": "What is the syntax to immediately invoke a lambda function `lambda x, y: x - y` with input arguments `3` and `5`?",
+    "back": "`(lambda x, y: x - y)(3, 5)`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "64ccda55d5b4",
+    "front": "In Python, what numerical value is produced by evaluating the expression `(lambda x: x + 5)(3)`?",
+    "back": "It evaluates to `8`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "c450c7494f5f",
+    "front": "When a function returns `lambda x: x + adder`, what syntax supplies the argument for `x` immediately after calling `my_func(5)`?",
+    "back": "`my_func(5)(3)`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "6a334fe1e5a9",
+    "front": "What return object is generated when calling `my_func(5)` on the function definition `def my_func(adder): return lambda x: x + adder` without supplying a second set of parentheses?",
+    "back": "It returns a lambda function object configured as `lambda x: x + 5`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "1b9b39258419",
+    "front": "In the general syntax `lambda arguments: expression`, how many expressions is a lambda function permitted to evaluate?",
+    "back": "A lambda function is restricted to evaluating exactly one expression.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "b2e63942f1dd",
+    "front": "To perform element-wise string transformations on a Pandas Series or Index object, what accessor must be invoked?",
+    "back": "The `.str` string accessor.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "008acb980d05",
+    "front": "Why does calling `.upper()` directly on `df.columns` raise an error in Pandas?",
+    "back": "`df.columns` is a Pandas Index object rather than a Python string, requiring the `.str` accessor to expose string methods.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "40380e7448de",
+    "front": "How does the output of `.columns.str.capitalize()` differ from `.columns.str.title()` when applied to multi-word column labels?",
+    "back": "`.str.capitalize()` capitalizes only the initial letter of the first word, whereas `.str.title()` capitalizes the first letter of every word.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "5f9a6f365456",
+    "front": "Why must the output of `df.columns.str.lower()` be explicitly assigned back to `df.columns` to update a DataFrame?",
+    "back": "String accessor operations return a new Index object rather than modifying the DataFrame columns in-place.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "f52d604f7a96",
+    "front": "In Pandas Series and DataFrames, string operations on text data are accessed via the _____ accessor.",
+    "back": "`.str`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "20216d7ea81a",
+    "front": "Which parameter in `DataFrame.rename()` accepts a function or dictionary to transform axis labels when paired with an `axis` argument?",
+    "back": "The `mapper` parameter.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "cf628d727afe",
+    "front": "Which parameter in `DataFrame.rename()` specifically targets column labels directly without requiring an explicit `axis` argument?",
+    "back": "The `columns` parameter.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "98165e225d7e",
+    "front": "Which parameter in `DataFrame.rename()` specifically targets row index labels directly without requiring an explicit `axis` argument?",
+    "back": "The `index` parameter.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "e7d17f47fd50",
+    "front": "What is the correct syntax to rename the column `'hero_names'` to `'hero names'` using a dictionary in `DataFrame.rename()`?",
+    "back": "`df.rename(columns={'hero_names': 'hero names'})`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "ec6dd0cdbd37",
+    "front": "How can the built-in string method reference `str.upper` be passed to `DataFrame.rename()` to uppercase all column labels?",
+    "back": "`df.rename(columns=str.upper)`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "d77ad6efb10b",
+    "front": "When using `mapper` to rename columns in `DataFrame.rename()`, what additional argument must be passed to target the column axis?",
+    "back": "`axis='columns'`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "2fbe474144f6",
+    "front": "Why does `df.rename(mapper=lambda x: x.upper, axis='columns')` fail to convert column names to uppercase text?",
+    "back": "It returns a reference to the `upper` method object for each column name instead of executing the method call `x.upper()`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "7a8de00d5fb4",
+    "front": "Why does passing `mapper=str.upper()` with execution brackets into `DataFrame.rename()` trigger a Python error?",
+    "back": "It attempts to execute `str.upper()` immediately during argument passing without supplying the required string parameter.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "81c26b25dba4",
+    "front": "What lambda function passed to `mapper` in `df.rename()` removes the final character from every column name?",
+    "back": "`lambda x: x[:-1]`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "99de156559e5",
+    "front": "What is the complete `DataFrame.rename()` call using a lambda function to convert all column names in `df` to lowercase?",
+    "back": "`df.rename(mapper=lambda x: x.lower(), axis='columns')`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "aae9399c43d4",
+    "front": "What type of indexing mechanism does the `.loc` indexer use in Pandas?",
+    "back": "Label-based indexing.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "c616fc3fe5ee",
+    "front": "What type of indexing mechanism does the `.iloc` indexer use in Pandas?",
+    "back": "Integer position-based indexing.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "c471eca125d8",
+    "front": "When slicing rows using `.loc[m:n]`, is the stop label `n` included or excluded?",
+    "back": "Included (both `m` and `n` are inclusive).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "13078031d530",
+    "front": "When slicing rows using `.iloc[m:n]`, is the stop position `n` included or excluded?",
+    "back": "Excluded (start is inclusive, stop is exclusive).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "bee11f0cfe8d",
+    "front": "How does `.loc[1:4]` differ from `.iloc[1:4]` on a DataFrame with integer row labels?",
+    "back": "`.loc[1:4]` selects rows labeled 1 through 4 inclusive, while `.iloc[1:4]` selects positional rows at indices 1, 2, and 3.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "3b72b6503f57",
+    "front": "What Pandas data structure is returned when selecting a single row using `df.loc['label']`?",
+    "back": "A Pandas `Series`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "a4ee71ce8809",
+    "front": "What Pandas data structure is returned when selecting a single row enclosed in a list, such as `df.loc[['label']]`?",
+    "back": "A Pandas `DataFrame`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "f042615edad6",
+    "front": "In 2D subsetting, what syntax separates row indexers from column indexers inside `.loc` or `.iloc`?",
+    "back": "A comma, formatted as `df.loc[row_indexer, column_indexer]`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "70de3c7fb686",
+    "front": "How do you select all rows for a specific column label `'race'` using `.loc`?",
+    "back": "`df.loc[:, 'race']`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "9e28a75f7b37",
+    "front": "What is the `.loc` syntax to slice rows from `'Adam Strange'` to `'Amazo'` and columns from `'race'` to `'hair color'`?",
+    "back": "`hero.loc['Adam Strange':'Amazo', 'race':'hair color']`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "f62846a8428d",
+    "front": "What is the `.iloc` syntax to slice positional rows 1 to 3 and positional columns 2 to 3?",
+    "back": "`hero.iloc[1:4, 2:4]`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "15fd3251c106",
+    "front": "Why does directly passing a labeled Boolean Series into `df.iloc[df['B'] == 2]` raise an error?",
+    "back": "`.iloc` expects integer positions or raw NumPy arrays, not indexed Pandas Boolean Series.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "4dae519ba6db",
+    "front": "How can a Boolean condition be used to filter rows using `.iloc`?",
+    "back": "By passing the underlying NumPy array values of the mask, such as `df.iloc[(df['B'] == 2).values]`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "9c6324c0685b",
+    "front": "Which element-wise Boolean operator must be used instead of Python's `and` when combining conditions in `.loc`?",
+    "back": "The `&` operator.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "b254e38a24af",
+    "front": "Which element-wise Boolean operator must be used instead of Python's `or` when combining conditions in `.loc`?",
+    "back": "The `|` operator.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "97f133ab3e63",
+    "front": "What action occurs when assigning a value using `df.loc[10000] = row_data` when label `10000` does not exist?",
+    "back": "A new row with label `10000` is created and appended to the DataFrame.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "94e1434d0c18",
+    "front": "What method replaces default integer row indexing with a designated DataFrame column?",
+    "back": "`df.set_index('column_name')`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "168900aad67a",
+    "front": "What method resets a custom index back to a standard integer position index?",
+    "back": "`df.reset_index()`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "a6659e4e40c3",
+    "front": "Why is calling `hero.columns.upper()` directly on DataFrame columns invalid?",
+    "back": "`upper()` is a string method, requiring the `.str` string accessor (e.g., `hero.columns.str.upper()`).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "4325f50144fe",
+    "front": "What is the functional difference between `df['A'] == 4` and `df['A'] = 4`?",
+    "back": "`df['A'] == 4` generates a Boolean comparison Series, whereas `df['A'] = 4` assigns the value 4 to all cells in column `'A'`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "8e72591589b9",
+    "front": "How can DataFrame.info() be used to determine the exact number of missing values in a specific column?",
+    "back": "Subtract the column's non-null row count reported by info() from the total row count of the DataFrame.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "a69198821020",
+    "front": "What structural advantage does transposing describe() via describe().T provide during a data audit?",
+    "back": "It lists features as rows and statistics as columns, making out-of-range missing value indicators like -999 easier to spot across many columns.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "b4bada3f2031",
+    "front": "How does passing dropna=False modify the behavior of Series.value_counts()?",
+    "back": "It includes missing values (NaN) as a distinct frequency entry in the output Series rather than ignoring them.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "7d488ed159a0",
+    "front": "What Pandas code retrieves the exact count of NaN values from a Series s using value_counts()?",
+    "back": "s.value_counts(dropna=False)[np.nan]",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "9aba8eba74df",
+    "front": "Which parameter must be passed to df.isna().sum() to count the missing values in each individual row rather than each column?",
+    "back": "axis=1",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "c7c4de3c633c",
+    "front": "What information does df.isna().sum(axis=0) produce during missing data detection?",
+    "back": "It returns a Series showing the total number of missing (NaN) values present in each column.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "acbdce86a225",
+    "front": "What does a value of 1 returned by df['column'].nunique(dropna=True) indicate about that column?",
+    "back": "It indicates that the column contains only a single constant non-null value across all rows.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "07f24a01144a",
+    "front": "How can Series.value_counts(normalize=True) be used to detect a constant value column?",
+    "back": "If the normalize output shows a proportion of 1.0 for a single value, that column is constant across all entries.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "d040fc8d714f",
+    "front": "How does DataFrame.value_counts() differ from DataFrame.nunique() when analyzing multiple columns for redundant mapping?",
+    "back": "DataFrame.value_counts() counts the frequencies of unique row combinations across columns, while nunique() counts unique entries per column individually.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "8225909463a3",
+    "front": "The method df.notna() returns a boolean DataFrame that outputs _____ for cells containing valid, non-missing values.",
+    "back": "True",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "d0c3750483a0",
+    "front": "How can combination counting verify whether two columns are one-to-one mapped?",
+    "back": "By checking whether the number of unique multi-column combinations equals the number of unique values in each separate column.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "c1095c8cf11d",
+    "front": "How does DataFrame.duplicated(keep='first') evaluate identical rows in a dataset?",
+    "back": "It marks the first occurrence of a row as False and marks all subsequent identical rows as True.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "d49a6adbeda1",
+    "front": "Which Python expression calculates the total count of duplicated rows in a DataFrame df?",
+    "back": "df.duplicated().sum()",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "77f48c5c33b9",
+    "front": "Which pd.read_csv() parameter allows custom numerical placeholders like -999 to be parsed directly as NaN during data loading?",
+    "back": "na_values",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "56277447454e",
+    "front": "How can you check if a column contains missing values using only the nunique() method?",
+    "back": "Subtract df.nunique(dropna=True) from df.nunique(dropna=False); a result of 1 indicates the presence of missing values.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "d54f1a29bec7",
+    "front": "How does DataFrame.duplicated(keep=False) treat repeated rows compared to keep='first'?",
+    "back": "It marks every instance of a duplicated row as True, without preserving any occurrence as False.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "f64224290aa7",
+    "front": "Which expression counts the total number of rows in a DataFrame df that contain at least one missing value?",
+    "back": "df.isna().any(axis=1).sum()",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "7e4e6b9457df",
+    "front": "What is the primary write inefficiency associated with file-based data management?",
+    "back": "The entire file must be re-written even when making a tiny update.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "b1fb09ffac08",
+    "front": "How does file-based data management lead to data inconsistency?",
+    "back": "The same entity is frequently stored across multiple custom files without centralized synchronization.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "5d3db0e86870",
+    "front": "In file-based data management, simultaneous writes by multiple processes result in _____.",
+    "back": "data corruption or system blocking",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "614e895d2765",
+    "front": "Why do file-based data management systems struggle with system recovery during write failures?",
+    "back": "They lack atomic transactions, leaving partial writes in an inconsistent state upon failure.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "97a1f782f829",
+    "front": "What fundamental architectural decoupling does a Database Management System (DBMS) provide?",
+    "back": "It decouples data storage and access from application logic.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "a673272b0039",
+    "front": "Who proposed the foundational relational model for database management in 1970?",
+    "back": "E. F. Codd",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "a3e3f2b16911",
+    "front": "Traditional relational database management systems use _____ to interact with stored data tables.",
+    "back": "SQL (Structured Query Language)",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "3be331c384e9",
+    "front": "Term: Vertical Scaling (Scale Up)",
+    "back": "Definition: Increasing database capacity by adding more power or hardware resources (such as CPU or RAM) to a single machine.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "e45d0a24b146",
+    "front": "Term: Horizontal Scaling (Scale Out)",
+    "back": "Definition: Increasing database capacity by adding more machines to a distributed network to share the workload.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8950affac846",
+    "front": "What was the primary technical bottleneck that caused 1990s distributed database systems to perform poorly?",
+    "back": "Network communication speeds were too slow at that time.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "71a1b960cd48",
+    "front": "What general definition describes 'Big Data'?",
+    "back": "Data sets that are too large or complex to be handled by traditional data-processing application software.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "abf75a378177",
+    "front": "What are the four fundamental characteristics (4 V's) of Big Data?",
+    "back": "Volume, Variety, Veracity, and Velocity.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "160c6ce4a0d4",
+    "front": "In the context of Big Data characteristics, what does Volume represent?",
+    "back": "The vast scale and sheer quantity of data generated and stored.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "0567bd847540",
+    "front": "In the context of Big Data characteristics, what does Variety represent?",
+    "back": "The structural diversity of data formats, spanning structured, semi-structured, and unstructured data.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "5d5800c39247",
+    "front": "In the context of Big Data characteristics, what does Veracity represent?",
+    "back": "The accuracy, quality, and trustworthiness of the underlying data.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "66f6796f2b15",
+    "front": "In the context of Big Data characteristics, what does Velocity represent?",
+    "back": "The high speed at which data is continuously generated and processed in real time.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8c185439a67d",
+    "front": "Term: Structured Data",
+    "back": "Definition: Data that strictly adheres to a predefined fixed schema, commonly organized in tabular rows and columns.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "6c33de30775e",
+    "front": "Data stored in flexible, self-describing formats using tags or key-value pairs (such as JSON or XML) is classified as _____ data.",
+    "back": "semi-structured",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "f272031480e7",
+    "front": "Term: Unstructured Data",
+    "back": "Definition: Data formats lacking an internal schema or structural markers, such as raw text, audio files, images, and videos.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "9b51bdda0053",
+    "front": "What does the data quality acronym GIGO stand for?",
+    "back": "Garbage In, Garbage Out.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "ca906dc9eb97",
+    "front": "List three common types of data quality concerns that impact veracity.",
+    "back": "Missing data, duplicated data, and ambiguous data.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "c04b5f5f57c6",
+    "front": "How does video compression impact surveillance data storage demands?",
+    "back": "Advanced compression formats, such as H.265 compared to H.264, significantly reduce total recorded file sizes.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "d6a70c2169a3",
+    "front": "If a video camera stream records at a bitrate of $4\\text{ Mbps}$, what is its data throughput in megabytes per second?",
+    "back": "0.5 MB/s, calculated as $4\\text{ Mbps} \\div 8\\text{ bits per byte}$.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "0ba723dda147",
+    "front": "When data generation speed drastically exceeds available storage capacity, engineers deploy _____ to evaluate data on the fly.",
+    "back": "streaming algorithms",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "96c3f7d7a0a8",
+    "front": "What core trade-off must be managed when designing streaming algorithms for rapid data streams?",
+    "back": "Choosing between obtaining exact query answers or compute-efficient approximate answers with known performance bounds.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "74fff8db5d97",
+    "front": "What two primary factors have driven the modern growth of Big Data?",
+    "back": "The widespread availability of the public Internet and the expanded storage capacity of modern computer hardware.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "fb596b0f6cf3",
+    "front": "What does the database acronym NoSQL stand for?",
+    "back": "Not Only SQL.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "a326300c9476",
+    "front": "How does a NoSQL database handle schemas differently than a traditional RDBMS?",
+    "back": "NoSQL databases support flexible, non-tabular schemas rather than enforcing rigid table structures.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "cc47733b5d66",
+    "front": "MongoDB is classified under which primary category of NoSQL databases?",
+    "back": "Document store.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "bc8eab620bf0",
+    "front": "Which general class of database management systems remains the most widely used according to modern industry rankings?",
+    "back": "Relational Database Management Systems (RDBMS).",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "1aaea62fd1f2",
+    "front": "What analytics technique was famously illustrated by the 1990s 'Beer and Diapers' supermarket example?",
+    "back": "Market basket analysis, which discovers items frequently bought together by consumers.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "0fffabf259c5",
+    "front": "What process does the ETL acronym describe in data preprocessing?",
+    "back": "Extract, Transform, Load.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "09250a5985f4",
+    "front": "What does the acronym OLAP stand for in enterprise analytics?",
+    "back": "Online Analytical Processing.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8481534f3f12",
+    "front": "What is the primary function of the Ingestion Layer in a Big Data pipeline?",
+    "back": "To extract raw data from diverse source systems and import it into central storage.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8f86e74a00ca",
+    "front": "What core tasks take place within the Processing Layer of a data pipeline?",
+    "back": "Data computation, cleaning, schema transformations, and aggregations.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "f15bd2e90fbd",
+    "front": "What is the primary responsibility of the Orchestration Layer in a Big Data architecture?",
+    "back": "To coordinate, schedule, and monitor execution dependencies across pipeline tasks structured as Directed Acyclic Graphs (DAGs).",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8ac3ada3a110",
+    "front": "Which popular open-source workflow tool serves as a prime example of an Orchestration Layer component?",
+    "back": "Apache Airflow.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "8ed0d18f4b15",
+    "front": "What is the primary role of the Serving Layer within a data pipeline?",
+    "back": "To store processed, business-ready data in specialized engines optimized for fast querying by downstream applications.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "e58ac86fbe1a",
+    "front": "A central data repository specifically tailored for structured, business-ready data is known as a _____.",
+    "back": "Data Warehouse",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "f9de4302ebce",
+    "front": "How does a Data Lake differ from a traditional Data Warehouse regarding stored data types?",
+    "back": "A Data Lake can store raw unstructured and semi-structured data in addition to structured data.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "0c28b42514ac",
+    "front": "Term: Lakehouse",
+    "back": "Definition: An architecture that implements a metadata and transaction layer directly on top of open object storage (Data Lake) to combine scalability with warehouse consistency.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "24c45e7e62d1",
+    "front": "How does a Lakehouse architecture enable queries on semi-structured and unstructured data without physical data movement?",
+    "back": "It maps the underlying object storage directly into structured, queryable schemas using an integrated metadata layer.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "6d4849e416e6",
+    "front": "According to industry surveys, approximately what percentage of a data scientist's work time is consumed by data cleaning?",
+    "back": "Approximately 80% of their time.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "48e3eb2f508e",
+    "front": "What notable failure occurred with Google Flu Trends during the 2012/2013 flu season?",
+    "back": "It over-predicted doctor visits by predicting twice as many flu-related visits as the CDC eventually recorded.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "a2cb1487f9ac",
+    "front": "Why is graph data analysis valuable when analyzing social network platforms?",
+    "back": "It models entity relationships to identify key network structures, such as Key Opinion Leaders (KOLs).",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "a82d5d75dfc4",
+    "front": "In relational databases, data is organized strictly into tables using fixed _____.",
+    "back": "schemas",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "46edc7371785",
+    "front": "What risk occurs when two distributed nodes attempt to update the same record simultaneously without proper concurrency controls?",
+    "back": "Data corruption or write blocking occurs across the system.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "94fdc75df379",
+    "front": "Which four factors directly determine the daily data volume generated by video surveillance cameras?",
+    "back": "Resolution, frame rate, compression format, and recording duration strategy.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "c1c429209993",
+    "front": "YAML, XML, and JSON are popular text formats representing _____ data.",
+    "back": "semi-structured",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "bd2ef7b02b2b",
+    "front": "What pipeline layer feeds curated analytics data directly into business reporting tools like Tableau or Power BI?",
+    "back": "The Serving Layer.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "b7eaf0a6dc74",
+    "front": "Why is atomic transaction support crucial in modern enterprise database systems?",
+    "back": "It guarantees that database writes complete fully or fail cleanly, preventing partial write corruption.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "34526a8d93cc",
+    "front": "What type of NoSQL database is specialized for traversing complex relationships and entity connections?",
+    "back": "Graph database.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "6def0cbe968b",
+    "front": "How does motion-activated recording reduce video surveillance storage demands compared to continuous recording?",
+    "back": "It restricts recording to active event windows, eliminating stored footage during idle time.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "476193c682be",
+    "front": "Which component of a data pipeline handles real-time health checks and alerts using tools like Grafana or Kibana?",
+    "back": "The Monitoring component.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "0a9291c22e9b",
+    "front": "Why must synchronization strategies be maintained between operational databases and a central Data Warehouse?",
+    "back": "To regularly update the central warehouse with operational changes without overloading live transaction systems.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "d3ac4ff7fc4d",
+    "front": "What is the primary intended purpose of an HTTP GET request?",
+    "back": "An HTTP GET request is intended to retrieve data from a server.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "13f41507cff1",
+    "front": "What is the primary intended purpose of an HTTP POST request?",
+    "back": "An HTTP POST request is intended to send data to a server for processing.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "a0bea49afa65",
+    "front": "Where are request parameters placed in an HTTP GET request?",
+    "back": "Parameters in an HTTP GET request are appended directly within the URL.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "c3e60ba8f538",
+    "front": "Where are request parameters placed in an HTTP POST request?",
+    "back": "Parameters in an HTTP POST request are enclosed inside the request body.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "2815a9332408",
+    "front": "How do parameter size limits compare between HTTP GET and POST requests?",
+    "back": "HTTP GET requests face browser-enforced length limits, whereas HTTP POST requests have no payload size limit.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "10a361f6dcd8",
+    "front": "Why is storing sensitive parameters like API keys in an HTTP GET request considered insecure?",
+    "back": "URLs are recorded in browser history, bookmarks, and server logs, exposing sensitive parameters.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "32d2245c91bb",
+    "front": "What is the main function of HTTP request headers during API interactions?",
+    "back": "Request headers provide additional context and metadata to the server, such as authentication credentials and client details.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "c50917a70908",
+    "front": "What information does the Content-Type HTTP request header convey to a server?",
+    "back": "The Content-Type header informs the server about the exact format of the data contained in the request body.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "89aa28a2edc9",
+    "front": "What is the purpose of the User-Agent HTTP request header during web scraping?",
+    "back": "The User-Agent header identifies the client browser, operating system, and device details to the server.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "ff229c40a6ae",
+    "front": "What general outcome is indicated by an HTTP response status code in the 2xx range?",
+    "back": "HTTP 2xx status codes indicate that the client request was successfully received, understood, and accepted.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "60d1177ebed0",
+    "front": "What condition does the HTTP status code 200 OK represent?",
+    "back": "The HTTP 200 OK status code represents the standard successful completion of an HTTP request.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "30760281f48f",
+    "front": "What category of HTTP responses is denoted by status codes in the 3xx range?",
+    "back": "HTTP 3xx status codes denote redirection messages requiring further action from the client.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "d0d7ea303b47",
+    "front": "What type of issues do HTTP status codes in the 4xx range indicate?",
+    "back": "HTTP 4xx status codes indicate errors originating from an invalid or unauthorized client request.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "2c7efe1eb961",
+    "front": "What failure condition produces an HTTP 400 Bad Request status code?",
+    "back": "An HTTP 400 Bad Request status code indicates that the server cannot process the request due to malformed client syntax.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "0b85a158bbe9",
+    "front": "How does an HTTP 401 Unauthorized status code differ from an HTTP 403 Forbidden status code?",
+    "back": "An HTTP 401 code denotes missing or invalid credentials, whereas an HTTP 403 code denotes that access is denied despite authentication.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "1b9191d5500a",
+    "front": "What scenario triggers an HTTP 404 Not Found response code?",
+    "back": "An HTTP 404 response code occurs when the server cannot locate the requested resource at the specified URL.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "d358857e0f8b",
+    "front": "What broad class of failure is denoted by HTTP response status codes in the 5xx range?",
+    "back": "HTTP 5xx status codes denote server-side failures where the server fails to complete an apparently valid request.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "0f5a4ff1a3d7",
+    "front": "What error condition triggers an HTTP 500 Internal Server Error response?",
+    "back": "An HTTP 500 response indicates an unexpected generic error on the server side that prevents request processing.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "4eb49ac5dde6",
+    "front": "What condition causes a server to return an HTTP 503 Service Unavailable status code?",
+    "back": "An HTTP 503 status code indicates that the server is temporarily incapable of handling requests due to overload or maintenance.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "035e4abe688d",
+    "front": "What does the Atomicity property guarantee in database transactions?",
+    "back": "It guarantees that a transaction executes in an all-or-nothing manner, where either all operations complete or none take effect.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "9f170b6ca640",
+    "front": "What is the primary objective of the Consistency property in an RDBMS transaction?",
+    "back": "It ensures that a transaction transitions the database from one valid state to another valid state.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "c31a1f21dc08",
+    "front": "How does the Isolation property affect concurrently executing database transactions?",
+    "back": "It ensures concurrent transactions execute independently without exposing intermediate, uncommitted state to each other.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "a03a929923e2",
+    "front": "What does the Durability property guarantee once a transaction commits?",
+    "back": "It guarantees that committed changes persist permanently in the database, even in the event of a system failure.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "d4d5b4889545",
+    "front": "Which lock type must a transaction acquire before reading a data item?",
+    "back": "A transaction must acquire a readlock on the data item prior to reading it.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "0de0a60b9c34",
+    "front": "Which lock type is required before a transaction can execute a write operation on a data item?",
+    "back": "A transaction must acquire a writelock on the data item prior to writing.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "cbeea89cfbb8",
+    "front": "Under what condition do two lock requests on the same variable NOT conflict with each other?",
+    "back": "Two lock requests do not conflict when both transactions request a readlock on the variable.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "3b567102b98a",
+    "front": "What occurs when a transaction requests a writelock on a data item currently held under a readlock by another transaction?",
+    "back": "A lock conflict occurs, requiring the requesting transaction to either wait or roll back.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "3fc4ac411081",
+    "front": "What is a lock upgrade in database concurrency control?",
+    "back": "It is the conversion of an existing readlock held by a transaction into a writelock on the same variable.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "872058d673e6",
+    "front": "What permission restriction characterizes the growing phase of Two-Phase Locking (2PL)?",
+    "back": "The transaction can acquire new locks, but it is strictly forbidden from releasing any locks.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "f06470f0f13a",
+    "front": "What restriction applies to a transaction during the shrinking phase of Two-Phase Locking (2PL)?",
+    "back": "The transaction can release existing locks, but it cannot acquire any new locks.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "3ad3b6d3c63c",
+    "front": "What defines a database deadlock during concurrent transaction processing?",
+    "back": "A state where two or more transactions are blocked indefinitely, each waiting for a lock held by the other.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "f66fe963f85c",
+    "front": "How is a deadlock identified in a transaction precedence dependency graph?",
+    "back": "A deadlock is indicated by the existence of a cycle in the precedence graph.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "4901cfbde97f",
+    "front": "How does a database system resolve an active deadlock once it is detected?",
+    "back": "The system aborts and rolls back one of the involved transactions to release its held locks.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "940c05cd1d29",
+    "front": "What causes a cascading rollback in database concurrency control?",
+    "back": "It occurs when rolling back one transaction forces other transactions that read its uncommitted updates to also roll back.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "74154501d9ac",
+    "front": "What are the two primary strategic options for a transaction encountering a lock conflict?",
+    "back": "The transaction can either wait for the lock to be released or abort and roll back.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "909d35750fda",
+    "front": "What primary operational purpose does the Two-Phase Locking (2PL) protocol fulfill?",
+    "back": "It prevents shared data corruption by ensuring serializable execution among concurrent transactions.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "0a60baa68ee2",
+    "front": "What is the primary function of the DISTINCT keyword in a SQL query?",
+    "back": "It eliminates duplicate records from the query result set.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "c3f965484626",
+    "front": "To remove duplicate major names from the Student table, complete the query: SELECT _____ Major FROM Student;",
+    "back": "DISTINCT",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "5c0e05adadd5",
+    "front": "In standard SQL, which comparison operator is used to test if a value is not equal to another value?",
+    "back": "The $<>$ operator (or $\\ne$).",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "97737e229464",
+    "front": "How must string literal parameters be formatted in a SQL WHERE clause compared to integer parameters?",
+    "back": "String parameters must be enclosed in quotes (e.g., 'Mary'), whereas integer parameters do not use quotes.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "eceb5ddf3f5a",
+    "front": "How does the AND logical operator differ from the OR logical operator in a SQL WHERE clause?",
+    "back": "AND requires all combined conditions to be satisfied, whereas OR requires at least one condition to be satisfied.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "05d87f1160bd",
+    "front": "Which logical operator is used to reverse or negate a condition in a SQL WHERE clause?",
+    "back": "The NOT operator.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "2bfa6d515ac9",
+    "front": "In a SQL ORDER BY clause, what is the default sorting direction if no direction keyword is specified?",
+    "back": "Ascending order (ASC).",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "454ebb3a9e2b",
+    "front": "What keyword must be added after an attribute in an ORDER BY clause to sort results in descending order?",
+    "back": "DESC",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "ad19889ef5ac",
+    "front": "How does SQL evaluate an ORDER BY clause containing multiple columns, such as ORDER BY Grade DESC, Name DESC?",
+    "back": "It sorts the results by Grade first, and uses Name in descending order as a tiebreaker for identical Grade values.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "59c660210319",
+    "front": "Where must the ORDER BY clause be placed in relation to the WHERE clause in a SQL statement?",
+    "back": "The ORDER BY clause must be placed after the WHERE clause.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "d0e02b0b5d7b",
+    "front": "What is the function of the LIMIT clause in a SQL query?",
+    "back": "It restricts the maximum number of records returned by the query.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "2d99b51f888e",
+    "front": "What is the function of the OFFSET clause in a SQL query?",
+    "back": "It skips a specified number of rows in the result set before returning any records.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "a47aaf677e49",
+    "front": "What rows are returned by a query ending with LIMIT 10 OFFSET 10?",
+    "back": "It skips the first 10 records and returns the 11th through 20th records.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "7d504f228ab5",
+    "front": "Concept: CASE Statement",
+    "back": "Definition: A conditional expression in SQL that evaluates conditions in order and returns a specific value when the first true condition is met.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "cb0d90743593",
+    "front": "In a SQL CASE statement, which keyword marks the end of the conditional expression block?",
+    "back": "The END keyword.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "5d2242c3ff32",
+    "front": "In a CASE expression, which clause provides a default return value when none of the WHEN conditions are met?",
+    "back": "The ELSE clause.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "6f1acfcfa371",
+    "front": "Complete the SQL CASE statement structure: CASE WHEN condition1 THEN result1 _____ default_result END",
+    "back": "ELSE",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "39231b3f316c",
+    "front": "How can you assign a column alias to the output of a CASE statement?",
+    "back": "By placing the AS keyword followed by the alias name immediately after the END keyword.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "b716f179bf2b",
+    "front": "What is the fundamental difference between the WHERE clause and the HAVING clause regarding filtering order?",
+    "back": "WHERE filters rows before the GROUP BY operation, while HAVING filters aggregated data after the GROUP BY operation.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "c52ae2f0508a",
+    "front": "In SQL logical execution order, which clause runs immediately before WHERE?",
+    "back": "The FROM clause (including JOINs).",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "88ef79c2924a",
+    "front": "In SQL logical execution order, does ORDER BY execute before or after SELECT projection?",
+    "back": "ORDER BY executes after the SELECT projection step.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "e5ea4ed4d322",
+    "front": "Complete the filtering condition to find records where ID is greater than 100 and less than 102: SELECT * FROM Student WHERE ID _____ 100 _____ ID _____ 102;",
+    "back": "> AND < (forming ID > 100 AND ID < 102)",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "770efabd252e",
+    "front": "Concept: Classification",
+    "back": "Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "207d5a54b788",
+    "front": "What type of target attribute does classification aim to predict?",
+    "back": "A discrete or categorical class attribute.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "0f60e1de14ea",
+    "front": "What is the primary goal of the classification task in data mining?",
+    "back": "To construct a model that accurately predicts the class label of unlabeled data based on its input attributes.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "a1de3f430ed9",
+    "front": "How is a classification model learned using historical data?",
+    "back": "By analyzing a training set composed of records with known attribute values and pre-assigned class labels.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "6033c8008705",
+    "front": "What are two examples of classification applied in cybersecurity and medical diagnosis?",
+    "back": "Identifying network intruders in cyberspace and predicting whether tumor cells are benign or malignant.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "c3ca4c9d0eff",
+    "front": "In a credit card fraud detection classification model, what constitutes the class attribute?",
+    "back": "The binary label indicating whether a historical transaction was fraudulent or fair.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "08df1f5d6693",
+    "front": "How does customer churn prediction utilize classification modeling?",
+    "back": "It uses demographic and behavioral customer attributes to predict the categorical decision label of whether a customer will buy or not buy a product.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "3dc69f8c22fc",
+    "front": "Concept: Regression",
+    "back": "Definition: A predictive task that estimates the value of a continuous variable based on other variables using a linear or nonlinear dependency model. Example: Predicting sales amounts of a new product based on advertising expenditure.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "883db957e693",
+    "front": "How does regression differ from classification with respect to the target variable?",
+    "back": "Regression predicts a continuous-valued variable, whereas classification predicts a categorical class attribute.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "9e9ca7dd0304",
+    "front": "What is an environmental science example of a regression task?",
+    "back": "Predicting wind velocities as a function of continuous atmospheric variables like temperature, humidity, and air pressure.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "df37c1ad19a7",
+    "front": "What is a financial application of regression modeling?",
+    "back": "Time series prediction of stock market indices.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "b36487470a17",
+    "front": "Concept: Clustering",
+    "back": "Definition: A descriptive task that groups data objects such that objects within the same group are similar and objects in different groups are distinct. Example: Subdividing retail customers into market segments based on demographic and lifestyle data.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "9babb9ad3063",
+    "front": "In cluster analysis, intra-cluster distances are _____ while inter-cluster distances are _____.",
+    "back": "minimized; maximized",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "7a8811819c8b",
+    "front": "Is cluster analysis categorized as a predictive or descriptive data mining method?",
+    "back": "Descriptive",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "1ad64eefccb1",
+    "front": "How is document clustering applied in web news services like Google News?",
+    "back": "By grouping articles that share frequent key terms and high content similarity into distinct news topics.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "f595125cb1f6",
+    "front": "What scientific application uses K-means clustering to analyze earth observation data?",
+    "back": "Partitioning Sea Surface Temperature (SST) and Net Primary Production (NPP) datasets into clusters reflecting the Northern and Southern Hemispheres.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "75c1c7f4fbc8",
+    "front": "Concept: Association Rule Discovery",
+    "back": "Definition: A descriptive task that extracts dependency rules to predict the occurrence of an item based on the occurrences of other items in a transaction dataset. Example: Discovering that retail customers who buy diapers and milk are also likely to buy beer.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "502436c3503f",
+    "front": "In market-basket analysis, what does an association rule like $\\{\\text{Milk}\\} \\rightarrow \\{\\text{Coke}\\}$ indicate?",
+    "back": "That transactions containing milk have a strong statistical likelihood of also containing Coke.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "020a17dee9ad",
+    "front": "How can retailer management use an association rule where Bagels are in the antecedent and Potato Chips are in the consequent?",
+    "back": "They can design joint sales promotions or optimize shelf placement to boost the sales of Potato Chips.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "1374dd8f7e2e",
+    "front": "How is association rule discovery applied in medical informatics?",
+    "back": "It discovers frequent combinations of patient symptoms and diagnostic test results that are associated with specific diseases.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "9cd471907406",
+    "front": "Data mining tasks are broadly categorized into _____ methods and _____ methods.",
+    "back": "predictive; descriptive",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "b5cf37485c8a",
+    "front": "What distinguishes predictive data mining tasks from descriptive data mining tasks?",
+    "back": "Predictive methods use variables to forecast unknown values, whereas descriptive methods find human-interpretable patterns that summarize the data.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "7afc356395be",
+    "front": "What are summary statistics?",
+    "back": "Numbers that summarize key properties of a dataset, such as frequency, location, and spread.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "da72ab995765",
+    "front": "Why can summary statistics be computed efficiently on massive datasets?",
+    "back": "Most summary statistics can be calculated in a single pass through the data.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "27ae8b71278b",
+    "front": "How is the frequency of an attribute value defined in a dataset?",
+    "back": "It is the percentage of times that specific attribute value occurs in the dataset.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "de854ab46f0d",
+    "front": "What is the mode of an attribute?",
+    "back": "The most frequently occurring attribute value in a dataset.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "47089835065d",
+    "front": "For which data type are the concepts of frequency and mode primarily used?",
+    "back": "Categorical data.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "9293ff845be6",
+    "front": "For an attribute $x$, what does the $p\\text{th}$ percentile ($x_p$) represent?",
+    "back": "The value of $x$ such that $p\\%$ of all observed values are less than $x_p$.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "1281aaeafaff",
+    "front": "For continuous or ordinal data, what specific summary statistic corresponds to the 50th percentile?",
+    "back": "The median.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "137759ed935a",
+    "front": "What primary property of a dataset does the arithmetic mean quantify?",
+    "back": "The location or central tendency of a set of data points.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "a35438390836",
+    "front": "How do extreme outliers affect the sample mean of a dataset?",
+    "back": "They pull the mean toward them because the mean is very sensitive to extreme values.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "8ea59e956d2d",
+    "front": "Which measure of location provides a central estimate that is resistant to extreme outliers?",
+    "back": "The median.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "6164289c4fd8",
+    "front": "What is a trimmed mean?",
+    "back": "A robust measure of location calculated by removing a specified percentage of the highest and lowest values before averaging.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "9a80b7307946",
+    "front": "How is the range of a numerical attribute calculated?",
+    "back": "By taking the difference between the maximum value and the minimum value.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "9a9e0ba26f13",
+    "front": "What property of a dataset is quantified by variance ($s_x^2$) and standard deviation ($s_x$)?",
+    "back": "The spread or dispersion of a set of data points.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "0002e33dc42a",
+    "front": "How do extreme outliers impact the variance and standard deviation of a dataset?",
+    "back": "They significantly inflate both measures because variance and standard deviation are highly sensitive to extreme values.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "441a26df1da2",
+    "front": "Which measure of location—mean or median—is preferred when analyzing skewed data containing severe outliers?",
+    "back": "The median, because it is robust against distortion from extreme values.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "2ccc7b48ec81",
+    "front": "The measure of location most sensitive to extreme values in a dataset is the _____.",
+    "back": "mean",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "c804d74a5c99",
+    "front": "The standard summary measure defined as the difference between the maximum and minimum values is the _____.",
+    "back": "range",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "2c4ede68b5b1",
+    "front": "Why is the range vulnerable to misrepresenting the overall dispersion of a dataset?",
+    "back": "Because it relies solely on the two extreme values, making it highly sensitive to outliers.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "721c4a7f5b23",
+    "front": "Which two statistics serve as the most common measures of spread for continuous numerical data?",
+    "back": "Variance and standard deviation.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "95cfa15be3fb",
+    "front": "Why are percentiles generally preferred over frequency or mode for continuous attributes?",
+    "back": "Continuous values rarely repeat exactly, making percentile thresholds far more useful for describing distribution.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "33a4654e10b4",
+    "front": "In Bayesian classification, what formula calculates the posterior probability $P(Y \\mid X_1, X_2, \\dots, X_d)$ using Bayes' theorem?",
+    "back": "$P(Y \\mid X_1, X_2, \\dots, X_d) = \\frac{P(X_1, X_2, \\dots, X_d \\mid Y) P(Y)}{P(X_1, X_2, \\dots, X_d)}$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "45e57533ceab",
+    "front": "Under the Bayes classification framework, what decision rule determines the predicted class label $Y$?",
+    "back": "Select the class $Y$ that maximizes the product $P(X_1, X_2, \\dots, X_d \\mid Y) P(Y)$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "1e19a46c3333",
+    "front": "What fundamental assumption does the Naïve Bayes classifier make regarding feature attributes?",
+    "back": "It assumes that all attributes $X_i$ are conditionally independent of each other given the class label $Y$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "516bd75772df",
+    "front": "How is the class-conditional probability $P(X_1, X_2, \\dots, X_d \\mid Y_j)$ simplified under the Naïve Bayes independence assumption?",
+    "back": "$P(X_1, X_2, \\dots, X_d \\mid Y_j) = \\prod_{i=1}^{d} P(X_i \\mid Y_j)$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "b05b4362dc92",
+    "front": "How is the prior probability $P(y)$ of a class estimated from training data?",
+    "back": "It is calculated as the fraction of overall training instances that belong to class $y$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "ecbed565cf9a",
+    "front": "Using standard relative frequency, what is the formula for $P(X_i = c \\mid y)$ for a categorical attribute?",
+    "back": "$P(X_i = c \\mid y) = \\frac{n_c}{n}$, where $n_c$ is the count of class $y$ instances with $X_i = c$, and $n$ is the total count of class $y$ instances.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "92cb2c0ba80b",
+    "front": "Why does a single conditional probability value of $P(X_i = c \\mid y) = 0$ create a major issue in Naïve Bayes?",
+    "back": "Multiplying by zero causes the overall class-conditional product and posterior probability for class $y$ to become zero.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "a45b9ce6105b",
+    "front": "Under what circumstance does a conditional probability estimate $P(X_i = c \\mid y)$ evaluate to zero?",
+    "back": "It occurs when an attribute value $c$ is completely absent from all training records belonging to class $y$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "996eade1a0c4",
+    "front": "How does Laplace smoothing modify the categorical conditional probability formula $P(X_i = c \\mid y)$?",
+    "back": "$P(X_i = c \\mid y) = \\frac{n_c + 1}{n + v}$, where $v$ is the total number of distinct values attribute $X_i$ can take.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "31e187abb722",
+    "front": "In the Laplace estimation formula $P(X_i = c \\mid y) = \\frac{n_c + 1}{n + v}$, what does the variable $v$ represent?",
+    "back": "It represents the total number of unique attribute values that feature $X_i$ can take.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "71220c7f5a60",
+    "front": "What is the formula for the $m$-estimate approach to conditional probability smoothing in Naïve Bayes?",
+    "back": "$P(X_i = c \\mid y) = \\frac{n_c + m p}{n + m}$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "983b30169eff",
+    "front": "In the $m$-estimate formula $P(X_i = c \\mid y) = \\frac{n_c + m p}{n + m}$, what does the parameter $p$ represent?",
+    "back": "It represents an initial prior estimate of the probability $P(X_i = c \\mid y)$ known apriori.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "c65a7be1606f",
+    "front": "In the $m$-estimate formula $P(X_i = c \\mid y) = \\frac{n_c + m p}{n + m}$, what does the parameter $m$ represent?",
+    "back": "It is a hyper-parameter that determines the weight or confidence placed on the prior estimate $p$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "cab40f687e98",
+    "front": "How can continuous attributes be adapted for Naïve Bayes using discretization?",
+    "back": "The continuous value range is partitioned into discrete bins, transforming the attribute into an ordinal categorical feature.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "bf2953116bac",
+    "front": "When avoiding discretization, how does Naïve Bayes estimate $P(X_i \\mid Y_j)$ for continuous attributes?",
+    "back": "It assumes a continuous probability distribution, such as a normal Gaussian distribution, and estimates its parameters from training data.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "7b7e53dd3643",
+    "front": "What formula calculates $P(X_i \\mid Y_j)$ when assuming a normal distribution for continuous attribute $X_i$?",
+    "back": "$P(X_i \\mid Y_j) = \\frac{1}{\\sqrt{2\\pi\\sigma_{ij}^2}} e^{-\\frac{(X_i - \\mu_{ij})^2}{2\\sigma_{ij}^2}}$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "e1c2a5b139c0",
+    "front": "Which two parameters must be computed from training data to evaluate a continuous Gaussian probability density function for class $Y_j$?",
+    "back": "The sample mean $\\mu_{ij}$ and sample variance $\\sigma_{ij}^2$ for attribute $X_i$ within class $Y_j$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "8a9b97845719",
+    "front": "Why do redundant or highly correlated attributes negatively affect Naïve Bayes performance?",
+    "back": "They violate the class conditional independence assumption and improperly bias the probability estimates.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "f47e3b2b5e92",
+    "front": "How does the Naïve Bayes algorithm handle missing attribute values in data instances?",
+    "back": "It ignores missing attribute entries when performing conditional probability calculations.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "cdb7c079b6f0",
+    "front": "Why is Naïve Bayes robust against isolated noise points in a training dataset?",
+    "back": "Because parameter estimations rely on probabilities averaged across the entire training dataset rather than localized boundaries.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "cc955e9e365a",
+    "front": "What is generalization error in classification?",
+    "back": "It is the expected error of a classification model over random records selected from the underlying data distribution.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "3d0421bf3610",
+    "front": "How do training error and test error differ?",
+    "back": "Training error is calculated on the training dataset, whereas test error is calculated on a separate, unseen test dataset.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "921ad61a850d",
+    "front": "What defines model underfitting in classification?",
+    "back": "Underfitting occurs when a model is too simple, resulting in high errors on both the training set and the test set.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "3643c58ca951",
+    "front": "What defines model overfitting in classification?",
+    "back": "Overfitting occurs when a model is overly complex, yielding a small training error but a high test error.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "ea6dc4503caf",
+    "front": "How does increasing the training sample size affect model overfitting?",
+    "back": "Increasing training data size reduces the difference between training error and test error for a given model complexity.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "4fdf2d6d879c",
+    "front": "What is the primary purpose of a validation set during model building?",
+    "back": "A validation set is used to estimate generalization error and tune model complexity without exposing the test set.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "3028c481442c",
+    "front": "How does Occam's Razor apply to classification model selection?",
+    "back": "Given models with similar generalization error, Occam's Razor dictates choosing the simpler model over the more complex one.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "e867cd9a5349",
+    "front": "What is the formula for classification accuracy using confusion matrix terms?",
+    "back": "$\\text{Accuracy} = \\frac{\\text{TP} + \\text{TN}}{\\text{TP} + \\text{TN} + \\text{FP} + \\text{FN}}$",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "1f2eef01435c",
+    "front": "Why is standard accuracy a misleading performance metric for heavily imbalanced datasets?",
+    "back": "A trivial model predicting only the majority class achieves high accuracy while failing to detect any rare class instances.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "04b2088fa309",
+    "front": "How does $k$-fold cross-validation partition and evaluate data?",
+    "back": "It divides data into $k$ disjoint subsets, iteratively training on $k-1$ folds and testing on the remaining fold.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "ebcc5ea799e7",
+    "front": "How does stratified cross-validation differ from standard $k$-fold cross-validation?",
+    "back": "Stratified cross-validation guarantees that each fold maintains the same class label proportions as the original dataset.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "036453982036",
+    "front": "What defines leave-one-out cross-validation?",
+    "back": "It is an extreme form of $k$-fold cross-validation where $k$ equals the total sample size $n$, testing on one instance at a time.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "a5415a3cdd98",
+    "front": "Which performance metrics form the axes of an ROC curve?",
+    "back": "The y-axis represents the True Positive Rate (TPR) and the x-axis represents the False Positive Rate (FPR).",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "14c780973394",
+    "front": "What is the formula for True Positive Rate (TPR)?",
+    "back": "$\\text{TPR} = \\frac{\\text{TP}}{\\text{TP} + \\text{FN}}$",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "3d785128a615",
+    "front": "What is the formula for False Positive Rate (FPR)?",
+    "back": "$\\text{FPR} = \\frac{\\text{FP}}{\\text{FP} + \\text{TN}}$",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "55696a96ebc1",
+    "front": "In an ROC plot formatted as $(\\text{TPR}, \\text{FPR})$, what does the coordinate $(0,0)$ represent?",
+    "back": "It represents a classifier that predicts every record to belong to the negative class.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "038bdd2ee96d",
+    "front": "In an ROC plot formatted as $(\\text{TPR}, \\text{FPR})$, what does the coordinate $(1,1)$ represent?",
+    "back": "It represents a classifier that predicts every record to belong to the positive class.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "b07f193795bf",
+    "front": "In an ROC plot formatted as $(\\text{TPR}, \\text{FPR})$, what does the coordinate $(1,0)$ represent?",
+    "back": "It represents an ideal classifier with perfect true positive detection and zero false positives.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "00b7514ac149",
+    "front": "What performance level is indicated by the diagonal line in an ROC curve?",
+    "back": "The diagonal line represents the expected performance of random guessing.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "683c3fd6f2ba",
+    "front": "How is the Area Under the ROC Curve (AUC) interpreted for model quality?",
+    "back": "An ideal classifier has an AUC of $1.0$, whereas random guessing yields an AUC of $0.5$.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "814deeffc610",
+    "front": "How are continuous classifier outputs used to construct a discrete step ROC curve?",
+    "back": "Test records are sorted by score in decreasing order, and unique scores serve as thresholds to compute $(\\text{TPR}, \\text{FPR})$ points.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "325b8f18ad72",
+    "front": "What defines a class imbalance problem in data mining?",
+    "back": "It occurs when records from one majority class heavily outnumber instances of a rare target class.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "44124cb914bf",
+    "front": "What is the cost matrix notation $C(i|j)$?",
+    "back": "$C(i|j)$ denotes the cost associated with misclassifying an instance of actual class $j$ as predicted class $i$.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "918f12d5aa20",
+    "front": "In cost-sensitive classification, under what condition is a test record classified as positive?",
+    "back": "A record is classified as positive when the expected cost of predicting positive is strictly less than predicting negative ($\\ meast{Cost}(+) < \\text{Cost}(-)$).",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "4d1969582598",
+    "front": "How do under-sampling and over-sampling techniques differ in handling class imbalance?",
+    "back": "Under-sampling removes instances from the majority class, whereas over-sampling replicates or adds instances to the rare class.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "7087e482b356",
+    "front": "Which confusion matrix outcomes bias the Precision metric?",
+    "back": "Precision is biased towards True Positives ($C(\\text{Yes}|\\text{Yes})$) and False Positives ($C(\\text{Yes}|\\text{No})$).",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "7e938679629b",
+    "front": "Which confusion matrix outcomes bias the Recall metric?",
+    "back": "Recall is biased towards True Positives ($C(\\text{Yes}|\\text{Yes})$) and False Negatives ($C(\\text{No}|\\text{Yes})$).",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "efa7fcc17931",
+    "front": "In hypothesis testing terms applied to confusion matrices, what corresponds to a Type I error ($\\alpha$)?",
+    "back": "A Type I error ($\\alpha$) corresponds to a False Positive ($\\text{FP}$), which is rejecting a true null hypothesis.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "cc2647aedc82",
+    "front": "In hypothesis testing terms applied to confusion matrices, what corresponds to a Type II error ($\\beta$)?",
+    "back": "A Type II error ($\\beta$) corresponds to a False Negative ($\\text{FN}$), which is accepting a false null hypothesis.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "909ace8bd15a",
+    "front": "What is the strategy of class-based ordering for handling imbalanced class rules?",
+    "back": "It assigns higher priority to classification rules that predict the rare class.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "6b92fcc2703a",
+    "front": "In statistical dataset notation, what do $n$ and $p$ represent?",
+    "back": "$n$ represents the number of sample rows (observations), and $p$ represents the number of predictor columns (features).",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "31759ba6b4f4",
+    "front": "How is a multivariate dataset defined in terms of the number of predictors $p$?",
+    "back": "A dataset is considered multivariate when the number of predictor columns $p$ is greater than $1$.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "55b4e3cb5435",
+    "front": "How does the modern data situation differ from the classical situation regarding $n$ and $p$?",
+    "back": "The classical situation features small $p$ and large $n$, whereas the modern situation features large $p$ where $p$ can even exceed $n$.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "308037f48e68",
+    "front": "Which two techniques are specifically highlighted in the source material for handling modern large-$p$ problems?",
+    "back": "Principal Component Analysis (PCA) and LASSO.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "b1eef48eea09",
+    "front": "In image-based predictive modeling, how are individual pixels represented as input variables $X$?",
+    "back": "Each pixel location in the image acts as an individual predictor feature $X_j$.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "26a2af486dc8",
+    "front": "For a $28 \\times 28$ pixel image dataset of handwritten digits, what is the total number of predictors $p$?",
+    "back": "$p = 784$ predictors, corresponding to each of the $28 \\times 28$ individual image pixels.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "14e12d453100",
+    "front": "Why is handwritten digit recognition classified as a classification problem rather than a regression problem?",
+    "back": "Because the target variable $Y$ represents discrete categories (single digits between $0$ and $9$) rather than a continuous numerical value.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "5af71feabec8",
+    "front": "What makes microarray gene expression data a classic example of a high-dimensional dataset?",
+    "back": "It contains thousands of gene expression predictors ($p = 6000$) for a small sample size of patients ($n = 50$).",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "3568264b9876",
+    "front": "Predicting whether a patient is healthy or has cancer based on microarray gene expression data is an example of what type of prediction problem?",
+    "back": "Classification.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "f4086ae613da",
+    "front": "What type of statistical model is used when predicting a continuous numeric target variable like sales or fuel consumption?",
+    "back": "Regression.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "07d1fd0074d5",
+    "front": "What regression model is specifically designated for classification problems with categorical outcomes?",
+    "back": "Logistic Regression.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "02ffaa1453da",
+    "front": "In the $k$-nearest neighbor ($k$-NN) classification algorithm, how is a new observation categorized?",
+    "back": "It is predicted based on the majority category proportion among its $k$ closest training points.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "fef3b3223f3c",
+    "front": "What is the standard formula for Euclidean distance between two points $(x_1, y_1)$ and $(x_2, y_2)$?",
+    "back": "$\\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}$",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "3ac97a9bdef1",
+    "front": "Why is Euclidean distance sensitive to feature measurement scales?",
+    "back": "Variables measured on larger numerical scales dominate the total distance calculation over variables with smaller scales.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "541d75b7926c",
+    "front": "What is the primary operational difference between descriptive and inferential statistics?",
+    "back": "Descriptive statistics summarize observed data, while inferential statistics use sample data to draw conclusions about a population.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "3f74ad5ab829",
+    "front": "In supervised machine learning, what key information is missing in testing data compared to training data?",
+    "back": "Testing data provides only predictor variables $X$, leaving target outcome $Y$ to be predicted.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "95b4a9630f51",
+    "front": "What is a nominal variable?",
+    "back": "A categorical variable representing named, unordered categories that are mutually exclusive.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "f3a69be0f8ab",
+    "front": "What term describes a nominal variable that takes on only two possible values?",
+    "back": "Dichotomous or binary variable.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "7bf1957a3d3d",
+    "front": "Which scale of measurement is represented by student responses recorded as 'Yes' or 'No'?",
+    "back": "Nominal scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "fece98a4001c",
+    "front": "In property data, why is 'District' (e.g., Hong Kong Island, Kowloon, New Territories) categorized as a nominal variable?",
+    "back": "Because districts are distinct named categories without any natural mathematical ordering.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "99e5ea76ea1c",
+    "front": "What defines an ordinal variable?",
+    "back": "A categorical variable with named categories that possess a meaningful order or ranking.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "3a15023639d1",
+    "front": "What scale of measurement does a 5-point Likert scale (1 = Strongly Disagree to 5 = Strongly Agree) represent?",
+    "back": "Ordinal scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "7f6cd44b8763",
+    "front": "In real estate data, why is 'Floor level' categorized as High, Medium, or Low considered ordinal?",
+    "back": "Because the categories represent ordered levels, but the exact numeric distance between levels is not specified.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "971cc4953d45",
+    "front": "Which scale of measurement applies to Body Mass Index (BMI) categorized as Underweight, Normal Weight, Overweight, and Obese?",
+    "back": "Ordinal scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "7164b22e1da4",
+    "front": "What is the key defining feature of interval data?",
+    "back": "Quantitative data with meaningful intervals between measurements, but without a true zero point.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "44a5d95699a5",
+    "front": "Why is temperature measured in degrees Celsius classified as interval data rather than ratio data?",
+    "back": "Because $0^\\circ\\text{C}$ indicates a specific temperature rather than the complete absence of heat.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "dc73ddbd407c",
+    "front": "Why is shoe size considered an interval variable rather than a ratio variable?",
+    "back": "Because shoe sizes have equal step intervals but lack a true zero point where size zero means 'no length'.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "7e59a13f8eeb",
+    "front": "What distinguishes ratio data from interval data?",
+    "back": "Ratio data has a meaningful true zero, where zero indicates a complete absence of the measured quantity.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "ef6630d24300",
+    "front": "What scale of measurement applies to physical measurements such as length in centimeters and weight in kilograms?",
+    "back": "Ratio scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "cd6aea9bef68",
+    "front": "In real estate analysis, what scale of measurement do 'Property Size (sq ft)' and 'Sale Price' belong to?",
+    "back": "Ratio scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "ada0d68bbb87",
+    "front": "Why is 'Building Age in Years' classified as a ratio variable?",
+    "back": "Because it is quantitative with consistent intervals and a true zero point representing a brand-new building.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "dd53cd430d5b",
+    "front": "In statistical software like SPSS, under what single umbrella term are interval and ratio variables grouped?",
+    "back": "Scale.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "5e1676881c04",
+    "front": "Ordinal data differs from nominal data because ordinal categories have a meaningful _____.",
+    "back": "order",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "80229b919057",
+    "front": "Unlike ordinal data, ratio data allows for meaningful quantitative operations because it has equal intervals and a _____.",
+    "back": "true zero",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "90f39897cdad",
+    "front": "What discrete probability distribution measures the number of successes ($X$) out of a fixed total number of independent trials ($n$)?",
+    "back": "Binomial distribution",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "e7f8255ede09",
+    "front": "What are the two key parameters required to define a Binomial distribution?",
+    "back": "The total number of trials ($n$) and the probability of success per trial ($p$).",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "9e7202b5a5c6",
+    "front": "What is the probability mass function (PMF) formula for a Binomial distribution $X \\sim \\mathrm{B}(n, p)$?",
+    "back": "$\\Pr(X=k) = \\binom{n}{k} p^k (1-p)^{n-k}$",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "42b7bb01ba47",
+    "front": "In SciPy, what is the correct parameter ordering for `stats.binom.pmf(...)`?",
+    "back": "`stats.binom.pmf(k, n, p)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "ca30ddd580d1",
+    "front": "Which SciPy call calculates the probability of landing on heads exactly 8 times in 15 flips of a fair coin?",
+    "back": "`stats.binom.pmf(8, 15, 0.5)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "5c39e6714b58",
+    "front": "What discrete probability distribution measures the total number of trials ($X$) needed until the first success occurs?",
+    "back": "Geometric distribution",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "c3ba1c222206",
+    "front": "What key parameter is required to define a Geometric distribution?",
+    "back": "The probability of success on each trial ($p$).",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "d040cb3021c7",
+    "front": "In SciPy, what is the correct parameter ordering for `stats.geom.pmf(...)`?",
+    "back": "`stats.geom.pmf(k, p)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "083d6bbba2ff",
+    "front": "Which SciPy call calculates the probability that a player with an 80% free-throw rate makes their first free throw on their 3rd attempt?",
+    "back": "`stats.geom.pmf(3, 0.8)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "5d19c4148e1f",
+    "front": "If a basketball player has a success probability of $p=0.4$, how is $\\Pr(X=4)$ calculated using a Geometric distribution?",
+    "back": "$\\Pr(X=4) = (1-0.4)^3 \\times 0.4 = 0.0864$",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "36848fb43c98",
+    "front": "What discrete probability distribution measures the number of times an event occurs over a fixed interval of time or space?",
+    "back": "Poisson distribution",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "45506d4ba3cf",
+    "front": "What parameter $\\lambda$ represents in a Poisson distribution?",
+    "back": "The average rate of occurrence in the specified interval.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "68b6a5c89d74",
+    "front": "How do the expected value $E(X)$ and variance $\\operatorname{Var}(X)$ relate to $\\lambda$ for a Poisson random variable?",
+    "back": "Both $E(X)$ and $\\operatorname{Var}(X)$ are equal to $\\lambda$.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "b05188ba882a",
+    "front": "What is the probability mass function (PMF) formula for a Poisson distribution with parameter $\\lambda$?",
+    "back": "$\\Pr(X=k) = \\frac{\\lambda^k e^{-\\lambda}}{k!}$",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "ba34999f2ee0",
+    "front": "In SciPy, what is the correct parameter ordering for `stats.poisson.pmf(...)`?",
+    "back": "`stats.poisson.pmf(k, mu)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "d3882cd2b2b2",
+    "front": "Which SciPy call calculates the probability of receiving exactly 6 calls in a minute when the average rate is 4.5 calls per minute?",
+    "back": "`stats.poisson.pmf(6, 4.5)`",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "65651299d863",
+    "front": "How does the random variable $X$ differ between a Binomial distribution and a Geometric distribution?",
+    "back": "Binomial counts successes across fixed $n$ trials, whereas Geometric counts total trials needed until the first success.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "d1b11bdb5e38",
+    "front": "Which probability distribution is suitable for modeling rare events occurring over a large number of possible trials within a fixed time interval?",
+    "back": "Poisson distribution",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "c98305f1da2c",
+    "front": "In the Binomial PMF, what is the formula for the combination term $\\binom{n}{k}$?",
+    "back": "$\\binom{n}{k} = \\frac{n!}{k!(n-k)!}$",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "46dbf6efc05a",
+    "front": "What does the SciPy function scipy.stats.norm.pdf calculate?",
+    "back": "It calculates the probability density function value (density/frequency) at a given point.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "851c268dd36b",
+    "front": "Why can't scipy.stats.norm.pdf be used directly to find point probabilities for continuous normal variables?",
+    "back": "Continuous probability over an interval requires integration of the probability density function.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "bc725d499e4f",
+    "front": "What measure is returned by the function scipy.stats.norm.cdf?",
+    "back": "It computes the cumulative distribution function, which gives the proportion of data less than or equal to a specified value.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "1618f5bc6b2e",
+    "front": "In SciPy's norm module, which function is used to calculate quantiles?",
+    "back": "The percent point function, scipy.stats.norm.ppf, is used to find quantiles.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "72e73fc5d60c",
+    "front": "What is the primary purpose of the scipy.stats.norm.rvs function?",
+    "back": "It generates random variates that follow a specified normal distribution.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "394d213db783",
+    "front": "In the call scipy.stats.norm.rvs(5, 2, 1000), what do the parameters 5 and 2 represent?",
+    "back": "They represent a mean (loc) of $5$ and a standard deviation (scale) of $2$.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "51ac755b17d9",
+    "front": "What are the default values for loc and scale in scipy.stats.norm.rvs when left unspecified?",
+    "back": "The default values are $0$ for loc (mean) and $1$ for scale (standard deviation).",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "94a4edab49b3",
+    "front": "How can plt.hist in Matplotlib be configured to display an empirical cumulative distribution function?",
+    "back": "By setting the parameter cumulative=True in combination with histtype='step'.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "84ad36df3816",
+    "front": "Which parameter in plt.hist normalizes a histogram so that the total area equals 1?",
+    "back": "The parameter density=True.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "6f5abb5144a9",
+    "front": "What is the effect of passing bins='auto' to plt.hist() in Matplotlib?",
+    "back": "It automatically calculates optimal bin widths based on dataset size and distribution spread.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "287e7e5eb64d",
+    "front": "In Python, which statsmodels function is used to plot sample quantiles against theoretical normal quantiles?",
+    "back": "The function sm.qqplot() is used.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "073894a8d37f",
+    "front": "What does the fit=True argument do when executing sm.qqplot()?",
+    "back": "It automatically estimates the location and scale parameters of the normal distribution from the data.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "ccf683ec12c2",
+    "front": "What visual feature does line=\"45\" add to a QQ-plot generated with statsmodels?",
+    "back": "It adds a $45$-degree reference line for comparing empirical quantiles against theoretical quantiles.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "35f1bda900b1",
+    "front": "Which SciPy statistical function performs a test for the null hypothesis that a sample comes from a normal distribution?",
+    "back": "The function scipy.stats.normaltest() performs this test.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "28736111e6c5",
+    "front": "How is a theoretical normal density curve overlay generated for x-values using SciPy and Matplotlib?",
+    "back": "By plotting the x-coordinates against plt.plot(x, norm.pdf(x, loc=0, scale=1)).",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "1054bfda6ab4",
+    "front": "What is a Type I error ($\\alpha$) in hypothesis testing?",
+    "back": "The incorrect rejection of a true null hypothesis ($H_0$).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "0eca14bd696c",
+    "front": "What is a Type II error ($\\beta$) in hypothesis testing?",
+    "back": "The failure to reject a false null hypothesis ($H_0$).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "e864d03622d8",
+    "front": "How is the significance level ($\\alpha$) defined in terms of conditional probability?",
+    "back": "It is the probability of rejecting $H_0$ given that $H_0$ is true.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "962a2c228381",
+    "front": "How is the power ($1 - \\beta$) of a hypothesis test defined?",
+    "back": "It is the probability of correctly rejecting $H_0$ given that $H_1$ is true.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "0cfbf1e6f51c",
+    "front": "In a hypothesis testing decision matrix, what error corresponds to a false positive (FP)?",
+    "back": "A Type I error ($\\alpha$), where a true $H_0$ is incorrectly rejected.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "220d1dd05f87",
+    "front": "In a hypothesis testing decision matrix, what error corresponds to a false negative (FN)?",
+    "back": "A Type II error ($\\beta$), where a false $H_0$ fails to be rejected.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "7e32db88470e",
+    "front": "What is the probability of failing to reject $H_0$ when $H_0$ is actually true?",
+    "back": "$1 - \\alpha$ (the True Negative rate).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "8f320f6bd698",
+    "front": "What significance level $\\alpha$ corresponds to a $95\\%$ confidence interval in a two-tailed test?",
+    "back": "$\\alpha = 0.05$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "56b704d926b4",
+    "front": "If a $95\\%$ confidence interval excludes the hypothesized parameter value under $H_0$, what is the test outcome at $\\alpha = 0.05$?",
+    "back": "Reject $H_0$, because the two-tailed test yields $p < 0.05$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "81b893bda42d",
+    "front": "If a $95\\%$ confidence interval includes the hypothesized parameter value under $H_0$, what is the $p$-value relationship to $\\alpha = 0.05$?",
+    "back": "The $p$-value is greater than or equal to $0.05$ ($p \\ge 0.05$), so $H_0$ is not rejected.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "96237abdf329",
+    "front": "What does statistical significance indicate about an observed effect?",
+    "back": "It indicates that the observed effect is unlikely to have occurred by chance alone.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "38e4fd5f66ad",
+    "front": "How does statistical significance differ from practical significance?",
+    "back": "Statistical significance indicates an effect is not due to chance, whereas practical significance evaluates the meaningful magnitude or real-world importance of the effect.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "4362e9248f3f",
+    "front": "How can an effect with very small practical significance achieve high statistical significance?",
+    "back": "By utilizing a very large sample size.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "0a71a636cc55",
+    "front": "The pre-specified acceptable maximum probability of committing a Type I error is called the _____.",
+    "back": "significance level ($\\alpha$)",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "80a989599357",
+    "front": "In hypothesis testing, which hypothesis represents the researcher's theoretical claim or research target?",
+    "back": "The alternative hypothesis ($H_1$).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "45df4a589857",
+    "front": "What decision is made if the calculated probability of the observed result under $H_0$ is less than the significance level $\\alpha$?",
+    "back": "Reject $H_0$ in favor of $H_1$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "290462fc9d6d",
+    "front": "Term: Power of a Test",
+    "back": "Definition: The conditional probability ($1 - \\beta$) of correctly rejecting $H_0$ when the alternative hypothesis ($H_1$) is true.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "6c36c829c61f",
+    "front": "When $H_0$ is false, what two mutually exclusive test outcomes are possible?",
+    "back": "Correctly rejecting $H_0$ (Power, $1 - \\beta$) or failing to reject $H_0$ (Type II error, $\\beta$).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "0324ba955f10",
+    "front": "What formula is used to calculate the degrees of freedom ($ u$) in a one-sample t-test with sample size $n$?",
+    "back": "$\\nu = n - 1$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "71ccfadf628a",
+    "front": "What formula is used to calculate the test statistic $T$ in a one-sample t-test comparing sample mean $\\bar{y}$ against target mean $\\mu_0$?",
+    "back": "$T = \\frac{\\bar{y} - \\mu_0}{s / \\sqrt{n}}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "c12acc8b54c6",
+    "front": "In statistical hypothesis testing, what is the definition of a p-value?",
+    "back": "It is the probability of obtaining a test statistic at least as extreme as the observed value, assuming the null hypothesis $H_0$ is true.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "e672b23579d7",
+    "front": "Under what condition regarding the p-value and significance level $\\alpha$ is the null hypothesis $H_0$ rejected?",
+    "back": "$H_0$ is rejected when the p-value is strictly smaller than $\\alpha$.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "fab59338fcad",
+    "front": "In Python's `scipy.stats`, what code computes the critical value for a right-tailed t-test with significance level $\\alpha = 0.05$ and $df = 9$?",
+    "back": "`scipy.stats.t.ppf(0.95, 9)`",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "f9db399e45c6",
+    "front": "For a right-tailed one-sample t-test ($H_0: \\mu \\le \\mu_0$ vs. $H_1: \\mu > \\mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\\alpha, n-1}$?",
+    "back": "Reject $H_0$ if $T > t_{\\alpha, n-1}$.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "6bc0116c4621",
+    "front": "For a left-tailed one-sample t-test ($H_0: \\mu \\ge \\mu_0$ vs. $H_1: \\mu < \\mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\\alpha, n-1}$?",
+    "back": "Reject $H_0$ if $T < -t_{\\alpha, n-1}$.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "6889e4c2b264",
+    "front": "For a two-sided one-sample t-test ($H_0: \\mu = \\mu_0$ vs. $H_1: \\mu \\ne \\mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\\alpha/2, n-1}$?",
+    "back": "Reject $H_0$ if $|T| > t_{\\alpha/2, n-1}$.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "43518b35f217",
+    "front": "What formula defines the $100(1-\\alpha)\\%$ confidence interval for $\\mu_0$ derived from a two-sided t-test decision rule?",
+    "back": "$\\bar{y} - t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}} < \\mu_0 < \\bar{y} + t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "650c5253c7f5",
+    "front": "What are the degrees of freedom for a paired t-test conducted on $n$ matched pairs?",
+    "back": "$n - 1$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "659093523b33",
+    "front": "What formula calculates the test statistic $T$ for a paired t-test on difference values $W$?",
+    "back": "$T = \\frac{\\bar{W}}{S / \\sqrt{n}}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "0af737211fdf",
+    "front": "What is the formula for the pooled sample variance $s_p^2$ in an independent two-sample t-test assuming equal variances?",
+    "back": "$s_p^2 = \\frac{(n-1)s_X^2 + (m-1)s_Y^2}{n + m - 2}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "2058f4ce8d81",
+    "front": "What are the total degrees of freedom for an independent two-sample t-test with sample sizes $n$ and $m$?",
+    "back": "$n + m - 2$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "adfdfc92144a",
+    "front": "What formula calculates the test statistic $T$ in an independent two-sample pooled t-test?",
+    "back": "$T = \\frac{\\bar{X} - \\bar{Y}}{s_p \\sqrt{\\frac{1}{n} + \\frac{1}{m}}}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "5df8affbcd7c",
+    "front": "According to the parametric test flowchart, which test is appropriate for 1 sample comparing to a target mean when sample size $n < 30$?",
+    "back": "1-Sample t-Test",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "2788da766edb",
+    "front": "According to the parametric test flowchart, which test should be selected when comparing means across more than 2 samples for a single factor?",
+    "back": "1-Way ANOVA",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "d33300cff85e",
+    "front": "How does increasing the degrees of freedom affect the shape of the t-distribution density curve?",
+    "back": "It increases the peak height and thins the tails, approaching the standard normal ($Z$) distribution.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "199b730f709d",
+    "front": "In a right-tailed t-test with calculated test statistic $T$, how is the p-value computed using the cumulative distribution function `t.cdf`?",
+    "back": "$p\\text{-value} = 1 - \\text{t.cdf}(T, \\nu)$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "a6a67574a578",
+    "front": "In Python, which parameter in `stats.ttest_1samp` specifies a left-tailed alternative hypothesis $H_1: \\mu < \\mu_0$?",
+    "back": "`alternative='less'`",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "669330256382",
+    "front": "What sample condition determines whether an independent two-sample t-test should use a pooled vs. unpooled standard deviation?",
+    "back": "Whether the two population variances are equal or unequal.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  }
+]

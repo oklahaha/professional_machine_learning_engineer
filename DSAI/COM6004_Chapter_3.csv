@@ -1,0 +1,20 @@
+What are summary statistics?,"Numbers that summarize key properties of a dataset, such as frequency, location, and spread."
+Why can summary statistics be computed efficiently on massive datasets?,Most summary statistics can be calculated in a single pass through the data.
+How is the frequency of an attribute value defined in a dataset?,It is the percentage of times that specific attribute value occurs in the dataset.
+What is the mode of an attribute?,The most frequently occurring attribute value in a dataset.
+For which data type are the concepts of frequency and mode primarily used?,Categorical data.
+"For an attribute $x$, what does the $p\text{th}$ percentile ($x_p$) represent?",The value of $x$ such that $p\%$ of all observed values are less than $x_p$.
+"For continuous or ordinal data, what specific summary statistic corresponds to the 50th percentile?",The median.
+What primary property of a dataset does the arithmetic mean quantify?,The location or central tendency of a set of data points.
+How do extreme outliers affect the sample mean of a dataset?,They pull the mean toward them because the mean is very sensitive to extreme values.
+Which measure of location provides a central estimate that is resistant to extreme outliers?,The median.
+What is a trimmed mean?,A robust measure of location calculated by removing a specified percentage of the highest and lowest values before averaging.
+How is the range of a numerical attribute calculated?,By taking the difference between the maximum value and the minimum value.
+What property of a dataset is quantified by variance ($s_x^2$) and standard deviation ($s_x$)?,The spread or dispersion of a set of data points.
+How do extreme outliers impact the variance and standard deviation of a dataset?,They significantly inflate both measures because variance and standard deviation are highly sensitive to extreme values.
+Which measure of location—mean or median—is preferred when analyzing skewed data containing severe outliers?,"The median, because it is robust against distortion from extreme values."
+The measure of location most sensitive to extreme values in a dataset is the _____.,mean
+The standard summary measure defined as the difference between the maximum and minimum values is the _____.,range
+Why is the range vulnerable to misrepresenting the overall dispersion of a dataset?,"Because it relies solely on the two extreme values, making it highly sensitive to outliers."
+Which two statistics serve as the most common measures of spread for continuous numerical data?,Variance and standard deviation.
+Why are percentiles generally preferred over frequency or mode for continuous attributes?,"Continuous values rarely repeat exactly, making percentile thresholds far more useful for describing distribution."

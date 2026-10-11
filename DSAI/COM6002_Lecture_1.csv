@@ -1,0 +1,55 @@
+What is the primary write inefficiency associated with file-based data management?,The entire file must be re-written even when making a tiny update.
+How does file-based data management lead to data inconsistency?,The same entity is frequently stored across multiple custom files without centralized synchronization.
+"In file-based data management, simultaneous writes by multiple processes result in _____.",data corruption or system blocking
+Why do file-based data management systems struggle with system recovery during write failures?,"They lack atomic transactions, leaving partial writes in an inconsistent state upon failure."
+What fundamental architectural decoupling does a Database Management System (DBMS) provide?,It decouples data storage and access from application logic.
+Who proposed the foundational relational model for database management in 1970?,E. F. Codd
+Traditional relational database management systems use _____ to interact with stored data tables.,SQL (Structured Query Language)
+Term: Vertical Scaling (Scale Up),Definition: Increasing database capacity by adding more power or hardware resources (such as CPU or RAM) to a single machine.
+Term: Horizontal Scaling (Scale Out),Definition: Increasing database capacity by adding more machines to a distributed network to share the workload.
+What was the primary technical bottleneck that caused 1990s distributed database systems to perform poorly?,Network communication speeds were too slow at that time.
+What general definition describes 'Big Data'?,Data sets that are too large or complex to be handled by traditional data-processing application software.
+What are the four fundamental characteristics (4 V's) of Big Data?,"Volume, Variety, Veracity, and Velocity."
+"In the context of Big Data characteristics, what does Volume represent?",The vast scale and sheer quantity of data generated and stored.
+"In the context of Big Data characteristics, what does Variety represent?","The structural diversity of data formats, spanning structured, semi-structured, and unstructured data."
+"In the context of Big Data characteristics, what does Veracity represent?","The accuracy, quality, and trustworthiness of the underlying data."
+"In the context of Big Data characteristics, what does Velocity represent?",The high speed at which data is continuously generated and processed in real time.
+Term: Structured Data,"Definition: Data that strictly adheres to a predefined fixed schema, commonly organized in tabular rows and columns."
+"Data stored in flexible, self-describing formats using tags or key-value pairs (such as JSON or XML) is classified as _____ data.",semi-structured
+Term: Unstructured Data,"Definition: Data formats lacking an internal schema or structural markers, such as raw text, audio files, images, and videos."
+What does the data quality acronym GIGO stand for?,"Garbage In, Garbage Out."
+List three common types of data quality concerns that impact veracity.,"Missing data, duplicated data, and ambiguous data."
+How does video compression impact surveillance data storage demands?,"Advanced compression formats, such as H.265 compared to H.264, significantly reduce total recorded file sizes."
+"If a video camera stream records at a bitrate of $4\text{ Mbps}$, what is its data throughput in megabytes per second?","0.5 MB/s, calculated as $4\text{ Mbps} \div 8\text{ bits per byte}$."
+"When data generation speed drastically exceeds available storage capacity, engineers deploy _____ to evaluate data on the fly.",streaming algorithms
+What core trade-off must be managed when designing streaming algorithms for rapid data streams?,Choosing between obtaining exact query answers or compute-efficient approximate answers with known performance bounds.
+What two primary factors have driven the modern growth of Big Data?,The widespread availability of the public Internet and the expanded storage capacity of modern computer hardware.
+What does the database acronym NoSQL stand for?,Not Only SQL.
+How does a NoSQL database handle schemas differently than a traditional RDBMS?,"NoSQL databases support flexible, non-tabular schemas rather than enforcing rigid table structures."
+MongoDB is classified under which primary category of NoSQL databases?,Document store.
+Which general class of database management systems remains the most widely used according to modern industry rankings?,Relational Database Management Systems (RDBMS).
+What analytics technique was famously illustrated by the 1990s 'Beer and Diapers' supermarket example?,"Market basket analysis, which discovers items frequently bought together by consumers."
+What process does the ETL acronym describe in data preprocessing?,"Extract, Transform, Load."
+What does the acronym OLAP stand for in enterprise analytics?,Online Analytical Processing.
+What is the primary function of the Ingestion Layer in a Big Data pipeline?,To extract raw data from diverse source systems and import it into central storage.
+What core tasks take place within the Processing Layer of a data pipeline?,"Data computation, cleaning, schema transformations, and aggregations."
+What is the primary responsibility of the Orchestration Layer in a Big Data architecture?,"To coordinate, schedule, and monitor execution dependencies across pipeline tasks structured as Directed Acyclic Graphs (DAGs)."
+Which popular open-source workflow tool serves as a prime example of an Orchestration Layer component?,Apache Airflow.
+What is the primary role of the Serving Layer within a data pipeline?,"To store processed, business-ready data in specialized engines optimized for fast querying by downstream applications."
+"A central data repository specifically tailored for structured, business-ready data is known as a _____.",Data Warehouse
+How does a Data Lake differ from a traditional Data Warehouse regarding stored data types?,A Data Lake can store raw unstructured and semi-structured data in addition to structured data.
+Term: Lakehouse,Definition: An architecture that implements a metadata and transaction layer directly on top of open object storage (Data Lake) to combine scalability with warehouse consistency.
+How does a Lakehouse architecture enable queries on semi-structured and unstructured data without physical data movement?,"It maps the underlying object storage directly into structured, queryable schemas using an integrated metadata layer."
+"According to industry surveys, approximately what percentage of a data scientist's work time is consumed by data cleaning?",Approximately 80% of their time.
+What notable failure occurred with Google Flu Trends during the 2012/2013 flu season?,It over-predicted doctor visits by predicting twice as many flu-related visits as the CDC eventually recorded.
+Why is graph data analysis valuable when analyzing social network platforms?,"It models entity relationships to identify key network structures, such as Key Opinion Leaders (KOLs)."
+"In relational databases, data is organized strictly into tables using fixed _____.",schemas
+What risk occurs when two distributed nodes attempt to update the same record simultaneously without proper concurrency controls?,Data corruption or write blocking occurs across the system.
+Which four factors directly determine the daily data volume generated by video surveillance cameras?,"Resolution, frame rate, compression format, and recording duration strategy."
+"YAML, XML, and JSON are popular text formats representing _____ data.",semi-structured
+What pipeline layer feeds curated analytics data directly into business reporting tools like Tableau or Power BI?,The Serving Layer.
+Why is atomic transaction support crucial in modern enterprise database systems?,"It guarantees that database writes complete fully or fail cleanly, preventing partial write corruption."
+What type of NoSQL database is specialized for traversing complex relationships and entity connections?,Graph database.
+How does motion-activated recording reduce video surveillance storage demands compared to continuous recording?,"It restricts recording to active event windows, eliminating stored footage during idle time."
+Which component of a data pipeline handles real-time health checks and alerts using tools like Grafana or Kibana?,The Monitoring component.
+Why must synchronization strategies be maintained between operational databases and a central Data Warehouse?,To regularly update the central warehouse with operational changes without overloading live transaction systems.

@@ -1,0 +1,22 @@
+Concept: Classification,Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.
+What type of target attribute does classification aim to predict?,A discrete or categorical class attribute.
+What is the primary goal of the classification task in data mining?,To construct a model that accurately predicts the class label of unlabeled data based on its input attributes.
+How is a classification model learned using historical data?,By analyzing a training set composed of records with known attribute values and pre-assigned class labels.
+What are two examples of classification applied in cybersecurity and medical diagnosis?,Identifying network intruders in cyberspace and predicting whether tumor cells are benign or malignant.
+"In a credit card fraud detection classification model, what constitutes the class attribute?",The binary label indicating whether a historical transaction was fraudulent or fair.
+How does customer churn prediction utilize classification modeling?,It uses demographic and behavioral customer attributes to predict the categorical decision label of whether a customer will buy or not buy a product.
+Concept: Regression,Definition: A predictive task that estimates the value of a continuous variable based on other variables using a linear or nonlinear dependency model. Example: Predicting sales amounts of a new product based on advertising expenditure.
+How does regression differ from classification with respect to the target variable?,"Regression predicts a continuous-valued variable, whereas classification predicts a categorical class attribute."
+What is an environmental science example of a regression task?,"Predicting wind velocities as a function of continuous atmospheric variables like temperature, humidity, and air pressure."
+What is a financial application of regression modeling?,Time series prediction of stock market indices.
+Concept: Clustering,Definition: A descriptive task that groups data objects such that objects within the same group are similar and objects in different groups are distinct. Example: Subdividing retail customers into market segments based on demographic and lifestyle data.
+"In cluster analysis, intra-cluster distances are _____ while inter-cluster distances are _____.",minimized; maximized
+Is cluster analysis categorized as a predictive or descriptive data mining method?,Descriptive
+How is document clustering applied in web news services like Google News?,By grouping articles that share frequent key terms and high content similarity into distinct news topics.
+What scientific application uses K-means clustering to analyze earth observation data?,Partitioning Sea Surface Temperature (SST) and Net Primary Production (NPP) datasets into clusters reflecting the Northern and Southern Hemispheres.
+Concept: Association Rule Discovery,Definition: A descriptive task that extracts dependency rules to predict the occurrence of an item based on the occurrences of other items in a transaction dataset. Example: Discovering that retail customers who buy diapers and milk are also likely to buy beer.
+"In market-basket analysis, what does an association rule like $\{\text{Milk}\} \rightarrow \{\text{Coke}\}$ indicate?",That transactions containing milk have a strong statistical likelihood of also containing Coke.
+How can retailer management use an association rule where Bagels are in the antecedent and Potato Chips are in the consequent?,They can design joint sales promotions or optimize shelf placement to boost the sales of Potato Chips.
+How is association rule discovery applied in medical informatics?,It discovers frequent combinations of patient symptoms and diagnostic test results that are associated with specific diseases.
+Data mining tasks are broadly categorized into _____ methods and _____ methods.,predictive; descriptive
+What distinguishes predictive data mining tasks from descriptive data mining tasks?,"Predictive methods use variables to forecast unknown values, whereas descriptive methods find human-interpretable patterns that summarize the data."

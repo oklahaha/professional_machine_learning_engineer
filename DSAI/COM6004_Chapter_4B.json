@@ -1,0 +1,321 @@
+[
+  {
+    "question": "Which type of classification error represents the expected error rate of a trained model over randomly selected records drawn from the underlying data distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Generalization error",
+        "Explanation": "Generalization error measures the expected performance of a model when evaluated on unseen records sampled from the true probability distribution."
+      },
+      {
+        "label": "B",
+        "text": "Training error",
+        "Explanation": "Training error, also known as apparent error, strictly measures misclassifications committed on the dataset used to build the model."
+      },
+      {
+        "label": "C",
+        "text": "Apparent error",
+        "Explanation": "Apparent error is another term for training error, which is computed directly from the training data."
+      },
+      {
+        "label": "D",
+        "text": "Test error",
+        "Explanation": "Test error measures performance on a specific set-aside test set, which serves as an empirical estimate of generalization error rather than the theoretical expectation itself."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the term that specifically describes expected performance on any random unseen instance from the distribution.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "As a decision tree becomes increasingly complex with more nodes, how do the training error and test error typically behave?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Training error continues to decrease, while test error reaches a minimum and then increases.",
+        "Explanation": "As complexity increases, the tree fits training data (and its noise) better, driving training error down while causing test error to rise due to overfitting."
+      },
+      {
+        "label": "B",
+        "text": "Both training error and test error consistently decrease toward zero.",
+        "Explanation": "This assumes ideal generalization without overfitting, ignoring how noise in training data leads to divergent test performance in complex models."
+      },
+      {
+        "label": "C",
+        "text": "Training error increases due to node complexity, while test error decreases.",
+        "Explanation": "This reverses typical learning dynamics, where training error monotonically drops as model capacity expands."
+      },
+      {
+        "label": "D",
+        "text": "Both training error and test error remain high and unchanged.",
+        "Explanation": "This describes persistent underfitting rather than the shift from underfitting to overfitting as node counts increase."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens when a model begins memorizing noise in the training set.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "According to the source material, what impact does increasing the size of the training dataset have on model overfitting for a given model size?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It reduces the difference between training error and test error.",
+        "Explanation": "Larger training datasets help the model learn true underlying patterns, narrowing the gap between training and test error rates."
+      },
+      {
+        "label": "B",
+        "text": "It increases the test error rate due to additional noisy instances.",
+        "Explanation": "More data generally improves generalization and stabilizes test performance rather than worsening test error."
+      },
+      {
+        "label": "C",
+        "text": "It forces the training error to drop immediately to zero.",
+        "Explanation": "Training error depends on model depth and data consistency, not merely on increasing sample size."
+      },
+      {
+        "label": "D",
+        "text": "It shifts the optimal decision threshold below the random guessing line.",
+        "Explanation": "Data volume changes generalization capability rather than shifting ROC reference thresholds."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how having more training examples affects the generalization gap between train and test performance.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "What is the primary role of a validation set during the model building process?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To estimate generalization error and tune model complexity or hyperparameters without touching the test set.",
+        "Explanation": "A validation set is used during model selection to evaluate complexity and hyperparameter settings while keeping the final test set isolated."
+      },
+      {
+        "label": "B",
+        "text": "To provide the final, unbiased measure of model accuracy for reporting.",
+        "Explanation": "The final evaluation is conducted on the holdout test set to ensure an unbiased assessment."
+      },
+      {
+        "label": "C",
+        "text": "To expand the dataset available for computing decision tree splitting criteria.",
+        "Explanation": "Validation instances are held out from model building and are not used to calculate split points."
+      },
+      {
+        "label": "D",
+        "text": "To replace the training set when datasets are excessively large.",
+        "Explanation": "A validation set is a secondary partition created alongside the training set, not a substitute for it."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about which dataset is used for tuning hyperparameters versus final reporting.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Suppose a dataset contains $9,990$ Class 0 instances and $10$ Class 1 instances. If a baseline classifier predicts every record as Class 0, what is its classification accuracy and why is this metric misleading?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Accuracy is $99.9\\%$, but it is misleading because the model detects zero positive instances.",
+        "Explanation": "Calculating $\\frac{9990}{10000} = 99.9\\%$ shows high accuracy, but the model fails entirely at its primary task of identifying the rare positive class."
+      },
+      {
+        "label": "B",
+        "text": "Accuracy is $0.1\\%$, because the model failed on the minority class.",
+        "Explanation": "This computes the minority accuracy rather than total accuracy over all records."
+      },
+      {
+        "label": "C",
+        "text": "Accuracy is $50.0\\%$, because accuracy automatically corrects for class skew.",
+        "Explanation": "Standard classification accuracy does not adjust for class imbalance."
+      },
+      {
+        "label": "D",
+        "text": "Accuracy is $100.0\\%$, because minority misclassifications are ignored by standard evaluation rules.",
+        "Explanation": "Standard accuracy counts all misclassifications equally regardless of class rarity."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Calculate the ratio of correctly predicted records to total records and reflect on its practical value.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Given a cost matrix with $C(+|+) = -1$, $C(-|+) = 100$, $C(+|-) = 1$, and $C(-|-) = 0$, what is the total classification cost for a model that predicts $150$ True Positives, $40$ False Negatives, $60$ False Positives, and $250$ True Negatives?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$3910$",
+        "Explanation": "The cost is computed as $150(-1) + 40(100) + 60(1) + 250(0) = -150 + 4000 + 60 + 0 = 3910$."
+      },
+      {
+        "label": "B",
+        "text": "$4255$",
+        "Explanation": "This value corresponds to a different confusion matrix configuration presented in comparative model examples."
+      },
+      {
+        "label": "C",
+        "text": "$4010$",
+        "Explanation": "This fails to subtract the credit reward of $-1$ for each True Positive prediction."
+      },
+      {
+        "label": "D",
+        "text": "$3850$",
+        "Explanation": "This reflects an arithmetic mistake when combining misclassification costs."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Multiply the count of each cell in the confusion matrix by its respective entry in the cost matrix and sum the results.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Which cross-validation strategy ensures that each fold contains approximately the same percentage of targeted class labels as the complete dataset?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Stratified cross-validation",
+        "Explanation": "Stratified cross-validation partitions data such that each fold reflects the overall class proportion, which is vital for imbalanced datasets."
+      },
+      {
+        "label": "B",
+        "text": "Leave-one-out cross-validation",
+        "Explanation": "Leave-one-out sets $k=N$, testing on a single instance at a time without preserving fold class distributions."
+      },
+      {
+        "label": "C",
+        "text": "Repeated standard cross-validation",
+        "Explanation": "Repeated cross-validation runs standard random partitioning multiple times to estimate variance, but does not enforce balanced fold proportions."
+      },
+      {
+        "label": "D",
+        "text": "Holdout sampling",
+        "Explanation": "Basic holdout creates a single static train/test split without iterative stratified partitioning across folds."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look for the technique specifically designed to maintain class proportions across all validation subsets.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "On a Receiver Operating Characteristic (ROC) curve, what does a point plotted at coordinates $(0, 0)$ indicate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Classifying all instances as belonging to the negative class.",
+        "Explanation": "When a model classifies everything as negative, both True Positive Rate and False Positive Rate are $0$."
+      },
+      {
+        "label": "B",
+        "text": "Classifying all instances as belonging to the positive class.",
+        "Explanation": "Classifying everything as positive yields a True Positive Rate of $1$ and a False Positive Rate of $1$, corresponding to $(1, 1)$."
+      },
+      {
+        "label": "C",
+        "text": "Achieving ideal performance with zero classification errors.",
+        "Explanation": "Ideal performance corresponds to coordinate $(0, 1)$, where $\\text{FPR} = 0$ and $\\text{TPR} = 1$."
+      },
+      {
+        "label": "D",
+        "text": "Generating predictions that are exactly opposite to true class labels.",
+        "Explanation": "Opposite predictions lie in the region strictly below the diagonal reference line."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider what happens to True Positive Rate and False Positive Rate when a model never predicts a positive outcome.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "If an ROC curve for a classification model falls entirely below the diagonal line, what does this reveal about the model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The model's predictions are systematically opposite to the true class labels.",
+        "Explanation": "Points below the diagonal perform worse than random guessing; reversing its class assignments produces a curve above the diagonal."
+      },
+      {
+        "label": "B",
+        "text": "The model has achieved superior generalizability across all thresholds.",
+        "Explanation": "Superior performance requires points located above the diagonal random guessing line."
+      },
+      {
+        "label": "C",
+        "text": "The tree depth is optimal and training error has reached zero.",
+        "Explanation": "ROC curve placement reflects ranking quality across thresholds, not specific tree node depths."
+      },
+      {
+        "label": "D",
+        "text": "The model was trained using stratified cross-validation.",
+        "Explanation": "Cross-validation sampling methods do not dictate the geometric placement of an ROC curve relative to the diagonal."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall what the diagonal line represents and what lying underneath it implies about the model's class predictions.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Given posterior probabilities $p(\\text{sick}|x) = 0.3$ and $p(\\text{healthy}|x) = 0.7$, with misclassification costs $C(\\text{predict healthy}|\\text{sick}) = 100{,}000$ and $C(\\text{predict sick}|\\text{healthy}) = 1{,}000$, which decision minimizes expected cost?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Predict \"sick\", because its expected cost ($700$) is lower than predicting \"healthy\" ($30{,}000$).",
+        "Explanation": "Expected cost of predicting sick is $0.7 \\times 1{,}000 = 700$, while predicting healthy costs $0.3 \\times 100{,}000 = 30{,}000$. Lower cost favors predicting \"sick\"."
+      },
+      {
+        "label": "B",
+        "text": "Predict \"healthy\", because $p(\\text{healthy}|x) = 0.7$ is greater than $0.3$.",
+        "Explanation": "This uses standard unweighted majority thresholding, ignoring unequal misclassification costs."
+      },
+      {
+        "label": "C",
+        "text": "Predict \"healthy\", because false alarm costs must always be avoided first.",
+        "Explanation": "False alarm cost ($1{,}000$) is much lower than the severe penalty ($100{,}000$) for a missed diagnosis."
+      },
+      {
+        "label": "D",
+        "text": "Predict \"sick\", because $p(\\text{sick}|x) = 0.3$ exceeds a standard significance level of $0.05$.",
+        "Explanation": "Cost-sensitive decisions depend on expected cost calculations rather than arbitrary statistical significance cutoffs."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Calculate expected cost by multiplying the probability of each true state by its corresponding misclassification penalty.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "How does under-sampling modify training data to address the class imbalance problem?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By removing instances from the majority class to equalize class distribution.",
+        "Explanation": "Under-sampling reduces majority class size so that rare class instances represent a larger proportion of the training set."
+      },
+      {
+        "label": "B",
+        "text": "By replicating minority class records until class counts match.",
+        "Explanation": "Replicating rare class instances is known as over-sampling."
+      },
+      {
+        "label": "C",
+        "text": "By adjusting decision boundary weights without changing dataset records.",
+        "Explanation": "Adjusting boundary penalties describes cost-sensitive learning rather than sampling."
+      },
+      {
+        "label": "D",
+        "text": "By splitting data into stratified partitions for cross-validation.",
+        "Explanation": "Stratified partitioning is an evaluation scheme, not a data sampling approach for balancing classes."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the term that refers to decreasing the representation of the overrepresented majority class.",
+    "course": "COM6004",
+    "week": "4B"
+  }
+]

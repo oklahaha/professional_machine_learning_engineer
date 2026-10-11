@@ -1,0 +1,19 @@
+What is the primary intended purpose of an HTTP GET request?,An HTTP GET request is intended to retrieve data from a server.
+What is the primary intended purpose of an HTTP POST request?,An HTTP POST request is intended to send data to a server for processing.
+Where are request parameters placed in an HTTP GET request?,Parameters in an HTTP GET request are appended directly within the URL.
+Where are request parameters placed in an HTTP POST request?,Parameters in an HTTP POST request are enclosed inside the request body.
+How do parameter size limits compare between HTTP GET and POST requests?,"HTTP GET requests face browser-enforced length limits, whereas HTTP POST requests have no payload size limit."
+Why is storing sensitive parameters like API keys in an HTTP GET request considered insecure?,"URLs are recorded in browser history, bookmarks, and server logs, exposing sensitive parameters."
+What is the main function of HTTP request headers during API interactions?,"Request headers provide additional context and metadata to the server, such as authentication credentials and client details."
+What information does the Content-Type HTTP request header convey to a server?,The Content-Type header informs the server about the exact format of the data contained in the request body.
+What is the purpose of the User-Agent HTTP request header during web scraping?,"The User-Agent header identifies the client browser, operating system, and device details to the server."
+What general outcome is indicated by an HTTP response status code in the 2xx range?,"HTTP 2xx status codes indicate that the client request was successfully received, understood, and accepted."
+What condition does the HTTP status code 200 OK represent?,The HTTP 200 OK status code represents the standard successful completion of an HTTP request.
+What category of HTTP responses is denoted by status codes in the 3xx range?,HTTP 3xx status codes denote redirection messages requiring further action from the client.
+What type of issues do HTTP status codes in the 4xx range indicate?,HTTP 4xx status codes indicate errors originating from an invalid or unauthorized client request.
+What failure condition produces an HTTP 400 Bad Request status code?,An HTTP 400 Bad Request status code indicates that the server cannot process the request due to malformed client syntax.
+How does an HTTP 401 Unauthorized status code differ from an HTTP 403 Forbidden status code?,"An HTTP 401 code denotes missing or invalid credentials, whereas an HTTP 403 code denotes that access is denied despite authentication."
+What scenario triggers an HTTP 404 Not Found response code?,An HTTP 404 response code occurs when the server cannot locate the requested resource at the specified URL.
+What broad class of failure is denoted by HTTP response status codes in the 5xx range?,HTTP 5xx status codes denote server-side failures where the server fails to complete an apparently valid request.
+What error condition triggers an HTTP 500 Internal Server Error response?,An HTTP 500 response indicates an unexpected generic error on the server side that prevents request processing.
+What condition causes a server to return an HTTP 503 Service Unavailable status code?,An HTTP 503 status code indicates that the server is temporarily incapable of handling requests due to overload or maintenance.

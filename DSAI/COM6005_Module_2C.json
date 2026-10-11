@@ -1,0 +1,292 @@
+[
+  {
+    "question": "What value is returned by calling `scipy.stats.norm.cdf(175)` for a continuous normal distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The height of the probability density function at $x = 175$.",
+        "Explanation": "The height of the density curve at a specific point is calculated using `norm.pdf()`, not `norm.cdf()`."
+      },
+      {
+        "label": "B",
+        "text": "The proportion of data values less than or equal to $175$.",
+        "Explanation": "The cumulative distribution function (`cdf`) calculates the total cumulative probability for values up to and including the specified threshold."
+      },
+      {
+        "label": "C",
+        "text": "The quantile score corresponding to a $175\\%$ confidence interval.",
+        "Explanation": "Quantiles are determined using the percent point function `norm.ppf()`, and probabilities cannot exceed $1.0$ ($100\\%$)."
+      },
+      {
+        "label": "D",
+        "text": "A simulated random value drawn from a normal distribution with mean $175$.",
+        "Explanation": "Generating random numbers from a normal distribution requires `norm.rvs()`, which takes location and scale parameters."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Recall the difference between density at a point and accumulated probability up to a point.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "In regression analysis, what does it signify if the residuals $e = y - \\hat{y}$ are normally distributed with a mean of zero?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The regression model has persistent systematic bias that requires non-linear transformations.",
+        "Explanation": "Systematic bias causes residual means to deviate from zero or display non-random patterns rather than normal zero-mean noise."
+      },
+      {
+        "label": "B",
+        "text": "The target variable $y$ has zero variance across all observations.",
+        "Explanation": "Zero variance in the target variable would imply constant data values, which is unrelated to the distribution of prediction residuals."
+      },
+      {
+        "label": "C",
+        "text": "The model errors are purely random, so the model cannot be further optimized for mean prediction.",
+        "Explanation": "When prediction errors are normally distributed around zero, the remaining variance is unpatterned noise, indicating the mean prediction is optimal."
+      },
+      {
+        "label": "D",
+        "text": "The predicted values $\\hat{y}$ are guaranteed to follow a uniform distribution.",
+        "Explanation": "The distribution of model predictions depends on the independent predictor variables, not on whether the error terms are normally distributed."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Consider whether any usable pattern remains in the errors when they behave as random noise around zero.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "When executing `scipy.stats.norm.rvs(5, 2, 1000)`, what statistical parameters are defined by the positional arguments `5` and `2`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mean of $5$ and variance of $2$.",
+        "Explanation": "The second positional argument (`scale`) represents the standard deviation rather than the variance."
+      },
+      {
+        "label": "B",
+        "text": "Mean of $5$ and standard deviation of $2$.",
+        "Explanation": "In `scipy.stats.norm.rvs`, the first argument specifies the location parameter (`loc`, mean) and the second specifies the scale parameter (`scale`, standard deviation)."
+      },
+      {
+        "label": "C",
+        "text": "Lower bound of $5$ and upper bound of $2$.",
+        "Explanation": "Normal distributions are unbounded continuous distributions rather than bounded uniform ranges."
+      },
+      {
+        "label": "D",
+        "text": "Sample size of $5$ and standard error of $2$.",
+        "Explanation": "The total number of generated random samples is specified by the third argument, which is $1000$ in this command."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about the standard parameters (`loc` and `scale`) used to parameterize Gaussian distributions in Python.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "Which combination of parameters in `plt.hist()` generates an empirical cumulative distribution function step plot from a continuous variable array `y`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`bins='auto'` and `density=False`",
+        "Explanation": "This configuration creates a standard frequency count histogram rather than an accumulated step curve."
+      },
+      {
+        "label": "B",
+        "text": "`cumulative=True` and `histtype='step'`",
+        "Explanation": "Setting `cumulative=True` aggregates bin proportions sequentially, while `histtype='step'` displays the plot as an outline step function."
+      },
+      {
+        "label": "C",
+        "text": "`density=True` and `histtype='barstacked'`",
+        "Explanation": "This combination produces normalized frequency bars rather than a cumulative step boundary."
+      },
+      {
+        "label": "D",
+        "text": "`cumulative=False` and `bins=50`",
+        "Explanation": "Without enabling cumulative aggregation, the histogram displays localized bin counts instead of an empirical CDF."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Look for the arguments responsible for aggregating totals across bins and changing the visual shape from solid bars to an outline.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "When evaluating a Quantile-Quantile (QQ) plot generated by `statsmodels.api.qqplot(data, line=\"45\")`, what observation indicates that the data closely follows a normal distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The sample data points form an horizontal line along the x-axis.",
+        "Explanation": "Points aligned horizontally would imply that sample quantiles do not vary across theoretical normal quantiles."
+      },
+      {
+        "label": "B",
+        "text": "The sample data points cluster into two separate discrete groups.",
+        "Explanation": "Clustering into distinct groups indicates bimodality or distinct sub-populations, violating unimodal normal assumptions."
+      },
+      {
+        "label": "C",
+        "text": "The sample data points follow a distinct S-shaped curved pattern away from the diagonal line.",
+        "Explanation": "S-shaped deviations indicate heavy or light tails compared to theoretical normal quantiles."
+      },
+      {
+        "label": "D",
+        "text": "The sample data points lie closely along the straight reference line.",
+        "Explanation": "Linear alignment between theoretical quantiles and sample quantiles confirms that the sample distribution matches the reference normal distribution."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Focus on how matching theoretical quantiles and sample quantiles plot relative to the reference line.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "Suppose you run `scipy.stats.normaltest(data)` on a sample and obtain a $p$-value of $0.32$. How should this result be interpreted at a standard $\\alpha = 0.05$ significance level?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Do not reject the null hypothesis; there is insufficient evidence to claim the data is not normally distributed.",
+        "Explanation": "Because the $p$-value ($0.32$) exceeds $0.05$, the test fails to reject the null hypothesis of normality."
+      },
+      {
+        "label": "B",
+        "text": "Reject the null hypothesis; the sample definitively comes from a non-normal distribution.",
+        "Explanation": "Rejection of the null hypothesis requires a $p$-value less than or equal to the significance threshold (e.g., $p \\le 0.05$)."
+      },
+      {
+        "label": "C",
+        "text": "Reject the null hypothesis; the dataset contains too many missing values.",
+        "Explanation": "The hypothesis test assesses shape skewness and kurtosis, not the presence or count of missing data values."
+      },
+      {
+        "label": "D",
+        "text": "Do not reject the null hypothesis; the data is proven to follow a Poisson distribution.",
+        "Explanation": "`normaltest` specifically evaluates the null hypothesis of normal distribution, not Poisson suitability."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Remember that the null hypothesis for this statistical test assumes the sample is drawn from a normal distribution.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "What rule of thumb conditions and parameter mappings are required to use a Normal distribution to approximate a Binomial distribution $B(n, p)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Conditions: $n \\ge 50$ and $p \\le 0.1$; Parameters: $\\lambda = np$.",
+        "Explanation": "These conditions and parameter definitions belong to the Poisson approximation for rare events, not the normal approximation."
+      },
+      {
+        "label": "B",
+        "text": "Conditions: $np \\ge 10$ and $n(1 - p) \\ge 10$; Parameters: $\\mu = np$ and $\\sigma^2 = np(1 - p)$.",
+        "Explanation": "Normal approximation requires sufficient expected successes and failures ($np \\ge 10$ and $n(1-p) \\ge 10$), matching the binomial mean $\\mu = np$ and variance $\\sigma^2 = np(1-p)$."
+      },
+      {
+        "label": "C",
+        "text": "Conditions: $n \\le 30$ and $p = 0.5$; Parameters: $\\mu = n(1-p)$ and $\\sigma^2 = np$.",
+        "Explanation": "Normal approximations require large sample sizes rather than small samples ($n \\le 30$), and the binomial variance formula is $np(1-p)$."
+      },
+      {
+        "label": "D",
+        "text": "Conditions: $np(1-p) \\le 5$; Parameters: $\\mu = np$ and $\\sigma^2 = \\sqrt{np}$.",
+        "Explanation": "The expected number of successes and failures must be sufficiently large (not small), and $\\sqrt{np}$ is not the variance."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider the rules of thumb requiring adequate numbers for both expected successes and expected failures.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "Under which conditions is a Poisson distribution recommended to approximate a Binomial distribution $B(n, p)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "When $n$ is small ($n < 10$) and success probability $p$ is equal to $0.5$.",
+        "Explanation": "Small sample sizes with balanced probabilities do not satisfy Poisson approximation criteria for rare events."
+      },
+      {
+        "label": "B",
+        "text": "When $n$ is large ($n \\ge 50$) and success probability $p$ is small ($p \\le 0.1$, or expected value $np \\le 10$).",
+        "Explanation": "Poisson approximation is suitable when modeling rare events across a large number of independent trials."
+      },
+      {
+        "label": "C",
+        "text": "When $np \\ge 30$ and $n(1-p) \\ge 30$.",
+        "Explanation": "When expected successes and failures are both large, a normal distribution approximation is appropriate rather than Poisson."
+      },
+      {
+        "label": "D",
+        "text": "When the variance $np(1-p)$ is significantly larger than the mean $np$.",
+        "Explanation": "For a Poisson approximation to hold, the event probability $p$ must be small, making $1-p \\approx 1$ so that variance approximately equals the mean."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about the characteristics of rare events occurring across many trials.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "How do the functions `scipy.stats.norm.pdf()` and `scipy.stats.norm.cdf()` differ in their output for a given x-value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pdf()` computes cumulative area under the curve, whereas `cdf()` computes point density.",
+        "Explanation": "This reverses the definitions; `pdf()` measures density while `cdf()` measures cumulative probability."
+      },
+      {
+        "label": "B",
+        "text": "`pdf()` returns probability density (frequency height), whereas `cdf()` returns cumulative probability up to that value.",
+        "Explanation": "`pdf` evaluates the height of the probability density function, while `cdf` calculates the integrated probability area from $-\\infty$ up to $x$."
+      },
+      {
+        "label": "C",
+        "text": "`pdf()` generates pseudo-random numbers, whereas `cdf()` performs normality hypothesis testing.",
+        "Explanation": "Random numbers are generated using `rvs()`, and normality testing is handled by routines like `normaltest()`."
+      },
+      {
+        "label": "D",
+        "text": "`pdf()` requires population variance, whereas `cdf()` requires sample variance.",
+        "Explanation": "Both functions accept location (mean) and scale (standard deviation) parameters identically."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Focus on the distinction between the height of a distribution curve and the total accumulated area beneath it.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "In linear regression error analysis, how is the residual $e$ mathematically defined for an actual target value $y$ and predicted value $\\hat{y}$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$e = \\hat{y} - \\mu$",
+        "Explanation": "Residuals measure sample prediction errors ($y - \\hat{y}$), not deviations of predictions from the target variable's mean parameter $\\mu$."
+      },
+      {
+        "label": "B",
+        "text": "$e = \\frac{\\hat{y}}{y}$",
+        "Explanation": "Residuals are calculated as additive differences between observed and predicted values, not multiplicative ratios."
+      },
+      {
+        "label": "C",
+        "text": "$e = y - \\hat{y}$",
+        "Explanation": "The residual $e$ represents the prediction error, calculated as the observed value $y$ minus the model predicted value $\\hat{y}$."
+      },
+      {
+        "label": "D",
+        "text": "$e = (y - \\hat{y})^2$",
+        "Explanation": "This formula defines the squared error used in loss functions, whereas raw residuals preserve directional deviation."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Recall the basic subtraction formula used to calculate prediction error.",
+    "course": "COM6005",
+    "week": "2C"
+  }
+]

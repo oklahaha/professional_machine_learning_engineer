@@ -1,0 +1,350 @@
+[
+  {
+    "question": "When simplifying an expression like $3n^2 + 4n + 100$ using Big O notation, which rule is applied to determine the resulting asymptotic complexity?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Retain only the highest order term and drop constant coefficients.",
+        "Explanation": "As $n$ grows arbitrarily large, lower-order terms and constant multipliers become insignificant compared to the dominant growth term."
+      },
+      {
+        "label": "B",
+        "text": "Average all terms together and multiply by the total input size $n$.",
+        "Explanation": "Averaging terms misrepresents asymptotic upper bounds by distorting the true growth rate."
+      },
+      {
+        "label": "C",
+        "text": "Keep all terms that have a linear or higher dependence on $n$.",
+        "Explanation": "Retaining lower-order terms violates the simplification rules of Big O notation."
+      },
+      {
+        "label": "D",
+        "text": "Sum the coefficients of all terms to find the worst-case bound.",
+        "Explanation": "Summing coefficients ignores how asymptotic behavior depends strictly on functional growth rather than scalar constants."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how Big O notation describes performance trends as $n$ approaches infinity.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "How does a B+ tree differ from a standard B-tree regarding where actual record pointers are stored?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Record pointers are strictly located at the leaf level in a B+ tree, whereas non-leaf nodes contain only separators.",
+        "Explanation": "Placing all actual record pointers in leaf nodes keeps non-leaf nodes lightweight and allows higher fan-out per node."
+      },
+      {
+        "label": "B",
+        "text": "Record pointers are stored exclusively at the root node in a B+ tree to allow constant-time access.",
+        "Explanation": "Storing record pointers at the root would limit node capacity and break hierarchical tree navigation."
+      },
+      {
+        "label": "C",
+        "text": "Record pointers are stored at both leaf and non-leaf levels in a B+ tree, unlike a standard B-tree.",
+        "Explanation": "Storing pointers across all levels describes a standard B-tree rather than a B+ tree structure."
+      },
+      {
+        "label": "D",
+        "text": "Record pointers are eliminated entirely in B+ trees by using direct memory hash offsets.",
+        "Explanation": "B+ trees retain pointer structures at the leaf level to reference actual physical records stored on disk."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the specific role that internal non-leaf nodes play during key navigation in a B+ tree.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Which structural feature of a B+ tree enables efficient execution of range queries (e.g., retrieving keys between 10 and 16) once the starting value is located?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Sibling pointers connecting adjacent leaf nodes sequentially.",
+        "Explanation": "Leaf node sibling pointers allow direct lateral traversal across ordered key ranges without re-traversing upper tree levels."
+      },
+      {
+        "label": "B",
+        "text": "Direct parent-to-sibling shortcuts linking adjacent non-leaf nodes.",
+        "Explanation": "Non-leaf nodes direct downward searches rather than lateral range traversal."
+      },
+      {
+        "label": "C",
+        "text": "Automatic hash partitioning across leaf nodes.",
+        "Explanation": "Hash partitioning destroys key ordering, making contiguous range retrieval impossible."
+      },
+      {
+        "label": "D",
+        "text": "Rebalancing the entire tree structure dynamically during range scans.",
+        "Explanation": "Tree rebalancing occurs during data modifications rather than range query traversals."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how a search moves sideways at the bottom level of the index tree.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "According to the source material, what is the worst-case time complexity for search and update operations in an R-tree used for spatial queries?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\mathcal{O}(n)$",
+        "Explanation": "Overlapping multi-dimensional bounding boxes can force spatial searches and updates to check up to all $n$ entries in the worst case."
+      },
+      {
+        "label": "B",
+        "text": "$\\mathcal{O}(\\lg n)$",
+        "Explanation": "Logarithmic complexity applies to balanced one-dimensional indices like B+ trees, whereas spatial multi-dimensional trees suffer worse bounds."
+      },
+      {
+        "label": "C",
+        "text": "$\\mathcal{O}(1)$",
+        "Explanation": "Constant time retrieval is characteristic of direct hash lookups rather than multi-dimensional tree traversals."
+      },
+      {
+        "label": "D",
+        "text": "$\\mathcal{O}(n^2)$",
+        "Explanation": "Quadratic complexity overestimates R-tree operations, which are bounded linearly by $n$ entries in the worst case."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Unlike balanced single-dimension trees, overlapping spatial bounding regions can require searching across many tree branches.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Which indexing architecture is specifically highlighted for supporting top-$k$ cosine similarity searches in vector databases?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Hierarchical Navigable Small World (HNSW)",
+        "Explanation": "HNSW graph structures organize high-dimensional vector embeddings for approximate nearest neighbor retrieval."
+      },
+      {
+        "label": "B",
+        "text": "Inverted Index",
+        "Explanation": "Inverted indices map discrete full-text keywords to document IDs rather than searching continuous vector spaces."
+      },
+      {
+        "label": "C",
+        "text": "B+ Tree",
+        "Explanation": "B+ trees index one-dimensional ordered scalar values rather than high-dimensional feature vectors."
+      },
+      {
+        "label": "D",
+        "text": "R-Tree",
+        "Explanation": "R-trees index spatial geometry rather than top-$k$ similarity over high-dimensional embeddings."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "This graph-based indexing method is frequently applied in Retrieval-Augmented Generation (RAG) with LLMs.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "In Two-Phase Locking (2PL), what is the key restriction imposed on a transaction during its shrinking phase?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No new locks can be obtained by the transaction once it enters this phase.",
+        "Explanation": "The shrinking phase permits only lock releases, ensuring serializability by preventing new lock acquisitions."
+      },
+      {
+        "label": "B",
+        "text": "No existing locks can be released until the transaction completely commits.",
+        "Explanation": "Locks are actively released during the shrinking phase before full completion."
+      },
+      {
+        "label": "C",
+        "text": "Only readlocks may be acquired, while writelocks are strictly prohibited.",
+        "Explanation": "Neither readlocks nor writelocks may be acquired once the shrinking phase begins."
+      },
+      {
+        "label": "D",
+        "text": "The transaction must immediately roll back all prior write operations.",
+        "Explanation": "Rolling back occurs during transaction failure handling rather than normal 2PL phase progression."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the defining rule that marks the boundary between the two phases of 2PL.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Under standard database lock compatibility rules, which combination of requested locks on the same data item by two distinct transactions will NOT produce a conflict?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Readlock requested by $T_1$ and Readlock requested by $T_2$.",
+        "Explanation": "Multiple transactions can concurrently hold readlocks on the same item because reading does not alter data."
+      },
+      {
+        "label": "B",
+        "text": "Readlock requested by $T_1$ and Writelock requested by $T_2$.",
+        "Explanation": "A writelock conflicts with an existing readlock to prevent unrepeatable reads or concurrent state alterations."
+      },
+      {
+        "label": "C",
+        "text": "Writelock requested by $T_1$ and Readlock requested by $T_2$.",
+        "Explanation": "An active writelock blocks incoming read requests to prevent reading uncommitted modifications."
+      },
+      {
+        "label": "D",
+        "text": "Writelock requested by $T_1$ and Writelock requested by $T_2$.",
+        "Explanation": "Two writelocks conflict directly because concurrent modifications destroy data consistency."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall which operation type modifies data versus which type merely inspects data without making updates.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "When a precedence graph contains a cycle indicating a deadlock between concurrent transactions, how must the database resolve the situation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Roll back at least one transaction involved in the cycle.",
+        "Explanation": "Rolling back a victim transaction frees its held locks, breaking the circular wait dependency."
+      },
+      {
+        "label": "B",
+        "text": "Convert all active writelocks in the system into readlocks.",
+        "Explanation": "Demoting active writelocks while updates are in progress corrupts isolated data."
+      },
+      {
+        "label": "C",
+        "text": "Force all transactions in the cycle to commit without acquiring their remaining locks.",
+        "Explanation": "Forcing partial transactions to commit violates transaction atomicity and consistency."
+      },
+      {
+        "label": "D",
+        "text": "Disable two-phase locking globally until system restart.",
+        "Explanation": "Disabling concurrency protocols exposes the database to severe data corruption across concurrent threads."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how to break an unresolvable waiting chain where no transaction can proceed.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "What is the primary advantage of a fuzzy (non-blocking) checkpoint compared to a blocking checkpoint during log-based recovery operations?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Database update operations do not need to be halted while the checkpoint is created.",
+        "Explanation": "Fuzzy checkpoints record execution context without stopping ongoing database updates, preserving high availability."
+      },
+      {
+        "label": "B",
+        "text": "It eliminates the need to maintain start and commit entries in the transaction log.",
+        "Explanation": "Transaction start and commit entries remain essential for determining undo and redo actions."
+      },
+      {
+        "label": "C",
+        "text": "It guarantees that recovery never needs to scan backward past the checkpoint.",
+        "Explanation": "Recovery may still need to scan prior log records to trace active uncommitted transactions."
+      },
+      {
+        "label": "D",
+        "text": "It compresses the entire transactional history into zero disk space.",
+        "Explanation": "Fuzzy checkpoints record snapshot metadata rather than performing magic storage compression."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Compare how user transactions are impacted while each checkpoint type is actively recorded.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "During log-based recovery following a system crash, how does the recovery algorithm handle incomplete transactions versus committed transactions?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Incomplete transactions are undone, while committed transactions are redone.",
+        "Explanation": "Undoing incomplete transactions restores pre-transaction consistency, while redoing committed ones guarantees durability."
+      },
+      {
+        "label": "B",
+        "text": "Both incomplete and committed transactions are redone from the start.",
+        "Explanation": "Redoing incomplete transactions would persist uncommitted, dirty state modifications."
+      },
+      {
+        "label": "C",
+        "text": "Incomplete transactions are committed automatically, while committed transactions are undone.",
+        "Explanation": "Committing incomplete transactions directly violates the atomicity property."
+      },
+      {
+        "label": "D",
+        "text": "All transaction log entries are cleared, restoring the database to default initial values.",
+        "Explanation": "Resetting to default values discards valid, committed user data preserved in the write-ahead log."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on preserving both transaction atomicity (all-or-nothing) and durability after a system crash.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "What primary database retrieval task is an inverted index structured to solve?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mapping individual terms or keywords to the documents containing them for full-text search.",
+        "Explanation": "Inverted indices reverse standard document-to-term mapping to allow fast keyword-based document lookups."
+      },
+      {
+        "label": "B",
+        "text": "Sorting primary key integer sequences for range queries.",
+        "Explanation": "Ordered scalar range queries rely on search structures like B+ trees rather than term-document inversion."
+      },
+      {
+        "label": "C",
+        "text": "Tracking multi-dimensional geographic bounding boxes for proximity queries.",
+        "Explanation": "Spatial coordinates are indexed using spatial tree structures like R-trees."
+      },
+      {
+        "label": "D",
+        "text": "Managing lock acquisition graphs for concurrency control.",
+        "Explanation": "Lock graphs are managed in-memory by concurrency managers, not search indices."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about reversing a standard document-to-word mapping to look up documents by query terms.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Which ACID property ensures that once a database transaction commits, its modifications are permanently recorded and survive subsequent system crashes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Durability",
+        "Explanation": "Durability guarantees that committed modifications persist in non-volatile storage even in the event of failure."
+      },
+      {
+        "label": "B",
+        "text": "Atomicity",
+        "Explanation": "Atomicity ensures that all steps within a single transaction complete successfully or none take effect."
+      },
+      {
+        "label": "C",
+        "text": "Consistency",
+        "Explanation": "Consistency ensures that state transitions move the database strictly from one valid state to another."
+      },
+      {
+        "label": "D",
+        "text": "Isolation",
+        "Explanation": "Isolation ensures that concurrent transaction executions do not interleave interfere with one another."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the specific ACID rule that guarantees committed state changes are never lost.",
+    "course": "COM6002",
+    "week": "3"
+  }
+]

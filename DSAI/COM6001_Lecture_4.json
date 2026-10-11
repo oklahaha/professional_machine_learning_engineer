@@ -1,0 +1,350 @@
+[
+  {
+    "question": "How does an anonymous lambda function evaluate when called immediately with arguments wrapped in parentheses, such as `(lambda x, y: x * y)(4, 5)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It returns an unexecuted lambda function reference object.",
+        "Explanation": "Parentheses directly following a lambda expression trigger immediate execution rather than returning an unexecuted function reference."
+      },
+      {
+        "label": "B",
+        "text": "It executes the expression immediately and produces the calculated result `20`.",
+        "Explanation": "Wrapping the lambda expression in parentheses followed by argument values invokes the function directly, evaluating the expression with `x=4` and `y=5`."
+      },
+      {
+        "label": "C",
+        "text": "It raises a SyntaxError because lambda functions require variable assignment before invocation.",
+        "Explanation": "Lambda functions are anonymous and do not require assignment to a variable name to be executed."
+      },
+      {
+        "label": "D",
+        "text": "It assigns `4` to `y` and `5` to `x`, returning `20` due to reverse argument mapping.",
+        "Explanation": "Positioning of input arguments maps sequentially to the declared parameters `x` and `y`."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider how regular functions behave when trailing parentheses containing arguments are placed directly after their definition.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Given the higher-order function definition `def create_multiplier(n): return lambda x: x * n`, what value is produced by executing `create_multiplier(3)(10)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "30",
+        "Explanation": "The outer function call returns a lambda configured with parameter $n=3$, which is then immediately evaluated with argument $x=10$ by the second set of parentheses."
+      },
+      {
+        "label": "B",
+        "text": "<function __main__.<lambda>>",
+        "Explanation": "The second pair of parentheses invokes the lambda function returned by the outer function call rather than leaving it unexecuted."
+      },
+      {
+        "label": "C",
+        "text": "13",
+        "Explanation": "The lambda expression explicitly specifies multiplication of the inner argument by the captured multiplier, not addition."
+      },
+      {
+        "label": "D",
+        "text": "TypeError: 'function' object is not subscriptable",
+        "Explanation": "Python supports returning functions from functions and invoking them sequentially using chained parentheses."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what the inner function receives as its argument when the second set of parentheses is evaluated.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Why is `%pip install <package_name>` preferred over `!pip install <package_name>` inside Jupyter Notebooks?",
+    "options": [
+      {
+        "label": "A",
+        "text": "%pip executes package installation faster by skipping dependency validation.",
+        "Explanation": "Execution speed between pip installation methods is identical since both call the underlying package installer."
+      },
+      {
+        "label": "B",
+        "text": "%pip ensures that the package is installed directly into the environment used by the current active kernel.",
+        "Explanation": "Using `%pip` guarantees installation into the active Jupyter kernel environment, avoiding mismatches that occur when `!pip` points to a separate system installation."
+      },
+      {
+        "label": "C",
+        "text": "!pip is deprecated in modern Python environments and throws a runtime error.",
+        "Explanation": "The exclamation mark executes commands in the system shell, which remains valid syntax but may target a different Python executable."
+      },
+      {
+        "label": "D",
+        "text": "%pip permanently installs the package across all global system environments.",
+        "Explanation": "Packages installed via `%pip` are targeted specifically to the current virtual environment rather than modifying global system settings."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider potential mismatches between the notebook's active execution kernel and the system's global terminal environment.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Which statement accurately describes the operational lifecycle of package `installation` versus `importing` in Python?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Installation loads package modules into memory, while importing downloads them from a remote server.",
+        "Explanation": "Installation downloads and saves package files to disk, while importing loads the package modules into runtime memory."
+      },
+      {
+        "label": "B",
+        "text": "Installation must be performed during every notebook session, whereas importing is done only once per system.",
+        "Explanation": "Installing a package persists across sessions in an environment, whereas importing is required in each script session to use its modules."
+      },
+      {
+        "label": "C",
+        "text": "Installation adds external package code to the environment once, whereas importing makes its modules available in each runtime session.",
+        "Explanation": "Packages only need to be installed once per environment, but must be imported in every runtime session where their functionality is required."
+      },
+      {
+        "label": "D",
+        "text": "Both installation and importing must be executed every time a new notebook session starts.",
+        "Explanation": "Once a package is installed in an environment, it remains stored locally and does not require re-installation across subsequent sessions."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Differentiate between downloading files to local storage versus loading module code into active memory for execution.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "What issue arises when constructing a `pd.DataFrame` using a dictionary of `pd.Series` objects when a custom `index` list is supplied that does not match the Series' internal index labels?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pandas throws a KeyError and terminates execution.",
+        "Explanation": "Pandas attempts to align data by index labels rather than raising an execution error."
+      },
+      {
+        "label": "B",
+        "text": "The custom index labels overwrite the internal Series labels without affecting the data values.",
+        "Explanation": "The custom index labels are retained, but Series data fails to align with those labels."
+      },
+      {
+        "label": "C",
+        "text": "The resulting DataFrame displays `NaN` for all column values due to index alignment mismatch.",
+        "Explanation": "When a Series has its own predefined index labels, constructing a DataFrame with a mismatched custom index leads to failed alignment, filling values with `NaN`."
+      },
+      {
+        "label": "D",
+        "text": "The values in the Series are truncated to match the length of the custom index list.",
+        "Explanation": "Data alignment operates strictly on label matching rather than truncating positional elements."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Pandas data structures rely on explicit label alignment when combining or structuring data into tables.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Which method provides a concise summary of a DataFrame including total non-null entry counts, column dtypes, and memory footprint?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df.describe()",
+        "Explanation": "The `describe()` method calculates statistical metrics such as mean, standard deviation, and quartiles for numerical columns."
+      },
+      {
+        "label": "B",
+        "text": "df.dtypes",
+        "Explanation": "The `dtypes` attribute lists column data types without providing memory usage or non-null entry details."
+      },
+      {
+        "label": "C",
+        "text": "df.info()",
+        "Explanation": "The `info()` method summarizes concise table metadata including column count, non-null counts, data types, and total memory usage."
+      },
+      {
+        "label": "D",
+        "text": "df.shape",
+        "Explanation": "The `shape` attribute returns a simple tuple indicating row and column dimensions."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Focus on the distinction between structural inspection attributes and methods that report memory and null-value metrics.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "What is the key advantage of exporting a DataFrame using `.to_pickle()` over `.to_csv()`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pickle files can be inspected and edited using standard text editors.",
+        "Explanation": "Pickle files store data in binary format, making them unreadable in plain text editors."
+      },
+      {
+        "label": "B",
+        "text": "Pickle files preserve exact Pandas column data types (`dtypes`) upon re-importing.",
+        "Explanation": "Pickle files serialize the DataFrame in binary form, preserving exact Pandas data types such as categorical or integer dtypes when loaded back with `read_pickle()`."
+      },
+      {
+        "label": "C",
+        "text": "CSV files require significantly more disk storage than pickle files.",
+        "Explanation": "CSV files are text-based and often larger or comparable in size, but lack native Pandas data type persistence."
+      },
+      {
+        "label": "D",
+        "text": "Pickle files are universally readable across non-Python data analysis platforms like SQL and Excel.",
+        "Explanation": "CSV is the standard cross-platform readable format, while pickle files are specific to Python runtime environments."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about what happens to special metadata like categorical or 64-bit integer dtypes when serialized to raw text versus binary.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "How does `pd.concat([df1, df2], axis=0, ignore_index=True)` combine two DataFrames?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It combines columns horizontally and preserves original row indices.",
+        "Explanation": "The `axis` parameter set to `0` operates along rows vertically rather than horizontally."
+      },
+      {
+        "label": "B",
+        "text": "It appends rows vertically and assigns a new continuous integer index from $0$ to $N-1$.",
+        "Explanation": "Concatenating along `axis=0` stacks rows vertically, and setting `ignore_index=True` reassigns a continuous integer index to the combined DataFrame."
+      },
+      {
+        "label": "C",
+        "text": "It merges matching rows based on duplicate index label values.",
+        "Explanation": "Concatenation stacks dataset rows sequentially without performing key matching or record merging."
+      },
+      {
+        "label": "D",
+        "text": "It joins columns horizontally and resets column labels sequentially.",
+        "Explanation": "Horizontal concatenation corresponds to setting `axis=1`."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Pay attention to how `axis=0` determines direction and how setting `ignore_index` to `True` affects row labels.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "What is the result of joining two DataFrames using `pd.merge(left, right, on='key_col', how='outer')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Only records whose `key_col` exists in both DataFrames are kept.",
+        "Explanation": "An `inner` join retains only matching key records found in both datasets."
+      },
+      {
+        "label": "B",
+        "text": "All records from the left DataFrame are kept, while non-matching right records are dropped.",
+        "Explanation": "A `left` join retains all records from the left DataFrame and discards non-matching right records."
+      },
+      {
+        "label": "C",
+        "text": "The union of keys from both DataFrames is returned, filling missing fields with `NaN` where keys do not match.",
+        "Explanation": "An `outer` merge combines all unique keys from both datasets, placing `NaN` in fields where corresponding key values do not exist."
+      },
+      {
+        "label": "D",
+        "text": "A Cartesian product combining every left row with every right row is produced.",
+        "Explanation": "A `cross` join produces a Cartesian product without referencing specific key columns."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Relate the merge strategy options to set operations like intersection, left subset, right subset, and full union.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Why does executing `df.columns.str.lower()` not permanently update the column names of `df`?",
+    "options": [
+      {
+        "label": "A",
+        "text": ".str.lower() is a display-only method that prints formatted text without returning an index object.",
+        "Explanation": "The string accessor returns a modified Index object containing lowercased string values."
+      },
+      {
+        "label": "B",
+        "text": "Pandas string accessor operations return new transformed objects and require explicit assignment back to `df.columns`.",
+        "Explanation": "Calling `.str.lower()` on column labels returns a new Index object, so the result must be reassigned back to `df.columns` to update the DataFrame."
+      },
+      {
+        "label": "C",
+        "text": "DataFrame column names are immutable and cannot be altered after creation.",
+        "Explanation": "DataFrame column labels can be reassigned or updated directly."
+      },
+      {
+        "label": "D",
+        "text": "The parameter `inplace=True` must be explicitly passed to `df.columns.str.lower()`.",
+        "Explanation": "String accessor methods do not support an `inplace` parameter and require explicit reassignment."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "String accessor methods return transformed objects rather than modifying the underlying DataFrame in-place.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "How can a lambda expression be applied within `DataFrame.rename()` to strip trailing underscores from column labels?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df.rename(columns=lambda col: col.rstrip('_'))",
+        "Explanation": "Passing a lambda function to the `columns` parameter of `rename` applies the transformation element-wise across all column labels."
+      },
+      {
+        "label": "B",
+        "text": "df.rename(mapper=lambda col: col.replace('_'))",
+        "Explanation": "The `replace` string method requires two arguments (target and replacement) and must be configured with axis mapping."
+      },
+      {
+        "label": "C",
+        "text": "df.str.rename(lambda x: x[:-1])",
+        "Explanation": "The `.str` accessor applies to Series or Index objects, whereas DataFrame uses the `rename` method for label transformations."
+      },
+      {
+        "label": "D",
+        "text": "df.rename(axis=0, mapper=lambda x: x.rstrip('_'))",
+        "Explanation": "Setting `axis=0` applies the rename transformation to the row index instead of column labels."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which parameter in `rename()` specifies column manipulation and how string trimming methods operate on text.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "When combining datasets containing common hero names, why does `pd.merge()` on hero names produce fewer rows than `pd.concat()` along columns with `axis=1` and `join='inner'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "pd.merge() automatically drops rows containing missing values (`NaN`).",
+        "Explanation": "Inner merges retain matching key values between datasets rather than dropping missing value rows."
+      },
+      {
+        "label": "B",
+        "text": "pd.merge() aligns records based on key value equality, discarding non-matching names, whereas column concatenation joins strictly by row index position.",
+        "Explanation": "Merging matches rows by value equality within specified key columns, whereas concatenation by row position pairs records based purely on row index position alignment."
+      },
+      {
+        "label": "C",
+        "text": "pd.concat() automatically removes duplicate hero records before combining.",
+        "Explanation": "Concatenation retains all original rows from both DataFrames regardless of duplicate content."
+      },
+      {
+        "label": "D",
+        "text": "pd.merge() can only process numerical data types, ignoring text columns.",
+        "Explanation": "Both `merge` and `concat` operations process string and numeric data types equally."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about the difference between joining datasets based on label content equality versus combining them by index sequence alignment.",
+    "course": "COM6001",
+    "week": "4"
+  }
+]

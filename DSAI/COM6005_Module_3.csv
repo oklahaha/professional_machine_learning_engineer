@@ -1,0 +1,18 @@
+What is a Type I error ($\alpha$) in hypothesis testing?,The incorrect rejection of a true null hypothesis ($H_0$).
+What is a Type II error ($\beta$) in hypothesis testing?,The failure to reject a false null hypothesis ($H_0$).
+How is the significance level ($\alpha$) defined in terms of conditional probability?,It is the probability of rejecting $H_0$ given that $H_0$ is true.
+How is the power ($1 - \beta$) of a hypothesis test defined?,It is the probability of correctly rejecting $H_0$ given that $H_1$ is true.
+"In a hypothesis testing decision matrix, what error corresponds to a false positive (FP)?","A Type I error ($\alpha$), where a true $H_0$ is incorrectly rejected."
+"In a hypothesis testing decision matrix, what error corresponds to a false negative (FN)?","A Type II error ($\beta$), where a false $H_0$ fails to be rejected."
+What is the probability of failing to reject $H_0$ when $H_0$ is actually true?,$1 - \alpha$ (the True Negative rate).
+What significance level $\alpha$ corresponds to a $95\%$ confidence interval in a two-tailed test?,$\alpha = 0.05$.
+"If a $95\%$ confidence interval excludes the hypothesized parameter value under $H_0$, what is the test outcome at $\alpha = 0.05$?","Reject $H_0$, because the two-tailed test yields $p < 0.05$."
+"If a $95\%$ confidence interval includes the hypothesized parameter value under $H_0$, what is the $p$-value relationship to $\alpha = 0.05$?","The $p$-value is greater than or equal to $0.05$ ($p \ge 0.05$), so $H_0$ is not rejected."
+What does statistical significance indicate about an observed effect?,It indicates that the observed effect is unlikely to have occurred by chance alone.
+How does statistical significance differ from practical significance?,"Statistical significance indicates an effect is not due to chance, whereas practical significance evaluates the meaningful magnitude or real-world importance of the effect."
+How can an effect with very small practical significance achieve high statistical significance?,By utilizing a very large sample size.
+The pre-specified acceptable maximum probability of committing a Type I error is called the _____.,significance level ($\alpha$)
+"In hypothesis testing, which hypothesis represents the researcher's theoretical claim or research target?",The alternative hypothesis ($H_1$).
+What decision is made if the calculated probability of the observed result under $H_0$ is less than the significance level $\alpha$?,Reject $H_0$ in favor of $H_1$.
+Term: Power of a Test,Definition: The conditional probability ($1 - \beta$) of correctly rejecting $H_0$ when the alternative hypothesis ($H_1$) is true.
+"When $H_0$ is false, what two mutually exclusive test outcomes are possible?","Correctly rejecting $H_0$ (Power, $1 - \beta$) or failing to reject $H_0$ (Type II error, $\beta$)."

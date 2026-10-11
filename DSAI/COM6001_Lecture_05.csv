@@ -1,0 +1,20 @@
+What type of indexing mechanism does the `.loc` indexer use in Pandas?,Label-based indexing.
+What type of indexing mechanism does the `.iloc` indexer use in Pandas?,Integer position-based indexing.
+"When slicing rows using `.loc[m:n]`, is the stop label `n` included or excluded?",Included (both `m` and `n` are inclusive).
+"When slicing rows using `.iloc[m:n]`, is the stop position `n` included or excluded?","Excluded (start is inclusive, stop is exclusive)."
+How does `.loc[1:4]` differ from `.iloc[1:4]` on a DataFrame with integer row labels?,"`.loc[1:4]` selects rows labeled 1 through 4 inclusive, while `.iloc[1:4]` selects positional rows at indices 1, 2, and 3."
+What Pandas data structure is returned when selecting a single row using `df.loc['label']`?,A Pandas `Series`.
+"What Pandas data structure is returned when selecting a single row enclosed in a list, such as `df.loc[['label']]`?",A Pandas `DataFrame`.
+"In 2D subsetting, what syntax separates row indexers from column indexers inside `.loc` or `.iloc`?","A comma, formatted as `df.loc[row_indexer, column_indexer]`."
+How do you select all rows for a specific column label `'race'` using `.loc`?,"`df.loc[:, 'race']`"
+What is the `.loc` syntax to slice rows from `'Adam Strange'` to `'Amazo'` and columns from `'race'` to `'hair color'`?,"`hero.loc['Adam Strange':'Amazo', 'race':'hair color']`"
+What is the `.iloc` syntax to slice positional rows 1 to 3 and positional columns 2 to 3?,"`hero.iloc[1:4, 2:4]`"
+Why does directly passing a labeled Boolean Series into `df.iloc[df['B'] == 2]` raise an error?,"`.iloc` expects integer positions or raw NumPy arrays, not indexed Pandas Boolean Series."
+How can a Boolean condition be used to filter rows using `.iloc`?,"By passing the underlying NumPy array values of the mask, such as `df.iloc[(df['B'] == 2).values]`."
+Which element-wise Boolean operator must be used instead of Python's `and` when combining conditions in `.loc`?,The `&` operator.
+Which element-wise Boolean operator must be used instead of Python's `or` when combining conditions in `.loc`?,The `|` operator.
+What action occurs when assigning a value using `df.loc[10000] = row_data` when label `10000` does not exist?,A new row with label `10000` is created and appended to the DataFrame.
+What method replaces default integer row indexing with a designated DataFrame column?,`df.set_index('column_name')`
+What method resets a custom index back to a standard integer position index?,`df.reset_index()`
+Why is calling `hero.columns.upper()` directly on DataFrame columns invalid?,"`upper()` is a string method, requiring the `.str` string accessor (e.g., `hero.columns.str.upper()`)."
+What is the functional difference between `df['A'] == 4` and `df['A'] = 4`?,"`df['A'] == 4` generates a Boolean comparison Series, whereas `df['A'] = 4` assigns the value 4 to all cells in column `'A'`."

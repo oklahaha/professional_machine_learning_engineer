@@ -1,0 +1,18 @@
+What is a nominal variable?,"A categorical variable representing named, unordered categories that are mutually exclusive."
+What term describes a nominal variable that takes on only two possible values?,Dichotomous or binary variable.
+Which scale of measurement is represented by student responses recorded as 'Yes' or 'No'?,Nominal scale.
+"In property data, why is 'District' (e.g., Hong Kong Island, Kowloon, New Territories) categorized as a nominal variable?",Because districts are distinct named categories without any natural mathematical ordering.
+What defines an ordinal variable?,A categorical variable with named categories that possess a meaningful order or ranking.
+What scale of measurement does a 5-point Likert scale (1 = Strongly Disagree to 5 = Strongly Agree) represent?,Ordinal scale.
+"In real estate data, why is 'Floor level' categorized as High, Medium, or Low considered ordinal?","Because the categories represent ordered levels, but the exact numeric distance between levels is not specified."
+"Which scale of measurement applies to Body Mass Index (BMI) categorized as Underweight, Normal Weight, Overweight, and Obese?",Ordinal scale.
+What is the key defining feature of interval data?,"Quantitative data with meaningful intervals between measurements, but without a true zero point."
+Why is temperature measured in degrees Celsius classified as interval data rather than ratio data?,Because $0^\circ\text{C}$ indicates a specific temperature rather than the complete absence of heat.
+Why is shoe size considered an interval variable rather than a ratio variable?,Because shoe sizes have equal step intervals but lack a true zero point where size zero means 'no length'.
+What distinguishes ratio data from interval data?,"Ratio data has a meaningful true zero, where zero indicates a complete absence of the measured quantity."
+What scale of measurement applies to physical measurements such as length in centimeters and weight in kilograms?,Ratio scale.
+"In real estate analysis, what scale of measurement do 'Property Size (sq ft)' and 'Sale Price' belong to?",Ratio scale.
+Why is 'Building Age in Years' classified as a ratio variable?,Because it is quantitative with consistent intervals and a true zero point representing a brand-new building.
+"In statistical software like SPSS, under what single umbrella term are interval and ratio variables grouped?",Scale.
+Ordinal data differs from nominal data because ordinal categories have a meaningful _____.,order
+"Unlike ordinal data, ratio data allows for meaningful quantitative operations because it has equal intervals and a _____.",true zero

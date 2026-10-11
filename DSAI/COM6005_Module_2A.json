@@ -1,0 +1,350 @@
+[
+  {
+    "question": "When executing `np.random.choice(range(1, 41), size=10, replace=False)`, what sampling behavior is guaranteed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No element in the selected sample will be repeated.",
+        "Explanation": "Specifying `replace=False` performs sampling without replacement, ensuring every drawn element in the sample is distinct."
+      },
+      {
+        "label": "B",
+        "text": "The selected sample will automatically be sorted in ascending numerical order.",
+        "Explanation": "Sampling without replacement guarantees element uniqueness, but does not alter the order in which random items are drawn."
+      },
+      {
+        "label": "C",
+        "text": "The output will remain identical across repeated executions without setting a seed.",
+        "Explanation": "Random sampling without establishing a seed produces a different pseudo-random sequence upon each run."
+      },
+      {
+        "label": "D",
+        "text": "Each selection step is independent, allowing items to recur with equal probability.",
+        "Explanation": "Independent selections with recurring elements describe sampling with replacement (`replace=True`)."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how drawing objects from a pool without placing them back impacts repeated selections.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "What is the primary function of executing `np.random.seed(123)` prior to running a random sampling routine in Python?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To set the pseudo-random number generator to a fixed state so that re-running the script yields reproducible results.",
+        "Explanation": "Initializing the seed provides a deterministic starting point for the pseudo-random generator, enabling full reproducibility."
+      },
+      {
+        "label": "B",
+        "text": "To eliminate sampling bias and guarantee that every outcome occurs with equal true probability.",
+        "Explanation": "Setting a random seed controls algorithm initialization rather than modifying the underlying probability distribution."
+      },
+      {
+        "label": "C",
+        "text": "To force sampling without replacement regardless of the `replace` parameter setting.",
+        "Explanation": "Replacement behavior is governed by the `replace` argument passed inside sampling functions, not by the random seed."
+      },
+      {
+        "label": "D",
+        "text": "To automatically restrict the sample size to $123$ elements in subsequent array selections.",
+        "Explanation": "The integer argument in `seed()` acts as an initial algorithm state key, not as a parameter defining sample size."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how researchers ensure their simulation code produces the exact same numbers when executed on another machine.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "According to the provided source material, why is temperature measured in degrees Celsius classified as an Interval variable rather than a Ratio variable?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It features meaningful equal intervals between measurements, but $0^\\circ\\text{C}$ does not represent a true zero where zero means nothing.",
+        "Explanation": "Ratio data requires a true zero indicating the complete absence of the measured attribute, whereas $0^\\circ\\text{C}$ is simply an arbitrary point representing cold temperature."
+      },
+      {
+        "label": "B",
+        "text": "It consists of qualitative categorical labels rather than quantitative continuous numbers.",
+        "Explanation": "Degrees Celsius represent numerical continuous values, making it a quantitative measurement scale."
+      },
+      {
+        "label": "C",
+        "text": "It lacks a defined hierarchy, preventing meaningful order comparisons between values.",
+        "Explanation": "Interval scale values have a clear mathematical ordering and consistent distance between units."
+      },
+      {
+        "label": "D",
+        "text": "It cannot be normalized into a probability density histogram.",
+        "Explanation": "Interval variables are continuous quantitative data points that can readily be plotted on histograms and modeled with density curves."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on what the value zero signifies across different quantitative measurement scales.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Based on the example dataset of sold residential properties, how are 'Floor level' ($x_1$) and 'District' ($x_2$) categorized by variable type?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Floor level is an Ordinal variable, while District is a Nominal variable.",
+        "Explanation": "Floor level contains named categories with an inherent rank order (High, Medium, Low), whereas District consists of unordered categorical locations."
+      },
+      {
+        "label": "B",
+        "text": "Both Floor level and District are Nominal variables.",
+        "Explanation": "Floor level possesses a logical sequence (High > Medium > Low), which elevates its measurement scale from nominal to ordinal."
+      },
+      {
+        "label": "C",
+        "text": "Floor level is a Ratio variable, while District is an Interval variable.",
+        "Explanation": "Neither variable consists of raw quantitative measurement numbers in the example table."
+      },
+      {
+        "label": "D",
+        "text": "Floor level is a Nominal variable, while District is an Ordinal variable.",
+        "Explanation": "District categories possess no natural hierarchical order, whereas floor levels do."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Determine whether the categories in each variable follow a natural rank or hierarchy.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "For a discrete random variable $X$, what operation does the Cumulative Mass Function $\\text{CMF}(4)$ carry out?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It sums the probabilities of all discrete outcomes less than or equal to $4$, evaluated as $P(X \\le 4)$.",
+        "Explanation": "The CMF accumulates discrete point probabilities from the lowest possible outcome up to the chosen threshold $x$."
+      },
+      {
+        "label": "B",
+        "text": "It calculates the exact point probability of obtaining precisely $4$ outcomes, evaluated as $P(X = 4)$.",
+        "Explanation": "Evaluating exact single-point probabilities is the specific role of the Probability Mass Function (PMF)."
+      },
+      {
+        "label": "C",
+        "text": "It computes the relative height of the probability density curve at $x = 4$.",
+        "Explanation": "Relative height metrics describe Probability Density Functions (PDF) for continuous variables rather than discrete point mass summations."
+      },
+      {
+        "label": "D",
+        "text": "It calculates the complementary probability of obtaining outcomes strictly greater than $4$.",
+        "Explanation": "The CMF provides the running total from the minimum outcome up to $x$, rather than counting outcomes above $x$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall what the term 'cumulative' implies when aggregating probabilities across discrete outcomes.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Why is the exact point probability $P(\\text{height} = 176\\text{ cm})$ equal to $0$ for a continuous random variable?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Probability for continuous variables corresponds to the area under the PDF curve across an interval, and a single point has an interval width of zero.",
+        "Explanation": "Because an interval of zero width yields an integrated area of zero beneath a continuous density curve, exact point probabilities evaluate to zero."
+      },
+      {
+        "label": "B",
+        "text": "Continuous variables cannot be mathematically analyzed using standard cumulative functions.",
+        "Explanation": "Continuous variables are regularly analyzed using Cumulative Distribution Functions (CDF) and Probability Density Functions (PDF)."
+      },
+      {
+        "label": "C",
+        "text": "Continuous measurements must first be transformed into ordinal categories before evaluating probabilities.",
+        "Explanation": "Binning continuous data into ordinal categories is useful for visualization, but does not change the theoretical mathematics of continuous random variables."
+      },
+      {
+        "label": "D",
+        "text": "The height scale exceeds the normalization parameters allowed in normal distributions.",
+        "Explanation": "Normal density curves accommodate all real numbers on $(-\\infty, +\\infty)$; zero point probability is a fundamental property of continuous integration."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how area under a curve is calculated when the width of the integration interval is zero.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "In the formula for the normal probability density function $\\text{norm.pdf}(x, \\mu, \\sigma)$, what roles do parameters $\\mu$ and $\\sigma^2$ play?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\mu$ determines the location (mean), while $\\sigma^2$ determines the dispersion (variance).",
+        "Explanation": "The normal distribution curve uses $\\mu$ to locate the center peak and $\\sigma^2$ to dictate the spread of values around that center."
+      },
+      {
+        "label": "B",
+        "text": "$\\mu$ determines the distribution shape, while $\\sigma^2$ determines the lower bound threshold.",
+        "Explanation": "The normal curve has a fixed bell shape bounded on $(-\\infty, +\\infty)$, where parameters shift location and adjust scale."
+      },
+      {
+        "label": "C",
+        "text": "$\\mu$ determines total sample size, while $\\sigma^2$ determines the optimal histogram bin width.",
+        "Explanation": "Sample size and bin width are empirical data collection parameters rather than theoretical parameters of the normal density function."
+      },
+      {
+        "label": "D",
+        "text": "$\\mu$ determines the cumulative sum, while $\\sigma^2$ determines the exact peak probability mass.",
+        "Explanation": "Cumulative area is obtained through integration (CDF), while $\\mu$ and $\\sigma^2$ serve as location and scale parameters."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Identify which parameter shifts the center of the bell curve and which parameter controls its horizontal spread.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Which Python method from `scipy.stats` correctly calculates the probability of obtaining *exactly* $5$ heads in $10$ fair coin flips?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.binom.pmf(5, 10, 0.5)`",
+        "Explanation": "The `pmf` method calculates the exact point probability for discrete outcomes governed by a binomial distribution."
+      },
+      {
+        "label": "B",
+        "text": "`stats.binom.cdf(5, 10, 0.5)`",
+        "Explanation": "The `cdf` method calculates cumulative probability ($5$ or fewer heads) rather than the exact probability of obtaining precisely $5$ heads."
+      },
+      {
+        "label": "C",
+        "text": "`stats.norm.pdf(5, 10, 0.5)`",
+        "Explanation": "The `norm.pdf` function calculates probability density for continuous normal distributions, not discrete binomial trials."
+      },
+      {
+        "label": "D",
+        "text": "`stats.norm.cdf(5, 10, 0.5)`",
+        "Explanation": "This command evaluates continuous cumulative probabilities under a normal curve, which is inapplicable to discrete trial counting."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Select the function specifically designated for exact point mass probabilities of discrete binary events.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "How is a frequency histogram converted into a density histogram so that the total area across all bars equals $1$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By dividing each class frequency by the total area of the original histogram.",
+        "Explanation": "Dividing frequency values by total original area normalizes the histogram so that the combined area of all bars sums to $1$."
+      },
+      {
+        "label": "B",
+        "text": "By replacing raw frequencies with cumulative frequencies across consecutive bins.",
+        "Explanation": "Using cumulative frequencies forms a cumulative histogram where the final bar height equals the total number of sample observations."
+      },
+      {
+        "label": "C",
+        "text": "By subtracting the sample mean $\\mu$ from every bin boundary.",
+        "Explanation": "Subtracting the mean shifts the histogram along the x-axis to center it at zero, but does not rescale total area to $1$."
+      },
+      {
+        "label": "D",
+        "text": "By forcing all bin widths to equal $1.0$ regardless of data range.",
+        "Explanation": "Modifying bin widths changes visual grouping, but does not automatically scale total bar area to equal $1$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider what mathematical normalization rescales the sum of all rectangular areas to unity.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "According to the source material, which probability distribution is best suited for modeling the number of emails received in a one-hour time window?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Poisson distribution",
+        "Explanation": "The Poisson distribution models event counts occurring over a specified fixed time interval."
+      },
+      {
+        "label": "B",
+        "text": "Geometric distribution",
+        "Explanation": "The Geometric distribution models the number of trials conducted until the first success occurs."
+      },
+      {
+        "label": "C",
+        "text": "Exponential distribution",
+        "Explanation": "The Exponential distribution models the continuous time elapsed between consecutive occurrences."
+      },
+      {
+        "label": "D",
+        "text": "Pareto distribution",
+        "Explanation": "The Pareto distribution is primarily used to model heavy-tailed continuous phenomena such as income distribution."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the distribution designed specifically for counting discrete occurrences within a fixed time window.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Which characteristic fundamental to Nominal scale variables distinguishes them from Ordinal scale variables?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Nominal variables consist of unordered categories, whereas Ordinal variables have a meaningful sequence or rank.",
+        "Explanation": "While both scales represent named categorical data, only ordinal variables carry a meaningful natural ordering among categories."
+      },
+      {
+        "label": "B",
+        "text": "Nominal variables represent continuous quantitative measurements, whereas Ordinal variables represent discrete integers.",
+        "Explanation": "Both nominal and ordinal data are categorical (qualitative) variables rather than quantitative scales."
+      },
+      {
+        "label": "C",
+        "text": "Nominal variables possess a true zero point, whereas Ordinal variables do not.",
+        "Explanation": "A true zero point is a defining feature of quantitative ratio scales, not categorical scales."
+      },
+      {
+        "label": "D",
+        "text": "Nominal variables can only evaluate binary outcomes, whereas Ordinal variables evaluate continuous spectrums.",
+        "Explanation": "Nominal variables frequently contain multiple distinct categories (such as countries or districts) beyond simple binary options."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider whether categorical labels like property districts or country names possess an inherent rank order.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "As the value $x$ increases along the domain, what is the universal behavior of the Cumulative Distribution Function (CDF) for any random variable?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It increases monotonically, starting near $0$ and approaching $1$.",
+        "Explanation": "Because probabilities are non-negative, accumulating probability mass or density causes the CDF to steadily climb toward $1$."
+      },
+      {
+        "label": "B",
+        "text": "It rises to a maximum peak at the mean $\\mu$ and then decreases back to $0$.",
+        "Explanation": "A symmetric peak at the mean describes a bell-shaped Probability Density Function (PDF), not a CDF."
+      },
+      {
+        "label": "C",
+        "text": "It stays fixed at $0.5$ once $x$ exceeds the sample mean.",
+        "Explanation": "A CDF reaches $0.5$ at the median, but continues accumulating area up to a maximum of $1$ as $x$ increases."
+      },
+      {
+        "label": "D",
+        "text": "It fluctuates periodically between $0$ and $1$ based on distribution variance.",
+        "Explanation": "CDF curves are non-decreasing running totals that monotonically rise from $0$ to $1$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens to a running total of accumulated probabilities as more possible outcomes are included.",
+    "course": "COM6005",
+    "week": "2A"
+  }
+]

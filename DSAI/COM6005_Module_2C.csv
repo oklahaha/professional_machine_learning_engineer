@@ -1,0 +1,15 @@
+What does the SciPy function scipy.stats.norm.pdf calculate?,It calculates the probability density function value (density/frequency) at a given point.
+Why can't scipy.stats.norm.pdf be used directly to find point probabilities for continuous normal variables?,Continuous probability over an interval requires integration of the probability density function.
+What measure is returned by the function scipy.stats.norm.cdf?,"It computes the cumulative distribution function, which gives the proportion of data less than or equal to a specified value."
+"In SciPy's norm module, which function is used to calculate quantiles?","The percent point function, scipy.stats.norm.ppf, is used to find quantiles."
+What is the primary purpose of the scipy.stats.norm.rvs function?,It generates random variates that follow a specified normal distribution.
+"In the call scipy.stats.norm.rvs(5, 2, 1000), what do the parameters 5 and 2 represent?",They represent a mean (loc) of $5$ and a standard deviation (scale) of $2$.
+What are the default values for loc and scale in scipy.stats.norm.rvs when left unspecified?,The default values are $0$ for loc (mean) and $1$ for scale (standard deviation).
+How can plt.hist in Matplotlib be configured to display an empirical cumulative distribution function?,By setting the parameter cumulative=True in combination with histtype='step'.
+Which parameter in plt.hist normalizes a histogram so that the total area equals 1?,The parameter density=True.
+What is the effect of passing bins='auto' to plt.hist() in Matplotlib?,It automatically calculates optimal bin widths based on dataset size and distribution spread.
+"In Python, which statsmodels function is used to plot sample quantiles against theoretical normal quantiles?",The function sm.qqplot() is used.
+What does the fit=True argument do when executing sm.qqplot()?,It automatically estimates the location and scale parameters of the normal distribution from the data.
+"What visual feature does line=""45"" add to a QQ-plot generated with statsmodels?",It adds a $45$-degree reference line for comparing empirical quantiles against theoretical quantiles.
+Which SciPy statistical function performs a test for the null hypothesis that a sample comes from a normal distribution?,The function scipy.stats.normaltest() performs this test.
+How is a theoretical normal density curve overlay generated for x-values using SciPy and Matplotlib?,"By plotting the x-coordinates against plt.plot(x, norm.pdf(x, loc=0, scale=1))."

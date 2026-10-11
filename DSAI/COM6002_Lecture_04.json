@@ -1,0 +1,321 @@
+[
+  {
+    "question": "Under which SQL sub-language classification does the `CREATE TABLE` command fall?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Data Definition Language (DDL)",
+        "Explanation": "This language subset defines and modifies database structures such as databases, tables, and schemas."
+      },
+      {
+        "label": "B",
+        "text": "Data Manipulation Language (DML)",
+        "Explanation": "This subset is used for inserting, modifying, or deleting records within tables rather than creating table schemas."
+      },
+      {
+        "label": "C",
+        "text": "Data Query Language (DQL)",
+        "Explanation": "This subset focuses specifically on retrieving data using query statements like `SELECT`."
+      },
+      {
+        "label": "D",
+        "text": "Data Control Language (DCL)",
+        "Explanation": "This subset handles permissions and access control commands such as granting rights."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about whether the command defines database objects or alters data rows within them.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "According to the provided material, what type of locking mechanism does SQLite utilize, and what is its primary limitation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Database-level locking, which locks the entire database during write operations",
+        "Explanation": "SQLite locks the entire database file during writes, preventing concurrent modifications across individual rows or tables."
+      },
+      {
+        "label": "B",
+        "text": "Row-based locking, which causes high CPU overhead on single-node setups",
+        "Explanation": "SQLite does not implement row-level locks, which avoids row-based tracking overhead but limits multi-user writing."
+      },
+      {
+        "label": "C",
+        "text": "Table-level locking, which blocks read queries across unrelated tables",
+        "Explanation": "SQLite locks at the whole-database level rather than locking isolated tables."
+      },
+      {
+        "label": "D",
+        "text": "Page-level locking, which requires built-in network authentication",
+        "Explanation": "Page-level locking is not the lock granularity highlighted for SQLite, nor does SQLite support built-in network authentication."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how SQLite manages concurrency control on a single machine compared to standard enterprise RDBMS options.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "In standard SQL syntax presented in the reference material, which operator is explicitly designated to test for inequality ($x \\ne 1$)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "<>",
+        "Explanation": "The standard SQL comparison operator specified in the course material for inequality is `<>`."
+      },
+      {
+        "label": "B",
+        "text": "!=",
+        "Explanation": "While widely supported in programming languages and many SQL dialects, standard SQL syntax in the material explicitly emphasizes `<>`."
+      },
+      {
+        "label": "C",
+        "text": "!==",
+        "Explanation": "Strict equality operators like `!==` belong to languages like JavaScript rather than standard SQL syntax."
+      },
+      {
+        "label": "D",
+        "text": "NOT=",
+        "Explanation": "SQL uses the keyword `NOT` prior to full logical conditions, but `NOT=` is invalid operator syntax."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall the specific two-character comparison symbol listed in the slide on comparison operators.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "When executing a `LEFT JOIN` between a `Student` table (left) and a `Result` table (right) on `ID`, what happens to a student record that has no corresponding entries in the `Result` table?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The student record is included in the result, with `NULL` values for the `Result` table attributes",
+        "Explanation": "A left outer join preserves all rows from the left table and fills missing matching attributes from the right table with `NULL`."
+      },
+      {
+        "label": "B",
+        "text": "The student record is omitted entirely from the query output",
+        "Explanation": "Filtering out non-matching rows occurs in an `INNER JOIN`, whereas a left outer join retains all left-side rows."
+      },
+      {
+        "label": "C",
+        "text": "The query fails with a foreign key execution error",
+        "Explanation": "Outer joins gracefully handle missing foreign matches by substituting `NULL` rather than raising errors."
+      },
+      {
+        "label": "D",
+        "text": "The student record's `ID` and `Name` fields are replaced with `NULL`",
+        "Explanation": "Attributes from the left table remain intact; only unmatched right-table attributes become `NULL`."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about which side's rows are preserved regardless of matching entries in an outer join.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "If Table $A$ contains 3 rows and Table $B$ contains 3 rows, how many total records will be produced by a Cartesian join (`SELECT * FROM Table A, Table B`) before applying a `WHERE` clause?",
+    "options": [
+      {
+        "label": "A",
+        "text": "9 rows",
+        "Explanation": "A Cartesian join pairs every row of the first table with every row of the second table, calculating $3 \\times 3 = 9$ total combinations."
+      },
+      {
+        "label": "B",
+        "text": "3 rows",
+        "Explanation": "Three rows would result if an inner join matched on a unique one-to-one relationship rather than a Cartesian product."
+      },
+      {
+        "label": "C",
+        "text": "6 rows",
+        "Explanation": "Combining rows additively yields 6, but Cartesian operations multiply row counts across sets."
+      },
+      {
+        "label": "D",
+        "text": "0 rows",
+        "Explanation": "Zero rows occur only if one of the joining tables contains no data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the total number of distinct row combinations formed when pairing every item of one set with every item of another.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "What primary logical necessity drives the use of a self-join (e.g., `FROM Result a, Result b`) in a SQL query?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Comparing distinct rows within the same table across single-row evaluation boundaries",
+        "Explanation": "Because a standard `WHERE` clause evaluates single rows independently, joining multiple aliases of the same table enables cross-row comparison."
+      },
+      {
+        "label": "B",
+        "text": "Eliminating duplicate records automatically across distinct database schemas",
+        "Explanation": "Self-joins combine rows within one table for comparison rather than performing automatic deduplication across schemas."
+      },
+      {
+        "label": "C",
+        "text": "Translating standard tables into indexed views for query speedup",
+        "Explanation": "Self-joins utilize existing table structures and do not create indexed views or guarantee speedups."
+      },
+      {
+        "label": "D",
+        "text": "Bypassing relational constraints when updating records across tables",
+        "Explanation": "Self-joins are query retrieval mechanisms and do not alter or bypass relational database constraints."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall how the `WHERE` clause normally evaluates records and why creating alias copies helps cross-row evaluations.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "In what order does a SQL database engine evaluate clauses during query execution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`FROM` $\\rightarrow$ `WHERE` $\\rightarrow$ `GROUP BY` $\\rightarrow$ `HAVING` $\\rightarrow$ `SELECT`",
+        "Explanation": "The engine first identifies source tables (`FROM`), filters individual rows (`WHERE`), groups rows (`GROUP BY`), filters aggregated groups (`HAVING`), and projects result columns (`SELECT`)."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT` $\\rightarrow$ `FROM` $\\rightarrow$ `WHERE` $\\rightarrow$ `GROUP BY` $\\rightarrow$ `HAVING`",
+        "Explanation": "Although `SELECT` is written first in query syntax, logical query processing evaluates source tables and row conditions long before column projections."
+      },
+      {
+        "label": "C",
+        "text": "`FROM` $\\rightarrow$ `GROUP BY` $\\rightarrow$ `HAVING` $\\rightarrow$ `WHERE` $\\rightarrow$ `SELECT`",
+        "Explanation": "Filtering individual rows with `WHERE` must occur prior to grouping data with `GROUP BY`."
+      },
+      {
+        "label": "D",
+        "text": "`WHERE` $\\rightarrow$ `FROM` $\\rightarrow$ `GROUP BY` $\\rightarrow$ `SELECT` $\\rightarrow$ `HAVING`",
+        "Explanation": "The engine must identify source tables in `FROM` before evaluating row filters in `WHERE`."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Remember that filtering raw rows must occur before grouping, and grouping must occur before evaluating aggregate filters.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "How do SQL aggregate functions like `COUNT(column_name)`, `SUM(column_name)`, and `MIN(column_name)` process `NULL` values within a dataset?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`NULL` values are completely ignored during aggregate calculations",
+        "Explanation": "Standard SQL aggregate operations omit `NULL` values from calculations without including them in sums, averages, or direct column counts."
+      },
+      {
+        "label": "B",
+        "text": "`NULL` values force the aggregate output to evaluate to `NULL`",
+        "Explanation": "Rather than evaluating the whole operation to `NULL`, aggregate functions simply skip missing entries."
+      },
+      {
+        "label": "C",
+        "text": "`NULL` values are converted to $0$ prior to computing aggregate statistics",
+        "Explanation": "`NULL` represents missing or unknown data in SQL and is skipped rather than coerced to zero."
+      },
+      {
+        "label": "D",
+        "text": "`NULL` values trigger a runtime error unless handled with a `CASE` expression",
+        "Explanation": "SQL aggregate functions naturally handle `NULL` entries by ignoring them, requiring no explicit exception handling."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look at how counting or summing columns with empty/missing values affects the final summary tally in SQL.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "What is the core distinction between the `WHERE` clause and the `HAVING` clause?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`WHERE` filters raw table rows before grouping, while `HAVING` filters aggregated values after grouping",
+        "Explanation": "`WHERE` evaluates conditions on individual table records before `GROUP BY`, whereas `HAVING` evaluates conditions on aggregated group results."
+      },
+      {
+        "label": "B",
+        "text": "`WHERE` can only evaluate numeric parameters, while `HAVING` evaluates string parameters",
+        "Explanation": "Both clauses can evaluate numerical, text, or date comparison operations on their respective data scopes."
+      },
+      {
+        "label": "C",
+        "text": "`HAVING` executes before join operations, while `WHERE` executes after join operations",
+        "Explanation": "Join processing in `FROM` precedes both `WHERE` and `HAVING` clauses."
+      },
+      {
+        "label": "D",
+        "text": "`WHERE` is used exclusively with subqueries, while `HAVING` replaces the `GROUP BY` statement",
+        "Explanation": "`WHERE` works in standard single-table queries, and `HAVING` supplements `GROUP BY` rather than replacing it."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on when each clause is evaluated during query execution and what type of data (raw rows vs. aggregates) each filters.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "When defining a subquery inside a `FROM` clause (e.g., `SELECT * FROM (SELECT ...) AS T`), why is the alias `AS T` required?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The outer query requires a designated table name to reference the subquery's intermediate result set",
+        "Explanation": "A subquery in a `FROM` clause acts as a derived table; naming it with an alias allows the surrounding SQL statement to reference its structure."
+      },
+      {
+        "label": "B",
+        "text": "The alias converts a multiset output into a set with distinct primary keys",
+        "Explanation": "Aliasing derived tables provides structural identification but does not modify underlying set characteristics or enforce uniqueness."
+      },
+      {
+        "label": "C",
+        "text": "It forces the database engine to build an index on the temporary output",
+        "Explanation": "An alias simply names a tabular result set and does not trigger automated index creation."
+      },
+      {
+        "label": "D",
+        "text": "It persists the intermediate result permanently onto disk storage",
+        "Explanation": "Derived table aliases exist only in memory during the execution lifecycle of the query."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider what structural component a `FROM` clause expects to read data from in relational database queries.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "What is the consequence of running the command `DELETE FROM Student;` without specifying a `WHERE` clause?",
+    "options": [
+      {
+        "label": "A",
+        "text": "All records in the `Student` table are removed, leaving an empty table structure",
+        "Explanation": "Omitting a `WHERE` clause targets every record in the table for deletion while keeping the table schema intact."
+      },
+      {
+        "label": "B",
+        "text": "The command fails because SQL requires a `WHERE` clause for `DELETE` statements",
+        "Explanation": "SQL permits parameterless `DELETE` statements, interpreting the absence of conditions as selecting all rows."
+      },
+      {
+        "label": "C",
+        "text": "The database drops both the data and the table structure from the schema",
+        "Explanation": "Removing the table definition itself requires a `DROP TABLE` command rather than `DELETE`."
+      },
+      {
+        "label": "D",
+        "text": "Only rows containing `NULL` attribute values are deleted",
+        "Explanation": "A parameterless `DELETE` removes all rows regardless of whether attributes contain `NULL` or valid data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Distinguish between commands that clear row content versus commands that destroy table schemas (`DROP TABLE`).",
+    "course": "COM6002",
+    "week": "4"
+  }
+]

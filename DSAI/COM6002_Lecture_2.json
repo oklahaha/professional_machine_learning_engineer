@@ -1,0 +1,350 @@
+[
+  {
+    "question": "What is the primary security reason for using HTTP POST instead of HTTP GET when transmitting sensitive parameter data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "POST requests automatically apply TLS encryption to the payload regardless of whether HTTP or HTTPS is used.",
+        "Explanation": "Encryption depends entirely on the underlying transport protocol (HTTPS vs HTTP) rather than the choice between GET and POST methods."
+      },
+      {
+        "label": "B",
+        "text": "POST parameters are included in the request body rather than the URL, preventing sensitive values from appearing in browser histories and server logs.",
+        "Explanation": "URLs are routinely recorded in server access logs, browser histories, and bookmarks, whereas request body contents are kept out of these readable locations."
+      },
+      {
+        "label": "C",
+        "text": "GET requests cannot include custom authentication tokens inside HTTP request headers.",
+        "Explanation": "Both GET and POST requests support custom HTTP headers, such as API keys or authorization tokens."
+      },
+      {
+        "label": "D",
+        "text": "POST requests establish a persistent socket connection that prevents third-party packet sniffing.",
+        "Explanation": "POST requests follow standard HTTP connection rules and do not inherently open persistent sockets or prevent packet sniffing without HTTPS."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider where request parameter values are displayed or recorded during routine browsing and logging.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "How does a Webhook architecture fundamentally differ from a traditional REST API when delivering data updates?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Webhooks rely on client-side polling at fixed timed intervals to query server updates.",
+        "Explanation": "Polling is a client-initiated technique common in RESTful setups, whereas Webhooks eliminate polling."
+      },
+      {
+        "label": "B",
+        "text": "Webhooks proactively send data from the source server to a target listener URL as soon as an event occurs.",
+        "Explanation": "Webhooks operate on a push model where the server sends data directly to a configured destination upon event generation."
+      },
+      {
+        "label": "C",
+        "text": "Webhooks require an intermediary message queue cluster to store messages permanently before delivery.",
+        "Explanation": "Direct Webhooks operate on a two-party basis between source and destination without requiring a message queue broker."
+      },
+      {
+        "label": "D",
+        "text": "Webhooks keep a persistent two-way TCP connection open continuously for receiving streaming events.",
+        "Explanation": "Webhooks trigger discrete HTTP POST requests per event rather than maintaining an open streaming socket."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Think about which system component initiates the communication when new event data becomes available.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "In a Publish-Subscribe (Pub/Sub) messaging system, which feature provides an advantage over direct Webhooks regarding message handling?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pub/Sub brokers do not require any server infrastructure to distribute messages to consumers.",
+        "Explanation": "Pub/Sub architectures rely on intermediate brokers (like Kafka) to manage topic routing and message delivery."
+      },
+      {
+        "label": "B",
+        "text": "Pub/Sub systems persist messages to disk, allowing consumers to replay historical data streams.",
+        "Explanation": "Storage on disk in Pub/Sub brokers ensures message durability and enables subscribers to re-read historical logs."
+      },
+      {
+        "label": "C",
+        "text": "Pub/Sub architectures force data producers to manage individual HTTP POST connections for every consumer.",
+        "Explanation": "Producers send messages only once to the central broker, which handles message fan-out to consumers automatically."
+      },
+      {
+        "label": "D",
+        "text": "Pub/Sub systems restrict each published topic to a single registered consumer.",
+        "Explanation": "A key feature of Pub/Sub is allowing multiple independent consumers to subscribe to the same topic."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Focus on how event records are stored after publication and whether consumers can review past events.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "What is a major limitation of using DOM element parsing (such as BeautifulSoup) for web data extraction?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It cannot extract structured text elements contained within static HTML tags.",
+        "Explanation": "DOM parsers excel at reading and organizing static text elements structured within HTML tags."
+      },
+      {
+        "label": "B",
+        "text": "It requires sending a screenshot of the target webpage to a cloud server for every request.",
+        "Explanation": "DOM parsing operates directly on the raw HTML source code without needing screenshots or visual models."
+      },
+      {
+        "label": "C",
+        "text": "It is prone to breaking whenever a website modifies its visual layout or underlying HTML tags.",
+        "Explanation": "Hardcoded CSS selectors or HTML tag paths depend heavily on exact page structures, making them brittle to web design changes."
+      },
+      {
+        "label": "D",
+        "text": "It automatically executes complex client-side JavaScript code to render dynamic page updates.",
+        "Explanation": "Basic HTML parsers only analyze the initial source code received and do not execute embedded JavaScript."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Reflect on how script selectors react when a site administrator renames or rearranges layout elements.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Why would a data engineer use an automated browser framework like Selenium or Playwright instead of a simple HTTP client like Python's `requests`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Automated browser frameworks execute JavaScript to load dynamic content and interact with user interface elements.",
+        "Explanation": "Frameworks like Selenium control real browser engines capable of running client-side scripts and performing actions like logins."
+      },
+      {
+        "label": "B",
+        "text": "Automated browser frameworks run significantly faster and consume minimal CPU memory.",
+        "Explanation": "Running a full browser instance incurs higher overhead and memory consumption compared to lightweight HTTP requests."
+      },
+      {
+        "label": "C",
+        "text": "Automated browser frameworks automatically solve all server-side CAPTCHA challenges.",
+        "Explanation": "CAPTCHAs are designed to detect automated browser controllers, often requiring external solving mechanisms."
+      },
+      {
+        "label": "D",
+        "text": "Automated browser frameworks strip out all standard HTTP headers to avoid detection.",
+        "Explanation": "Browser automation tools send standard browser HTTP headers by default as part of operating a real browser instance."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how single-page web applications generate content after the initial page structure has loaded.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "What is the primary role of a `robots.txt` file on a web server?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It serves as an automated firewall rule that blocks non-browser IP addresses dynamically.",
+        "Explanation": "The file is a plain text file hosted publicly rather than an active network firewall or IP blocker."
+      },
+      {
+        "label": "B",
+        "text": "It outlines a voluntary protocol informing automated crawlers which paths or pages they are permitted or forbidden to access.",
+        "Explanation": "Web site owners use `robots.txt` to communicate crawling permissions, relying on bot operators to voluntarily respect the rules."
+      },
+      {
+        "label": "C",
+        "text": "It encrypts website content to prevent unauthorized scraping of proprietary data.",
+        "Explanation": "The `robots.txt` file provides readable directives and does not encrypt website content or prevent access cryptographically."
+      },
+      {
+        "label": "D",
+        "text": "It provides mandatory API keys required for making programmatic GET requests to the domain.",
+        "Explanation": "The file contains directives for web crawlers, not API access credentials or keys."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Determine whether this file acts as a voluntary guidelines document for scrapers or a technical firewall filter.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Which HTTP request header should be modified in a python script to prevent an anti-scraping system from identifying the request as a basic script?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`Content-Type`",
+        "Explanation": "`Content-Type` indicates the media type or data format of the request body, such as `application/json`."
+      },
+      {
+        "label": "B",
+        "text": "`Authorization`",
+        "Explanation": "`Authorization` passes security credentials like bearer tokens rather than browser identification details."
+      },
+      {
+        "label": "C",
+        "text": "`User-Agent`",
+        "Explanation": "The `User-Agent` header identifies the browser application, operating system, and software vendor making the request."
+      },
+      {
+        "label": "D",
+        "text": "`Host`",
+        "Explanation": "The `Host` header specifies the domain name of the target server and is standard across all valid requests."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Select the header responsible for broadcasting client device and browser identification details to the server.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "What is a primary drawback of utilizing vision-enabled LLMs to extract information from webpage screenshots?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They cannot interpret visual or non-textual layout components present on the page.",
+        "Explanation": "Vision-enabled models excel at understanding complex visual structures, images, and non-textual page layouts."
+      },
+      {
+        "label": "B",
+        "text": "They fail if the underlying HTML tag hierarchy changes slightly between page updates.",
+        "Explanation": "Vision-enabled models operate on rendered visual pixels rather than relying on underlying HTML tag hierarchies."
+      },
+      {
+        "label": "C",
+        "text": "They incur higher financial costs per request and may exhibit reliability concerns compared to traditional parsing.",
+        "Explanation": "Processing image tokens through LLM API calls introduces higher computational expenses and potential AI hallucination risks."
+      },
+      {
+        "label": "D",
+        "text": "They require writing manual Regular Expressions for every field to be extracted from the image.",
+        "Explanation": "LLMs parse visual context naturally without requiring hardcoded regular expressions for field mapping."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Consider the financial and operational trade-offs of sending images to large model APIs versus local text parsing.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Compared to RESTful APIs, what network efficiency advantage do Streaming APIs offer when transferring real-time data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They reuse a single persistent connection, eliminating the network overhead of repeating HTTP headers for every message.",
+        "Explanation": "Persistent connections in streaming models avoid the repeated TCP/TLS handshakes and HTTP header overhead required by REST requests."
+      },
+      {
+        "label": "B",
+        "text": "They process each data item independently as a completely stateless transaction.",
+        "Explanation": "Streaming connections are stateful and maintain an ongoing session, unlike stateless REST transactions."
+      },
+      {
+        "label": "C",
+        "text": "They rely on client-initiated GET requests for every data record pushed by the server.",
+        "Explanation": "In a streaming setup, the server pushes data proactively to the client without requiring a request per message."
+      },
+      {
+        "label": "D",
+        "text": "They automatically store full historical data backups on the client side during connection drops.",
+        "Explanation": "Streaming transport protocols deliver real-time messages but do not manage client-side historical data storage automatically."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens to connection setups and headers when sending rapid sequential data pushes.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Why is inserting randomized delay times between automated actions recommended when building a web crawler?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It prevents database transaction deadlocks when writing records to local tables.",
+        "Explanation": "Deadlocks relate to database concurrency control mechanisms rather than request pacing on external websites."
+      },
+      {
+        "label": "B",
+        "text": "It mimics human browsing behavior to reduce the likelihood of triggering rate-limiting or bot-detection systems.",
+        "Explanation": "Varying request timing makes crawling activity appear more human, helping avoid automated rate limits and IP bans."
+      },
+      {
+        "label": "C",
+        "text": "It forces the remote server to clear its application session cache between clicks.",
+        "Explanation": "Pausing client execution does not affect or reset internal server-side caching mechanisms."
+      },
+      {
+        "label": "D",
+        "text": "It grants the crawler elevated permissions to bypass website login requirements.",
+        "Explanation": "Timing delays do not alter user authentication status or bypass access control checks."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Consider how anti-bot algorithms analyze the speed and regularity of incoming user clicks.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "An API endpoint returns an HTTP response code of `429 Too Many Requests`. How is this response classified, and what does it mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is a 2xx Success status indicating the server processed the batch successfully.",
+        "Explanation": "2xx status codes indicate successful request processing rather than rate restriction errors."
+      },
+      {
+        "label": "B",
+        "text": "It is a 3xx Redirection status indicating the resource has moved to a new endpoint.",
+        "Explanation": "3xx status codes handle URL redirects and location changes."
+      },
+      {
+        "label": "C",
+        "text": "It is a 4xx Client Error status indicating that the requester has exceeded the allowed rate limits.",
+        "Explanation": "4xx status codes indicate client-side issues, with code 429 specifically signaling that the client sent too many requests in a given window."
+      },
+      {
+        "label": "D",
+        "text": "It is a 5xx Server Error status indicating an unexpected internal database crash.",
+        "Explanation": "5xx status codes indicate problems originating on the server side rather than rate limits enforced on the client."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Identify the meaning of the leading digit '4' in standard HTTP response status categories.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Which option correctly summarizes the core difference in interaction models between RESTful APIs and Webhooks?",
+    "options": [
+      {
+        "label": "A",
+        "text": "RESTful APIs use a push model, whereas Webhooks use a pull model.",
+        "Explanation": "RESTful APIs operate on a pull (request-response) model, whereas Webhooks operate on a push model."
+      },
+      {
+        "label": "B",
+        "text": "RESTful APIs require the client to pull data via requests, while Webhooks push data from the server upon event triggers.",
+        "Explanation": "Clients initiate REST requests to retrieve data on demand, whereas Webhooks deliver event data proactively to target endpoints."
+      },
+      {
+        "label": "C",
+        "text": "RESTful APIs maintain open WebSocket streams, while Webhooks use offline batch file transfers.",
+        "Explanation": "RESTful APIs use standard HTTP request-response cycles, and Webhooks send HTTP POST payloads per event."
+      },
+      {
+        "label": "D",
+        "text": "RESTful APIs can only return binary image files, while Webhooks exclusively deliver relational tables.",
+        "Explanation": "Both API methods can handle structured formats like JSON or XML."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Identify who initiates the transaction when data needs to move from source to destination.",
+    "course": "COM6002",
+    "week": "2"
+  }
+]

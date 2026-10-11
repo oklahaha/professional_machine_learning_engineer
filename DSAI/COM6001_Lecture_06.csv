@@ -1,0 +1,17 @@
+How can DataFrame.info() be used to determine the exact number of missing values in a specific column?,Subtract the column's non-null row count reported by info() from the total row count of the DataFrame.
+What structural advantage does transposing describe() via describe().T provide during a data audit?,"It lists features as rows and statistics as columns, making out-of-range missing value indicators like -999 easier to spot across many columns."
+How does passing dropna=False modify the behavior of Series.value_counts()?,It includes missing values (NaN) as a distinct frequency entry in the output Series rather than ignoring them.
+What Pandas code retrieves the exact count of NaN values from a Series s using value_counts()?,s.value_counts(dropna=False)[np.nan]
+Which parameter must be passed to df.isna().sum() to count the missing values in each individual row rather than each column?,axis=1
+What information does df.isna().sum(axis=0) produce during missing data detection?,It returns a Series showing the total number of missing (NaN) values present in each column.
+What does a value of 1 returned by df['column'].nunique(dropna=True) indicate about that column?,It indicates that the column contains only a single constant non-null value across all rows.
+How can Series.value_counts(normalize=True) be used to detect a constant value column?,"If the normalize output shows a proportion of 1.0 for a single value, that column is constant across all entries."
+How does DataFrame.value_counts() differ from DataFrame.nunique() when analyzing multiple columns for redundant mapping?,"DataFrame.value_counts() counts the frequencies of unique row combinations across columns, while nunique() counts unique entries per column individually."
+"The method df.notna() returns a boolean DataFrame that outputs _____ for cells containing valid, non-missing values.",True
+How can combination counting verify whether two columns are one-to-one mapped?,By checking whether the number of unique multi-column combinations equals the number of unique values in each separate column.
+How does DataFrame.duplicated(keep='first') evaluate identical rows in a dataset?,It marks the first occurrence of a row as False and marks all subsequent identical rows as True.
+Which Python expression calculates the total count of duplicated rows in a DataFrame df?,df.duplicated().sum()
+Which pd.read_csv() parameter allows custom numerical placeholders like -999 to be parsed directly as NaN during data loading?,na_values
+How can you check if a column contains missing values using only the nunique() method?,Subtract df.nunique(dropna=True) from df.nunique(dropna=False); a result of 1 indicates the presence of missing values.
+How does DataFrame.duplicated(keep=False) treat repeated rows compared to keep='first'?,"It marks every instance of a duplicated row as True, without preserving any occurrence as False."
+Which expression counts the total number of rows in a DataFrame df that contain at least one missing value?,df.isna().any(axis=1).sum()

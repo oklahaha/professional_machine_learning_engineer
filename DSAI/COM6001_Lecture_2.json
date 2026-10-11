@@ -1,0 +1,292 @@
+[
+  {
+    "question": "In a Jupyter Notebook development setup, what is the specific role of the Python Kernel?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It serves as the interface between the user interface and the underlying Python interpreter.",
+        "Explanation": "The kernel acts as a manager bridging code sent from notebook cells in the front-end browser to the interpreter engine that executes the code."
+      },
+      {
+        "label": "B",
+        "text": "It defines the fundamental syntax rules and language blueprints of Python.",
+        "Explanation": "Language rules and syntax specifications belong to the Python language definition itself rather than the execution kernel."
+      },
+      {
+        "label": "C",
+        "text": "It functions as an environment manager that hosts a collection of separate IDEs.",
+        "Explanation": "Managing software environments and hosting multiple application IDEs is the primary purpose of tools like Anaconda."
+      },
+      {
+        "label": "D",
+        "text": "It translates Python code directly into native hardware binaries without using an interpreter.",
+        "Explanation": "Python relies on its interpreter engine to execute code, and the kernel simply passes instructions to that interpreter."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about the middle layer connecting your browser notebook interface to the underlying execution engine.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "How does Anaconda differ from a standalone code editor or IDE like VS Code or PyCharm?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is an environment manager that bundles a collection of tools, packages, and IDEs together.",
+        "Explanation": "Anaconda encompasses an entire ecosystem providing environment management along with multiple included tools such as Spyder, Jupyter, and VS Code."
+      },
+      {
+        "label": "B",
+        "text": "It is a lightweight single-file editor that requires third-party plugins for basic code execution.",
+        "Explanation": "VS Code fits the description of an extensible editor, whereas Anaconda is a comprehensive software distribution and environment manager."
+      },
+      {
+        "label": "C",
+        "text": "It is strictly a cloud-hosted IPython runtime environment requiring constant internet connectivity.",
+        "Explanation": "Cloud-based execution applies to tools like Google Colab, whereas Anaconda runs locally on desktop operating systems."
+      },
+      {
+        "label": "D",
+        "text": "It is the core syntax engine responsible for compiling Python source files into bytecode.",
+        "Explanation": "The core syntax execution engine is the Python interpreter itself, not the Anaconda environment wrapper."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how Anaconda organizes multiple development tools and libraries under a unified management distribution.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Why is using `%pip install` recommended over `!pip install` when managing packages inside a Jupyter notebook?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It ensures the package installs directly into the active environment currently used by the notebook kernel.",
+        "Explanation": "The `%pip` line magic specifically targets the current active kernel's environment rather than defaulting to whatever system path `!pip` invocation points to."
+      },
+      {
+        "label": "B",
+        "text": "It automatically uploads installed packages to external cloud storage for cross-device access.",
+        "Explanation": "Magic commands manage local environment installation paths rather than cloud storage synchronization."
+      },
+      {
+        "label": "C",
+        "text": "It bypasses the download process by pulling packages directly from pre-compiled local system caches.",
+        "Explanation": "Package installation still requires downloading missing libraries; `%pip` simply guarantees correct environment targeting."
+      },
+      {
+        "label": "D",
+        "text": "It grants temporary administrator privileges to install packages at the operating system root level.",
+        "Explanation": "The command does not alter system privilege levels but rather ensures consistency with the active Python runtime environment."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how notebooks isolate virtual environments compared to the operating system's default terminal shell.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Which requirement must be kept in mind regarding file persistence when using Google Colab?",
+    "options": [
+      {
+        "label": "A",
+        "text": "You must mount your Google Drive every time to access separately stored datasets and code.",
+        "Explanation": "Because Google Colab separates runtime environments from persistent storage, mounting Google Drive is necessary in each session to access personal files."
+      },
+      {
+        "label": "B",
+        "text": "You must manually compile the Python kernel before running any notebook cell.",
+        "Explanation": "Google Colab provides a pre-installed Python kernel that is ready to use without manual compilation."
+      },
+      {
+        "label": "C",
+        "text": "You need a local Anaconda installation running in the background for Colab to connect.",
+        "Explanation": "Google Colab is a 100% cloud-hosted service and does not depend on local Anaconda installations."
+      },
+      {
+        "label": "D",
+        "text": "You must re-install core data libraries like pandas every time you start a session.",
+        "Explanation": "Common data science packages come pre-installed in the Google Colab cloud environment."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall how cloud storage and notebook execution runtime instances are decoupled in web-based environments.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "What is the relationship between the versions of Python, the Python interpreter, and the Python kernel?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They share almost the same version number, so choosing a kernel version selects the corresponding Python interpreter version.",
+        "Explanation": "Selecting a kernel version directly binds your code execution to that specific version of Python and its matching interpreter engine."
+      },
+      {
+        "label": "B",
+        "text": "The kernel and interpreter versions operate completely independently without matching requirements.",
+        "Explanation": "Kernel versions and interpreter versions are intrinsically linked to ensure code syntax is evaluated consistently."
+      },
+      {
+        "label": "C",
+        "text": "The kernel version is tied solely to the operating system release rather than Python.",
+        "Explanation": "The kernel is a Python-specific interface layer rather than a component managed by the host operating system release."
+      },
+      {
+        "label": "D",
+        "text": "The interpreter version updates automatically, while the Python language version remains permanently fixed.",
+        "Explanation": "Language features and interpreter capabilities update together under unified release versioning."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Reflect on what happens under the hood when you select a specific kernel inside your notebook environment.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "According to the department guidelines for project work, which action represents an acceptable ('Do') use of Generative AI?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Requesting sample code snippets or brainstorming potential analysis ideas within your code context.",
+        "Explanation": "AI assistance is permitted for ideation, library suggestions, and contextual sample code snippets to support learning."
+      },
+      {
+        "label": "B",
+        "text": "Allowing Generative AI to directly write and implement the core analysis for your submission.",
+        "Explanation": "Directly delegating the implementation and analysis execution to AI violates the requirement to complete work yourself."
+      },
+      {
+        "label": "C",
+        "text": "Asking Generative AI to draw final analytical conclusions on your data on your behalf.",
+        "Explanation": "Drawing analytical conclusions is a core requirement reserved for the student to demonstrate knowledge acquisition."
+      },
+      {
+        "label": "D",
+        "text": "Using Generative AI tools during closed-book written assessments and oral examinations.",
+        "Explanation": "Course evaluations include paper-based closed-book tests and oral assessments where external AI tools are prohibited."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the distinction between AI acting as a supportive learning assistant versus replacing student problem-solving.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Why is cross-checking solutions provided by Generative AI essential before incorporating them into your work?",
+    "options": [
+      {
+        "label": "A",
+        "text": "AI solutions can be biased or incorrect, and student understanding will be evaluated in closed-book and oral assessments.",
+        "Explanation": "Because AI outputs may contain errors or bias, and because exams are closed-book/oral, students must thoroughly digest and verify all concepts themselves."
+      },
+      {
+        "label": "B",
+        "text": "Unverified AI code automatically corrupts local Anaconda environment packages upon execution.",
+        "Explanation": "Executing AI-generated code does not corrupt environment packages, though logical or syntax errors may exist."
+      },
+      {
+        "label": "C",
+        "text": "Generative AI code automatically changes the active Python kernel version without notification.",
+        "Explanation": "Code suggestions do not possess the system authority to reconfigure active environment kernel settings."
+      },
+      {
+        "label": "D",
+        "text": "Jupyter Notebook automatically rejects any cell that contains AI-generated comment syntax.",
+        "Explanation": "Notebook environments treat all text input according to standard Python syntax, regardless of its author."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about personal knowledge retention and the specific closed-book assessment formats used in the course.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "What structural element distinguishes a Python module from a Python package?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A module is a single `.py` file containing code, whereas a package is a structured collection of multiple modules.",
+        "Explanation": "Single code files with a `.py` extension are modules, while organized directory structures containing related modules form packages."
+      },
+      {
+        "label": "B",
+        "text": "A module is used exclusively in cloud environments, while a package runs only on local command prompts.",
+        "Explanation": "Both modules and packages are universal Python structural concepts usable in any execution environment."
+      },
+      {
+        "label": "C",
+        "text": "A module requires installation via `%pip`, whereas a package comes built directly into the standard Python interpreter.",
+        "Explanation": "Installation requirements depend on whether code is third-party or built-in, not on whether it is organized as a module or package."
+      },
+      {
+        "label": "D",
+        "text": "A module contains binary machine instructions, while a package consists solely of text configuration files.",
+        "Explanation": "Both modules and packages consist of standard Python code definitions such as functions, classes, and variables."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look at the hierarchical relationship between an individual Python code file and a grouped collection of code files.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "In the context of data cleaning presented in Lab 1, how was missing data handled for the `Age` feature?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Replacing missing values with the calculated average age of the dataset.",
+        "Explanation": "Imputing numerical missing values with the column mean preserves sample size without removing incomplete records."
+      },
+      {
+        "label": "B",
+        "text": "Deleting the entire `Age` column due to the presence of missing entries.",
+        "Explanation": "Deleting a feature column is reserved for cases with excessive blanks or low importance, whereas age is a key feature."
+      },
+      {
+        "label": "C",
+        "text": "Filling all missing entries with a default value of zero.",
+        "Explanation": "Setting missing age values to zero incorrectly skews demographic analysis by introducing artificial newborn data."
+      },
+      {
+        "label": "D",
+        "text": "Deleting every row record that contained a missing age entry.",
+        "Explanation": "Row deletion discards usable data from other columns, making imputation with the average a preferred choice for age."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how continuous numerical features with moderate missingness are imputed without dropping the column.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "What functionality distinguishes an Integrated Development Environment (IDE) from a basic text editor like WordPad?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It provides user interfaces for features like code execution, debugging, auto-completion, and project-wide awareness.",
+        "Explanation": "An IDE provides an integrated suite of development tools beyond simple text editing to streamline software building."
+      },
+      {
+        "label": "B",
+        "text": "It eliminates the need for an underlying Python interpreter during code execution.",
+        "Explanation": "IDEs still rely on underlying interpreter engines to execute code written within their user interfaces."
+      },
+      {
+        "label": "C",
+        "text": "It only accepts plain text without supporting syntax highlighting or formatting plugins.",
+        "Explanation": "Syntax highlighting and plugin support are fundamental capabilities of modern IDEs and code editors."
+      },
+      {
+        "label": "D",
+        "text": "It restricts development strictly to single-file scripts without supporting multi-file projects.",
+        "Explanation": "Project-wide awareness and multi-file management are core strengths of IDE platforms."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the built-in developer productivity and workflow tools integrated directly within an IDE interface.",
+    "course": "COM6001",
+    "week": "2"
+  }
+]

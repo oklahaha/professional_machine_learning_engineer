@@ -1,0 +1,292 @@
+[
+  {
+    "question": "In a Binomial distribution represented as $X \\sim \\text{B}(n, p)$, what does the parameter $n$ signify?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The fixed total number of independent trials.",
+        "Explanation": "In a Binomial setting, $n$ represents the predetermined number of independent attempts or trials conducted."
+      },
+      {
+        "label": "B",
+        "text": "The observed number of successful outcomes.",
+        "Explanation": "The random variable $X$ (or outcome value $k$) represents the number of successes, whereas $n$ is the fixed number of trials."
+      },
+      {
+        "label": "C",
+        "text": "The probability of achieving success on a single trial.",
+        "Explanation": "The probability of success on a given trial is denoted by $p$, not $n$."
+      },
+      {
+        "label": "D",
+        "text": "The average rate of occurrence over a specified time interval.",
+        "Explanation": "An average rate of occurrence over an interval is represented by $\\lambda$ in a Poisson distribution."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which parameter is fixed before the experiment begins to bound the maximum possible number of successes.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Which formula correctly computes the combination term $\\binom{n}{k}$ used in the Binomial Probability Mass Function (PMF)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{n!}{k!(n-k)!}$",
+        "Explanation": "This formula calculates the total number of ways to choose $k$ successful trials out of $n$ total trials regardless of order."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{n!}{(n-k)!}$",
+        "Explanation": "This expression computes permutations rather than combinations, failing to account for the unordered nature of selecting $k$ successes."
+      },
+      {
+        "label": "C",
+        "text": "$\\frac{k!}{n!(n-k)!}$",
+        "Explanation": "This inverts $n!$ and $k!$ in the numerator and denominator, which is algebraically incorrect for combinations."
+      },
+      {
+        "label": "D",
+        "text": "$\\frac{n!}{k!}$",
+        "Explanation": "This omits the $(n-k)!$ factor in the denominator necessary to exclude permutations of non-selected outcomes."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall the standard formula for combinations used to count subset arrangements without regard to order.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "What primary feature conceptualizes a Geometric distribution rather than a Binomial distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It counts the total number of trials required until the first success occurs.",
+        "Explanation": "The Geometric distribution models the count of repeated independent trials up to and including the single trial where the first success is achieved."
+      },
+      {
+        "label": "B",
+        "text": "It allows the probability of success $p$ to vary across successive trials.",
+        "Explanation": "Both Geometric and Binomial distributions require a constant probability of success $p$ across all trials."
+      },
+      {
+        "label": "C",
+        "text": "It counts the number of successes occurring within a fixed interval of time.",
+        "Explanation": "Counting occurrences over a continuous time interval characterizes a Poisson distribution."
+      },
+      {
+        "label": "D",
+        "text": "It requires a predetermined number of trials $n$ specified beforehand.",
+        "Explanation": "A fixed number of trials $n$ is a core condition of the Binomial distribution, whereas the Geometric distribution has a variable number of trials depending on when success occurs."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on what stopping rule defines when the experiment ends in a Geometric process.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "If a basketball player has a success rate of $p = 0.4$ per free throw, what is the expression for calculating the probability that their first successful throw happens on the $4\\text{th}$ attempt, $\\Pr(X=4)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(1 - 0.4)^3 \\cdot 0.4 = 0.0864$",
+        "Explanation": "The first success on trial $k=4$ requires exactly 3 consecutive failures $(1-p)^3$ followed immediately by 1 success $p$ on the $4\\text{th}$ trial."
+      },
+      {
+        "label": "B",
+        "text": "$(0.4)^3 \\cdot (1 - 0.4) = 0.0384$",
+        "Explanation": "This incorrectly calculates 3 initial successes followed by a failure on the $4\\text{th}$ shot."
+      },
+      {
+        "label": "C",
+        "text": "$(1 - 0.4)^4 \\cdot 0.4 = 0.0518$",
+        "Explanation": "This incorrectly assumes 4 failures occur before the success, representing a success on the $5\\text{th}$ trial."
+      },
+      {
+        "label": "D",
+        "text": "$\\binom{4}{1} (0.4)^1 (0.6)^3 = 0.1536$",
+        "Explanation": "This computes the Binomial probability of 1 success anywhere among 4 trials, rather than specifically requiring the first success to occur strictly on the $4\\text{th}$ trial."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Multiply the probabilities of failing three times in a row and succeeding on the fourth try.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Which condition is a fundamental requirement for modeling events using a Poisson distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Events occur independently at a constant average rate, and two events cannot happen at the exact same instant.",
+        "Explanation": "The Poisson distribution assumes independence, constant average occurrence rate $\\lambda$, and non-simultaneous single event occurrences."
+      },
+      {
+        "label": "B",
+        "text": "The trial count $n$ must be fixed and small.",
+        "Explanation": "The Poisson distribution applies to fixed intervals of continuous time/space rather than a fixed finite count of trials $n$."
+      },
+      {
+        "label": "C",
+        "text": "Each event increases the likelihood of subsequent events occurring.",
+        "Explanation": "Events must remain strictly independent; one event cannot influence the likelihood of another."
+      },
+      {
+        "label": "D",
+        "text": "The experiment must terminate as soon as the first event is recorded.",
+        "Explanation": "Stopping upon the first event describes a Geometric process, whereas a Poisson process counts all occurrences over an entire interval."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the rules regarding event independence and simultaneous occurrences over continuous intervals.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "What unique mathematical identity links the parameter $\\lambda$ to the expected value $\\text{E}(X)$ and variance $\\text{Var}(X)$ in a Poisson distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\lambda = \\text{E}(X) = \\text{Var}(X)$",
+        "Explanation": "In a Poisson distribution, both the expected value (mean) and the variance are equal to the rate parameter $\\lambda$."
+      },
+      {
+        "label": "B",
+        "text": "$\\text{Var}(X) = \\lambda(1 - \\lambda)$",
+        "Explanation": "This formula resembles the variance term $p(1-p)$ of a Bernoulli trial rather than the Poisson variance."
+      },
+      {
+        "label": "C",
+        "text": "$\\text{E}(X) = \\lambda$ and $\\text{Var}(X) = \\lambda^2$",
+        "Explanation": "The variance of a Poisson distribution is $\\lambda$, not its square."
+      },
+      {
+        "label": "D",
+        "text": "$\\text{E}(X) = n\\lambda$ and $\\text{Var}(X) = n\\lambda(1 - \\lambda)$",
+        "Explanation": "This conflates Poisson parameters with Binomial expectation ($np$) and variance ($np(1-p)$)."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look for the relationship where both the central tendency and dispersion metrics equal the rate parameter directly.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Which equation represents the Probability Mass Function $f(k; \\lambda) = \\Pr(X = k)$ for a Poisson random variable?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{\\lambda^k e^{-\\lambda}}{k!}$",
+        "Explanation": "This is the canonical formula for the Poisson PMF, where $\\lambda$ is the rate, $e$ is Euler's number, and $k!$ is the factorial of $k$ occurrences."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{\\lambda e^{-\\lambda k}}{k!}$",
+        "Explanation": "This places $k$ inside the exponent of $e$, which alters the standard formula structure."
+      },
+      {
+        "label": "C",
+        "text": "$\\binom{n}{k} \\lambda^k (1-\\lambda)^{n-k}$",
+        "Explanation": "This replaces parameter $p$ with $\\lambda$ inside the Binomial PMF formula."
+      },
+      {
+        "label": "D",
+        "text": "$\\frac{e^{-\\lambda}}{\\lambda^k k!}$",
+        "Explanation": "This places $\\lambda^k$ in the denominator instead of multiplying in the numerator."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The formula features $\\lambda$ raised to the power $k$ divided by $k!$, scaled by $e^{-\\lambda}$.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "How do the possible values (range) of the discrete random variable $k$ differ between a Binomial distribution and a Poisson distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Binomial values are bounded as $k \\in \\{0, 1, 2, \\dots, n\\}$, whereas Poisson values are unbounded as $k \\in \\{0, 1, 2, 3, \\dots\\}$.",
+        "Explanation": "A Binomial distribution cannot yield more successes than the fixed trial limit $n$, while a Poisson count has no defined upper bound for discrete occurrences."
+      },
+      {
+        "label": "B",
+        "text": "Binomial values start at $k=1$, while Poisson values start at $k=0$.",
+        "Explanation": "Both distributions include $k=0$ as a possible outcome (0 successes or 0 events)."
+      },
+      {
+        "label": "C",
+        "text": "Binomial values are continuous positive reals, whereas Poisson values are non-negative integers.",
+        "Explanation": "Both Binomial and Poisson distributions are discrete distributions that only evaluate non-negative integer counts."
+      },
+      {
+        "label": "D",
+        "text": "Both distributions have identical bounded ranges $k \\in \\{0, 1, 2, \\dots, n\\}$.",
+        "Explanation": "The Poisson distribution measures counts over a continuous interval without a fixed parameter $n$ capping $k$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider whether a hard limit exists on the maximum number of occurrences that can happen.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Which Python `scipy.stats` line correctly calculates the probability of obtaining exactly $8$ heads out of $15$ flips of a fair coin?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.binom.pmf(8, 15, 0.5)`",
+        "Explanation": "The signature for `stats.binom.pmf` takes target successes ($k=8$), total trials ($n=15$), and success probability ($p=0.5$)."
+      },
+      {
+        "label": "B",
+        "text": "`stats.binom.pmf(15, 8, 0.5)`",
+        "Explanation": "This transposes the arguments for $k$ and $n$, incorrectly treating 15 as $k$ and 8 as $n$."
+      },
+      {
+        "label": "C",
+        "text": "`stats.geom.pmf(8, 0.5)`",
+        "Explanation": "This uses the Geometric distribution PMF, which measures the trial of the first success rather than counting successes in 15 trials."
+      },
+      {
+        "label": "D",
+        "text": "`stats.poisson.pmf(8, 15)`",
+        "Explanation": "This calls a Poisson distribution using 15 as the rate parameter $\\lambda$, ignoring the trial structure."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pass the arguments in the order: observed successes ($k$), total trials ($n$), and success rate ($p$).",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "A customer service call center receives an average of $4.5$ calls per minute. Which SciPy syntax correctly computes the probability of receiving exactly $6$ calls in the next minute?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.poisson.pmf(6, 4.5)`",
+        "Explanation": "For `stats.poisson.pmf`, the first parameter is the exact count $k=6$ and the second is the average rate parameter $\\lambda=4.5$."
+      },
+      {
+        "label": "B",
+        "text": "`stats.poisson.pmf(4.5, 6)`",
+        "Explanation": "This reverses the required positions of the target count $k$ and the rate parameter $\\lambda$."
+      },
+      {
+        "label": "C",
+        "text": "`stats.geom.pmf(6, 4.5)`",
+        "Explanation": "This incorrectly uses the Geometric distribution function and passes an invalid probability parameter greater than 1."
+      },
+      {
+        "label": "D",
+        "text": "`stats.binom.pmf(6, 4.5, 1)`",
+        "Explanation": "This uses the Binomial function with an invalid number of trials and probability configuration."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall that the Poisson PMF function in SciPy expects $k$ as the first argument followed by $\\lambda$ (the average rate).",
+    "course": "COM6005",
+    "week": "2B"
+  }
+]

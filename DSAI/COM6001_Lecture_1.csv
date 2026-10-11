@@ -1,0 +1,24 @@
+What is the syntax for defining an anonymous lambda function in Python?,`lambda arguments: expression`
+How do you immediately invoke a Python lambda function without assigning it to a named variable?,"Wrap the lambda expression in parentheses and append the arguments in a second pair of parentheses, such as `(lambda x, y: x + y)(3, 5)`."
+Why is `%pip install` preferred over `!pip install` when installing packages inside a Jupyter notebook?,`%pip` guarantees installation directly into the specific environment running the active notebook kernel.
+Which `%pip` command displays version and location details for an installed Python package?,`%pip show package_name`
+How does a Pandas Series differ structurally from a Pandas DataFrame?,"A Series is a one-dimensional labeled array, whereas a DataFrame is a two-dimensional tabular structure with row and column labels."
+What default index is assigned when creating a Pandas Series without passing an explicit `index` argument?,An integer RangeIndex starting at 0 up to `N - 1`.
+What result occurs when a DataFrame is created from Series whose index labels do not match the specified DataFrame `index` parameter?,The DataFrame populates with `NaN` values due to index mis-alignment.
+"Why is assigning a string like `""NA""` to an element in a float-typed Pandas Series discouraged?",It forces an inefficient type conversion on the numeric Series and triggers a deprecation warning.
+What tuple structure is returned by the `df.shape` attribute of a Pandas DataFrame?,"`(number_of_rows, number_of_columns)`"
+What is the main distinction between the outputs of `df.info()` and `df.describe()`?,"`df.info()` summarizes structural metadata and non-null counts, whereas `df.describe()` calculates descriptive statistics for numeric columns."
+Which parameter of `pd.read_csv()` is required and has no default value?,`filepath_or_buffer`
+Which parameter in `pd.read_excel()` specifies a target worksheet tab from an Excel file?,`sheet_name`
+What is the main advantage of saving a DataFrame using `.to_pickle()` instead of `.to_csv()`?,Pickle files preserve all exact Pandas column data types (`dtypes`) upon re-loading.
+Which Pandas data type is optimized to store categorical variables with a limited set of fixed values?,`category`
+"What structural change occurs when setting `axis=1` in `pd.concat([df1, df2])`?",It concatenates the DataFrames horizontally along columns rather than vertically along rows.
+Which parameter in `pd.concat()` re-indexes the combined DataFrame sequentially from 0 to N-1?,`ignore_index=True`
+Under what condition should `pd.merge()` be used instead of `pd.concat()`?,Use `pd.merge()` when joining tables based on matching key values in shared columns rather than stacking by index or position.
+Which `pd.merge()` parameters specify join keys when key columns have different names in the left and right DataFrames?,`left_on` and `right_on`
+"What output is produced by `pd.merge(left, right, how='cross')`?",A Cartesian product containing every pair combination of rows from the left and right DataFrames.
+What data entries are retained when performing a `pd.merge()` with `how='outer'`?,"All records from both DataFrames are retained, filling non-matching entries with `NaN`."
+Why must element-wise string transformations on a Pandas Series be called via the `.str` accessor?,"String methods belong to Python string objects, so `.str` exposes vectorized string operations across Series elements."
+"Why does `df.rename(mapper=lambda x: x.upper, axis='columns')` produce method representation outputs instead of upper-case strings?",It evaluates to the uncalled method object `x.upper` rather than invoking `x.upper()` to return transformed string values.
+What is the correct syntax for converting all DataFrame column names to uppercase using `df.rename()` and a built-in method?,`df.rename(columns=str.upper)`
+How can `list.sort()` order a list of strings based on custom numerical criteria using a lambda function?,"Pass a lambda function extracting the integer component to the `key` parameter, such as `key_list.sort(key=lambda x: int(x[1:]))`."

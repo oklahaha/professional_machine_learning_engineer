@@ -1,0 +1,21 @@
+"What formula is used to calculate the degrees of freedom ($
+u$) in a one-sample t-test with sample size $n$?",$\nu = n - 1$
+What formula is used to calculate the test statistic $T$ in a one-sample t-test comparing sample mean $\bar{y}$ against target mean $\mu_0$?,$T = \frac{\bar{y} - \mu_0}{s / \sqrt{n}}$
+"In statistical hypothesis testing, what is the definition of a p-value?","It is the probability of obtaining a test statistic at least as extreme as the observed value, assuming the null hypothesis $H_0$ is true."
+Under what condition regarding the p-value and significance level $\alpha$ is the null hypothesis $H_0$ rejected?,$H_0$ is rejected when the p-value is strictly smaller than $\alpha$.
+"In Python's `scipy.stats`, what code computes the critical value for a right-tailed t-test with significance level $\alpha = 0.05$ and $df = 9$?","`scipy.stats.t.ppf(0.95, 9)`"
+"For a right-tailed one-sample t-test ($H_0: \mu \le \mu_0$ vs. $H_1: \mu > \mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\alpha, n-1}$?","Reject $H_0$ if $T > t_{\alpha, n-1}$."
+"For a left-tailed one-sample t-test ($H_0: \mu \ge \mu_0$ vs. $H_1: \mu < \mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\alpha, n-1}$?","Reject $H_0$ if $T < -t_{\alpha, n-1}$."
+"For a two-sided one-sample t-test ($H_0: \mu = \mu_0$ vs. $H_1: \mu \ne \mu_0$), what is the decision rule for rejecting $H_0$ using critical value $t_{\alpha/2, n-1}$?","Reject $H_0$ if $|T| > t_{\alpha/2, n-1}$."
+What formula defines the $100(1-\alpha)\%$ confidence interval for $\mu_0$ derived from a two-sided t-test decision rule?,"$\bar{y} - t_{\alpha/2, n-1}\frac{s}{\sqrt{n}} < \mu_0 < \bar{y} + t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}$"
+What are the degrees of freedom for a paired t-test conducted on $n$ matched pairs?,$n - 1$
+What formula calculates the test statistic $T$ for a paired t-test on difference values $W$?,$T = \frac{\bar{W}}{S / \sqrt{n}}$
+What is the formula for the pooled sample variance $s_p^2$ in an independent two-sample t-test assuming equal variances?,$s_p^2 = \frac{(n-1)s_X^2 + (m-1)s_Y^2}{n + m - 2}$
+What are the total degrees of freedom for an independent two-sample t-test with sample sizes $n$ and $m$?,$n + m - 2$
+What formula calculates the test statistic $T$ in an independent two-sample pooled t-test?,$T = \frac{\bar{X} - \bar{Y}}{s_p \sqrt{\frac{1}{n} + \frac{1}{m}}}$
+"According to the parametric test flowchart, which test is appropriate for 1 sample comparing to a target mean when sample size $n < 30$?",1-Sample t-Test
+"According to the parametric test flowchart, which test should be selected when comparing means across more than 2 samples for a single factor?",1-Way ANOVA
+How does increasing the degrees of freedom affect the shape of the t-distribution density curve?,"It increases the peak height and thins the tails, approaching the standard normal ($Z$) distribution."
+"In a right-tailed t-test with calculated test statistic $T$, how is the p-value computed using the cumulative distribution function `t.cdf`?","$p\text{-value} = 1 - \text{t.cdf}(T, \nu)$"
+"In Python, which parameter in `stats.ttest_1samp` specifies a left-tailed alternative hypothesis $H_1: \mu < \mu_0$?",`alternative='less'`
+What sample condition determines whether an independent two-sample t-test should use a pooled vs. unpooled standard deviation?,Whether the two population variances are equal or unequal.

@@ -1,0 +1,350 @@
+[
+  {
+    "question": "Why does calling `hero.columns.lower()` raise an `AttributeError` in Pandas?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`lower()` is a method belonging to standard Python string objects and cannot be called directly on a Pandas Index object without using the `.str` accessor.",
+        "Explanation": "Element-wise string operations on Pandas Series or Index objects require invoking string methods through the `.str` accessor."
+      },
+      {
+        "label": "B",
+        "text": "Column names in a Pandas DataFrame are immutable and cannot be modified after object initialization.",
+        "Explanation": "Pandas column names can be modified by assigning a new Index or array to the DataFrame's `.columns` attribute."
+      },
+      {
+        "label": "C",
+        "text": "The `lower()` method only applies to DataFrame values, requiring `.to_lower()` for column labels.",
+        "Explanation": "Pandas does not feature a `.to_lower()` method; case transformations utilize string accessor methods."
+      },
+      {
+        "label": "D",
+        "text": "Case transformations require passing a dictionary mapping into `DataFrame.rename()`.",
+        "Explanation": "Direct attribute reassignment using `.columns.str.lower()` is fully supported and does not require a dictionary mapper."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how text operations are exposed on Pandas Series and Index structures.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "What occurs when executing `hero.rename(mapper=lambda x: x.upper, axis='columns')` on a DataFrame?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The column labels are replaced with string references to the method object rather than the transformed string values because `x.upper` was not called.",
+        "Explanation": "Passing `x.upper` without parentheses returns the method object itself for each label rather than executing the method to return an uppercase string."
+      },
+      {
+        "label": "B",
+        "text": "A `SyntaxError` is raised because lambda functions are incompatible with the `mapper` parameter in `rename()`.",
+        "Explanation": "Lambda functions are frequently used as mappers in `DataFrame.rename()` to transform row or column labels."
+      },
+      {
+        "label": "C",
+        "text": "The code throws an error because `axis='columns'` is not a supported keyword argument in `rename()`.",
+        "Explanation": "`axis='columns'` is a valid parameter indicating that the mapper should be applied to column labels."
+      },
+      {
+        "label": "D",
+        "text": "The column names are converted to lowercase due to fallback behavior in the lambda mapper.",
+        "Explanation": "The code evaluates `x.upper` as a method object reference, which populates column names with string representations of the uncalled method."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Distinguish between referencing a method object and executing a method call with parentheses.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Given `df_ref = df` and `df_copy = df.copy()`, what is the outcome when a new column is added using `df['new_col'] = 100`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df_ref` will reflect `new_col` because it shares the same memory reference as `df`, whereas `df_copy` remains unchanged.",
+        "Explanation": "Direct assignment creates a reference pointing to the same memory object, while `.copy()` creates an independent DataFrame object."
+      },
+      {
+        "label": "B",
+        "text": "Both `df_ref` and `df_copy` will include `new_col` automatically.",
+        "Explanation": "Calling `.copy()` disconnects `df_copy` from future mutations made to `df`."
+      },
+      {
+        "label": "C",
+        "text": "`df_copy` will reflect `new_col`, while `df_ref` retains only the original columns.",
+        "Explanation": "`df_copy` is an independent object and does not receive updates made to `df`."
+      },
+      {
+        "label": "D",
+        "text": "Neither `df_ref` nor `df_copy` will contain `new_col` because assignment re-instantiates `df`.",
+        "Explanation": "Column assignment mutates the existing DataFrame object in place rather than instantiating a new object."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how memory identity and variable assignment differ from explicit DataFrame duplication.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "How does label-based row slicing using `df.loc['Superman':'Wonder Woman']` differ from standard Python positional slicing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both the start label `'Superman'` and the stop label `'Wonder Woman'` are included in the output.",
+        "Explanation": "Label-based slicing with `.loc` is inclusive of both the start and stop boundaries."
+      },
+      {
+        "label": "B",
+        "text": "The start label is included, but the stop label `'Wonder Woman'` is excluded.",
+        "Explanation": "Excluding the stop boundary is characteristic of positional slicing (such as Python lists or `.iloc`), whereas `.loc` includes both boundaries."
+      },
+      {
+        "label": "C",
+        "text": "Only the boundary rows labeled `'Superman'` and `'Wonder Woman'` are returned, excluding intermediate rows.",
+        "Explanation": "Slicing with a colon extracts all contiguous rows between and including the specified boundary labels."
+      },
+      {
+        "label": "D",
+        "text": "It converts label string characters into integer ASCII values to calculate slice bounds.",
+        "Explanation": "Label-based slicing uses the existing Index label order directly rather than converting text to ASCII values."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pay attention to whether the stop boundary is inclusive or exclusive in label-based indexing.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which parameter call to `df.select_dtypes()` selects all columns containing integer or floating-point numbers?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.select_dtypes(include=['number'])`",
+        "Explanation": "Passing `'number'` as a broad type category selects all numeric columns, including both integer and floating-point types."
+      },
+      {
+        "label": "B",
+        "text": "`df.select_dtypes(include=['numeric'])`",
+        "Explanation": "Pandas uses the broad data type string `'number'` rather than `'numeric'`."
+      },
+      {
+        "label": "C",
+        "text": "`df.select_dtypes(include=['int', 'float', 'bool'])`",
+        "Explanation": "Including `'bool'` selects boolean columns, which are distinct from numerical numeric types."
+      },
+      {
+        "label": "D",
+        "text": "`df.select_dtypes(types='number')`",
+        "Explanation": "`select_dtypes()` expects `include` or `exclude` parameters rather than a `types` keyword argument."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall the broad data type group keyword recognized by Pandas to encompass all numerical dtypes.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which statement correctly filters rows in a DataFrame `hero` where column `'flight'` is `True` AND column `'gender'` is `'Male'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`hero[(hero['flight'] == True) & (hero['gender'] == 'Male')]`",
+        "Explanation": "Pandas requires bitwise operators like `&` for element-wise boolean logical operations, along with parentheses around each condition."
+      },
+      {
+        "label": "B",
+        "text": "`hero[(hero['flight'] == True) and (hero['gender'] == 'Male')]`",
+        "Explanation": "The Python `and` keyword evaluates the truth value of an entire object as a whole, raising an error when used on Series objects."
+      },
+      {
+        "label": "C",
+        "text": "`hero[hero['flight'] == True && hero['gender'] == 'Male']`",
+        "Explanation": "`&&` is not a valid operator in Python syntax."
+      },
+      {
+        "label": "D",
+        "text": "`hero.loc[hero['flight'] == True , hero['gender'] == 'Male']`",
+        "Explanation": "Separating conditions with a comma inside `.loc` treats the second condition as a column indexer rather than combining row filtering logic."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pandas conditional filtering requires element-wise bitwise operators wrapped in parentheses.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "In two-dimensional positional subsetting, what data is extracted by `hero.iloc[1:4, 2:5]`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Rows at integer index positions 1, 2, and 3, and columns at integer index positions 2, 3, and 4.",
+        "Explanation": "Positional slicing via `.iloc` follows standard zero-indexed start-inclusive and stop-exclusive slice behavior for both axes."
+      },
+      {
+        "label": "B",
+        "text": "Rows at integer index positions 1, 2, 3, and 4, and columns at integer index positions 2, 3, 4, and 5.",
+        "Explanation": "Integer slicing with `.iloc` excludes the stop index position specified."
+      },
+      {
+        "label": "C",
+        "text": "Rows labeled 1 through 4 inclusive and columns labeled 2 through 5 inclusive.",
+        "Explanation": "`.iloc` performs integer position-based indexing rather than index label matching."
+      },
+      {
+        "label": "D",
+        "text": "Rows from index 0 up to 4, skipping step sizes of 2 and 5.",
+        "Explanation": "The syntax `1:4` specifies start and stop boundaries rather than step increments."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Positional slicing in `.iloc` follows standard Python zero-indexed start-inclusive and stop-exclusive rules.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "What is the purpose of the expression `(~hero['race'].isin(['Human', 'Mutant'])).sum()`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It counts the total number of rows where the `'race'` column value is neither `'Human'` nor `'Mutant'`.",
+        "Explanation": "The `.isin()` method creates a boolean mask of matching rows, which is inverted by `~` and then summed to count `True` entries."
+      },
+      {
+        "label": "B",
+        "text": "It calculates the sum of all numerical values in the `'race'` column for `'Human'` and `'Mutant'` entries.",
+        "Explanation": "`.sum()` on a boolean mask counts `True` values rather than summing text strings."
+      },
+      {
+        "label": "C",
+        "text": "It returns the total count of null or missing values present in the `'race'` column.",
+        "Explanation": "Negating `.isin()` filters out the specified string values rather than checking for `NaN` values specifically."
+      },
+      {
+        "label": "D",
+        "text": "It converts the `'race'` column values into boolean integers and sums their character lengths.",
+        "Explanation": "`.isin()` generates boolean results based on set membership rather than string character lengths."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Evaluate what `.isin()` generates and how the element-wise negation operator `~` transforms boolean values.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "To scale all numerical columns in DataFrame `hero` by multiplying them by 100 without modifying non-numeric columns, which procedure is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Store column labels using `numeric_cols = hero.select_dtypes(include='number').columns`, then assign `hero[numeric_cols] = hero[numeric_cols] * 100`.",
+        "Explanation": "Selecting numerical column labels ensures that scalar arithmetic operations are restricted to relevant columns before reassignment."
+      },
+      {
+        "label": "B",
+        "text": "Execute `hero.select_dtypes(include='number') * 100` without variable assignment.",
+        "Explanation": "Selecting and multiplying columns creates a temporary DataFrame subset without modifying the original DataFrame in place."
+      },
+      {
+        "label": "C",
+        "text": "Apply `hero.applymap(lambda x: x * 100, subset='number')`.",
+        "Explanation": "`DataFrame.applymap` does not accept a `subset` parameter for filtering column types."
+      },
+      {
+        "label": "D",
+        "text": "Assign `hero['number'] = hero['number'] * 100`.",
+        "Explanation": "This attempts to access a single column named `'number'` rather than targeting all numerical columns."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Select the specific column labels corresponding to numerical types first, then reassign the scaled subset back to those labels.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "If a DataFrame has multiple rows tied for the top values in column `'height'`, what is the effect of running `df.nlargest(3, 'height', keep='all')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It returns all tied rows at the boundary of the smallest top value, potentially returning more than $3$ rows.",
+        "Explanation": "Using `keep='all'` preserves all tied occurrences for the lowest value within the top $n$ threshold, which can expand the result set size beyond $n$."
+      },
+      {
+        "label": "B",
+        "text": "It strictly returns exactly $3$ rows, resolving ties by prioritizing the first occurrences.",
+        "Explanation": "Prioritizing first occurrences while strictly keeping $3$ rows is the behavior of `keep='first'`, not `keep='all'`."
+      },
+      {
+        "label": "C",
+        "text": "It strictly returns exactly $3$ rows, resolving ties by prioritizing the last occurrences.",
+        "Explanation": "Prioritizing last occurrences while strictly keeping $3$ rows is the behavior of `keep='last'`."
+      },
+      {
+        "label": "D",
+        "text": "It raises a `ValueError` because $n$ must equal the exact number of matching maximum values.",
+        "Explanation": "`nlargest()` handles ties gracefully according to the specified `keep` argument without raising an exception."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how the parameter `keep='all'` alters the standard row limit $n$ when duplicates exist.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which expression can be used during a data audit to check if a column `'planet'` contains only a single constant value across all non-null entries?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df['planet'].nunique(dropna=True) == 1`",
+        "Explanation": "`nunique(dropna=True)` returns the count of distinct non-null values, which equals 1 if the column is constant."
+      },
+      {
+        "label": "B",
+        "text": "`df['planet'].duplicated().sum() == 0`",
+        "Explanation": "A sum of 0 for `duplicated()` indicates that all values are unique, which is the opposite of a constant column."
+      },
+      {
+        "label": "C",
+        "text": "`df['planet'].value_counts() == 0`",
+        "Explanation": "`value_counts()` returns frequency counts for each distinct element rather than a single boolean comparison value."
+      },
+      {
+        "label": "D",
+        "text": "`df['planet'].compare() == True`",
+        "Explanation": "`compare()` requires two Series or DataFrame objects to compare cell differences."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look for a method that directly counts the number of distinct unique elements in a Series.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which Pandas method displays side-by-side row differences between two Series, such as `df['country_name']` and `df['Country Name']`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df['country_name'].compare(df['Country Name'])`",
+        "Explanation": "The `Series.compare()` method aligns two Series and returns a DataFrame highlighting differing values side-by-side."
+      },
+      {
+        "label": "B",
+        "text": "`df['country_name'].diff(df['Country Name'])`",
+        "Explanation": "`diff()` calculates discrete numerical differences between elements within a single Series across periods."
+      },
+      {
+        "label": "C",
+        "text": "`df['country_name'].drop_duplicates(df['Country Name'])`",
+        "Explanation": "`drop_duplicates()` removes duplicate rows within an object rather than comparing two separate Series."
+      },
+      {
+        "label": "D",
+        "text": "`df['country_name'].isin(df['Country Name'])`",
+        "Explanation": "`.isin()` returns boolean values indicating set inclusion rather than pinpointing specific value mismatches."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Identify the Series method designed to highlight cell-level differences between two aligned Series objects.",
+    "course": "COM6001",
+    "week": "5"
+  }
+]

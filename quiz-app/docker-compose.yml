@@ -1,0 +1,10 @@
+services:
+  pmle-quiz:
+    build: .
+    image: pmle-quiz:latest
+    container_name: pmle-quiz
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

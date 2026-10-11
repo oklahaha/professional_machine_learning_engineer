@@ -1,0 +1,19 @@
+What discrete probability distribution measures the number of successes ($X$) out of a fixed total number of independent trials ($n$)?,Binomial distribution
+What are the two key parameters required to define a Binomial distribution?,The total number of trials ($n$) and the probability of success per trial ($p$).
+"What is the probability mass function (PMF) formula for a Binomial distribution $X \sim \mathrm{B}(n, p)$?",$\Pr(X=k) = \binom{n}{k} p^k (1-p)^{n-k}$
+"In SciPy, what is the correct parameter ordering for `stats.binom.pmf(...)`?","`stats.binom.pmf(k, n, p)`"
+Which SciPy call calculates the probability of landing on heads exactly 8 times in 15 flips of a fair coin?,"`stats.binom.pmf(8, 15, 0.5)`"
+What discrete probability distribution measures the total number of trials ($X$) needed until the first success occurs?,Geometric distribution
+What key parameter is required to define a Geometric distribution?,The probability of success on each trial ($p$).
+"In SciPy, what is the correct parameter ordering for `stats.geom.pmf(...)`?","`stats.geom.pmf(k, p)`"
+Which SciPy call calculates the probability that a player with an 80% free-throw rate makes their first free throw on their 3rd attempt?,"`stats.geom.pmf(3, 0.8)`"
+"If a basketball player has a success probability of $p=0.4$, how is $\Pr(X=4)$ calculated using a Geometric distribution?",$\Pr(X=4) = (1-0.4)^3 \times 0.4 = 0.0864$
+What discrete probability distribution measures the number of times an event occurs over a fixed interval of time or space?,Poisson distribution
+What parameter $\lambda$ represents in a Poisson distribution?,The average rate of occurrence in the specified interval.
+How do the expected value $E(X)$ and variance $\operatorname{Var}(X)$ relate to $\lambda$ for a Poisson random variable?,Both $E(X)$ and $\operatorname{Var}(X)$ are equal to $\lambda$.
+What is the probability mass function (PMF) formula for a Poisson distribution with parameter $\lambda$?,$\Pr(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}$
+"In SciPy, what is the correct parameter ordering for `stats.poisson.pmf(...)`?","`stats.poisson.pmf(k, mu)`"
+Which SciPy call calculates the probability of receiving exactly 6 calls in a minute when the average rate is 4.5 calls per minute?,"`stats.poisson.pmf(6, 4.5)`"
+How does the random variable $X$ differ between a Binomial distribution and a Geometric distribution?,"Binomial counts successes across fixed $n$ trials, whereas Geometric counts total trials needed until the first success."
+Which probability distribution is suitable for modeling rare events occurring over a large number of possible trials within a fixed time interval?,Poisson distribution
+"In the Binomial PMF, what is the formula for the combination term $\binom{n}{k}$?",$\binom{n}{k} = \frac{n!}{k!(n-k)!}$

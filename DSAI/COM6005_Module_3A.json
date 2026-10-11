@@ -1,0 +1,292 @@
+[
+  {
+    "question": "According to the parametric test flowchart, which statistical test should be selected when comparing a single sample with a sample size $n > 30$ against a target mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Z Test",
+        "Explanation": "When working with a single sample whose size exceeds 30, a Z-test comparing to the target mean is recommended."
+      },
+      {
+        "label": "B",
+        "text": "1 Sample t Test",
+        "Explanation": "A 1-sample t-test is specified when the sample size is less than 30."
+      },
+      {
+        "label": "C",
+        "text": "Paired t Test",
+        "Explanation": "A paired t-test requires two samples containing paired data, rather than a single sample."
+      },
+      {
+        "label": "D",
+        "text": "1-Way ANOVA",
+        "Explanation": "One-way ANOVA is used when comparing means across more than two sample groups."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Check the condition on sample size under the single sample branch of the decision flowchart.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "A researcher evaluates whether a drug reduces tumor size, defining variable $Y$ as the decrease in tumor size. Which null ($H_0$) and alternative ($H_1$) hypotheses correctly represent this research objective?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$: $\\mu \\le 0$ against $H_1$: $\\mu > 0$",
+        "Explanation": "The alternative hypothesis reflects a positive mean decrease in tumor size, while the null hypothesis covers non-positive outcomes."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$: $\\mu \\ge 0$ against $H_1$: $\\mu < 0$",
+        "Explanation": "This set of hypotheses tests whether the treatment increases tumor size rather than decreasing it."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$: $\\mu = 0$ against $H_1$: $\\mu \\neq 0$",
+        "Explanation": "A two-sided test does not specifically test for directional improvement or reduction in tumor size."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$: $\\mu > 0$ against $H_1$: $\\mu \\le 0$",
+        "Explanation": "This formulation incorrectly places the directional hypothesis under test inside the null hypothesis."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The alternative hypothesis should express the presence of an active improvement, defined as a positive change.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "In a one-sample t-test testing against a target mean of $0$, which equation correctly calculates the test statistic $T$ using sample mean $\\bar{y}$, sample standard deviation $s$, and sample size $n$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$T = \\frac{\\bar{y}}{s / \\sqrt{n}}$",
+        "Explanation": "The test statistic is calculated by dividing the sample mean by its standard error, $s / \\sqrt{n}$."
+      },
+      {
+        "label": "B",
+        "text": "$T = \\frac{\\bar{y}}{s / n}$",
+        "Explanation": "Dividing $s$ by $n$ rather than $\\sqrt{n}$ underestimates the standard error of the mean."
+      },
+      {
+        "label": "C",
+        "text": "$T = \\frac{\\bar{y} - n}{s}$",
+        "Explanation": "The sample size $n$ should not be directly subtracted from the sample mean in the numerator."
+      },
+      {
+        "label": "D",
+        "text": "$T = \\frac{s}{\\bar{y} / \\sqrt{n}}$",
+        "Explanation": "Inverting the positions of the sample mean and standard error distorts the measurement of standard error units."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The test statistic expresses the sample mean's deviation from zero in units of standard error.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "When performing a one-sample t-test on a dataset containing $n = 10$ observations, what degrees of freedom ($\\nu$) should be used to locate the critical value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$9$",
+        "Explanation": "For one-sample problems, the degrees of freedom equal the sample size minus one ($n - 1$)."
+      },
+      {
+        "label": "B",
+        "text": "$10$",
+        "Explanation": "Using $n$ directly fails to account for the single degree of freedom lost when estimating the sample mean."
+      },
+      {
+        "label": "C",
+        "text": "$8$",
+        "Explanation": "Subtracting two degrees of freedom applies to independent two-sample tests rather than one-sample tests."
+      },
+      {
+        "label": "D",
+        "text": "$11$",
+        "Explanation": "Adding one to the sample size incorrectly increases the degrees of freedom."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the number of parameters estimated from the single sample before assessing variability.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "In hypothesis testing, what is the standard decision rule for rejecting the null hypothesis $H_0$ based on p-value and significance level $\\alpha$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reject $H_0$ if p-value $< \\alpha$",
+        "Explanation": "A p-value smaller than $\\alpha$ indicates that observing such data under $H_0$ is sufficiently unlikely, justifying rejection."
+      },
+      {
+        "label": "B",
+        "text": "Reject $H_0$ if p-value $> \\alpha$",
+        "Explanation": "A p-value greater than $\\alpha$ indicates that the observed sample is plausible under $H_0$, so $H_0$ is not rejected."
+      },
+      {
+        "label": "C",
+        "text": "Reject $H_0$ if p-value $= 1 - \\alpha$",
+        "Explanation": "Comparing the p-value to the confidence level $1 - \\alpha$ reverses the threshold criterion for statistical significance."
+      },
+      {
+        "label": "D",
+        "text": "Reject $H_0$ if p-value $> 1 - \\alpha/2$",
+        "Explanation": "This comparison incorrectly uses a high cumulative confidence probability cutoff instead of an upper tail threshold."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how extreme the sample outcome must be relative to the benchmark threshold $\\alpha$ to reject $H_0$.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Which mathematical inequality defines the two-sided $95\\%$ confidence interval for population mean $\\mu_0$, given sample mean $\\bar{y}$, sample standard deviation $s$, and sample size $n$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\bar{y} - t_{\\alpha/2, n-1} \\frac{s}{\\sqrt{n}} < \\mu_0 < \\bar{y} + t_{\\alpha/2, n-1} \\frac{s}{\\sqrt{n}}$",
+        "Explanation": "The two-sided confidence interval bounds the mean by adding and subtracting the critical value $t_{\\alpha/2, n-1}$ multiplied by the standard error."
+      },
+      {
+        "label": "B",
+        "text": "$\\bar{y} - t_{\\alpha, n-1} \\frac{s}{n} < \\mu_0 < \\bar{y} + t_{\\alpha, n-1} \\frac{s}{n}$",
+        "Explanation": "This formula incorrectly uses the one-tailed critical value $t_{\\alpha, n-1}$ and divides $s$ by $n$ instead of $\\sqrt{n}$."
+      },
+      {
+        "label": "C",
+        "text": "$\\bar{y} - s \\sqrt{n} < \\mu_0 < \\bar{y} + s \\sqrt{n}$",
+        "Explanation": "Omitting the t-critical value and multiplying by $\\sqrt{n}$ produces an invalid margin of error."
+      },
+      {
+        "label": "D",
+        "text": "$\\bar{y} - t_{\\alpha/2, n-1} \\frac{s^2}{n} < \\mu_0 < \\bar{y} + t_{\\alpha/2, n-1} \\frac{s^2}{n}$",
+        "Explanation": "Substituting sample variance $s^2$ for sample standard deviation $s$ distorts the unit scale of the standard error."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "A two-sided interval splits the overall significance level $\\alpha$ equally between both tails.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "A study compares two teaching methods by conducting an experiment on 5 pairs of identical twins, assigning Method A to one twin and Method B to the other. Which experimental design is used?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Paired design",
+        "Explanation": "Matching subjects into twin pairs to compare treatments constitutes a paired sample design."
+      },
+      {
+        "label": "B",
+        "text": "Completely randomized design",
+        "Explanation": "Completely randomized designs assign treatments to completely independent and unrelated subjects."
+      },
+      {
+        "label": "C",
+        "text": "One-sample Z-test design",
+        "Explanation": "Comparing two treatments across paired subjects requires two sets of observations rather than a single sample."
+      },
+      {
+        "label": "D",
+        "text": "1-Way ANOVA design",
+        "Explanation": "This setup compares two related groups rather than evaluating multiple independent groups under ANOVA."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider whether the subjects receiving Treatment A and Treatment B are naturally connected or unrelated.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "When conducting a paired t-test on difference scores $W_i = X_i - Y_i$ obtained from $n = 5$ paired subjects, what are the degrees of freedom for the test?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$4$",
+        "Explanation": "Paired t-tests convert paired observations into $n$ difference scores, yielding $n - 1 = 4$ degrees of freedom."
+      },
+      {
+        "label": "B",
+        "text": "$5$",
+        "Explanation": "The value 5 represents the total number of pairs, not the degrees of freedom."
+      },
+      {
+        "label": "C",
+        "text": "$8$",
+        "Explanation": "Using $2n - 2$ incorrectly assumes two independent samples of size 5 rather than paired differences."
+      },
+      {
+        "label": "D",
+        "text": "$9$",
+        "Explanation": "Subtracting 1 from the total number of individual observations ($10 - 1$) ignores the paired structure."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "A paired t-test simplifies two related samples into a single sample of differences.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "In an independent two-sample t-test assuming equal variances across sample $X$ (size $n$) and sample $Y$ (size $m$), which formula correctly calculates the pooled sample variance $s_p^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$s_p^2 = \\frac{\\sum (X_i - \\bar{X})^2 + \\sum (Y_i - \\bar{Y})^2}{n + m - 2}$",
+        "Explanation": "Pooled variance combines the sum of squared deviations from both samples divided by the total degrees of freedom $n + m - 2$."
+      },
+      {
+        "label": "B",
+        "text": "$s_p^2 = \\frac{\\sum (X_i - \\bar{X})^2 + \\sum (Y_i - \\bar{Y})^2}{n + m}$",
+        "Explanation": "Dividing by $n + m$ fails to account for the loss of two degrees of freedom from estimating two sample means."
+      },
+      {
+        "label": "C",
+        "text": "$s_p^2 = \\frac{s_X^2 + s_Y^2}{2}$",
+        "Explanation": "Taking a simple arithmetic average of sample variances is valid only when sample sizes $n$ and $m$ are equal."
+      },
+      {
+        "label": "D",
+        "text": "$s_p^2 = \\frac{\\sum (X_i - \\bar{X})^2 \\cdot \\sum (Y_i - \\bar{Y})^2}{n + m - 2}$",
+        "Explanation": "Multiplying the sums of squared deviations instead of adding them produces an incorrect variance dimension."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pooled variance combines the within-group variation of both independent groups over their combined degrees of freedom.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Which test statistic formula is used in an independent two-sample t-test with equal population variance, pooled standard deviation $s_p$, and sample sizes $n$ and $m$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$T = \\frac{\\bar{X} - \\bar{Y}}{s_p \\sqrt{\\frac{1}{n} + \\frac{1}{m}}}$",
+        "Explanation": "The test statistic divides the difference between sample means by the pooled standard error, $s_p \\sqrt{\\frac{1}{n} + \\frac{1}{m}}$."
+      },
+      {
+        "label": "B",
+        "text": "$T = \\frac{\\bar{X} - \\bar{Y}}{s_p \\left(\\frac{1}{n} + \\frac{1}{m}\\right)}$",
+        "Explanation": "Omitting the square root from the sample size factor incorrectly inflates the standard error."
+      },
+      {
+        "label": "C",
+        "text": "$T = \\frac{\\bar{X} + \\bar{Y}}{s_p \\sqrt{n + m}}$",
+        "Explanation": "The numerator must calculate the difference between sample means, not their sum."
+      },
+      {
+        "label": "D",
+        "text": "$T = \\frac{\\bar{X} - \\bar{Y}}{\\sqrt{s_X^2 + s_Y^2}}$",
+        "Explanation": "This expression omits sample sizes $n$ and $m$ and fails to use the pooled standard deviation."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The denominator scales the pooled standard deviation by the harmonic square root adjustment for sample sizes.",
+    "course": "COM6005",
+    "week": "3A"
+  }
+]

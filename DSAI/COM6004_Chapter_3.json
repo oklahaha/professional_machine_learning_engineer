@@ -1,0 +1,292 @@
+[
+  {
+    "question": "Which of the following summary statistics is highly sensitive to extreme values (outliers)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mean and standard deviation",
+        "Explanation": "Both the mean (location) and standard deviation/variance (spread) incorporate all exact values in their calculation, making them easily skewed by extreme outliers."
+      },
+      {
+        "label": "B",
+        "text": "Median and trimmed mean",
+        "Explanation": "The median depends only on middle rank order, and trimmed means explicitly discard extreme values, making both robust against outliers."
+      },
+      {
+        "label": "C",
+        "text": "Median and interquartile range",
+        "Explanation": "Order-based measures like the median focus on central positional values rather than extreme magnitudes, providing resistance to outliers."
+      },
+      {
+        "label": "D",
+        "text": "Mode and median",
+        "Explanation": "The mode identifies the most frequent value and the median identifies the middle value, neither of which is heavily shifted by a few distant points."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which measures sum up the magnitude of every single data point in their formula.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Which summary measures are most appropriately used to describe categorical data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Frequency and mode",
+        "Explanation": "Categorical data consists of discrete categories without numerical arithmetic, so counting occurrences (frequency) and finding the most common category (mode) are the primary summary statistics used."
+      },
+      {
+        "label": "B",
+        "text": "Mean and variance",
+        "Explanation": "Computing a mean or variance requires continuous or numerical interval data, which is undefined for non-ordinal categorical values."
+      },
+      {
+        "label": "C",
+        "text": "Percentile and range",
+        "Explanation": "Percentiles and range require a meaningful continuous ordering across numerical scales, which categorical labels typically lack."
+      },
+      {
+        "label": "D",
+        "text": "Standard deviation and median",
+        "Explanation": "Standard deviation measures numerical distance from a central mean, which cannot be computed for standard categorical data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about techniques suitable for data consisting of distinct group labels or names rather than numbers.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "For an ordinal or continuous attribute $x$, how is the $p^{\\text{th}}$ percentile ($x_p$) defined?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is the value $x_p$ such that $p\\%$ of the observed values of $x$ are less than $x_p$.",
+        "Explanation": "By definition, the $p^{\\text{th}}$ percentile marks the threshold below which a given percentage $p\\%$ of the data observations fall."
+      },
+      {
+        "label": "B",
+        "text": "It is the value $x_p$ such that $(100 - p)\\%$ of the observed values of $x$ are less than $x_p$.",
+        "Explanation": "This describes the percentage of data that lies above the $p^{\\text{th}}$ percentile, rather than below it."
+      },
+      {
+        "label": "C",
+        "text": "It is the sample mean value plus $p\\%$ of the sample standard deviation.",
+        "Explanation": "Percentiles are non-parametric positional markers based on rank ordering rather than linear combinations of the mean and standard deviation."
+      },
+      {
+        "label": "D",
+        "text": "It is the count of observations falling within $p\\%$ distance from the median.",
+        "Explanation": "Percentiles represent specific attribute value cutoffs rather than counts of data points."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on what proportion of data values fall below this specific threshold.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Why are attributes typically standardized (normalized to a mean of $0$ and a standard deviation of $1$) prior to plotting a data matrix plot?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To prevent attributes with larger magnitude scales from dominating the visual representation.",
+        "Explanation": "Standardization places all variables on a common numerical scale, ensuring visual intensity reflects relative variation rather than absolute units."
+      },
+      {
+        "label": "B",
+        "text": "To completely eliminate extreme outliers from the dataset prior to visualization.",
+        "Explanation": "Standardization rescales data points but retains outliers in their relative extreme positions."
+      },
+      {
+        "label": "C",
+        "text": "To convert continuous numeric attributes into discrete categorical bins.",
+        "Explanation": "Discretization or binning converts continuous data to categorical categories, whereas standardization preserves continuous distributions."
+      },
+      {
+        "label": "D",
+        "text": "To force the correlation between every pair of attributes to equal $1$.",
+        "Explanation": "Standardizing variables preserves their linear relationships and pairwise correlations; it does not change them to $1$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens visually when one attribute is measured in thousands and another is measured in decimals.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Which of the following best describes the main function of a histogram?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It displays the distribution of values for a single continuous variable by grouping values into bins.",
+        "Explanation": "A histogram partitions a continuous attribute's value range into equal-width bins and uses bar heights to show object counts per bin."
+      },
+      {
+        "label": "B",
+        "text": "It plots pairwise continuous relationships between two variables on a Cartesian plane.",
+        "Explanation": "Pairwise continuous relationships between two variables are displayed using scatter plots rather than histograms."
+      },
+      {
+        "label": "C",
+        "text": "It visualizes multi-dimensional objects as continuous lines across parallel coordinate axes.",
+        "Explanation": "Mapping objects as continuous lines across parallel axes describes parallel coordinates plots."
+      },
+      {
+        "label": "D",
+        "text": "It summarizes median, interquartile range, and outliers across multiple categories.",
+        "Explanation": "Summarizing median, quartiles, and explicit outliers across attributes is characteristic of box plots."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall how bar heights are used to summarize the counts of a single variable divided into interval ranges.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "In a parallel coordinates plot, how are individual data objects represented?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each object is represented as a line connecting points across parallel attribute axes.",
+        "Explanation": "Instead of perpendicular axes, parallel coordinates use parallel axes where an object's attribute values are plotted as points and connected into a single line."
+      },
+      {
+        "label": "B",
+        "text": "Each object is represented as a single point in a three-dimensional coordinate grid.",
+        "Explanation": "Parallel coordinates replace point representations on orthogonal axes with line representations across vertical parallel axes."
+      },
+      {
+        "label": "C",
+        "text": "Each object is represented as an isolated bar whose height corresponds to the object's class label.",
+        "Explanation": "Bar plots represent aggregated counts or values rather than continuous line traces for individual multi-attribute objects."
+      },
+      {
+        "label": "D",
+        "text": "Each object is represented as a cell color in a matrix grid.",
+        "Explanation": "Cell color in a grid matrix represents normalized attribute values in a data matrix plot, not lines in parallel coordinates."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how high-dimensional points are mapped when axes are placed side-by-side rather than at right angles.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Why is the ordering of attributes significant when constructing a parallel coordinates plot?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Relationships and cluster groupings between distinct classes are easier to see between adjacent axes.",
+        "Explanation": "Lines connect adjacent axes directly, so class trends or groupings across attributes are only visually clear if related attributes are placed next to each other."
+      },
+      {
+        "label": "B",
+        "text": "Rearranging the axes alters the underlying mean and standard deviation of the dataset.",
+        "Explanation": "Axis ordering is purely a visual layout choice and does not modify any calculated summary statistics."
+      },
+      {
+        "label": "C",
+        "text": "Parallel coordinates plots require attributes to be sorted in strictly ascending order of their ranges.",
+        "Explanation": "There is no mathematical requirement to sort attributes by range; layout decisions are guided by visual exploration."
+      },
+      {
+        "label": "D",
+        "text": "Incorrect attribute order prevents the calculation of pairwise correlation matrices.",
+        "Explanation": "Pairwise correlation calculations are independent of graphical plot layouts."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about which attribute connections are directly drawn with line segments and which are not.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "What primary feature makes a scatter plot array useful during exploratory data analysis?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It compactly presents 2D scatter plots for all pairwise combinations of multiple attributes.",
+        "Explanation": "A scatter plot array organizes 2D scatter plots into a grid, allowing immediate visual inspection of relationships across all attribute pairs."
+      },
+      {
+        "label": "B",
+        "text": "It automatically converts continuous numerical attributes into categorical mode values.",
+        "Explanation": "Scatter plot arrays preserve original continuous scales rather than converting them into categorical values."
+      },
+      {
+        "label": "C",
+        "text": "It displays exact percentage frequencies for single categorical attributes.",
+        "Explanation": "Frequency counts for categorical attributes are typically displayed with tables or bar charts, not scatter plot arrays."
+      },
+      {
+        "label": "D",
+        "text": "It eliminates the need to use color, shape, or marker size for class distinction.",
+        "Explanation": "Scatter plot arrays frequently enhance clarity by incorporating markers with distinct colors, shapes, or sizes for class distinctions."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how you would efficiently check relationships between every pair of features in a dataset at once.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "When selecting a subset of objects for visualization due to screen space limitations, what key sampling principle should be applied?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Preserving objects located in sparse or low-density regions.",
+        "Explanation": "Sampling should retain points in sparse areas to prevent rare patterns, small clusters, or potential outliers from being lost."
+      },
+      {
+        "label": "B",
+        "text": "Filtering out all non-outlier data points to focus only on extremes.",
+        "Explanation": "Removing non-outliers destroys the main structure and general trend of the dataset."
+      },
+      {
+        "label": "C",
+        "text": "Selecting objects strictly from the highest-density cluster regions.",
+        "Explanation": "Over-sampling dense regions while ignoring sparse areas hides isolated data structures and outliers."
+      },
+      {
+        "label": "D",
+        "text": "Replacing all sampled continuous points with their bin medians.",
+        "Explanation": "Replacing points with medians alters the representation from object sampling to data aggregation."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how to avoid accidentally hiding outliers or small, isolated groups when reducing point density.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "In graphical data representation, how are data objects and their attribute values typically translated into visual elements?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Objects are mapped as points, and attribute values determine characteristics like position, color, shape, or size.",
+        "Explanation": "Standard visualization mappings translate individual data instances into spatial graphical elements, using visual channels like position and color to encode attribute magnitudes."
+      },
+      {
+        "label": "B",
+        "text": "Objects are mapped to histogram bins, and attributes are mapped exclusively to bar widths.",
+        "Explanation": "Histogram bins group ranges of a single attribute rather than mapping individual data objects to distinct graphical points."
+      },
+      {
+        "label": "C",
+        "text": "Attribute values are mapped as point locations, while objects define the plot axis labels.",
+        "Explanation": "Plot axes represent attribute dimensions or scales, while data objects are mapped as entries inside the coordinate space."
+      },
+      {
+        "label": "D",
+        "text": "Objects are mapped as correlation coefficients, and attributes determine the number of dimensions.",
+        "Explanation": "Correlation coefficients describe relationships between pairs of attributes rather than direct visual mappings of data objects."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how a standard two-dimensional plot uses coordinates and visual styling to represent data records.",
+    "course": "COM6004",
+    "week": "3"
+  }
+]

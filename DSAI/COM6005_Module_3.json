@@ -1,0 +1,292 @@
+[
+  {
+    "question": "In point estimation, why is a single sample mean ($\\bar{x}$) rarely expected to equal the true population mean ($\\mu$) exactly?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Random sampling variation causes individual point estimates to differ from true parameters almost surely.",
+        "Explanation": "Because each drawn sample yields a specific point estimate subject to sampling variability, individual sample statistics almost surely differ from the true population parameter."
+      },
+      {
+        "label": "B",
+        "text": "Point estimators such as $\\bar{x}$ are inherently biased estimators of the population parameter.",
+        "Explanation": "The sample mean $\\bar{x}$ is an unbiased estimator because its expected value equals the true population mean $E(\\bar{x}) = \\mu$ across repeated sampling."
+      },
+      {
+        "label": "C",
+        "text": "The Central Limit Theorem applies only when the population standard deviation is completely known.",
+        "Explanation": "The Central Limit Theorem describes the normality of the sampling distribution of the sample mean regardless of whether a point estimate equals the parameter."
+      },
+      {
+        "label": "D",
+        "text": "Sample statistics cannot be used to draw inferences about characteristics of an underlying population.",
+        "Explanation": "Inferential statistics specifically relies on sample statistics and inductive reasoning to draw conclusions about population parameters."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how individual samples drawn from a population vary in practice.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "What is the correct statistical interpretation of a $95\\%$ confidence interval for a population mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "If the estimation procedure is repeated on many independent samples, $95\\%$ of the resulting intervals will contain the true population mean.",
+        "Explanation": "Confidence level refers to the long-run success rate of the confidence interval procedure across repeated sampling from the same population."
+      },
+      {
+        "label": "B",
+        "text": "There is a $95\\%$ probability that the true population mean lies within the specific interval calculated from a single sample.",
+        "Explanation": "Once a specific interval is calculated, the fixed population parameter is either inside it or not, so probability statements apply to the estimation procedure rather than a single realization."
+      },
+      {
+        "label": "C",
+        "text": "Exactly $95\\%$ of the individual raw observations in the sample fall between the lower and upper bounds.",
+        "Explanation": "A confidence interval estimates the location of a population parameter like the mean, not the range containing individual data points."
+      },
+      {
+        "label": "D",
+        "text": "The calculated sample mean will fall inside the interval $95\\%$ of the time across repeated experiments.",
+        "Explanation": "The sample mean is always the exact midpoint of its constructed symmetric confidence interval, so it falls inside $100\\%$ of the time."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about whether the population parameter or the constructed interval bounds vary across repeated sampling.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "Which mathematical statement defines the property of unbiasedness for a sample mean $\\bar{x}$ as a point estimator for the population mean $\\mu$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$E(\\bar{x}) = \\mu$",
+        "Explanation": "Unbiasedness means the expected value (or average) of the sample statistics across many random samples equals the true population parameter."
+      },
+      {
+        "label": "B",
+        "text": "$\\sigma_{\\bar{x}} = \\mu$",
+        "Explanation": "This equation incorrectly equates standard error notation with the population mean rather than defining estimator expected value."
+      },
+      {
+        "label": "C",
+        "text": "$P(\\bar{x} = \\mu) = 1$",
+        "Explanation": "A sample mean is a continuous random variable that almost surely differs from the exact population mean for any single sample."
+      },
+      {
+        "label": "D",
+        "text": "$E(s^2) = \\bar{x}$",
+        "Explanation": "This equation incorrectly relates the sample variance expected value to the sample mean instead of the population parameter."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall what the expected value (average across many repeated samples) of the sample statistic equals.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "Assuming a normally distributed sampling distribution with known population standard deviation $\\sigma$, what is the formula for the $(1 - \\alpha)100\\%$ confidence interval for $\\mu$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\bar{x} \\pm z_{\\alpha/2} \\frac{\\sigma}{\\sqrt{n}}$",
+        "Explanation": "This formula derives directly from standardizing the normal sampling distribution and isolating $\\mu$ with cumulative probability $1 - \\alpha$."
+      },
+      {
+        "label": "B",
+        "text": "$\\mu \\pm z_{\\alpha/2} \\frac{s}{\\sqrt{n}}$",
+        "Explanation": "A confidence interval uses the observed sample statistic $\\bar{x}$ as its center to estimate the unknown parameter $\\mu$, not the reverse."
+      },
+      {
+        "label": "C",
+        "text": "$\\bar{x} \\pm z_{\\alpha} \\frac{\\sigma}{n}$",
+        "Explanation": "Two-tailed confidence intervals require splitting the error tail into $z_{\\alpha/2}$ and scaling standard deviation by $\\sqrt{n}$."
+      },
+      {
+        "label": "D",
+        "text": "$\\bar{x} \\pm \\frac{z_{\\alpha/2}}{\\sigma \\sqrt{n}}$",
+        "Explanation": "The margin of error multiplies the critical value $z_{\\alpha/2}$ by the standard error $\\frac{\\sigma}{\\sqrt{n}}$, rather than dividing by standard deviation."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look at how the standard error of the mean is scaled by the critical z-value around the sample mean.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "According to standard statistical notation, which symbols correctly represent the sample mean and the population mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\bar{x}$ represents the sample mean, and $\\mu$ represents the population mean.",
+        "Explanation": "Standard notation uses $\\bar{x}$ (x-bar) for the sample statistic and $\\mu$ (mu) for the population parameter."
+      },
+      {
+        "label": "B",
+        "text": "$\\mu$ represents the sample mean, and $\\bar{x}$ represents the population mean.",
+        "Explanation": "This reverses standard notation where Greek letters denote population parameters and Roman letters with bars denote sample statistics."
+      },
+      {
+        "label": "C",
+        "text": "$\\sigma$ represents the sample mean, and $s$ represents the population mean.",
+        "Explanation": "The symbols $\\sigma$ and $s$ denote population and sample standard deviations, respectively, not means."
+      },
+      {
+        "label": "D",
+        "text": "$\\sigma_{\\bar{x}}$ represents the population mean, and $\\mu$ represents the sample mean.",
+        "Explanation": "The symbol $\\sigma_{\\bar{x}}$ represents standard error of the mean, whereas $\\mu$ is the population mean."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Contrast symbols used for population parameters with those used for sample statistics.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "In a hypothesis test investigating whether a coin is fair ($p = 0.5$) or rigged ($p \\ne 0.5$), how are the null ($H_0$) and alternative ($H_1$) hypotheses specified?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$: $p = 0.5$ and $H_1$: $p \\ne 0.5$",
+        "Explanation": "The null hypothesis states the standard baseline assumption of a fair coin ($p = 0.5$), while the alternative hypothesis represents the suspect or research claim."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$: $p \\ne 0.5$ and $H_1$: $p = 0.5$",
+        "Explanation": "This flips the roles of $H_0$ and $H_1$, incorrectly setting the non-neutral research claim as the baseline null hypothesis."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$: $\\bar{x} = 0.05$ and $H_1$: $\\bar{x} \\ne 0.05$",
+        "Explanation": "Hypotheses must always be formulated in terms of population parameters like $p$ or $\\mu$, not sample statistics or significance levels like $\\alpha = 0.05$."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$: $p = 1.0$ and $H_1$: $p = 0.0$",
+        "Explanation": "A fair coin has a probability $p = 0.5$ of landing on heads, not deterministic extreme values of $1.0$ or $0.0$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Remember that the null hypothesis represents the standard baseline assumption, while the alternative represents the research claim.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "What is the core decision rule used in statistical hypothesis testing to determine whether to reject the null hypothesis $H_0$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reject $H_0$ if the probability of obtaining the observed sample result under $H_0$ is less than the pre-specified significance level $\\alpha$.",
+        "Explanation": "When an observed sample result is extremely unlikely to occur purely by chance under $H_0$ (below threshold $\\alpha$), $H_0$ is rejected in favor of $H_1$."
+      },
+      {
+        "label": "B",
+        "text": "Reject $H_0$ only when the sample statistic equals the alternative hypothesis parameter value exactly.",
+        "Explanation": "Hypothesis testing evaluates probabilities of observed sample distributions under $H_0$, not exact point matching to $H_1$."
+      },
+      {
+        "label": "C",
+        "text": "Reject $H_0$ whenever the sample size exceeds $100$ observations.",
+        "Explanation": "Sample size affects statistical power and standard error, but decision rules rely on comparing p-values or test statistics to significance thresholds."
+      },
+      {
+        "label": "D",
+        "text": "Reject $H_0$ if the probability of making a Type I error is equal to $1 - \\alpha$.",
+        "Explanation": "The significance level $\\alpha$ itself is the probability of a Type I error, whereas $1 - \\alpha$ represents the confidence level (true negative rate)."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how the observed sample probability compares to the pre-specified risk threshold.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "How is a Type I error ($\\alpha$) defined in statistical hypothesis testing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Incorrectly rejecting a true null hypothesis $H_0$.",
+        "Explanation": "A Type I error occurs when the null hypothesis is actually true in reality, but sample evidence leads to its incorrect rejection."
+      },
+      {
+        "label": "B",
+        "text": "Failing to reject a false null hypothesis $H_0$.",
+        "Explanation": "Failing to reject a false null hypothesis defines a Type II error ($\\beta$), not a Type I error."
+      },
+      {
+        "label": "C",
+        "text": "Correctly rejecting a false null hypothesis $H_0$.",
+        "Explanation": "Correctly rejecting a false null hypothesis represents a true positive decision whose probability is statistical power ($1 - \\beta$)."
+      },
+      {
+        "label": "D",
+        "text": "Failing to reject a true null hypothesis $H_0$.",
+        "Explanation": "Failing to reject a true null hypothesis is a correct decision with probability $1 - \\alpha$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens when you make a false positive decision—claiming an effect exists when it actually does not.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "What is a Type II error ($\\beta$), and how is it related to statistical power?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A Type II error is failing to reject a false null hypothesis, and power is calculated as $1 - \\beta$.",
+        "Explanation": "Type II error ($\\beta$) occurs when $H_0$ is false but not rejected, making power ($1 - \\beta$) the probability of correctly rejecting a false $H_0$."
+      },
+      {
+        "label": "B",
+        "text": "A Type II error is rejecting a true null hypothesis, and power is calculated as $1 - \\alpha$.",
+        "Explanation": "Rejecting a true null hypothesis is a Type I error ($\\alpha$), and $1 - \\alpha$ represents the confidence level or specificity."
+      },
+      {
+        "label": "C",
+        "text": "A Type II error is failing to reject a true null hypothesis, and power is calculated as $\\alpha + \\beta$.",
+        "Explanation": "Failing to reject a true null hypothesis is a correct inference, not an error."
+      },
+      {
+        "label": "D",
+        "text": "A Type II error is correctly retaining a true null hypothesis, and power is equal to $\\beta$.",
+        "Explanation": "Power is defined as $1 - \\beta$, representing the probability of successfully detecting a true effect when $H_0$ is false."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the scenario where the alternative hypothesis is true, but the test fails to detect it.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "Which statement accurately describes a correct cell pairing in the hypothesis testing decision matrix?",
+    "options": [
+      {
+        "label": "A",
+        "text": "When $H_0$ is false and $H_0$ is rejected, the decision is a True Positive with probability equal to Power ($1 - \\beta$).",
+        "Explanation": "Correctly rejecting a false null hypothesis is a True Positive outcome, quantified by statistical power $1 - \\beta$."
+      },
+      {
+        "label": "B",
+        "text": "When $H_0$ is true and $H_0$ is rejected, the decision is a True Negative with probability $1 - \\alpha$.",
+        "Explanation": "Rejecting a true $H_0$ is a False Positive (Type I error $\\alpha$), whereas retaining a true $H_0$ is a True Negative ($1 - \\alpha$)."
+      },
+      {
+        "label": "C",
+        "text": "When $H_0$ is false and $H_0$ is retained, the decision is a False Positive with probability $\\alpha$.",
+        "Explanation": "Retaining a false $H_0$ is a False Negative (Type II error $\\beta$), not a False Positive."
+      },
+      {
+        "label": "D",
+        "text": "When $H_0$ is true and $H_0$ is retained, the decision is a Type I error with probability $\\beta$.",
+        "Explanation": "Retaining a true $H_0$ is a correct decision (True Negative) with probability $1 - \\alpha$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Review the decision matrix for hypothesis testing, comparing real-world truth with the test decision.",
+    "course": "COM6005",
+    "week": "3"
+  }
+]

@@ -1,0 +1,8 @@
+# Source exam-dump PDFs are not redistributed. The app doesn't need them at runtime or build
+# time: their questions are already in quiz-app/data/questions.json. See PMLE/README.md.
+PMLE/*.pdf
+
+# Personal Claude Code settings
+.claude/settings.local.json
+
+.DS_Store

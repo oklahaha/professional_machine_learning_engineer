@@ -1,0 +1,20 @@
+"What is the syntax to immediately invoke a lambda function `lambda x, y: x - y` with input arguments `3` and `5`?","`(lambda x, y: x - y)(3, 5)`"
+"In Python, what numerical value is produced by evaluating the expression `(lambda x: x + 5)(3)`?",It evaluates to `8`.
+"When a function returns `lambda x: x + adder`, what syntax supplies the argument for `x` immediately after calling `my_func(5)`?",`my_func(5)(3)`
+What return object is generated when calling `my_func(5)` on the function definition `def my_func(adder): return lambda x: x + adder` without supplying a second set of parentheses?,It returns a lambda function object configured as `lambda x: x + 5`.
+"In the general syntax `lambda arguments: expression`, how many expressions is a lambda function permitted to evaluate?",A lambda function is restricted to evaluating exactly one expression.
+"To perform element-wise string transformations on a Pandas Series or Index object, what accessor must be invoked?",The `.str` string accessor.
+Why does calling `.upper()` directly on `df.columns` raise an error in Pandas?,"`df.columns` is a Pandas Index object rather than a Python string, requiring the `.str` accessor to expose string methods."
+How does the output of `.columns.str.capitalize()` differ from `.columns.str.title()` when applied to multi-word column labels?,"`.str.capitalize()` capitalizes only the initial letter of the first word, whereas `.str.title()` capitalizes the first letter of every word."
+Why must the output of `df.columns.str.lower()` be explicitly assigned back to `df.columns` to update a DataFrame?,String accessor operations return a new Index object rather than modifying the DataFrame columns in-place.
+"In Pandas Series and DataFrames, string operations on text data are accessed via the _____ accessor.",`.str`
+Which parameter in `DataFrame.rename()` accepts a function or dictionary to transform axis labels when paired with an `axis` argument?,The `mapper` parameter.
+Which parameter in `DataFrame.rename()` specifically targets column labels directly without requiring an explicit `axis` argument?,The `columns` parameter.
+Which parameter in `DataFrame.rename()` specifically targets row index labels directly without requiring an explicit `axis` argument?,The `index` parameter.
+What is the correct syntax to rename the column `'hero_names'` to `'hero names'` using a dictionary in `DataFrame.rename()`?,`df.rename(columns={'hero_names': 'hero names'})`
+How can the built-in string method reference `str.upper` be passed to `DataFrame.rename()` to uppercase all column labels?,`df.rename(columns=str.upper)`
+"When using `mapper` to rename columns in `DataFrame.rename()`, what additional argument must be passed to target the column axis?",`axis='columns'`
+"Why does `df.rename(mapper=lambda x: x.upper, axis='columns')` fail to convert column names to uppercase text?",It returns a reference to the `upper` method object for each column name instead of executing the method call `x.upper()`.
+Why does passing `mapper=str.upper()` with execution brackets into `DataFrame.rename()` trigger a Python error?,It attempts to execute `str.upper()` immediately during argument passing without supplying the required string parameter.
+What lambda function passed to `mapper` in `df.rename()` removes the final character from every column name?,`lambda x: x[:-1]`
+What is the complete `DataFrame.rename()` call using a lambda function to convert all column names in `df` to lowercase?,"`df.rename(mapper=lambda x: x.lower(), axis='columns')`"

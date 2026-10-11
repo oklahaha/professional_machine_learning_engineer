@@ -1,0 +1,350 @@
+[
+  {
+    "question": "Which pandas command accurately checks whether a column contains only a single unique non-null value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df['col'].nunique(dropna=True) == 1",
+        "Explanation": "Counting unique values while ignoring nulls returns 1 when all non-null entries in that column are identical."
+      },
+      {
+        "label": "B",
+        "text": "df['col'].duplicated().sum() == 0",
+        "Explanation": "Summing duplicates to 0 indicates that every single value in the column is completely unique, rather than identical."
+      },
+      {
+        "label": "C",
+        "text": "df['col'].isna().sum() == 1",
+        "Explanation": "Checking if the missing value sum equals 1 only indicates the count of missing entries, not the variance of non-null values."
+      },
+      {
+        "label": "D",
+        "text": "df['col'].compare(df['col']) == 0",
+        "Explanation": "Comparing a column against itself yields an empty comparison regardless of how many distinct values exist in the column."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which method directly counts unique entries while excluding missing data.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Suppose two categorical columns each contain 3 unique values. How can you verify if they are strictly one-to-one mapped across rows?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Check if df[['col1', 'col2']].value_counts() yields exactly 3 total row combinations.",
+        "Explanation": "When two columns are one-to-one mapped, the number of distinct value combinations across rows must match the number of unique individual categories."
+      },
+      {
+        "label": "B",
+        "text": "Verify that df['col1'].nunique() is equal to df['col2'].nunique().",
+        "Explanation": "Having the same count of unique values in both columns is a necessary prerequisite but does not guarantee that specific values always pair exclusively together."
+      },
+      {
+        "label": "C",
+        "text": "Compare df['col1'] == df['col2'] and check if all resulting values are True.",
+        "Explanation": "Checking equality only tests whether both columns hold identical string names, not whether different labels map one-to-one."
+      },
+      {
+        "label": "D",
+        "text": "Check if df[['col1', 'col2']].drop_duplicates() returns more rows than df['col1'].nunique().",
+        "Explanation": "If the dropped duplicates DataFrame has more rows than individual unique values, it proves that at least one category is paired with multiple distinct values."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about evaluating the total count of two-column value combinations relative to single-column unique value counts.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "When executing df.duplicated(keep='first') on a dataset, how does pandas mark row occurrences?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The first occurrence of a duplicate row is marked False, while subsequent identical rows are marked True.",
+        "Explanation": "By default, keep='first' considers the initial sighting of a record valid (False for duplicate) and flags all subsequent identical rows as duplicates (True)."
+      },
+      {
+        "label": "B",
+        "text": "All occurrences of duplicate rows, including the first one, are marked True.",
+        "Explanation": "Marking every repeated row True occurs when keep=False is passed, which flags all copies for complete removal."
+      },
+      {
+        "label": "C",
+        "text": "The first occurrence is marked True, and subsequent identical rows are marked False.",
+        "Explanation": "This reverses the standard duplicate flagging logic, which keeps initial sightings and flags repeats."
+      },
+      {
+        "label": "D",
+        "text": "The final occurrence is marked False, while all preceding copies are marked True.",
+        "Explanation": "Preserving the final occurrence and flagging earlier copies requires setting the parameter to keep='last'."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall which boolean value indicates that a row is flagged as a duplicate to be dropped.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "In a DataFrame containing 19 total columns, what is the effect of calling df.dropna(thresh=18, axis=0)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It drops rows that contain more than 1 missing value.",
+        "Explanation": "The thresh parameter specifies the minimum number of non-null values required to keep a row, so requiring 18 non-null columns out of 19 drops rows with 2 or more missing values."
+      },
+      {
+        "label": "B",
+        "text": "It drops rows that contain 18 or more missing values.",
+        "Explanation": "The thresh parameter represents a threshold of non-null values to retain, not a limit on missing values to drop."
+      },
+      {
+        "label": "C",
+        "text": "It drops columns that have fewer than 18 non-null entries.",
+        "Explanation": "Operating along axis=0 applies the dropping operation across rows rather than columns."
+      },
+      {
+        "label": "D",
+        "text": "It retains only rows where exactly 18 columns contain missing values.",
+        "Explanation": "The function sets a minimum acceptable threshold of non-null cells rather than selecting an exact equality match."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Remember that the thresh parameter defines the minimum number of valid, non-null entries required to prevent dropping.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "When choosing between mean and median for statistical imputation of a numerical feature, which scenario strongly favors using the median?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The feature distribution contains strong extreme outliers.",
+        "Explanation": "The median is robust against extreme values, whereas outliers pull the mean away from the central tendency of the data."
+      },
+      {
+        "label": "B",
+        "text": "The numerical feature follows a symmetric bell-shaped normal distribution.",
+        "Explanation": "In symmetrical distributions without strong skewness or outliers, the mean and median are roughly equal, making either suitable."
+      },
+      {
+        "label": "C",
+        "text": "More than 50% of the values in the feature column are missing.",
+        "Explanation": "High proportions of missing data affect statistical estimates generally but do not inherently favor the median over the mean."
+      },
+      {
+        "label": "D",
+        "text": "The dataset has more categorical columns than numerical columns.",
+        "Explanation": "The ratio of column dtypes in a dataset does not influence the central tendency choice for individual numerical features."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which central tendency metric remains unaffected by extreme values at the tails of a distribution.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Which pandas statement correctly extracts the most frequent category series needed to impute missing values in categorical columns?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df[cat_cols].mode().loc[0]",
+        "Explanation": "Calling mode() calculates the most frequent values, and selecting row index 0 returns a Series indexed by column names containing top categories."
+      },
+      {
+        "label": "B",
+        "text": "df[cat_cols].mean()",
+        "Explanation": "Mean calculations require numerical data and cannot be computed on categorical or string columns."
+      },
+      {
+        "label": "C",
+        "text": "df[cat_cols].value_counts()[0]",
+        "Explanation": "Calling value_counts() on a multi-column DataFrame returns counts of row combinations rather than a single mode per column."
+      },
+      {
+        "label": "D",
+        "text": "df[cat_cols].nunique().idxmax()",
+        "Explanation": "This returns the column label with the highest number of distinct categories rather than the most frequent category values themselves."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look for a method specifically designed to identify modal values, combined with row indexing to grab the first set of modes.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "After calling fit_transform() on a Scikit-Learn SimpleImputer, what essential step is required to update a pandas DataFrame?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reassigning the returned NumPy array back to the original DataFrame columns.",
+        "Explanation": "Scikit-Learn transformers return 2D NumPy ndarrays, requiring explicit reassignment back to DataFrame column slices."
+      },
+      {
+        "label": "B",
+        "text": "Passing inplace=True directly as an argument to fit_transform().",
+        "Explanation": "Scikit-Learn estimators do not support an inplace parameter; they return transformed arrays."
+      },
+      {
+        "label": "C",
+        "text": "Calling the SimpleImputer.to_dataframe() conversion method.",
+        "Explanation": "SimpleImputer does not possess a built-in method named to_dataframe()."
+      },
+      {
+        "label": "D",
+        "text": "Executing df.update_imputer() on the pandas object.",
+        "Explanation": "Pandas DataFrames do not have an update_imputer method."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the data type returned by Scikit-Learn processing functions.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "What is the result of initializing a Scikit-Learn SimpleImputer with add_indicator=True?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It appends additional binary columns that indicate whether each corresponding cell was originally missing.",
+        "Explanation": "Enabling add_indicator adds mask columns (holding 1.0/True for missing and 0.0/False for present) alongside imputed features."
+      },
+      {
+        "label": "B",
+        "text": "It generates a summary text report detailing the percentage of missing values per column.",
+        "Explanation": "The imputer outputs array data for model building rather than textual diagnostics."
+      },
+      {
+        "label": "C",
+        "text": "It marks missing values with string flags without filling them with statistical values.",
+        "Explanation": "Imputation still takes place according to the chosen strategy; indicator features are appended extra."
+      },
+      {
+        "label": "D",
+        "text": "It converts all numerical columns into one-hot encoded categorical columns.",
+        "Explanation": "One-hot encoding is handled by separate transformers, not by missing value imputers."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how a model can be informed about which specific data points were estimated rather than observed.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "How does Scikit-Learn's IterativeImputer estimate missing values in a feature column?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It models each feature with missing values as a function of other features in a round-robin process.",
+        "Explanation": "IterativeImputer uses multivariate imputation, regressing each missing feature against all other available features iteratively."
+      },
+      {
+        "label": "B",
+        "text": "It locates the k-nearest samples based on feature similarity and averages their values.",
+        "Explanation": "Estimating missing entries using nearest sample distances is the mechanism used by KNNImputer."
+      },
+      {
+        "label": "C",
+        "text": "It replaces missing values by randomly drawing samples from the observed values of that single feature.",
+        "Explanation": "IterativeImputer fits predictive regression models rather than performing univariate random sampling."
+      },
+      {
+        "label": "D",
+        "text": "It computes a moving window average across adjacent rows for each missing entry.",
+        "Explanation": "IterativeImputer evaluates feature-to-feature relationships across the dataset rather than row sequence windows."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the term 'iterative multivariate imputation' and how regression estimators predict missing targets from remaining columns.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Why are min_value and max_value parameters typically configured when using IterativeImputer on numerical data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To constrain model predictions within valid physical bounds, such as the minimum and maximum observed values.",
+        "Explanation": "Regression models can extrapolate values beyond realistic domain limits; setting bounds prevents non-sensical predicted values."
+      },
+      {
+        "label": "B",
+        "text": "To drop rows whose imputed predictions fall outside the specified range.",
+        "Explanation": "The bounds clip or restrict prediction values to the min/max limits rather than dropping rows from the dataset."
+      },
+      {
+        "label": "C",
+        "text": "To set the stopping criteria for the maximum number of model iterations.",
+        "Explanation": "Iteration counts are controlled by parameters like max_iter, not min_value or max_value."
+      },
+      {
+        "label": "D",
+        "text": "To remove extreme outliers from the dataset before training the imputer.",
+        "Explanation": "Setting prediction bounds caps generated imputed values without filtering existing rows during fitting."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about preventing regression models from generating out-of-range estimates like negative ages or impossible percentages.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Which command correctly selects only non-numerical columns from a pandas DataFrame?",
+    "options": [
+      {
+        "label": "A",
+        "text": "df.select_dtypes(exclude='number').columns",
+        "Explanation": "Passing exclude='number' filters out integer and floating-point columns, isolating categorical and string columns."
+      },
+      {
+        "label": "B",
+        "text": "df.select_dtypes(include='string').columns",
+        "Explanation": "Categorical columns in pandas are often stored under object dtype, so filtering strictly by 'string' may miss object columns."
+      },
+      {
+        "label": "C",
+        "text": "df.filter(items=['categorical']).columns",
+        "Explanation": "The filter method selects specific matching column names rather than filtering by underlying data types."
+      },
+      {
+        "label": "D",
+        "text": "df.drop_types(include='number').columns",
+        "Explanation": "Pandas DataFrames do not feature a method named drop_types."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on the pandas method designed to pick DataFrame columns according to their data type inclusion or exclusion.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "What happens when df.dropna(axis=1) is executed on a DataFrame without setting a threshold?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Every column containing at least one missing value is completely removed.",
+        "Explanation": "By default along axis=1, dropna removes any column that contains any missing entries."
+      },
+      {
+        "label": "B",
+        "text": "Every row containing at least one missing value is completely removed.",
+        "Explanation": "Dropping rows is the behavior when operating along axis=0."
+      },
+      {
+        "label": "C",
+        "text": "Only columns where 100% of the values are missing are removed.",
+        "Explanation": "Removing only fully empty columns requires explicitly setting how='all'."
+      },
+      {
+        "label": "D",
+        "text": "Only categorical columns containing null entries are removed.",
+        "Explanation": "The dropna method evaluates null presence regardless of column data types."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Pay attention to how setting axis=1 changes the direction of the dropping operation from rows to columns.",
+    "course": "COM6001",
+    "week": "6"
+  }
+]

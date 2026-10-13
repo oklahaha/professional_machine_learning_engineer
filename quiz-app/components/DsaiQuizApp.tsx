@@ -21,6 +21,7 @@ import {
   mcqs,
   type Mcq,
 } from "@/lib/mcq";
+import { presentMcq } from "@/lib/mcq-present";
 import McqCard from "./McqCard";
 import ModeSwitch from "./ModeSwitch";
 import QuizDeckPanel, { type QuizCourseStat, type Score } from "./QuizDeckPanel";
@@ -40,6 +41,8 @@ type Persisted = {
   answers: Answers;
   courses: string[];
   units: string[];
+  shuffleOpts?: boolean; // shuffle answer options within each question (added field, still v1)
+  optSeed?: number;
 };
 
 const UNIT_LABEL = new Map(MCQ_UNITS.map((u) => [unitKey(u.course, u.unit), u.label]));
@@ -86,6 +89,9 @@ function load(): Persisted | null {
       order,
       pos: typeof p.pos === "number" && Number.isFinite(p.pos) ? p.pos : 0,
       answers,
+      shuffleOpts: p.shuffleOpts === true,
+      optSeed:
+        typeof p.optSeed === "number" && Number.isInteger(p.optSeed) && p.optSeed > 0 ? p.optSeed : 1,
       ...pruneFilter(
         {
           courses: Array.isArray(p.courses) ? p.courses : [],
@@ -120,6 +126,8 @@ export default function DsaiQuizApp() {
   const [filter, setFilter] = useState<DeckFilter>(EMPTY_FILTER);
   const [pending, setPending] = useState<string[]>([]);
   const [hintShown, setHintShown] = useState(false);
+  const [shuffleOpts, setShuffleOpts] = useState(false);
+  const [optSeed, setOptSeed] = useState(1);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -130,6 +138,8 @@ export default function DsaiQuizApp() {
       setPos(p.pos);
       setAnswers(p.answers);
       setFilter({ courses: p.courses, units: p.units });
+      setShuffleOpts(p.shuffleOpts ?? false);
+      setOptSeed(p.optSeed ?? 1);
     }
     setHydrated(true);
   }, []);
@@ -144,13 +154,15 @@ export default function DsaiQuizApp() {
       answers,
       courses: filter.courses,
       units: filter.units,
+      shuffleOpts,
+      optSeed,
     };
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
     } catch {
       /* storage may be unavailable (private mode) — ignore */
     }
-  }, [hydrated, orderMode, baseOrder, rawPos, answers, filter]);
+  }, [hydrated, orderMode, baseOrder, rawPos, answers, filter, shuffleOpts, optSeed]);
 
   // The run being walked: the persisted order narrowed to the filter. Never empty — an empty
   // cut falls back to the whole bank, so `order[pos]` always resolves.
@@ -163,7 +175,10 @@ export default function DsaiQuizApp() {
   const q = MCQ_BY_ID.get(order[pos])!;
   const committed = answers[q.id] ?? null;
   const revealed = committed != null;
-  const selected = revealed ? committed : pending;
+  // Option shuffle is a pure presentation transform: answers/pending/scoring stay in
+  // ORIGINAL-label space; only the card sees display labels.
+  const view = useMemo(() => presentMcq(q, shuffleOpts, optSeed), [q, shuffleOpts, optSeed]);
+  const selected = (revealed ? committed : pending).map((l) => view.origToDisplay[l]).filter(Boolean);
 
   const runItems = useMemo(() => order.map((id) => MCQ_BY_ID.get(id)!), [order]);
   const run = useMemo(() => scoreOf(runItems, answers), [runItems, answers]);
@@ -200,15 +215,17 @@ export default function DsaiQuizApp() {
     [order.length],
   );
 
+  // Takes a DISPLAY label (what the card and keys see) and stores the original one.
   const select = useCallback(
-    (label: string) => {
+    (displayLabel: string) => {
       if (revealed) return;
+      const label = view.displayToOrig[displayLabel] ?? displayLabel;
       const multi = q.answers.length > 1;
       setPending((prev) =>
         multi ? (prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]) : [label],
       );
     },
-    [revealed, q],
+    [revealed, q, view],
   );
 
   const check = useCallback(() => {
@@ -222,6 +239,13 @@ export default function DsaiQuizApp() {
       delete copy[q.id];
       return copy;
     });
+    setPending([]);
+  }
+
+  function toggleShuffleOpts() {
+    const next = !shuffleOpts;
+    setShuffleOpts(next);
+    if (next) setOptSeed((s) => ((s * 1103515245 + 12345) >>> 0) || 1); // fresh arrangement
     setPending([]);
   }
 
@@ -253,7 +277,7 @@ export default function DsaiQuizApp() {
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const k = e.key.toLowerCase();
-      const labels = q.options.map((o) => o.label);
+      const labels = view.question.options.map((o) => o.label);
       const byLetter = labels.find((l) => l.toLowerCase() === k);
       const byNumber = /^[1-9]$/.test(k) ? labels[Number(k) - 1] : undefined;
       if (!revealed && (byLetter || byNumber)) {
@@ -268,7 +292,7 @@ export default function DsaiQuizApp() {
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [hydrated, q, revealed, pending, pos, select, check, goto]);
+  }, [hydrated, q, view, revealed, pending, pos, select, check, goto]);
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col px-4 pb-28 pt-5 sm:pb-10 sm:pt-8">
@@ -301,6 +325,18 @@ export default function DsaiQuizApp() {
                 </button>
               ))}
             </div>
+            <button
+              onClick={toggleShuffleOpts}
+              aria-pressed={shuffleOpts}
+              title="Shuffle the answer options within each question"
+              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
+                shuffleOpts
+                  ? "border-signal/40 bg-signal/15 text-signal"
+                  : "border-line bg-panel/60 text-mist hover:text-paper"
+              }`}
+            >
+              ⤨ options
+            </button>
           </div>
         </div>
 
@@ -342,7 +378,7 @@ export default function DsaiQuizApp() {
         </div>
       ) : (
         <McqCard
-          question={q}
+          question={view.question}
           unitLabel={UNIT_LABEL.get(unitKey(q.course, q.unit)) ?? q.unit}
           index={pos + 1}
           total={order.length}

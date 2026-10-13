@@ -222,6 +222,10 @@ and the `ModeSwitch` pill.
 - `components/DsaiQuizApp.tsx` mirrors `PracticeApp`'s order/pos model (persisted full-bank `order`
   of **ids**, filter as a presentation cut, restart at 0 on filter change) under storage key
   `dsai-mcq-v1`. `load()` keeps stored order for ids that still exist, appends new ones, drops orphans.
+- **Option shuffle** (`⤨ options` toggle) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
+  presenter, not a shared one. Answers/pending stay in original-label space; only `McqCard` sees
+  display labels. Each option's explanation travels with it, and no DSAI text cites an option by
+  letter, so nothing in the prose is remapped. `shuffleOpts`/`optSeed` persist in `dsai-mcq-v1`.
 - `McqCard` shows a hint before answering and **each option's own explanation under it** after
   checking — that per-option feedback is the reason it is not a reuse of the PMLE `QuestionCard`.
 - **Text markup.** DSAI text uses inline `` `code` `` and `$LaTeX$` heavily (~1,050 formulas;

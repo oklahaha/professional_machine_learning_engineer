@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0B1120",
+  themeColor: "#04050D",
 };
 
 export default function RootLayout({
@@ -46,7 +46,19 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {/* Decorative space scene, pure CSS (see globals.css). Fixed behind every route. */}
+        <div aria-hidden className="cosmos">
+          <div className="cosmos-nebula" />
+          <div className="cosmos-stars cosmos-stars--s" />
+          <div className="cosmos-stars cosmos-stars--m" />
+          <div className="cosmos-stars cosmos-stars--l" />
+          <div className="cosmos-grid" />
+          <div className="cosmos-scan" />
+          <div className="cosmos-lines" />
+        </div>
+        {children}
+      </body>
     </html>
   );
 }

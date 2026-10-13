@@ -4,27 +4,30 @@
 
 :root {
   color-scheme: dark;
+  --glow-cyan: 46, 230, 255; /* signal */
+  --glow-plasma: 214, 107, 255; /* plasma */
+  --glow-iris: 168, 139, 255; /* iris */
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  background: theme("colors.ink");
 }
 
+/* The cosmos backdrop sits at z-index -1 and paints the scene; body stays transparent so it
+   shows through. */
 body {
-  @apply bg-ink font-sans text-paper antialiased;
-  background-image:
-    radial-gradient(1100px 520px at 12% -12%, rgba(61, 224, 180, 0.07), transparent 60%),
-    radial-gradient(920px 520px at 112% -6%, rgba(124, 156, 255, 0.06), transparent 55%);
-  background-attachment: fixed;
+  @apply font-sans text-paper antialiased;
+  background: transparent;
 }
 
 ::selection {
-  background: rgba(61, 224, 180, 0.26);
-  color: #eaeef9;
+  background: rgba(var(--glow-cyan), 0.28);
+  color: #eef3ff;
 }
 
 *:focus-visible {
-  outline: 2px solid #3de0b4;
+  outline: 2px solid theme("colors.signal");
   outline-offset: 2px;
   border-radius: 5px;
 }
@@ -32,7 +35,436 @@ body {
 /* thin console-style scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #35446a transparent;
+  scrollbar-color: #2d4280 transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Cosmos backdrop (rendered once by app/layout.tsx).
+   Every moving layer animates `transform` or `opacity` only, so the compositor does the
+   work — nothing here repaints per frame. Star tiles use co-prime sizes so the repeat
+   period is never visible.
+   ───────────────────────────────────────────────────────────────────────────── */
+.cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 8% -10%, rgba(var(--glow-cyan), 0.1), transparent 60%),
+    radial-gradient(900px 620px at 105% 8%, rgba(var(--glow-plasma), 0.12), transparent 60%),
+    radial-gradient(1000px 600px at 50% 120%, rgba(var(--glow-iris), 0.12), transparent 65%),
+    linear-gradient(180deg, #04050d 0%, #060920 55%, #04050d 100%);
+}
+
+/* nebula clouds: two blurred blobs that breathe very slowly */
+.cosmos-nebula {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 32% at 26% 30%, rgba(var(--glow-plasma), 0.14), transparent 70%),
+    radial-gradient(36% 28% at 74% 62%, rgba(var(--glow-cyan), 0.1), transparent 70%),
+    radial-gradient(28% 22% at 60% 18%, rgba(var(--glow-iris), 0.1), transparent 70%);
+  filter: blur(30px);
+  animation: nebula-breathe 26s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.cosmos-stars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  will-change: transform;
+}
+
+.cosmos-stars--s {
+  top: -233px;
+  height: calc(100% + 233px);
+  background-size: 233px 233px;
+  background-image:
+    radial-gradient(1px 1px at 23px 41px, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 97px 12px, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1px 1px at 151px 88px, rgba(200, 230, 255, 0.7), transparent 60%),
+    radial-gradient(1px 1px at 61px 141px, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 201px 177px, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1px 1px at 131px 211px, rgba(220, 210, 255, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 9px 199px, rgba(255, 255, 255, 0.45), transparent 60%);
+  animation: drift-s 160s linear infinite;
+}
+
+.cosmos-stars--m {
+  top: -317px;
+  height: calc(100% + 317px);
+  background-size: 317px 317px;
+  background-image:
+    radial-gradient(1.5px 1.5px at 71px 53px, rgba(var(--glow-cyan), 0.9), transparent 60%),
+    radial-gradient(1.5px 1.5px at 259px 131px, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1.5px 1.5px at 163px 271px, rgba(var(--glow-iris), 0.9), transparent 60%),
+    radial-gradient(1.5px 1.5px at 29px 229px, rgba(255, 255, 255, 0.75), transparent 60%);
+  animation:
+    drift-m 110s linear infinite,
+    twinkle 6s ease-in-out infinite alternate;
+}
+
+/* sparse coloured motes — the "particles" */
+.cosmos-stars--l {
+  top: -521px;
+  height: calc(100% + 521px);
+  background-size: 521px 521px;
+  background-image:
+    radial-gradient(2.5px 2.5px at 113px 97px, rgba(var(--glow-cyan), 0.95), transparent 70%),
+    radial-gradient(2px 2px at 401px 313px, rgba(var(--glow-plasma), 0.9), transparent 70%),
+    radial-gradient(2px 2px at 257px 463px, rgba(255, 200, 120, 0.8), transparent 70%);
+  filter: drop-shadow(0 0 3px rgba(var(--glow-cyan), 0.6));
+  animation:
+    drift-l 70s linear infinite,
+    twinkle 9s ease-in-out infinite alternate-reverse;
+}
+
+/* perspective floor grid, fading into the horizon */
+.cosmos-grid {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -10%;
+  height: 55%;
+  background-image:
+    linear-gradient(rgba(var(--glow-cyan), 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--glow-cyan), 0.22) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(420px) rotateX(62deg);
+  transform-origin: 50% 0%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 45%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 45%, #000 100%);
+  opacity: 0.32;
+}
+
+/* one faint scan beam that sweeps the screen top to bottom */
+.cosmos-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 140px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--glow-cyan), 0.035) 50%,
+    transparent
+  );
+  animation: scan-sweep 9s linear infinite;
+  will-change: transform;
+}
+
+/* fixed CRT scanlines over the backdrop only (content sits above, so text stays crisp) */
+.cosmos-lines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.018) 0px,
+    rgba(255, 255, 255, 0.018) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+@keyframes drift-s { to { transform: translate3d(0, 233px, 0); } }
+@keyframes drift-m { to { transform: translate3d(0, 317px, 0); } }
+@keyframes drift-l { to { transform: translate3d(0, 521px, 0); } }
+@keyframes twinkle {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+@keyframes nebula-breathe {
+  from { transform: scale(1) translate3d(0, 0, 0); opacity: 0.85; }
+  to { transform: scale(1.08) translate3d(-2%, 1.5%, 0); opacity: 1; }
+}
+@keyframes scan-sweep {
+  from { transform: translate3d(0, -140px, 0); }
+  to { transform: translate3d(0, 100vh, 0); }
+}
+@keyframes sheen {
+  from { transform: translateX(-120%) skewX(-20deg); }
+  to { transform: translateX(260%) skewX(-20deg); }
+}
+
+@layer components {
+  /* ── Headings ─────────────────────────────────────────────────────────── */
+  .neon-title {
+    background: linear-gradient(92deg, #eef3ff 0%, #b9f6ff 45%, #e6b8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 12px rgba(var(--glow-cyan), 0.35));
+  }
+
+  .neon-glyph {
+    color: theme("colors.signal");
+    text-shadow:
+      0 0 8px rgba(var(--glow-cyan), 0.8),
+      0 0 18px rgba(var(--glow-cyan), 0.4);
+    display: inline-block;
+  }
+
+  /* ── Glass panels ─────────────────────────────────────────────────────── */
+  /* `holo`: the default glass panel (readouts, filters). `holo-card`: the main card, with a
+     brighter rim and HUD corner brackets. Corners are background layers, not pseudo-elements,
+     so they survive `overflow-hidden` and need no positioning. */
+  .holo {
+    border: 1px solid rgba(var(--glow-cyan), 0.16);
+    background-color: rgba(12, 18, 40, 0.55);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    backdrop-filter: blur(10px) saturate(130%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 0 0 1px rgba(0, 0, 0, 0.25),
+      0 0 24px -12px rgba(var(--glow-cyan), 0.35);
+  }
+
+  .holo-card {
+    --c: rgba(var(--glow-cyan), 0.75);
+    border: 1px solid rgba(var(--glow-cyan), 0.24);
+    background-color: rgba(12, 18, 40, 0.72);
+    background-image:
+      linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+      linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+      linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+      linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+      linear-gradient(160deg, rgba(var(--glow-cyan), 0.06), transparent 40%, rgba(var(--glow-plasma), 0.06));
+    background-repeat: no-repeat;
+    background-size:
+      14px 1.5px, 1.5px 14px, 14px 1.5px, 1.5px 14px,
+      14px 1.5px, 1.5px 14px, 14px 1.5px, 1.5px 14px,
+      100% 100%;
+    background-position:
+      0 0, 0 0, 100% 0, 100% 0,
+      0 100%, 0 100%, 100% 100%, 100% 100%,
+      0 0;
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.3),
+      0 0 32px -10px rgba(var(--glow-cyan), 0.35),
+      0 0 70px -30px rgba(var(--glow-plasma), 0.45),
+      0 30px 60px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Flip-card faces live in a preserve-3d context, where backdrop-filter flattens the 3D
+     transform in Chromium. Same look, opaque instead of blurred. */
+  .holo-solid {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: rgba(12, 18, 40, 0.94);
+  }
+
+  /* Header strip of a card: a HUD bar with a fine scanline texture. */
+  .hud-strip {
+    border-bottom: 1px solid rgba(var(--glow-cyan), 0.18);
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(var(--glow-cyan), 0.035) 0px,
+        rgba(var(--glow-cyan), 0.035) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      linear-gradient(90deg, rgba(var(--glow-cyan), 0.1), rgba(8, 12, 28, 0.7) 40%, rgba(var(--glow-plasma), 0.07));
+  }
+
+  /* Big readout number (accuracy / queue) */
+  .readout {
+    color: theme("colors.signal");
+    @apply animate-glow-pulse;
+  }
+
+  /* ── Segmented controls (seq/shuffle, mode switch) ─────────────────────── */
+  .seg {
+    @apply flex items-center gap-0.5 rounded-[6px] p-0.5 font-mono text-[11px];
+    border: 1px solid rgba(var(--glow-cyan), 0.2);
+    background: rgba(8, 12, 28, 0.6);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .seg-item {
+    @apply relative rounded-[4px] px-2.5 py-1.5 text-mist transition;
+  }
+  .seg-item:hover {
+    @apply text-paper;
+    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.5);
+  }
+  .seg-item[aria-current="page"],
+  .seg-item[aria-pressed="true"] {
+    color: theme("colors.signal");
+    background: rgba(var(--glow-cyan), 0.12);
+    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.7);
+    box-shadow: inset 0 0 12px -4px rgba(var(--glow-cyan), 0.6);
+  }
+  /* glowing underline on the active item */
+  .seg-item[aria-current="page"]::after,
+  .seg-item[aria-pressed="true"]::after {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    bottom: 1px;
+    height: 1px;
+    background: theme("colors.signal");
+    box-shadow: 0 0 6px 1px rgba(var(--glow-cyan), 0.8);
+  }
+
+  /* A standalone toggle chip (⤨ options, ⚙ limits). Pressed state via aria-pressed. */
+  .chip-toggle {
+    @apply rounded-[6px] px-2.5 py-1.5 font-mono text-[11px] text-mist transition;
+    border: 1px solid rgba(var(--glow-cyan), 0.2);
+    background: rgba(8, 12, 28, 0.6);
+  }
+  .chip-toggle:hover {
+    @apply text-paper;
+    border-color: rgba(var(--glow-cyan), 0.45);
+  }
+  .chip-toggle[aria-pressed="true"] {
+    color: theme("colors.signal");
+    border-color: rgba(var(--glow-cyan), 0.6);
+    background: rgba(var(--glow-cyan), 0.12);
+    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.7);
+    box-shadow: 0 0 14px -4px rgba(var(--glow-cyan), 0.7);
+  }
+
+  /* ── Buttons ──────────────────────────────────────────────────────────── */
+  /* Chamfered via clip-path. clip-path also clips an outline, so these buttons draw their
+     focus ring inset instead. */
+  .btn-cyber {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden font-mono transition;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    border-radius: 0;
+  }
+  .btn-cyber:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px theme("colors.paper");
+  }
+  /* scan-line sheen that crosses the button on hover */
+  .btn-cyber::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    pointer-events: none;
+  }
+  .btn-cyber:hover:not(:disabled)::after {
+    animation: sheen 0.7s ease-out;
+  }
+  .btn-cyber:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  /* Solid cyan: the one primary action on screen (Check answer). filter runs before
+     clip-path, so a drop-shadow on a clipped element is clipped away; instead the chamfered
+     fill lives in ::before and the button itself stays unclipped, letting the glow trace
+     the chamfer. */
+  .btn-primary {
+    @apply font-semibold text-ink;
+    clip-path: none;
+    isolation: isolate;
+    filter: drop-shadow(0 0 8px rgba(var(--glow-cyan), 0.45));
+  }
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, #2ee6ff, #7cf0ff 55%, #b48bff);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .btn-primary::after {
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .btn-primary:hover:not(:disabled) {
+    filter: drop-shadow(0 0 14px rgba(var(--glow-cyan), 0.85)) brightness(1.08);
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid theme("colors.paper");
+    outline-offset: 3px;
+    box-shadow: none;
+  }
+  .btn-primary:disabled {
+    color: theme("colors.mist");
+    filter: none;
+  }
+  .btn-primary:disabled::before {
+    background: theme("colors.linestrong");
+  }
+
+  /* outlined neon: next / secondary positive actions */
+  .btn-neon {
+    color: theme("colors.signal");
+    background: rgba(var(--glow-cyan), 0.08);
+    box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.5);
+  }
+  .btn-neon:hover:not(:disabled) {
+    background: rgba(var(--glow-cyan), 0.18);
+    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.8);
+    box-shadow:
+      inset 0 0 0 1px rgba(var(--glow-cyan), 0.9),
+      inset 0 0 18px -6px rgba(var(--glow-cyan), 0.8);
+  }
+
+  /* quiet: prev / dismissive actions */
+  .btn-ghost {
+    color: theme("colors.paperdim");
+    background: rgba(12, 18, 40, 0.6);
+    box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.18);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    color: theme("colors.paper");
+    box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.45);
+  }
+
+  .btn-cyber:disabled:is(.btn-neon, .btn-ghost) {
+    opacity: 0.3;
+  }
+
+  /* ── Hover lift for pickable tiles ────────────────────────────────────── */
+  .lift {
+    transition:
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--glow-cyan), 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(var(--glow-cyan), 0.25),
+      0 0 40px -8px rgba(var(--glow-cyan), 0.5),
+      0 0 90px -30px rgba(var(--glow-plasma), 0.7),
+      0 30px 60px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  /* fields (jump / limit inputs) */
+  .field {
+    @apply rounded-[4px] font-mono text-paper;
+    border: 1px solid rgba(var(--glow-cyan), 0.25);
+    background: rgba(4, 5, 13, 0.7);
+  }
+  .field:focus {
+    border-color: theme("colors.signal");
+    box-shadow: 0 0 12px -2px rgba(var(--glow-cyan), 0.6);
+  }
+}
+
+/* Older/low-power browsers without backdrop-filter: make glass opaque enough to read. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .holo,
+  .holo-card {
+    background-color: rgba(12, 18, 40, 0.92);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

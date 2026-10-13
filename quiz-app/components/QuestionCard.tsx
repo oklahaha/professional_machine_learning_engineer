@@ -59,7 +59,7 @@ function Stem({ text }: { text: string }) {
           return (
             <pre
               key={i}
-              className="overflow-x-auto rounded-xl border border-line bg-ink2/70 p-3 sm:p-4"
+              className="overflow-x-auto rounded-md border border-signal/20 bg-ink/80 p-3 shadow-[inset_0_0_24px_-12px_rgba(46,230,255,0.35)] sm:p-4"
             >
               <code className="block font-mono text-[12px] leading-relaxed text-paperdim sm:text-[13px]">
                 {seg.content}
@@ -101,11 +101,11 @@ export default function QuestionCard({
   return (
     <section
       key={question.id}
-      className="animate-cell-in overflow-hidden rounded-2xl border border-line bg-panel/80 shadow-[0_1px_0_rgba(255,255,255,0.03)_inset,0_20px_50px_-30px_rgba(0,0,0,0.9)] backdrop-blur-sm"
+      className="holo-card animate-cell-in overflow-hidden rounded-lg"
     >
       {/* cell header — reads like a notebook cell label */}
-      <div className="flex items-center gap-2.5 border-b border-line/70 bg-ink2/60 px-4 py-2.5 sm:px-5">
-        <span className="font-mono text-xs font-medium tracking-tight text-signal">
+      <div className="hud-strip flex items-center gap-2.5 px-4 py-2.5 sm:px-5">
+        <span className="font-mono text-xs font-medium tracking-tight text-signal [text-shadow:0_0_8px_rgba(46,230,255,0.6)]">
           Q{String(question.id).padStart(3, "0")}
         </span>
         <span className="font-mono text-[11px] text-mist">
@@ -117,7 +117,7 @@ export default function QuestionCard({
           {domain && (
             <span
               title={`Exam guide section ${domain.id}: ${domain.title} (~${domain.weight}% of the exam) — ${domain.blurb}`}
-              className="rounded-full border border-linestrong bg-panel2/60 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-paperdim"
+              className="rounded-[3px] border border-linestrong bg-panel2/60 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-paperdim"
             >
               §{domain.id} {domain.name}
             </span>
@@ -125,7 +125,7 @@ export default function QuestionCard({
           {isCommunity && (
             <span
               title="Correct answer sourced from the ExamTopics community vote"
-              className="rounded-full border border-iris/30 bg-iris/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-iris"
+              className="rounded-[3px] border border-iris/30 bg-iris/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-iris"
             >
               community-voted
             </span>
@@ -133,7 +133,7 @@ export default function QuestionCard({
           {question.needsReview ? (
             <span
               title={question.reviewNote ?? `Auto-extracted with possible defects: ${question.flags.join(", ")}`}
-              className="flex items-center gap-1 rounded-full border border-amber/30 bg-amber/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-amber"
+              className="flex items-center gap-1 rounded-[3px] border border-amber/30 bg-amber/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-amber"
             >
               ⚠ review
             </span>
@@ -160,11 +160,11 @@ export default function QuestionCard({
             const isAnswer = correct.includes(opt.label);
 
             let row =
-              "border-line bg-panel2/40 hover:border-signal/50 hover:bg-panel2";
+              "border-line bg-panel2/40 hover:border-signal/60 hover:bg-panel2/70 hover:shadow-[0_0_18px_-6px_rgba(46,230,255,0.55)]";
             let chip = "border-linestrong text-mist";
             if (revealed) {
               if (isAnswer) {
-                row = "border-correct/70 bg-correct/[0.08]";
+                row = "border-correct/70 bg-correct/[0.08] shadow-[0_0_20px_-8px_rgba(52,227,168,0.7)]";
                 chip = "border-correct bg-correct text-ink";
               } else if (chosen) {
                 row = "border-wrong/70 bg-wrong/[0.08]";
@@ -174,7 +174,7 @@ export default function QuestionCard({
                 chip = "border-linestrong text-mist";
               }
             } else if (chosen) {
-              row = "border-signal bg-signal/[0.10]";
+              row = "border-signal bg-signal/[0.10] shadow-[0_0_20px_-6px_rgba(46,230,255,0.7)]";
               chip = "border-signal bg-signal text-ink";
             }
 
@@ -185,10 +185,10 @@ export default function QuestionCard({
                   disabled={revealed}
                   aria-pressed={chosen}
                   onClick={() => onSelect(opt.label)}
-                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-3 text-left transition-colors duration-150 disabled:cursor-default ${row}`}
+                  className={`flex w-full items-start gap-3 rounded-md border px-3 py-3 text-left transition-colors duration-150 disabled:cursor-default ${row}`}
                 >
                   <span
-                    className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-md border font-mono text-xs font-semibold transition-colors ${chip}`}
+                    className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-[3px] border font-mono text-xs font-semibold transition-colors ${chip}`}
                   >
                     {opt.label}
                   </span>
@@ -221,17 +221,17 @@ export default function QuestionCard({
               type="button"
               disabled={selected.length === 0}
               onClick={onCheck}
-              className="group inline-flex items-center gap-2 rounded-xl bg-signal px-5 py-2.5 font-mono text-sm font-semibold text-ink shadow-[0_8px_24px_-12px_rgba(61,224,180,0.7)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-linestrong disabled:text-mist disabled:shadow-none"
+              className="btn-cyber btn-primary px-5 py-2.5 text-sm"
             >
               <span aria-hidden className="text-[11px]">▶</span>
               Check answer
             </button>
           ) : (
             <span
-              className={`animate-verdict-in inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 font-mono text-sm font-semibold ${
+              className={`animate-verdict-in inline-flex items-center gap-2 rounded-md border px-3.5 py-2 font-mono text-sm font-semibold ${
                 isCorrect
-                  ? "border-correct/40 bg-correct/10 text-correct"
-                  : "border-wrong/40 bg-wrong/10 text-wrong"
+                  ? "border-correct/50 bg-correct/10 text-correct shadow-[0_0_18px_-6px_rgba(52,227,168,0.7)] [text-shadow:0_0_8px_rgba(52,227,168,0.6)]"
+                  : "border-wrong/50 bg-wrong/10 text-wrong shadow-[0_0_18px_-6px_rgba(255,107,129,0.7)] [text-shadow:0_0_8px_rgba(255,107,129,0.6)]"
               }`}
             >
               {isCorrect ? "✓ Correct" : `✗ Incorrect · answer ${correct.join(", ")}`}
@@ -249,7 +249,7 @@ export default function QuestionCard({
         </div>
 
         {revealed && (
-          <div className="animate-verdict-in mt-5 rounded-xl border border-line bg-ink2/60 p-4">
+          <div className="animate-verdict-in holo mt-5 rounded-md border-l-2 border-l-signal/70 p-4">
             <div className="mb-2 font-mono text-[11px] uppercase tracking-widest text-signal/80">
               // explanation
             </div>
@@ -276,7 +276,7 @@ export default function QuestionCard({
         )}
 
         {revealed && question.reviewNote && (
-          <div className="animate-verdict-in mt-3 rounded-xl border border-amber/30 bg-amber/5 p-4">
+          <div className="animate-verdict-in mt-3 rounded-md border border-amber/30 border-l-2 border-l-amber/80 bg-amber/5 p-4">
             <div className="mb-2 font-mono text-[11px] uppercase tracking-widest text-amber/90">
               ⚠ verify this answer yourself
             </div>

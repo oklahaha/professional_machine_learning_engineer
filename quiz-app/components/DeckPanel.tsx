@@ -52,7 +52,7 @@ export default function DeckPanel({
     setExpanded((e) => (e.includes(course) ? e.filter((c) => c !== course) : [...e, course]));
 
   return (
-    <div className="mt-3 rounded-xl border border-line bg-panel/50">
+    <div className="holo mt-3 rounded-lg">
       <div className="flex items-center gap-2 px-3 py-2">
         <button
           type="button"
@@ -91,7 +91,7 @@ export default function DeckPanel({
       </div>
 
       {open && (
-        <div className="border-t border-line/70 px-2 pb-2 pt-1.5">
+        <div className="border-t border-signal/15 px-2 pb-2 pt-1.5">
           <div className="flex items-center gap-3 px-2.5 pb-1 font-mono text-[9px] uppercase tracking-widest text-mist/50">
             <span className="flex-1">course · learned</span>
             <span className="w-16 text-right">due / new</span>
@@ -109,9 +109,9 @@ export default function DeckPanel({
                 {/* Two controls, never nested: the row picks the course, the chevron opens its
                     units. A button inside a button is invalid HTML and breaks keyboard use. */}
                 <div
-                  className={`flex items-center rounded-lg border transition ${
+                  className={`flex items-center rounded-md border transition ${
                     on
-                      ? "border-signal/40 bg-signal/[0.08]"
+                      ? "border-signal/50 bg-signal/[0.08] shadow-[inset_0_0_16px_-6px_rgba(46,230,255,0.6)]"
                       : "border-transparent hover:border-line hover:bg-panel2/40"
                   }`}
                 >
@@ -137,7 +137,7 @@ export default function DeckPanel({
                       </span>
                       <span className="mt-1 block h-1 w-full overflow-hidden rounded-full bg-linestrong/40">
                         <span
-                          className="block h-full rounded-full bg-iris transition-[width] duration-300"
+                          className="block h-full rounded-full bg-gradient-to-r from-iris to-plasma shadow-[0_0_8px_rgba(168,139,255,0.8)] transition-[width] duration-300"
                           style={{ width: `${learned}%` }}
                         />
                       </span>

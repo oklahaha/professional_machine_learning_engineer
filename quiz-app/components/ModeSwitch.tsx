@@ -21,15 +21,14 @@ const MODES: Record<"pmle" | "dsai", Mode[]> = {
  */
 export default function ModeSwitch({ source }: { source: "pmle" | "dsai" }) {
   const pathname = usePathname();
-  const pill = "rounded-md px-2.5 py-1.5 transition";
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-line bg-panel/60 p-0.5 font-mono text-[11px]">
+    <nav aria-label="Study modes" className="seg">
       <Link
         href="/"
         title="Choose a question source"
         aria-label="Home"
-        className={`${pill} text-mist hover:text-paper`}
+        className="seg-item"
       >
         ⌂
       </Link>
@@ -41,12 +40,12 @@ export default function ModeSwitch({ source }: { source: "pmle" | "dsai" }) {
             href={m.href}
             title={m.title}
             aria-current={active ? "page" : undefined}
-            className={`${pill} ${active ? "bg-signal/15 text-signal" : "text-mist hover:text-paper"}`}
+            className="seg-item"
           >
             {m.label}
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }

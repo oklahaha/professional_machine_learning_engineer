@@ -300,8 +300,8 @@ export default function DsaiQuizApp() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span aria-hidden className="text-signal">◆</span>
-              <h1 className="font-display text-lg font-semibold tracking-tight text-paper sm:text-xl">
+              <span aria-hidden className="neon-glyph animate-float">◆</span>
+              <h1 className="neon-title font-display text-lg font-semibold tracking-tight sm:text-xl">
                 DSAI Quiz
               </h1>
             </div>
@@ -312,14 +312,13 @@ export default function DsaiQuizApp() {
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             <ModeSwitch source="dsai" />
-            <div className="flex items-center gap-0.5 rounded-lg border border-line bg-panel/60 p-0.5 font-mono text-[11px]">
+            <div className="seg">
               {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
-                  className={`rounded-md px-2.5 py-1.5 transition ${
-                    orderMode === m ? "bg-signal/15 text-signal" : "text-mist hover:text-paper"
-                  }`}
+                  aria-pressed={orderMode === m}
+                  className="seg-item"
                 >
                   {m === "sequential" ? "seq" : "shuffle"}
                 </button>
@@ -329,21 +328,17 @@ export default function DsaiQuizApp() {
               onClick={toggleShuffleOpts}
               aria-pressed={shuffleOpts}
               title="Shuffle the answer options within each question"
-              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
-                shuffleOpts
-                  ? "border-signal/40 bg-signal/15 text-signal"
-                  : "border-line bg-panel/60 text-mist hover:text-paper"
-              }`}
+              className="chip-toggle"
             >
               ⤨ options
             </button>
           </div>
         </div>
 
-        <div className="mt-4 flex items-end gap-5 rounded-xl border border-line bg-panel/50 px-4 py-3">
+        <div className="holo mt-4 flex items-end gap-5 rounded-lg px-4 py-3">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-widest text-mist">accuracy</div>
-            <div className="font-mono text-3xl font-semibold leading-none tracking-tight text-signal tabular-nums">
+            <div className="readout font-mono text-3xl font-semibold leading-none tracking-tight tabular-nums">
               {accuracy === null ? (
                 <span className="text-mist">n/a</span>
               ) : (
@@ -373,7 +368,7 @@ export default function DsaiQuizApp() {
       </header>
 
       {!hydrated ? (
-        <div className="rounded-2xl border border-line bg-panel/50 p-10 text-center font-mono text-xs text-mist">
+        <div className="holo rounded-lg p-10 text-center font-mono text-xs text-mist">
           loading questions…
         </div>
       ) : (
@@ -408,7 +403,7 @@ export default function DsaiQuizApp() {
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} />
       </nav>
 
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-line bg-ink/95 px-4 py-3 font-mono backdrop-blur sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-4 py-3 font-mono shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
         <span className="flex items-center gap-2 text-[11px] text-mist">
           <span className="tabular-nums">
@@ -465,7 +460,7 @@ function Coverage({
               onClick={() => onJump(i)}
               aria-label={`Go to question ${i + 1}`}
               className={`h-2 w-2 rounded-[2px] transition-transform hover:scale-150 ${tone} ${
-                i === pos ? "ring-2 ring-signal ring-offset-1 ring-offset-ink" : ""
+                i === pos ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(46,230,255,0.7)]" : ""
               }`}
             />
           );
@@ -487,14 +482,12 @@ function NavButton({
   compact?: boolean;
 }) {
   const isNext = dir === "next";
-  const style = isNext
-    ? "border-signal/40 bg-signal/10 text-signal hover:bg-signal/20"
-    : "border-line bg-panel/60 text-paperdim hover:border-linestrong hover:text-paper";
+  const style = isNext ? "btn-neon" : "btn-ghost";
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-30 ${style} ${
+      className={`btn-cyber ${style} ${
         compact ? "px-4 py-2.5" : "px-4 py-2"
       }`}
     >

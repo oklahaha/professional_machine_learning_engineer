@@ -20,12 +20,12 @@ export default function Page() {
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span aria-hidden className="text-signal">◆</span>
-            <h1 className="font-display text-2xl font-semibold tracking-tight text-paper sm:text-3xl">
+            <span aria-hidden className="neon-glyph animate-float">◆</span>
+            <h1 className="neon-title font-display text-3xl font-bold tracking-tight sm:text-4xl">
               Data Science &amp; AI
             </h1>
           </div>
-          <p className="mt-1 font-mono text-xs text-mist">{courses.join(" · ")}</p>
+          <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.2em] text-mist">{courses.join(" · ")}</p>
         </div>
         <ModeSwitch source="dsai" />
       </header>

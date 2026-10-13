@@ -41,7 +41,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
     .sort((a, b) => a.accuracy! - b.accuracy!)[0];
 
   return (
-    <div className="mt-3 rounded-xl border border-line bg-panel/50">
+    <div className="holo mt-3 rounded-lg">
       <div className="flex items-center gap-2 px-3 py-2">
         <button
           type="button"
@@ -79,7 +79,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
       </div>
 
       {open && (
-        <div className="border-t border-line/70 px-2 pb-2 pt-1.5">
+        <div className="border-t border-signal/15 px-2 pb-2 pt-1.5">
           <div className="flex items-center gap-3 px-2.5 pb-1 font-mono text-[9px] uppercase tracking-widest text-mist/50">
             <span className="flex-1">section · your accuracy</span>
             <span>seen</span>
@@ -95,9 +95,9 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
                 onClick={() => onToggle(d.id)}
                 aria-pressed={on}
                 title={`${d.title} — ${d.blurb}`}
-                className={`flex w-full items-center gap-3 rounded-lg border px-2.5 py-2 text-left transition ${
+                className={`flex w-full items-center gap-3 rounded-md border px-2.5 py-2 text-left transition ${
                   on
-                    ? "border-signal/40 bg-signal/[0.08]"
+                    ? "border-signal/50 bg-signal/[0.08] shadow-[inset_0_0_16px_-6px_rgba(46,230,255,0.6)]"
                     : "border-transparent hover:border-line hover:bg-panel2/40"
                 }`}
               >

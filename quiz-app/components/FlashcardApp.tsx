@@ -375,8 +375,8 @@ export default function FlashcardApp() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span aria-hidden className="text-signal">◆</span>
-              <h1 className="font-display text-lg font-semibold tracking-tight text-paper sm:text-xl">
+              <span aria-hidden className="neon-glyph animate-float">◆</span>
+              <h1 className="neon-title font-display text-lg font-semibold tracking-tight sm:text-xl">
                 DSAI Flashcards
               </h1>
             </div>
@@ -391,11 +391,7 @@ export default function FlashcardApp() {
               onClick={toggleShuffle}
               aria-pressed={shuffleSeed !== 0}
               title="Study cards in random order instead of deck order"
-              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
-                shuffleSeed
-                  ? "border-signal/40 bg-signal/15 text-signal"
-                  : "border-line bg-panel/60 text-mist hover:text-paper"
-              }`}
+              className="chip-toggle"
             >
               ⤨ shuffle
             </button>
@@ -403,23 +399,19 @@ export default function FlashcardApp() {
               onClick={() => setShowLimits((s) => !s)}
               aria-pressed={showLimits}
               title="Daily new-card and review limits"
-              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
-                showLimits
-                  ? "border-signal/40 bg-signal/15 text-signal"
-                  : "border-line bg-panel/60 text-mist hover:text-paper"
-              }`}
+              className="chip-toggle"
             >
               ⚙ limits
             </button>
           </div>
         </div>
 
-        <div className="mt-4 flex items-end gap-5 rounded-xl border border-line bg-panel/50 px-4 py-3">
+        <div className="holo mt-4 flex items-end gap-5 rounded-lg px-4 py-3">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-widest text-mist">
               queue
             </div>
-            <div className="font-mono text-3xl font-semibold leading-none tracking-tight text-signal tabular-nums">
+            <div className="readout font-mono text-3xl font-semibold leading-none tracking-tight tabular-nums">
               {hydrated ? queue.length : <span className="text-mist">—</span>}
             </div>
           </div>
@@ -432,7 +424,7 @@ export default function FlashcardApp() {
         </div>
 
         {showLimits && (
-          <div className="animate-verdict-in mt-3 flex flex-wrap items-center gap-4 rounded-xl border border-line bg-panel/50 px-4 py-3 font-mono text-[11px] text-mist">
+          <div className="holo animate-verdict-in mt-3 flex flex-wrap items-center gap-4 rounded-lg px-4 py-3 font-mono text-[11px] text-mist">
             <LimitInput
               label="new / day"
               value={limits.newPerDay}
@@ -465,7 +457,7 @@ export default function FlashcardApp() {
       </header>
 
       {!hydrated ? (
-        <div className="rounded-2xl border border-line bg-panel/50 p-10 text-center font-mono text-xs text-mist">
+        <div className="holo rounded-lg p-10 text-center font-mono text-xs text-mist">
           loading deck…
         </div>
       ) : card && cardState ? (
@@ -522,7 +514,7 @@ function LimitInput({
           const n = parseInt(e.target.value, 10);
           if (!Number.isNaN(n)) onChange(Math.min(9999, Math.max(0, n)));
         }}
-        className="w-16 rounded-lg border border-line bg-panel px-2 py-1.5 text-center font-mono text-sm text-paper tabular-nums focus:border-signal"
+        className="field w-16 px-2 py-1.5 text-center text-sm tabular-nums"
       />
     </label>
   );
@@ -542,11 +534,11 @@ function Done({
   canAddNew: boolean;
 }) {
   return (
-    <section className="animate-cell-in rounded-2xl border border-line bg-panel/80 p-8 text-center">
+    <section className="holo-card animate-cell-in rounded-lg p-8 text-center">
       <div className="font-mono text-[11px] uppercase tracking-widest text-signal/80">
         // queue empty
       </div>
-      <h2 className="mt-3 font-display text-xl font-semibold text-paper">
+      <h2 className="neon-title mt-3 font-display text-xl font-semibold">
         Nothing left for today
       </h2>
       <p className="mx-auto mt-2 max-w-sm font-sans text-sm leading-relaxed text-mist">
@@ -560,14 +552,14 @@ function Done({
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={onCheckAgain}
-          className="rounded-xl border border-line bg-panel/60 px-4 py-2 font-mono text-sm text-paperdim transition hover:border-linestrong hover:text-paper"
+          className="btn-cyber btn-ghost px-4 py-2 text-sm"
         >
           check again
         </button>
         {canAddNew && (
           <button
             onClick={onMoreNew}
-            className="rounded-xl border border-signal/40 bg-signal/10 px-4 py-2 font-mono text-sm text-signal transition hover:bg-signal/20"
+            className="btn-cyber btn-neon px-4 py-2 text-sm"
           >
             + 10 new cards
           </button>

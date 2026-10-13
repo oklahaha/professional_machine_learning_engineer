@@ -261,3 +261,11 @@ and the `ModeSwitch` pill.
   docs as ground truth when correcting.
 - If regenerating data, `npm run extract` expects the source PDF in `PMLE/` (`../PMLE/` from
   `quiz-app/`). It fails loudly if it parses fewer than 250 questions.
+- **Visual theme (space/cyberpunk) lives in `app/globals.css` + the tokens in `tailwind.config.ts`.**
+  The space backdrop is one fixed `.cosmos` div in `app/layout.tsx`, pure CSS, animating only
+  `transform`/`opacity`. Components use a small class vocabulary instead of repeating utility
+  strings: `holo` (glass panel), `holo-card` (main card, HUD corners), `holo-solid` (required on
+  flip-card faces — `backdrop-filter` breaks `preserve-3d`), `hud-strip`, `seg`/`seg-item` and
+  `chip-toggle` (active state is driven by `aria-current`/`aria-pressed`, so keep those attributes),
+  `btn-cyber` + `btn-primary`/`btn-neon`/`btn-ghost`, `neon-title`, `readout`, `field`, `lift`.
+  `plasma` (magenta) is decorative only — never a verdict colour, same rule as sections.

@@ -262,8 +262,8 @@ export default function PracticeApp() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span aria-hidden className="text-signal">◇</span>
-              <h1 className="font-display text-lg font-semibold tracking-tight text-paper sm:text-xl">
+              <span aria-hidden className="neon-glyph animate-float">◇</span>
+              <h1 className="neon-title font-display text-lg font-semibold tracking-tight sm:text-xl">
                 PMLE Eval Console
               </h1>
             </div>
@@ -275,16 +275,13 @@ export default function PracticeApp() {
           <div className="flex flex-wrap items-center justify-end gap-2">
             <ModeSwitch source="pmle" />
             {/* order mode toggle */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-line bg-panel/60 p-0.5 font-mono text-[11px]">
+            <div className="seg">
               {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
-                  className={`rounded-md px-2.5 py-1.5 transition ${
-                    orderMode === m
-                      ? "bg-signal/15 text-signal"
-                      : "text-mist hover:text-paper"
-                  }`}
+                  aria-pressed={orderMode === m}
+                  className="seg-item"
                 >
                   {m === "sequential" ? "seq" : "shuffle"}
                 </button>
@@ -295,11 +292,7 @@ export default function PracticeApp() {
               onClick={toggleShuffleOpts}
               aria-pressed={shuffleOpts}
               title="Shuffle the answer options within each question"
-              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
-                shuffleOpts
-                  ? "border-signal/40 bg-signal/15 text-signal"
-                  : "border-line bg-panel/60 text-mist hover:text-paper"
-              }`}
+              className="chip-toggle"
             >
               ⤨ options
             </button>
@@ -307,12 +300,12 @@ export default function PracticeApp() {
         </div>
 
         {/* accuracy readout — the metric this whole app computes */}
-        <div className="mt-4 flex items-end gap-5 rounded-xl border border-line bg-panel/50 px-4 py-3">
+        <div className="holo mt-4 flex items-end gap-5 rounded-lg px-4 py-3">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-widest text-mist">
               accuracy
             </div>
-            <div className="font-mono text-3xl font-semibold leading-none tracking-tight text-signal tabular-nums">
+            <div className="readout font-mono text-3xl font-semibold leading-none tracking-tight tabular-nums">
               {accuracy === null ? (
                 <span className="text-mist">n/a</span>
               ) : (
@@ -366,7 +359,7 @@ export default function PracticeApp() {
       </nav>
 
       {/* mobile sticky controls */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-line bg-ink/95 px-4 py-3 font-mono backdrop-blur sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-4 py-3 font-mono shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
         <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
@@ -434,7 +427,7 @@ const Minimap = memo(function Minimap({
               title={`Q${item.id}${answered ? (right ? " · correct" : " · wrong") : ""}`}
               aria-label={`Go to question ${i + 1}`}
               className={`h-2 w-2 rounded-[2px] transition-transform hover:scale-150 ${tone} ${
-                isCurrent ? "ring-2 ring-signal ring-offset-1 ring-offset-ink" : ""
+                isCurrent ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(46,230,255,0.7)]" : ""
               }`}
             />
           );
@@ -465,11 +458,8 @@ function NavButton({
   compact?: boolean;
 }) {
   const isNext = dir === "next";
-  const base =
-    "rounded-xl border transition disabled:opacity-30 disabled:cursor-not-allowed";
-  const style = isNext
-    ? "border-signal/40 bg-signal/10 text-signal hover:bg-signal/20"
-    : "border-line bg-panel/60 text-paperdim hover:border-linestrong hover:text-paper";
+  const base = "btn-cyber";
+  const style = isNext ? "btn-neon" : "btn-ghost";
   const size = compact ? "px-4 py-2.5" : "px-4 py-2";
   return (
     <button onClick={onClick} disabled={disabled} className={`${base} ${style} ${size}`}>
@@ -503,7 +493,7 @@ function JumpControl({
           const n = parseInt(e.target.value, 10);
           if (!Number.isNaN(n)) onJump(n - 1);
         }}
-        className="w-14 rounded-lg border border-line bg-panel px-2 py-1.5 text-center font-mono text-sm text-paper tabular-nums focus:border-signal"
+        className="field w-14 px-2 py-1.5 text-center text-sm tabular-nums"
         aria-label="Jump to question number"
       />
       {!compact && <span className="text-mist/50">/ {total}</span>}

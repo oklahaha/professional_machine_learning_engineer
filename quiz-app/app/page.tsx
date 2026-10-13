@@ -15,12 +15,12 @@ export default function Home() {
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 pb-10 pt-8 sm:pt-14">
       <header className="mb-8">
         <div className="flex items-center gap-2">
-          <span aria-hidden className="text-signal">◈</span>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-paper sm:text-3xl">
+          <span aria-hidden className="neon-glyph animate-float">◈</span>
+          <h1 className="neon-title font-display text-3xl font-bold tracking-tight sm:text-4xl">
             Study Console
           </h1>
         </div>
-        <p className="mt-1 font-mono text-xs text-mist">choose a question source</p>
+        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.2em] text-mist">choose a question source</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">

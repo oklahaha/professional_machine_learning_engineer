@@ -21,7 +21,7 @@ export default function RichText({ text }: { text: string }) {
           return (
             <code
               key={i}
-              className="rounded border border-line bg-ink2/70 px-1 py-px font-mono text-[0.88em] text-paper"
+              className="rounded-[3px] border border-signal/20 bg-ink/70 px-1 py-px font-mono text-[0.88em] text-paper"
             >
               {r.content}
             </code>

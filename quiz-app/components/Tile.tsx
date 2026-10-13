@@ -14,13 +14,13 @@ export default function Tile({ href, glyph, kicker, title, blurb, stats }: Props
   return (
     <Link
       href={href}
-      className="group animate-cell-in flex flex-col rounded-2xl border border-line bg-panel/80 p-5 shadow-[0_1px_0_rgba(255,255,255,0.03)_inset,0_20px_50px_-30px_rgba(0,0,0,0.9)] transition hover:border-signal/50 hover:bg-panel2/70 focus-visible:border-signal sm:p-6"
+      className="holo-card lift group animate-cell-in flex flex-col rounded-lg p-5 focus-visible:border-signal sm:p-6"
     >
       <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-mist">
-        <span aria-hidden className="text-signal">{glyph}</span>
+        <span aria-hidden className="neon-glyph">{glyph}</span>
         {kicker}
       </div>
-      <h2 className="mt-3 font-display text-xl font-semibold tracking-tight text-paper sm:text-2xl">
+      <h2 className="neon-title mt-3 font-display text-xl font-semibold tracking-tight sm:text-2xl">
         {title}
       </h2>
       <p className="mt-2 flex-1 font-sans text-sm leading-relaxed text-mist">{blurb}</p>
@@ -28,11 +28,11 @@ export default function Tile({ href, glyph, kicker, title, blurb, stats }: Props
         {stats.map((s) => (
           <div key={s.label}>
             <dt className="text-[10px] uppercase tracking-widest text-mist">{s.label}</dt>
-            <dd className="text-lg font-semibold tabular-nums text-paper">{s.value}</dd>
+            <dd className="text-lg font-semibold tabular-nums text-signal [text-shadow:0_0_10px_rgba(46,230,255,0.5)]">{s.value}</dd>
           </div>
         ))}
       </dl>
-      <span className="mt-5 font-mono text-sm text-signal transition group-hover:translate-x-1">
+      <span className="mt-5 font-mono text-sm uppercase tracking-widest text-signal transition group-hover:translate-x-1 group-hover:[text-shadow:0_0_10px_rgba(46,230,255,0.9)]">
         open →
       </span>
     </Link>

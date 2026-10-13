@@ -39,7 +39,7 @@ export default function QuizDeckPanel({ stats, filter, onToggleCourse, onToggleU
     setExpanded((e) => (e.includes(course) ? e.filter((c) => c !== course) : [...e, course]));
 
   return (
-    <div className="mt-3 rounded-xl border border-line bg-panel/50">
+    <div className="holo mt-3 rounded-lg">
       <div className="flex items-center gap-2 px-3 py-2">
         <button
           type="button"
@@ -71,7 +71,7 @@ export default function QuizDeckPanel({ stats, filter, onToggleCourse, onToggleU
       </div>
 
       {open && (
-        <div className="border-t border-line/70 px-2 pb-2 pt-1.5">
+        <div className="border-t border-signal/15 px-2 pb-2 pt-1.5">
           <div className="flex items-center gap-3 px-2.5 pb-1 font-mono text-[9px] uppercase tracking-widest text-mist/50">
             <span className="flex-1">course · answered</span>
             <span className="w-12 text-right">acc</span>
@@ -86,8 +86,8 @@ export default function QuizDeckPanel({ stats, filter, onToggleCourse, onToggleU
               <div key={d.course}>
                 {/* Two sibling controls, never nested: the row picks, the chevron expands. */}
                 <div
-                  className={`flex items-center rounded-lg border transition ${
-                    on ? "border-signal/40 bg-signal/[0.08]" : "border-transparent hover:border-line hover:bg-panel2/40"
+                  className={`flex items-center rounded-md border transition ${
+                    on ? "border-signal/50 bg-signal/[0.08] shadow-[inset_0_0_16px_-6px_rgba(46,230,255,0.6)]" : "border-transparent hover:border-line hover:bg-panel2/40"
                   }`}
                 >
                   <button
@@ -105,7 +105,7 @@ export default function QuizDeckPanel({ stats, filter, onToggleCourse, onToggleU
                       </span>
                       <span className="mt-1 block h-1 w-full overflow-hidden rounded-full bg-linestrong/40">
                         <span
-                          className="block h-full rounded-full bg-iris transition-[width] duration-300"
+                          className="block h-full rounded-full bg-gradient-to-r from-iris to-plasma shadow-[0_0_8px_rgba(168,139,255,0.8)] transition-[width] duration-300"
                           style={{ width: `${(100 * d.score.answered) / Math.max(1, d.score.total)}%` }}
                         />
                       </span>

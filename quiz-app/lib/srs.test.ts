@@ -264,3 +264,45 @@ test("fuzz is deterministic per card and keeps intervals sane", () => {
     `fuzz stayed within range: ${a1.interval} vs ${unfuzzed}`,
   );
 });
+
+test("buildQueue shuffle reorders new cards and reviews, deterministically per seed", () => {
+  const deck = [
+    ...Array.from({ length: 30 }, (_, i) => card(`n${i}`)),
+    ...Array.from({ length: 30 }, (_, i) => card(`r${i}`)),
+  ];
+  const states: States = {};
+  for (let i = 0; i < 30; i++)
+    states[`r${i}`] = { ...initialState(), phase: "review", interval: 3, due: startOfLocalDay(NOW) - i * DAY };
+  const opts = { newPerDay: 30, reviewPerDay: 200, newDone: 0, reviewsDone: 0 };
+
+  const plain = buildQueue(deck, states, opts, NOW);
+  const a = buildQueue(deck, states, { ...opts, shuffleSeed: 7 }, NOW);
+  const b = buildQueue(deck, states, { ...opts, shuffleSeed: 7 }, NOW);
+  const c = buildQueue(deck, states, { ...opts, shuffleSeed: 8 }, NOW);
+
+  assert.deepEqual([...a].sort(), [...plain].sort(), "same cards, different order");
+  assert.notDeepEqual(a, plain);
+  assert.deepEqual(a, b, "a seed is reproducible");
+  assert.notDeepEqual(a, c, "a new seed is a new order");
+});
+
+test("buildQueue shuffle keeps learning first and the review cap on the most overdue", () => {
+  const deck = [card("learn1"), ...Array.from({ length: 10 }, (_, i) => card(`r${i}`))];
+  const states: States = {
+    learn1: { ...initialState(), phase: "learning", step: 1, due: NOW - MINUTE },
+  };
+  // r0 is the most overdue, r9 the least
+  for (let i = 0; i < 10; i++)
+    states[`r${i}`] = { ...initialState(), phase: "review", interval: 3, due: startOfLocalDay(NOW) - (10 - i) * DAY };
+
+  const q = buildQueue(deck, states, { newPerDay: 0, reviewPerDay: 4, newDone: 0, reviewsDone: 0, shuffleSeed: 3 }, NOW);
+  assert.equal(q[0], "learn1");
+  assert.deepEqual(q.slice(1).sort(), ["r0", "r1", "r2", "r3"]);
+});
+
+test("buildQueue shuffle picks the same new cards across a day boundary", () => {
+  const deck = Array.from({ length: 40 }, (_, i) => card(`n${i}`));
+  const day1 = buildQueue(deck, {}, { newPerDay: 10, reviewPerDay: 0, newDone: 0, reviewsDone: 0, shuffleSeed: 5 }, NOW);
+  const day2 = buildQueue(deck, {}, { newPerDay: 10, reviewPerDay: 0, newDone: 0, reviewsDone: 0, shuffleSeed: 5 }, NOW + DAY);
+  assert.deepEqual(day1, day2, "an unstudied card is not swapped out just because a day passed");
+});

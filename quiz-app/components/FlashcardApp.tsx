@@ -47,6 +47,7 @@ type Persisted = {
   limits: Limits;
   courses: string[]; // whole-course filter; empty = the whole deck
   units: string[]; // "COURSE::UNIT" selections narrowing their course; see lib/deck.ts
+  shuffleSeed?: number; // 0/absent = deck order; added field, still version 1
 };
 
 const CARD_IDS = new Set(cards.map((c) => c.id));
@@ -123,6 +124,10 @@ function load(): Persisted | null {
         COURSES,
         UNIT_KEYS,
       ),
+      shuffleSeed:
+        typeof p.shuffleSeed === "number" && Number.isInteger(p.shuffleSeed) && p.shuffleSeed > 0
+          ? p.shuffleSeed >>> 0
+          : 0,
     };
   } catch {
     return null;
@@ -134,6 +139,7 @@ export default function FlashcardApp() {
   const [log, setLog] = useState<Record<string, DayLog>>({});
   const [limits, setLimits] = useState<Limits>(DEFAULT_LIMITS);
   const [filter, setFilter] = useState<DeckFilter>(EMPTY_FILTER);
+  const [shuffleSeed, setShuffleSeed] = useState(0); // 0 = deck order
   const [queue, setQueue] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [showLimits, setShowLimits] = useState(false);
@@ -145,11 +151,16 @@ export default function FlashcardApp() {
   const deck = useMemo(() => cardsForFilter(filter), [filter]);
 
   const fill = useCallback(
-    (s: States, l: Record<string, DayLog>, lim: Limits, d: typeof cards, at: number) => {
+    (s: States, l: Record<string, DayLog>, lim: Limits, d: typeof cards, at: number, seed = shuffleSeed) => {
       const today = l[dayKey(at)] ?? EMPTY_DAY;
-      return buildQueue(d, s, { ...lim, newDone: today.newDone, reviewsDone: today.reviewsDone }, at);
+      return buildQueue(
+        d,
+        s,
+        { ...lim, newDone: today.newDone, reviewsDone: today.reviewsDone, shuffleSeed: seed },
+        at,
+      );
     },
-    [],
+    [shuffleSeed],
   );
 
   useEffect(() => {
@@ -163,10 +174,12 @@ export default function FlashcardApp() {
     setLog(l);
     setLimits(lim);
     setFilter(f);
+    setShuffleSeed(p?.shuffleSeed ?? 0);
     setNow(at);
-    setQueue(fill(s, l, lim, cardsForFilter(f), at));
+    setQueue(fill(s, l, lim, cardsForFilter(f), at, p?.shuffleSeed ?? 0));
     setHydrated(true);
-  }, [fill]);
+    // Mount-only: `fill` changes identity with the seed, and re-running this would reload storage.
+  }, []);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -177,13 +190,14 @@ export default function FlashcardApp() {
       limits,
       courses: filter.courses,
       units: filter.units,
+      shuffleSeed,
     };
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
     } catch {
       /* storage may be unavailable (private mode) — ignore */
     }
-  }, [hydrated, states, log, limits, filter]);
+  }, [hydrated, states, log, limits, filter, shuffleSeed]);
 
   // Nothing left right now, but a learning step is a minute away: poll gently so the queue
   // refills itself instead of stranding the user on the "done" panel. Only runs while empty.
@@ -338,6 +352,17 @@ export default function FlashcardApp() {
     setQueue(fill({}, {}, limits, deck, at));
   }
 
+  // Turning shuffle on picks a fresh seed (a new order); off returns to deck order. Either way
+  // the queue is rebuilt, so the card on screen may change.
+  function toggleShuffle() {
+    const seed = shuffleSeed ? 0 : (Math.floor(Math.random() * 0xffffffff) >>> 0) || 1;
+    const at = Date.now();
+    setShuffleSeed(seed);
+    setRevealed(false);
+    setNow(at);
+    setQueue(fill(states, log, limits, deck, at, seed));
+  }
+
   function checkAgain() {
     const at = Date.now();
     setNow(at);
@@ -362,6 +387,18 @@ export default function FlashcardApp() {
 
           <div className="flex flex-wrap items-center justify-end gap-2">
             <ModeSwitch source="dsai" />
+            <button
+              onClick={toggleShuffle}
+              aria-pressed={shuffleSeed !== 0}
+              title="Study cards in random order instead of deck order"
+              className={`rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition ${
+                shuffleSeed
+                  ? "border-signal/40 bg-signal/15 text-signal"
+                  : "border-line bg-panel/60 text-mist hover:text-paper"
+              }`}
+            >
+              ⤨ shuffle
+            </button>
             <button
               onClick={() => setShowLimits((s) => !s)}
               aria-pressed={showLimits}
@@ -433,6 +470,7 @@ export default function FlashcardApp() {
         </div>
       ) : card && cardState ? (
         <Flashcard
+          key={card.id}
           card={card}
           state={cardState}
           queueLeft={queue.length}

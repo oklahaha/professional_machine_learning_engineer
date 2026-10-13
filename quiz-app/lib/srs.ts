@@ -259,6 +259,13 @@ export type QueueOptions = {
   reviewPerDay: number;
   newDone: number; // already introduced today
   reviewsDone: number; // already reviewed today
+  /**
+   * Non-zero shuffles the queue, Anki's "random" order. New cards are drawn in an order keyed by
+   * (id, seed) — so the same seed introduces the same cards day after day instead of reshuffling
+   * which ones you meet — and today's reviews are dealt in a seeded order too. Learning steps are
+   * never shuffled: they are ordered by when they fall due, which is the point of them.
+   */
+  shuffleSeed?: number;
 };
 
 /**
@@ -288,9 +295,18 @@ export function buildQueue(deck: Card[], states: States, opts: QueueOptions, now
   learningIds.sort((a, b) => states[a].due - states[b].due);
   reviews.sort((a, b) => states[a].due - states[b].due);
 
+  const seed = opts.shuffleSeed ?? 0;
+  const bySeed = (ids: string[]) => {
+    const key = new Map(ids.map((id) => [id, seedFrom(id, seed)]));
+    return ids.sort((a, b) => key.get(a)! - key.get(b)! || (a < b ? -1 : 1));
+  };
+  if (seed) bySeed(fresh);
+
   const reviewCap = Math.max(0, opts.reviewPerDay - opts.reviewsDone);
   const newCap = Math.max(0, opts.newPerDay - opts.newDone);
+  // The cap still takes the most overdue reviews; only the order they are dealt in is shuffled.
   const dueReviews = reviews.slice(0, reviewCap);
+  if (seed) bySeed(dueReviews);
   const newCards = fresh.slice(0, newCap);
 
   if (newCards.length === 0) return [...learningIds, ...dueReviews];

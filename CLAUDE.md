@@ -200,6 +200,10 @@ and the `ModeSwitch` pill.
   cursor; `FlashcardApp` holds a due queue and rebuilds it when it empties. A card still in learning is
   re-inserted a few cards later (`requeue`), never immediately. Do not copy the `order`/`pos` mechanic
   here.
+- **Shuffle** (`⤨ shuffle`) is `QueueOptions.shuffleSeed` in `buildQueue`: new cards are drawn in
+  an order keyed by `seedFrom(id, seed)` (so the same seed introduces the same cards day to day),
+  today's reviews are dealt in seeded order *after* the cap takes the most overdue, and learning
+  steps are never shuffled. 0 = deck order; the seed persists in `msc-cards-srs-v1`.
 - **Storage key `msc-cards-srs-v1`** (the quiz's `pmle-practice-v3` is untouched). `load()` prunes
   orphaned ids and coerces every numeric field into range — stored state can be months old or
   hand-edited, and a NaN interval would wedge the queue.

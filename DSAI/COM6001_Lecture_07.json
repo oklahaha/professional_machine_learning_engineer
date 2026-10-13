@@ -1,0 +1,436 @@
+[
+  {
+    "question": "A column has $Q_1 = 12$ and $Q_3 = 64$. Using the 1.5 × IQR rule, what are the outlier bounds?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Lower −66, upper 142",
+        "Explanation": "Correct. IQR = 64 − 12 = 52 and 1.5 × 52 = 78, so the bounds are 12 − 78 = −66 and 64 + 78 = 142."
+      },
+      {
+        "label": "B",
+        "text": "Lower −14, upper 90",
+        "Explanation": "This adds and subtracts only half the IQR (26) instead of 1.5 × IQR."
+      },
+      {
+        "label": "C",
+        "text": "Lower −40, upper 116",
+        "Explanation": "This applies 1 × IQR (52) instead of 1.5 × IQR."
+      },
+      {
+        "label": "D",
+        "text": "Lower −66, upper 90",
+        "Explanation": "The lower bound is right but the upper bound must be Q3 + 78, not Q3 + 26."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compute the IQR first, then extend 1.5 IQRs beyond each quartile.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "Twenty salaries range from 32,000 to 500,000; sixteen are at most 100,000, then 200,000, 220,000, 350,000 and 500,000. How many fall in the lowest bin of `pd.cut(salary, bins=4)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5",
+        "Explanation": "Five per group is what `qcut(q=4)` gives with 20 distinct values, not `cut()`."
+      },
+      {
+        "label": "B",
+        "text": "4",
+        "Explanation": "Equal-width bins do not split the data into equal counts."
+      },
+      {
+        "label": "C",
+        "text": "16",
+        "Explanation": "Correct. Each equal-width bin spans (500,000 − 32,000)/4 = 117,000, so the first bin reaches 149,000 and holds all 16 salaries of at most 100,000."
+      },
+      {
+        "label": "D",
+        "text": "18",
+        "Explanation": "200,000 and 220,000 exceed the first bin's upper edge of about 149,000."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "`cut()` divides the value range into equal widths, regardless of how many values land in each.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "For the same 20 distinct salaries, what does `pd.qcut(salary, q=4).value_counts()` show?",
+    "options": [
+      {
+        "label": "A",
+        "text": "16, 2, 1, 1",
+        "Explanation": "This is the equal-width split produced by `pd.cut(bins=4)`."
+      },
+      {
+        "label": "B",
+        "text": "5 in each of the four groups",
+        "Explanation": "Correct. `qcut()` cuts at the quartiles, so 20 distinct values divide into four groups of 5."
+      },
+      {
+        "label": "C",
+        "text": "4 in each group plus 4 NaN",
+        "Explanation": "`qcut()` covers the full data range, so no values become NaN."
+      },
+      {
+        "label": "D",
+        "text": "10, 5, 3, 2",
+        "Explanation": "That would reflect value-based widths; `qcut()` targets equal-sized groups."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "`qcut()` uses quantiles as edges.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "`date_time_range` is `Timedelta('1460 days 23:00:00')`. What does `date_time_range / 7` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The float `208.708...`",
+        "Explanation": "A float is returned only when dividing by another Timedelta, e.g. `pd.Timedelta(weeks=1)`."
+      },
+      {
+        "label": "B",
+        "text": "The integer `208`",
+        "Explanation": "Dividing a Timedelta does not truncate to an integer."
+      },
+      {
+        "label": "C",
+        "text": "An error, because a Timedelta cannot be divided by a number",
+        "Explanation": "Dividing a Timedelta by a scalar is allowed and scales the duration."
+      },
+      {
+        "label": "D",
+        "text": "`Timedelta('208 days 17:00:00')`",
+        "Explanation": "Correct. A Timedelta divided by a plain number is another Timedelta: 35,063 hours / 7 = 5,009 hours = 208 days 17 hours."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Ask whether the divisor is a duration or a plain number.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "A `size` column holds `'S'`, `'M'` and `'L'`. What integers does a default `OrdinalEncoder()` fitted on it assign?",
+    "options": [
+      {
+        "label": "A",
+        "text": "S = 0, M = 1, L = 2",
+        "Explanation": "This natural order is only obtained by passing `categories=[['S','M','L']]`."
+      },
+      {
+        "label": "B",
+        "text": "L = 0, M = 1, S = 2",
+        "Explanation": "Correct. By default the categories are sorted alphabetically (L < M < S), which breaks the real size order."
+      },
+      {
+        "label": "C",
+        "text": "S = 1, M = 2, L = 3",
+        "Explanation": "OrdinalEncoder codes start at 0, and the default order is alphabetical."
+      },
+      {
+        "label": "D",
+        "text": "In the order of first appearance in the data",
+        "Explanation": "The default encoder sorts the categories; it does not keep their order of appearance."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about how the encoder orders strings when no categories are given.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "`df` has columns `class` (a, b, c), `color` (green, yellow, red) and numeric `quantity`. Which columns does `pd.get_dummies(df)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`class_a, class_b, class_c, color_green, color_red, color_yellow` only",
+        "Explanation": "Numeric columns are not dropped; `quantity` is kept unchanged."
+      },
+      {
+        "label": "B",
+        "text": "`quantity, class, color` with 0/1 codes replacing the strings",
+        "Explanation": "One-hot encoding creates one column per category rather than recoding in place."
+      },
+      {
+        "label": "C",
+        "text": "`quantity, class_a, class_b, class_c, color_green, color_red, color_yellow`",
+        "Explanation": "Correct. All non-numeric columns are one-hot encoded into `column_value` Boolean columns; `quantity` passes through."
+      },
+      {
+        "label": "D",
+        "text": "`quantity_1, quantity_2, quantity_3` plus the class and color dummies",
+        "Explanation": "Numeric columns are not encoded by default."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "By default only non-numeric columns are expanded.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "You call `pd.cut(air_quality['PM2.5'], bins=[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4])`, but the column's maximum is 821. What happens to the values above 500.4?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They are put in the last interval `(250.4, 500.4]`.",
+        "Explanation": "Custom edges are not extended; values beyond the last edge fall in no interval."
+      },
+      {
+        "label": "B",
+        "text": "Pandas raises an error because the edges do not cover the data.",
+        "Explanation": "No error is raised; out-of-range values are handled silently."
+      },
+      {
+        "label": "C",
+        "text": "They are assigned NaN, which `value_counts(dropna=False)` reveals.",
+        "Explanation": "Correct. Values outside every interval become NaN; using the column maximum as the last edge avoids this."
+      },
+      {
+        "label": "D",
+        "text": "A seventh interval `(500.4, 821.0]` is created automatically.",
+        "Explanation": "Pandas never adds edges you did not provide in a list."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Custom edges define exactly which intervals exist.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "You want to cap `gdp_per_capita_usd` at its 99th percentile `p99` without touching any other column. Which statement is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`wdi.loc[wdi['gdp_per_capita_usd'] > p99, 'gdp_per_capita_usd'] = p99`",
+        "Explanation": "Correct. The Boolean mask selects the extreme rows and the column label restricts the assignment to that one column."
+      },
+      {
+        "label": "B",
+        "text": "`wdi[wdi['gdp_per_capita_usd'] > p99] = p99`",
+        "Explanation": "This overwrites every column in the selected rows with p99."
+      },
+      {
+        "label": "C",
+        "text": "`wdi = wdi[wdi['gdp_per_capita_usd'] <= p99]`",
+        "Explanation": "This drops the extreme rows instead of capping them."
+      },
+      {
+        "label": "D",
+        "text": "`wdi['gdp_per_capita_usd'].quantile(0.99) = p99`",
+        "Explanation": "You cannot assign to a method call; this is a syntax error."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Use `.loc` with a row mask and a column label together.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "Which of the following features should be one-hot encoded rather than ordinal encoded?",
+    "options": [
+      {
+        "label": "A",
+        "text": "T-shirt size: S, M, L",
+        "Explanation": "Sizes have a natural order, so ordinal encoding preserves useful information."
+      },
+      {
+        "label": "B",
+        "text": "Satisfaction: low, medium, high",
+        "Explanation": "This is ranked, so it is ordinal data."
+      },
+      {
+        "label": "C",
+        "text": "Fruit type: apple, banana, pear",
+        "Explanation": "Correct. Fruit types are nominal (no ranking), so one-hot encoding avoids imposing a false order."
+      },
+      {
+        "label": "D",
+        "text": "Temperature band: very cold, cold, warm, hot",
+        "Explanation": "These bands are ordered, so ordinal encoding fits."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Which categories have no meaningful order?",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "A column is strongly right-skewed with several extreme values. How should you summarise it in a report?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mean and standard deviation, stating that the data are normally distributed",
+        "Explanation": "Mean and SD suit normal data without outliers; skew and outliers distort both."
+      },
+      {
+        "label": "B",
+        "text": "Only the maximum value, since outliers dominate the distribution",
+        "Explanation": "A single statistic cannot describe the distribution."
+      },
+      {
+        "label": "C",
+        "text": "Delete the outliers first, then report mean and standard deviation",
+        "Explanation": "Outliers may be real cases; they should be examined and reported, not automatically deleted."
+      },
+      {
+        "label": "D",
+        "text": "The five-number summary, and report the outliers",
+        "Explanation": "Correct. For skewed data or data with outliers, the median-based five-number summary is the robust choice."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Choose robust statistics when data are skewed.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "`air_quality['date_time']` starts at `Timestamp('2013-03-01 00:00:00')`, which was a Friday. What do `.dt.dayofweek` and `.dt.quarter` return for that first row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "4 and 1",
+        "Explanation": "Correct. `dayofweek` counts Monday as 0, so Friday is 4; March falls in quarter 1."
+      },
+      {
+        "label": "B",
+        "text": "5 and 1",
+        "Explanation": "This counts Monday as 1; pandas starts the week at Monday = 0."
+      },
+      {
+        "label": "C",
+        "text": "4 and 3",
+        "Explanation": "The quarter of March is 1, not its month number."
+      },
+      {
+        "label": "D",
+        "text": "'Friday' and 1",
+        "Explanation": "`dayofweek` returns an integer; `.dt.day_name()` returns the name."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Pandas starts counting weekdays at Monday = 0.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "Which expression gives, for each row of datetime column `col`, the number of days until 1 January 2022 as a float?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`(df['col'] - pd.Timestamp('2022-01-01')) / pd.Timedelta(days=1)`",
+        "Explanation": "This is the time since 2022, which is negative for earlier dates."
+      },
+      {
+        "label": "B",
+        "text": "`(pd.Timestamp('2022-01-01') - df['col']).dt.day`",
+        "Explanation": "Timedelta Series expose `.dt.days` (whole days as integers), not `.dt.day`, so this fails; it would also not give fractional days."
+      },
+      {
+        "label": "C",
+        "text": "`(pd.Timestamp('2022-01-01') - df['col']) / 7`",
+        "Explanation": "Dividing by a plain number returns Timedeltas, not floats in days."
+      },
+      {
+        "label": "D",
+        "text": "`(pd.Timestamp('2022-01-01') - df['col']) / pd.Timedelta(days=1)`",
+        "Explanation": "Correct. Target minus column gives time until; dividing by a one-day Timedelta converts it to float days."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Get the subtraction order right, then divide by a duration.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "Why is the call `pd.cut(s, bins=[0, 12, 35.4, 55.4], labels=['Good', 'Moderate'])` invalid?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Labels must be integers when bins are floats.",
+        "Explanation": "Labels can be any strings; their type is not the problem."
+      },
+      {
+        "label": "B",
+        "text": "Four edges define three intervals, so exactly three labels are required.",
+        "Explanation": "Correct. The number of labels must be one fewer than the number of bin edges."
+      },
+      {
+        "label": "C",
+        "text": "`labels` can only be used with `pd.qcut()`.",
+        "Explanation": "`pd.cut()` accepts a `labels` parameter as well."
+      },
+      {
+        "label": "D",
+        "text": "Edges must be evenly spaced when labels are given.",
+        "Explanation": "Custom, uneven edges are allowed with labels."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Count the intervals that the edges create.",
+    "course": "COM6001",
+    "week": "7"
+  },
+  {
+    "question": "You need the 33rd percentile of `wdi_imp['atms_per_100000']`. Which call is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`wdi_imp['atms_per_100000'].quantile(33)`",
+        "Explanation": "`quantile()` expects a fraction between 0 and 1; 33 is out of range."
+      },
+      {
+        "label": "B",
+        "text": "`wdi_imp['atms_per_100000'].percentile(0.33)`",
+        "Explanation": "Pandas Series have no `percentile()` method."
+      },
+      {
+        "label": "C",
+        "text": "`wdi_imp['atms_per_100000'].describe()['33%']`",
+        "Explanation": "`describe()` only reports the 25%, 50% and 75% percentiles by default."
+      },
+      {
+        "label": "D",
+        "text": "`wdi_imp['atms_per_100000'].quantile(0.33)`",
+        "Explanation": "Correct. `quantile()` takes the percentile as a fraction in [0, 1]."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Check both the method name and the scale of its argument.",
+    "course": "COM6001",
+    "week": "7"
+  }
+]

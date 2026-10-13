@@ -1,0 +1,436 @@
+[
+  {
+    "question": "What does `for i in range(2, 10, 3): print(i)` print?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`2`, `5`, `8`, `11`",
+        "Explanation": "11 is beyond the stop value 10, so it is not generated."
+      },
+      {
+        "label": "B",
+        "text": "`2`, `5`, `8`",
+        "Explanation": "Correct: it starts at 2 and adds 3 each time while staying below the excluded stop 10."
+      },
+      {
+        "label": "C",
+        "text": "`3`, `6`, `9`",
+        "Explanation": "The sequence starts at the start value 2, not at the step."
+      },
+      {
+        "label": "D",
+        "text": "`2`, `3`, `4`, ..., `9`",
+        "Explanation": "That ignores the step of 3."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "start, then keep adding step while below stop.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "After running `total = 0` then `for i in range(13, 174, 7): total += i`, what is the value of `i`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "174",
+        "Explanation": "The stop value is excluded and is not even on the 13 + 7k grid."
+      },
+      {
+        "label": "B",
+        "text": "173",
+        "Explanation": "173 - 13 = 160 is not a multiple of 7, so 173 is never generated; the sequence goes 13, 20, ..., 167."
+      },
+      {
+        "label": "C",
+        "text": "170",
+        "Explanation": "170 is not of the form 13 + 7k."
+      },
+      {
+        "label": "D",
+        "text": "167",
+        "Explanation": "Correct: 13 + 7 x 22 = 167 is the largest term below 174 (the next, 174, is excluded), so `i` keeps that last value; the total is 2070."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Find the largest number of the form 13 + 7k that is less than 174.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "With `a = 3`, what does `print(a%3==0 | a%2==0)` output?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`True`",
+        "Explanation": "This is what `(a%3==0) | (a%2==0)` or `a%3==0 or a%2==0` gives, but here there are no brackets."
+      },
+      {
+        "label": "B",
+        "text": "A `SyntaxError`",
+        "Explanation": "The expression is valid Python; it just does not mean what it looks like."
+      },
+      {
+        "label": "C",
+        "text": "`False`",
+        "Explanation": "Correct: `|` binds tighter than `==`, so Python evaluates `a%3 == (0 | a%2) == 0`, i.e., `0 == 1 == 0`, which is False."
+      },
+      {
+        "label": "D",
+        "text": "`1`",
+        "Explanation": "Comparisons return Booleans, so the printed result is True or False."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Check operator precedence: is `|` applied before or after `==`?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "Given `d1 = {'name': 'aileen', 'marks': 100}`, what does `for pair in d1: print(pair)` print?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`name` and `marks`",
+        "Explanation": "Correct: iterating over a dictionary itself yields its keys."
+      },
+      {
+        "label": "B",
+        "text": "`('name', 'aileen')` and `('marks', 100)`",
+        "Explanation": "Those tuples come from iterating over `d1.items()`."
+      },
+      {
+        "label": "C",
+        "text": "`aileen` and `100`",
+        "Explanation": "Those values come from iterating over `d1.values()`."
+      },
+      {
+        "label": "D",
+        "text": "An error, because dictionaries are not iterable",
+        "Explanation": "Dictionaries are iterable over their keys, values or items."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "What is the default thing you get when looping over a dict?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "Given `def my_sum(a=5, b=5): return a - b`, what does `my_sum(b=1, a=7)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "-6",
+        "Explanation": "That treats the arguments positionally as a=1, b=7; keyword arguments are matched by name."
+      },
+      {
+        "label": "B",
+        "text": "0",
+        "Explanation": "That is the result of `my_sum()` with both defaults."
+      },
+      {
+        "label": "C",
+        "text": "4",
+        "Explanation": "That would be 5 - 1, using the default for `a`, but `a` is given as 7."
+      },
+      {
+        "label": "D",
+        "text": "6",
+        "Explanation": "Correct: keyword arguments bind by name, so a=7 and b=1, giving 7 - 1 = 6."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Keyword arguments ignore the order in which they are written.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "After `a = 3`, a function `def my_update(a): a = a + 1` is defined and called as `my_update(a)`. What does `print(a)` then show?",
+    "options": [
+      {
+        "label": "A",
+        "text": "4",
+        "Explanation": "The increment happens to the function's own local `a`, not the outer one."
+      },
+      {
+        "label": "B",
+        "text": "3",
+        "Explanation": "Correct: the function receives the value of the immutable integer; rebinding its local `a` does not change the outer `a`."
+      },
+      {
+        "label": "C",
+        "text": "`None`",
+        "Explanation": "`print(a)` prints the outer variable, not the function's return value."
+      },
+      {
+        "label": "D",
+        "text": "A `NameError`",
+        "Explanation": "`a` is defined outside the function, so it can be printed."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about variable scope inside and outside a function.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "Given `def calculate_area(width, height=3, *vars): return width * height`, what does `calculate_area(3, 5, ['random', 'input', 0])` return, and what is `vars` inside the call?",
+    "options": [
+      {
+        "label": "A",
+        "text": "15; `vars` is `(['random', 'input', 0],)`",
+        "Explanation": "Correct: 3 x 5 = 15, and the extra positional argument (the list) is collected into a one-element tuple."
+      },
+      {
+        "label": "B",
+        "text": "9; `vars` is `(5, ['random', 'input', 0])`",
+        "Explanation": "5 is matched positionally to `height`, so the default 3 is not used."
+      },
+      {
+        "label": "C",
+        "text": "15; `vars` is `['random', 'input', 0]`",
+        "Explanation": "`*vars` always collects extra positional arguments into a tuple, not the list itself."
+      },
+      {
+        "label": "D",
+        "text": "An error, because a list cannot be passed to `*vars`",
+        "Explanation": "Any object can be passed as a variable-length positional argument."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Match arguments by position first, then see what is left over for `*vars`.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "What does `result = 'Yes' if weather == 'sunny' else 'No'` do when `weather = 'rainy'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Raises a `SyntaxError` because `else` needs a colon",
+        "Explanation": "A conditional expression is written on one line without colons."
+      },
+      {
+        "label": "B",
+        "text": "Sets `result` to `'Yes'`",
+        "Explanation": "That only happens when the condition is True."
+      },
+      {
+        "label": "C",
+        "text": "Sets `result` to `True`",
+        "Explanation": "The expression returns one of the two values, not the Boolean condition."
+      },
+      {
+        "label": "D",
+        "text": "Sets `result` to `'No'`",
+        "Explanation": "Correct: the condition is False, so the value after `else` is chosen."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "value_if_true if condition else value_if_false.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "The buggy `binary_search` returns -1 when searching for 5 in `[1, 2, 3, 4, 5]`. The debug prints end with `left = 4, right = 4 -> [5]`. What is the fix?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Change `mid = left + (right - left) // 2` to use `/`",
+        "Explanation": "`/` returns a float, which cannot be used as a list index."
+      },
+      {
+        "label": "B",
+        "text": "Change the stop condition from `left >= right` to `left > right`",
+        "Explanation": "Correct: when `left == right` one element remains to check; stopping only when `left > right` lets it find index 4."
+      },
+      {
+        "label": "C",
+        "text": "Change `mid + 1` to `mid` in the recursive call",
+        "Explanation": "That could cause infinite recursion and does not address stopping too early."
+      },
+      {
+        "label": "D",
+        "text": "Sort the list before searching",
+        "Explanation": "The list is already sorted; the problem is the base case."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at what happens when only one element is left in the search range.",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "While debugging, execution is paused on a line that calls `binary_search(...)`. Which debugger action enters that function and pauses at its first line?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Step over",
+        "Explanation": "Step over runs the whole call and moves to the next line without entering it."
+      },
+      {
+        "label": "B",
+        "text": "Step out",
+        "Explanation": "Step out finishes the current function and returns to its caller."
+      },
+      {
+        "label": "C",
+        "text": "Step into",
+        "Explanation": "Correct: step into enters the called function and pauses at its first line."
+      },
+      {
+        "label": "D",
+        "text": "Continue",
+        "Explanation": "Continue runs until the next breakpoint is hit."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Which action goes inside the call?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "Which condition correctly tests that `i` is a multiple of 3 or of 5?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`i % 3 == 0 or i % 5 == 0`",
+        "Explanation": "Correct: `%` gives the remainder, and `or` is True if at least one remainder is 0."
+      },
+      {
+        "label": "B",
+        "text": "`i % 3 == 0 and i % 5 == 0`",
+        "Explanation": "`and` only accepts multiples of both, i.e., multiples of 15."
+      },
+      {
+        "label": "C",
+        "text": "`i // 3 == 0 or i // 5 == 0`",
+        "Explanation": "`//` is floor division, which is 0 only for small numbers, not for multiples."
+      },
+      {
+        "label": "D",
+        "text": "`i % 3 == 0 | i % 5 == 0`",
+        "Explanation": "Without brackets, `|` is applied before `==`, giving the wrong logic."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which operator returns the remainder, and which logical operator means 'at least one'?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "An if-statement is written with an `if weather == 'sunny':` branch, then an `else:` branch, and then an `elif weather == 'rainy':` branch. What happens when the cell is run?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It prints `beach` when sunny and `home` otherwise",
+        "Explanation": "The code never runs, because it cannot be parsed."
+      },
+      {
+        "label": "B",
+        "text": "The `elif` branch is ignored",
+        "Explanation": "Python does not skip a misplaced branch; it refuses to parse it."
+      },
+      {
+        "label": "C",
+        "text": "Only the `elif` branch is executed when rainy",
+        "Explanation": "The code fails before any branch runs."
+      },
+      {
+        "label": "D",
+        "text": "A `SyntaxError` is raised because `else` must be the last branch",
+        "Explanation": "Correct: no branch can follow `else`."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Where must `else` appear in an if-statement?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "What does `def print_arguments(*args): print(args)` print when called as `print_arguments('A', 'B', 'C')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`A B C`",
+        "Explanation": "That would need `print(*args)`; here the tuple itself is printed."
+      },
+      {
+        "label": "B",
+        "text": "`('A', 'B', 'C')`",
+        "Explanation": "Correct: `*args` collects the positional arguments into a tuple, which is printed as a tuple."
+      },
+      {
+        "label": "C",
+        "text": "`['A', 'B', 'C']`",
+        "Explanation": "Variable-length positional arguments are collected into a tuple, not a list."
+      },
+      {
+        "label": "D",
+        "text": "`A`",
+        "Explanation": "`*args` collects all the extra positional arguments, not just the first."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "What data structure does `*args` use to collect the arguments?",
+    "course": "COM6001",
+    "week": "3"
+  },
+  {
+    "question": "`num = 0` then `while num < 10: print(num)` is run, with no other statements in the loop. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It prints 0 to 9",
+        "Explanation": "That requires `num += 1` inside the loop."
+      },
+      {
+        "label": "B",
+        "text": "It prints 1 to 10",
+        "Explanation": "Nothing changes `num`, so it never reaches 10."
+      },
+      {
+        "label": "C",
+        "text": "It runs forever printing 0",
+        "Explanation": "Correct: a while loop does not update the variable for you, so `num < 10` stays True."
+      },
+      {
+        "label": "D",
+        "text": "It prints nothing because `num` starts at 0",
+        "Explanation": "0 < 10 is True, so the body runs."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Who is responsible for changing the loop variable in a while loop?",
+    "course": "COM6001",
+    "week": "3"
+  }
+]

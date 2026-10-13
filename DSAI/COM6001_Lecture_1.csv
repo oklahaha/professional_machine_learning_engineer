@@ -22,3 +22,20 @@ Why must element-wise string transformations on a Pandas Series be called via th
 "Why does `df.rename(mapper=lambda x: x.upper, axis='columns')` produce method representation outputs instead of upper-case strings?",It evaluates to the uncalled method object `x.upper` rather than invoking `x.upper()` to return transformed string values.
 What is the correct syntax for converting all DataFrame column names to uppercase using `df.rename()` and a built-in method?,`df.rename(columns=str.upper)`
 How can `list.sort()` order a list of strings based on custom numerical criteria using a lambda function?,"Pass a lambda function extracting the integer component to the `key` parameter, such as `key_list.sort(key=lambda x: int(x[1:]))`."
+"In structured data, what other names are used for an 'object' (a row described by attributes)?","Record, point, case, sample, entity, or instance."
+What distinguishes a nominal categorical attribute from an ordinal one?,"Nominal values have no order (e.g., eye color); ordinal values have an order but the gaps between them are not meaningfully comparable (e.g., good/fair/bad)."
+How do discrete and continuous numerical attributes differ? Give an example of each.,"Discrete attributes take countable values (e.g., counts); continuous attributes can take any value in a range (e.g., temperature)."
+What is a binary attribute?,"A special case of attribute with only two possible values, such as yes/no or exists/not exists."
+What do the four levels of the DIKW pyramid stand for?,"Data, Information, Knowledge, Wisdom."
+What four properties should patterns discovered by data analytics have?,"Valid, useful, unexpected, and understandable."
+"In data analytics, what does it mean for a discovered pattern to be 'valid'?",It holds on new data with some certainty.
+What does it mean for a discovered pattern to be 'useful'?,"It should be possible to act on it, e.g., to make decisions."
+What are the 5 V's of big data?,"Volume, Velocity, Variety, Veracity, and Value."
+Which of the 5 V's refers to the accuracy (trustworthiness) of the data?,Veracity.
+Which of the 5 V's refers to incoming data streams that require real-time analytics?,Velocity.
+Give three examples of the 'Variety' of big data mentioned in the lecture.,"Social networks (graph data), tweets (text, image, video), and click logs (relational data)."
+How do descriptive and predictive data analytic methods differ?,Descriptive methods find human-interpretable patterns that describe the data; predictive methods use some variables to predict unknown or future values of other variables.
+How did John Snow's cholera investigation in London use clustering?,"He plotted cholera cases on a city map and saw them cluster around particular wells, revealing those wells as the contaminated source."
+What did Google Flu Trends use to predict the number of people getting flu?,The frequency of flu-related keywords searched in Google's search history.
+What does CRISP-DM stand for?,CRoss Industry Standard Process for Data Mining.
+List the six phases of the CRISP-DM process in order.,"Business Understanding, Data Understanding, Prepare Data, Data Modeling, Evaluate the Results, Deploy."

@@ -288,5 +288,253 @@
     "hints": "The denominator scales the pooled standard deviation by the harmonic square root adjustment for sample sizes.",
     "course": "COM6005",
     "week": "3A"
+  },
+  {
+    "question": "Tumour-size decreases for $n = 10$ patients give $\\bar{y} = 1.74$ and $s = 2.65$. Testing $H_0: \\mu \\le 0$ vs $H_1: \\mu > 0$ at $\\alpha = 0.05$ (critical value $t_{0.05,9} = 1.833$), what are $T$ and the decision?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$T \\approx 0.66$; fail to reject $H_0$",
+        "Explanation": "This divides by $s$ instead of the standard error $s/\\sqrt{n}$."
+      },
+      {
+        "label": "B",
+        "text": "$T \\approx 6.56$; reject $H_0$",
+        "Explanation": "This divides by $s/n$ instead of $s/\\sqrt{n}$."
+      },
+      {
+        "label": "C",
+        "text": "$T \\approx 2.08$; fail to reject $H_0$ because $T < 2.262$",
+        "Explanation": "$2.262$ is the two-sided critical value $t_{0.025,9}$; a right-tailed test uses $1.833$."
+      },
+      {
+        "label": "D",
+        "text": "$T \\approx 2.08$; reject $H_0$",
+        "Explanation": "Correct: $T = 1.74/(2.65/\\sqrt{10}) \\approx 2.076 > 1.833$ (p $\\approx 0.034$), so the treatment helps."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "T = y-bar / (s / sqrt(n)), compared with the one-sided critical value.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "`stats.ttest_1samp(y, 50, alternative='less')` on 10 butter packs returns statistic $= -2.076$, pvalue $= 0.0339$. What do you conclude at $\\alpha = 0.05$ and at $\\alpha = 0.01$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reject $H_0: \\mu \\ge 50$ at $\\alpha = 0.05$, but not at $\\alpha = 0.01$.",
+        "Explanation": "Correct: $0.0339 < 0.05$ but $0.0339 > 0.01$, so only the less strict level rejects."
+      },
+      {
+        "label": "B",
+        "text": "Reject at both levels, since the statistic is negative.",
+        "Explanation": "The sign shows the direction; the decision depends on comparing the p-value with $\\alpha$, and $0.0339 > 0.01$."
+      },
+      {
+        "label": "C",
+        "text": "Reject at neither level, since $|T| < 2.262$.",
+        "Explanation": "$2.262$ is a two-sided critical value; for this one-sided test at $\\alpha = 0.05$ the p-value $0.0339$ leads to rejection."
+      },
+      {
+        "label": "D",
+        "text": "Reject at $\\alpha = 0.01$ only, since a smaller $\\alpha$ is easier to beat.",
+        "Explanation": "A smaller $\\alpha$ is a stricter standard and makes rejection harder."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compare the p-value with each alpha in turn.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Drug and placebo scores for the same 5 patients are compared with `stats.ttest_rel(x, y, alternative='greater')`, which returns statistic $= 1.775$, pvalue $= 0.0753$, df $= 4$. What is the conclusion at $\\alpha = 0.05$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reject $H_0$: the drug raises the mean score.",
+        "Explanation": "The p-value $0.0753$ exceeds $0.05$, so the evidence is not strong enough."
+      },
+      {
+        "label": "B",
+        "text": "Fail to reject $H_0$: there is insufficient evidence that the drug raises the mean score.",
+        "Explanation": "Correct: $p = 0.0753 > 0.05$, so $H_0: \\mu_W \\le 0$ is not rejected."
+      },
+      {
+        "label": "C",
+        "text": "Reject $H_0$, because $T = 1.775 > 1.645$.",
+        "Explanation": "$1.645$ is a normal critical value; with 4 df the right-tailed $t$ critical value is about $2.132$."
+      },
+      {
+        "label": "D",
+        "text": "The test is invalid, since paired tests need $n \\ge 30$.",
+        "Explanation": "Paired t-tests work for small $n$ if the differences are roughly normal; $n \\ge 30$ is not required."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compare the reported p-value with alpha.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Five pairs of twins give score differences (Method A $-$ Method B) $W = 5, 45, -3, 1, 36$, with $\\bar{W} = 16.8$ and $S = 22.05$. Testing $H_0: \\mu \\le 0$ vs $H_1: \\mu > 0$ at $\\alpha = 0.05$ ($t_{0.05,4} = 2.132$), what is the result?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$t \\approx 3.81$; reject $H_0$",
+        "Explanation": "This divides by $S/n$ instead of $S/\\sqrt{n}$."
+      },
+      {
+        "label": "B",
+        "text": "$t \\approx 0.76$; fail to reject $H_0$",
+        "Explanation": "This divides by $S$ without the $\\sqrt{n}$."
+      },
+      {
+        "label": "C",
+        "text": "$t \\approx 1.70$; fail to reject $H_0$",
+        "Explanation": "Correct: $t = 16.8/(22.05/\\sqrt{5}) \\approx 1.704 < 2.132$, so Method A is not shown to be better."
+      },
+      {
+        "label": "D",
+        "text": "$t \\approx 1.70$; reject $H_0$ because $t > 1.645$",
+        "Explanation": "With $n = 5$ pairs the reference is the $t$ distribution with 4 df, not the normal."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Treat the differences as one sample of size 5.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Salaries of 4 employees in sector A are compared with those of 4 different employees in sector B using a pooled two-sample t-test at $\\alpha = 0.05$ (two-sided). What are the degrees of freedom and the critical value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$df = 3$, critical value $3.182$",
+        "Explanation": "$3 = n - 1$ for one group; a pooled test uses $n + m - 2$."
+      },
+      {
+        "label": "B",
+        "text": "$df = 7$, critical value $2.365$",
+        "Explanation": "This uses $n + m - 1$; two means are estimated, so subtract 2."
+      },
+      {
+        "label": "C",
+        "text": "$df = 8$, critical value $2.306$",
+        "Explanation": "This uses $n + m$ without subtracting the two estimated means."
+      },
+      {
+        "label": "D",
+        "text": "$df = 6$, critical value $2.447$",
+        "Explanation": "Correct: $df = 4 + 4 - 2 = 6$ and $t_{0.025,6} = 2.447$; the observed $|T| \\approx 48.9$ far exceeds it, so $H_0: \\mu_X = \\mu_Y$ is rejected."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "df = n + m - 2, and a two-sided test puts alpha/2 in each tail.",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Two singers each sing the same 5 songs and the judges' scores are compared song by song. Which SciPy function fits this design?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.ttest_ind(x, y, equal_var=True)`",
+        "Explanation": "This treats the two samples as independent, ignoring that both scores belong to the same song."
+      },
+      {
+        "label": "B",
+        "text": "`stats.ttest_rel(x, y)`",
+        "Explanation": "Correct: each song gives a matched pair of scores, so a paired t-test on the differences is appropriate."
+      },
+      {
+        "label": "C",
+        "text": "`stats.ttest_1samp(x, 0)`",
+        "Explanation": "This tests one singer's scores against 0 and ignores the other singer."
+      },
+      {
+        "label": "D",
+        "text": "`stats.ttest_ind(x, y, equal_var=False)`",
+        "Explanation": "This is the unpooled independent-sample test; the data here are paired, not independent."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Are the two sets of scores linked observation by observation?",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Ten butter packs have $\\bar{y} = 48.26$ g and $s = 2.65$ g. Using $t_{0.025,9} = 2.262$, what is the two-sided $95\\%$ confidence interval for $\\mu$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(46.36, 50.16)$",
+        "Explanation": "Correct: $48.26 \\pm 2.262 \\times 2.65/\\sqrt{10} = 48.26 \\pm 1.90$."
+      },
+      {
+        "label": "B",
+        "text": "$(46.72, 49.80)$",
+        "Explanation": "This uses the one-sided value $1.833$; a two-sided $95\\%$ CI needs $t_{0.025,9}$."
+      },
+      {
+        "label": "C",
+        "text": "$(46.62, 49.90)$",
+        "Explanation": "This uses $z = 1.96$; with $\\sigma$ unknown and $n = 10$, the $t$ value applies."
+      },
+      {
+        "label": "D",
+        "text": "$(42.26, 54.26)$",
+        "Explanation": "This uses $s$ instead of the standard error $s/\\sqrt{n}$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Margin = t times s / sqrt(n).",
+    "course": "COM6005",
+    "week": "3A"
+  },
+  {
+    "question": "Which pair of hypotheses is NOT a valid set-up for a test of a mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0: \\mu \\le 0$ vs $H_1: \\mu > 0$",
+        "Explanation": "These are mutually exclusive and together cover every value of $\\mu$, so the pair is valid."
+      },
+      {
+        "label": "B",
+        "text": "$H_0: \\mu = 50$ vs $H_1: \\mu \\ne 50$",
+        "Explanation": "This is the standard two-sided pair and is valid."
+      },
+      {
+        "label": "C",
+        "text": "$H_0: \\mu \\le 0$ vs $H_1: \\mu \\ge 0$",
+        "Explanation": "Correct: both include $\\mu = 0$, so they overlap; $H_0$ and $H_1$ must be mutually exclusive and collectively exhaustive."
+      },
+      {
+        "label": "D",
+        "text": "$H_0: \\mu \\ge 50$ vs $H_1: \\mu < 50$",
+        "Explanation": "This is a valid left-tailed pair."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "H0 and H1 must not overlap and must together cover all cases.",
+    "course": "COM6005",
+    "week": "3A"
   }
 ]

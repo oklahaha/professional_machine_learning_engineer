@@ -6,3 +6,6 @@ PMLE/*.pdf
 .claude/settings.local.json
 
 .DS_Store
+
+# Course lecture notes (source material, not for the repo)
+/DSAI/Lecture notes/

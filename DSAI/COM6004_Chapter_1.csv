@@ -20,3 +20,13 @@ How can retailer management use an association rule where Bagels are in the ante
 How is association rule discovery applied in medical informatics?,It discovers frequent combinations of patient symptoms and diagnostic test results that are associated with specific diseases.
 Data mining tasks are broadly categorized into _____ methods and _____ methods.,predictive; descriptive
 What distinguishes predictive data mining tasks from descriptive data mining tasks?,"Predictive methods use variables to forecast unknown values, whereas descriptive methods find human-interpretable patterns that summarize the data."
+What is a widely used definition of data mining as an extraction process?,"The non-trivial extraction of implicit, previously unknown and potentially useful information from data."
+"Besides predictive modeling, clustering and association rules, what fourth core data mining task is listed?",Anomaly detection.
+Name three data characteristics that make traditional data analysis techniques unsuitable for data mining.,"Data that is large-scale, high dimensional, heterogeneous, complex or distributed (any three)."
+"From a scientific viewpoint, what two things does data mining help scientists with?","Automated analysis of massive datasets, and hypothesis formation."
+"From a commercial viewpoint, why do companies turn to data mining?","Lots of data is collected and warehoused, computers are cheaper and more powerful, and competitive pressure pushes firms to offer better, customized services (e.g. in CRM)."
+What two broad purposes do applications of cluster analysis serve?,"Understanding (e.g. grouping related documents, genes or stocks) and summarization (reducing the size of large data sets)."
+"In clustering-based market segmentation, how is the clustering quality measured?",By observing the buying patterns of customers in the same cluster versus those in different clusters.
+"In supermarket shelf management, what data is processed to find items bought together?",Point-of-sale data collected with barcode scanners.
+What three general benefits do big data technology and analytics offer society?,"Better understanding of problems, evidence-based solutions, and reduced costs."
+What lesson does the 2010 Haiti earthquake response illustrate about big data in disaster management?,Data quality is paramount for prioritizing information and minimizing incorrect use of limited rescue resources.

@@ -16,3 +16,12 @@ The pre-specified acceptable maximum probability of committing a Type I error is
 What decision is made if the calculated probability of the observed result under $H_0$ is less than the significance level $\alpha$?,Reject $H_0$ in favor of $H_1$.
 Term: Power of a Test,Definition: The conditional probability ($1 - \beta$) of correctly rejecting $H_0$ when the alternative hypothesis ($H_1$) is true.
 "When $H_0$ is false, what two mutually exclusive test outcomes are possible?","Correctly rejecting $H_0$ (Power, $1 - \beta$) or failing to reject $H_0$ (Type II error, $\beta$)."
+What is a point estimate?,"A single sample statistic used as the estimate of a population parameter, e.g. $\bar{x}, s^2 \to \mu, \sigma^2$."
+What kind of reasoning uses a sample to conclude a characteristic of the population?,Inductive reasoning.
+On what statistical property is an interval estimate based?,"The sampling distribution, e.g. the Central Limit Theorem that the sample mean is normally distributed."
+"Under the empirical rule, roughly what percentage of normal data lies within $\pm 1\sigma$ and within $\pm 2\sigma$ of the mean?",About $68.3\%$ within $\pm 1\sigma$ and about $95.5\%$ within $\pm 2\sigma$.
+From what probability statement is the $z$-based confidence interval derived?,"$P(-z_{\alpha/2} \le \frac{\bar{x}-\mu}{\sigma/\sqrt{n}} \le z_{\alpha/2}) = 1 - \alpha$, which rearranges into $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$."
+"In statistics, what are 'hypotheses'?","The possible states of nature, i.e. possible values of a population characteristic."
+"What does a confidence interval give, compared with what a hypothesis test decides?",A CI gives a range of plausible values for an unknown parameter; a hypothesis test decides whether a specific claim about the population is supported by the data.
+What is $z_{\alpha/2}$ for a $95\%$ confidence interval?,$1.96$
+What is $z_{\alpha/2}$ for a $99\%$ confidence interval?,About $2.576$.

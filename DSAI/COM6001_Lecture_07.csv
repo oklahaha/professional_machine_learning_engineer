@@ -1,0 +1,35 @@
+What is an outlier?,An unusual observation that is distinct from most of the others; it may not reflect the true phenomenon and can mislead analysis.
+What are three possible causes of outliers?,"Rare but real cases (which you may want to keep), measurement or data-entry errors, and data mixed up from different sources or categories."
+What methods can be used to find potential outliers in numerical data?,"Summary statistics (min, max, mean, percentiles), the interquartile range (IQR) method, and visualisation such as histograms and box plots."
+What does the X% percentile of a column mean?,"With the data sorted from smallest to largest, it is the value at or below which X% of the data falls."
+"Which percentiles correspond to Q1, Q2 (median) and Q3?","The 25th, 50th and 75th percentiles respectively."
+"How do you get the 33rd percentile of a Series `s`, and what range must the argument be in?","`s.quantile(0.33)`; the argument is a fraction in [0, 1]."
+What is the interquartile range (IQR)?,"$IQR = Q_3 - Q_1$, the spread of the middle 50% of the data."
+What are the IQR-based upper and lower bounds for outliers?,"Upper bound $Q_3 + 1.5\,IQR$ and lower bound $Q_1 - 1.5\,IQR$; values beyond them are potential outliers."
+What does the normalised distance `(des.loc['max'] - des.loc['75%']) / des.loc['75%']` on a `describe()` table flag?,"Columns whose maximum lies far above the third quartile relative to its size, i.e. columns likely to contain large outliers."
+Which parameters of `df.hist()` set the number of equal-width bins and the plot size?,"`bins=N` and `figsize=(width, height)`."
+Which pandas call draws a box plot of one column to visualise IQR-based outliers?,`df.boxplot(column='col_name')`
+"What is capping, as a way to treat outliers?","Limiting extreme values to a threshold (e.g. the 99th percentile) so they have less impact, without removing the data points."
+What one statement caps the values of `'atms_per_100000'` above its 99th percentile `p99`?,"`wdi.loc[wdi['atms_per_100000'] > p99, 'atms_per_100000'] = p99`"
+When should you summarise a column with the mean and standard deviation rather than the five-number summary?,"When there are no outliers and the data are normally distributed; for skewed data or outliers, use the five-number summary and report the outliers."
+Which statistical test (beyond the course scope) checks whether data are normally distributed?,The Kolmogorov–Smirnov test (normal quantile plots are the graphical counterpart).
+"Which `datetime` class represents a duration, such as the result of subtracting two datetimes?",`datetime.timedelta`
+How do you express a `datetime.timedelta` as a number of days?,"Divide it by `datetime.timedelta(days=1)`, which yields a float."
+What are the two ways to turn a date column read as strings into `datetime64` in pandas?,"Parse it while loading with `pd.read_csv(..., parse_dates=['col'])`, or convert after loading with `df['col'] = pd.to_datetime(df['col'])`."
+What type is each element of a `datetime64[ns]` column?,A pandas `Timestamp` object.
+How do `.dt.dayofweek` and `.dt.day_name()` differ?,`.dt.dayofweek` returns an integer (Monday = 0 … Sunday = 6); `.dt.day_name()` returns the weekday name as a string.
+What is the difference between dividing a `Timedelta` by another `Timedelta` and by a plain number?,"`Timedelta / Timedelta` gives a float (e.g. number of weeks), while `Timedelta / number` gives another `Timedelta`."
+How do you compute the time until 1 Jan 2022 for every row of a datetime column `col`?,"`pd.Timestamp('2022-01-01') - df['col']`, which gives a `timedelta64` Series (reverse the order for time since)."
+What is the difference between nominal and ordinal categorical features?,"Nominal categories have no rank (red, green, blue); ordinal categories have a natural order (low, mid, high)."
+"What does one-hot encoding do, and which kind of categorical feature is it for?","It creates one binary (0/1) column per category; it suits nominal features, where no order exists."
+"By default, which columns does `pd.get_dummies(df)` encode and how are the new columns named?","All non-numeric columns, each replaced by Boolean columns named `column_value` (e.g. `color_red`); numeric columns are left as they are."
+In what order does a default `OrdinalEncoder()` assign integers to categories?,"Sorted (alphabetical) order of the categories seen in `fit()`, starting at 0."
+"How do you make an `OrdinalEncoder` encode a size column as S = 0, M = 1, L = 2?","Pass the order explicitly: `OrdinalEncoder(categories=[['S', 'M', 'L']])`."
+What must the sample data passed to `OrdinalEncoder.fit()` contain?,Every unique value of each column to be encoded; otherwise unseen categories cannot be transformed.
+How should cyclic categories such as compass directions be encoded?,"With sine and cosine transformations, which preserve their cyclic nature."
+What is binning?,"Transforming a numerical feature into categories by dividing its values into groups (e.g. height into short, medium, tall)."
+How do `pd.cut()` and `pd.qcut()` differ?,`cut()` splits the value range into intervals (equal-width or custom edges); `qcut()` splits by quantiles so each group holds roughly the same number of rows.
+What does `retbins=True` add to the output of `pd.cut()` or `pd.qcut()`?,"It also returns the array of bin edges used, so you unpack two values: `labels, bins = pd.cut(..., retbins=True)`."
+"What happens to values that fall outside all the custom edges given to `pd.cut(..., bins=[...])`?",They are assigned NaN; check with `value_counts(dropna=False)`.
+How many labels must be passed to `pd.cut()` with a list of bin edges?,"One fewer than the number of edges, i.e. one label per interval."
+"Why can `pd.qcut(s, q=4)` still produce groups with unequal counts?",Repeated values at the quantile boundaries cannot be split between groups.

@@ -346,5 +346,253 @@
     "hints": "Pay attention to how setting axis=1 changes the direction of the dropping operation from rows to columns.",
     "course": "COM6001",
     "week": "6"
+  },
+  {
+    "question": "A DataFrame has six rows whose contents are A, A, B, C, C, C (every row is a full-row duplicate of its letter). How many rows does `df.drop_duplicates(keep=False)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3",
+        "Explanation": "This is the result of `keep='first'` (or `'last'`), which keeps one copy of each distinct row."
+      },
+      {
+        "label": "B",
+        "text": "1",
+        "Explanation": "Correct. `keep=False` removes every row that has a duplicate, so only the unique B row remains."
+      },
+      {
+        "label": "C",
+        "text": "0",
+        "Explanation": "B appears only once, so it is not a duplicate and is kept."
+      },
+      {
+        "label": "D",
+        "text": "4",
+        "Explanation": "No setting of `keep` produces 4 rows here; removing only the extra copies leaves 3."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "With `keep=False`, no member of a duplicate group survives.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Which call drops a column only if all of its values are missing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.dropna(axis=1)`",
+        "Explanation": "This drops every column with at least one missing value."
+      },
+      {
+        "label": "B",
+        "text": "`df.dropna(thresh=1)`",
+        "Explanation": "Without `axis=1`, this works on rows, dropping rows that are entirely missing."
+      },
+      {
+        "label": "C",
+        "text": "`df.dropna(axis=1, thresh=1)`",
+        "Explanation": "Correct. A column is kept only if it has at least 1 non-null value, so only all-missing columns are dropped."
+      },
+      {
+        "label": "D",
+        "text": "`df.dropna(axis=0, how='all')`",
+        "Explanation": "`axis=0` targets rows, not columns."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Combine the right axis with the minimum number of non-null values to keep.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "A column holds `[2, 4, NaN, 10]`. After `s = s.fillna(s.mean())`, what is the new mean of `s`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "4.0",
+        "Explanation": "This is what you get if the missing value is treated as 0 (16/4); `fillna(s.mean())` fills with the mean of the non-missing values instead."
+      },
+      {
+        "label": "B",
+        "text": "4.67",
+        "Explanation": "This is the new median (midpoint of 4 and 5.33), not the mean."
+      },
+      {
+        "label": "C",
+        "text": "5.33",
+        "Explanation": "Correct. The mean of 2, 4 and 10 is 16/3 ≈ 5.33, and adding another 5.33 keeps the mean at 5.33."
+      },
+      {
+        "label": "D",
+        "text": "16.0",
+        "Explanation": "This is the sum of the original non-missing values, not the mean."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "What happens to an average when you add one more value equal to that average?",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "A categorical column holds `['x', 'y', 'y', 'x', 'z']`. Which statement about finding its most frequent value is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`describe()` reports `top` as both x and y, while `mode()` returns only x.",
+        "Explanation": "It is the other way round: `describe()` gives a single `top`, `mode()` lists all ties."
+      },
+      {
+        "label": "B",
+        "text": "`mode()` returns both x and y, while `describe()` reports only one of them as `top`, chosen arbitrarily.",
+        "Explanation": "Correct. With a tie, `mode()` outputs all values sharing the highest count; `describe()` picks one."
+      },
+      {
+        "label": "C",
+        "text": "Both raise an error because the column has a tie.",
+        "Explanation": "Neither method fails on ties; they just report them differently."
+      },
+      {
+        "label": "D",
+        "text": "`describe()` returns the five-number summary, so it cannot give the most frequent value.",
+        "Explanation": "For a non-numeric column, `describe()` returns count, unique, top and freq, not the five-number summary."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One method returns every tied winner, the other only a single row of statistics.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "A Titanic dataset contains duplicated passengers who differ only in `PassengerId`. Which expression correctly flags them?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.duplicated(subset=df.columns.drop('PassengerId'))`",
+        "Explanation": "Correct. Comparing all columns except the unique ID reveals rows that are otherwise identical."
+      },
+      {
+        "label": "B",
+        "text": "`df.duplicated()`",
+        "Explanation": "Every row has a distinct `PassengerId`, so no full row is ever a duplicate."
+      },
+      {
+        "label": "C",
+        "text": "`df['PassengerId'].duplicated()`",
+        "Explanation": "IDs are unique per row, so this flags nothing."
+      },
+      {
+        "label": "D",
+        "text": "`df.duplicated(keep=False)`",
+        "Explanation": "`keep` only changes which copies are marked; the unique ID still prevents any match."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The ID column makes every row unique, so it must be left out of the comparison.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "A CSV file is loaded with `pd.read_csv()` and no extra parameters. Which entry would NOT automatically be loaded as NaN?",
+    "options": [
+      {
+        "label": "A",
+        "text": "An empty field between two commas",
+        "Explanation": "Blank fields are loaded as NaN by default."
+      },
+      {
+        "label": "B",
+        "text": "The string `NA`",
+        "Explanation": "`'NA'` is in pandas' default list of missing-value markers."
+      },
+      {
+        "label": "C",
+        "text": "The string `#N/A`",
+        "Explanation": "`'#N/A'` is also recognised as missing by default."
+      },
+      {
+        "label": "D",
+        "text": "The number `-999`",
+        "Explanation": "Correct. Sentinel numbers like -999 are read as ordinary values unless listed in `na_values`."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Pandas only knows a fixed list of missing-value markers out of the box.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "After `wdi[numeric_cols] = SimpleImputer(strategy='mean').fit_transform(wdi[numeric_cols])`, `wdi.info()` shows that `year` and `is_region` changed from `int64` to `float64`. Why?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The mean of an integer column is always rounded up to the next float.",
+        "Explanation": "The dtype change is not about rounding; it is about the type of array returned."
+      },
+      {
+        "label": "B",
+        "text": "`fit_transform()` returns a single float NumPy array for all the columns, and those floats are assigned back.",
+        "Explanation": "Correct. The imputer outputs one float array, so integer columns come back as `float64`."
+      },
+      {
+        "label": "C",
+        "text": "`SimpleImputer` only accepts float columns and raises a warning for integers.",
+        "Explanation": "Integer columns are accepted; they are simply returned as floats."
+      },
+      {
+        "label": "D",
+        "text": "`wdi.info()` always reports numeric columns as `float64` after any assignment.",
+        "Explanation": "`info()` reports the real dtype; it changed because float values were assigned."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at what kind of object `fit_transform()` returns.",
+    "course": "COM6001",
+    "week": "6"
+  },
+  {
+    "question": "Running `from sklearn.impute import IterativeImputer` on its own raises an `ImportError`. What must be done first?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Run `from sklearn.experimental import enable_iterative_imputer`.",
+        "Explanation": "Correct. `IterativeImputer` is experimental and must be enabled by this import first."
+      },
+      {
+        "label": "B",
+        "text": "Install the separate package `iterative-imputer` with `%pip`.",
+        "Explanation": "`IterativeImputer` ships with scikit-learn; it is only gated as experimental."
+      },
+      {
+        "label": "C",
+        "text": "Import `SimpleImputer` first, because `IterativeImputer` subclasses it.",
+        "Explanation": "Importing `SimpleImputer` does not enable the experimental estimator."
+      },
+      {
+        "label": "D",
+        "text": "Pass `estimator=BayesianRidge()` when importing it.",
+        "Explanation": "Estimators are passed when constructing the imputer, not when importing it, and the import fails before that."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The estimator is still flagged as experimental in scikit-learn.",
+    "course": "COM6001",
+    "week": "6"
   }
 ]

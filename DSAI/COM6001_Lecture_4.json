@@ -346,5 +346,253 @@
     "hints": "Think about the difference between joining datasets based on label content equality versus combining them by index sequence alignment.",
     "course": "COM6001",
     "week": "4"
+  },
+  {
+    "question": "A Series holds 1, NaN, 3, 4, 5, 6, 7, 8 and 100 (nine entries, one NaN). What does `s.mean()` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "14.89",
+        "Explanation": "That divides the sum 134 by all 9 entries, but NaN is skipped, so only 8 values count."
+      },
+      {
+        "label": "B",
+        "text": "NaN",
+        "Explanation": "pandas skips missing values in aggregations by default."
+      },
+      {
+        "label": "C",
+        "text": "16.75",
+        "Explanation": "Correct: the 8 non-missing values sum to 134, and 134 / 8 = 16.75."
+      },
+      {
+        "label": "D",
+        "text": "15.11",
+        "Explanation": "That is the mean before 2 was replaced by NaN (136 / 9)."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Add up the non-missing values, then decide how many values you divide by.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`df1` and `df2` each have index 0 to 3. What index does `pd.concat([df1, df2], axis=0)` have?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0, 1, 2, 3, 4, 5, 6, 7",
+        "Explanation": "That requires `ignore_index=True`."
+      },
+      {
+        "label": "B",
+        "text": "0, 1, 2, 3, 0, 1, 2, 3",
+        "Explanation": "Correct: without `ignore_index`, concat keeps the original index labels, so they repeat."
+      },
+      {
+        "label": "C",
+        "text": "0, 1, 2, 3 only, because duplicate labels are dropped",
+        "Explanation": "concat stacks all rows; it does not drop duplicate labels."
+      },
+      {
+        "label": "D",
+        "text": "A two-level index of (frame, row)",
+        "Explanation": "That needs the `keys` argument."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "What does concat do with the original index by default?",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`left` has `col1` = [1, 2, 3, 4, 5] and `right` has `col1` = [3, 4, 5, 6, 7]. What does `pd.merge(left, right, on='col1', how='left')` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5 rows with keys 1 to 5; `col3` is NaN for keys 1 and 2",
+        "Explanation": "Correct: a left join keeps every key from `left` and fills unmatched right-side fields with NaN."
+      },
+      {
+        "label": "B",
+        "text": "3 rows with keys 3, 4, 5",
+        "Explanation": "That is the inner join."
+      },
+      {
+        "label": "C",
+        "text": "7 rows with keys 1 to 7",
+        "Explanation": "That is the outer join."
+      },
+      {
+        "label": "D",
+        "text": "5 rows with keys 3 to 7; `col2` is NaN for keys 6 and 7",
+        "Explanation": "That is the right join."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which frame's keys does a left join keep?",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`left` and `right` each have 5 rows and both contain a column `col1`. How many rows and which column names does `pd.merge(left, right, how='cross')` produce?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5 rows, with one `col1` column",
+        "Explanation": "A cross join pairs every left row with every right row."
+      },
+      {
+        "label": "B",
+        "text": "10 rows, with `col1` duplicated",
+        "Explanation": "Rows are multiplied, not added."
+      },
+      {
+        "label": "C",
+        "text": "3 rows, matching on `col1`",
+        "Explanation": "A cross join ignores keys; that is the inner join."
+      },
+      {
+        "label": "D",
+        "text": "25 rows, with `col1_x` and `col1_y`",
+        "Explanation": "Correct: the Cartesian product gives 5 x 5 = 25 rows, and the overlapping column gets the default `_x`/`_y` suffixes."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Count every left-right pairing, and remember what happens to same-named columns.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`left` has columns `col1, col2` and `right` has columns `col1, col3`. What does `pd.merge(left, right)` do with no `on` argument?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Raises an error because `on` is required",
+        "Explanation": "`on` is optional."
+      },
+      {
+        "label": "B",
+        "text": "Stacks the two frames vertically",
+        "Explanation": "That is what `pd.concat()` does with `axis=0`."
+      },
+      {
+        "label": "C",
+        "text": "Joins on `col1`, the column the two frames share, as an inner join",
+        "Explanation": "Correct: with `on=None`, merge uses the intersection of the column names and the default `how='inner'`."
+      },
+      {
+        "label": "D",
+        "text": "Produces the Cartesian product of the rows",
+        "Explanation": "That needs `how='cross'`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Look for what the two frames have in common, and recall the default `how`.",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "Which call creates a DataFrame whose first row contains the values 1 and 2?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pd.DataFrame({'A': [1, 2], 'B': [3, 4]})`",
+        "Explanation": "With a dict of lists, each list becomes a column, so the first row is 1 and 3."
+      },
+      {
+        "label": "B",
+        "text": "`pd.DataFrame([[1, 3], [2, 4]])`",
+        "Explanation": "Each inner list is a row, so the first row here is 1 and 3."
+      },
+      {
+        "label": "C",
+        "text": "`pd.DataFrame({'row1': [1, 2], 'row2': [3, 4]})`",
+        "Explanation": "Dict keys become column labels whatever they are called, so `row1` is a column holding 1 and 2; the first row is 1 and 3."
+      },
+      {
+        "label": "D",
+        "text": "`pd.DataFrame([[1, 2], [3, 4]])`",
+        "Explanation": "Correct: with a list of lists, each inner list becomes a row, so the first row is 1 and 2."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Is each inner list or each dict value a row or a column?",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`s = pd.Series([1, 2, 3, 4, 5, 6, 7, 8], index=['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun', 'Mon'])`. What does `s['Mon']` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A Series with the two values 1 and 8, both labelled `Mon`",
+        "Explanation": "Correct: index labels need not be unique, so every entry with that label is returned."
+      },
+      {
+        "label": "B",
+        "text": "The scalar 1, the first match",
+        "Explanation": "pandas does not stop at the first match for a duplicated label."
+      },
+      {
+        "label": "C",
+        "text": "The scalar 8, the last match",
+        "Explanation": "Later entries do not overwrite earlier ones in the index."
+      },
+      {
+        "label": "D",
+        "text": "A `KeyError` because the label is duplicated",
+        "Explanation": "Duplicate labels are allowed in a Series index."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Are Series index labels required to be unique?",
+    "course": "COM6001",
+    "week": "4"
+  },
+  {
+    "question": "`s = pd.Series([1, 2, 3])` has dtype `int64`. After `s[1] = np.nan`, what is the dtype of `s`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`int64`, with NaN stored as a special integer",
+        "Explanation": "`int64` has no way to represent NaN."
+      },
+      {
+        "label": "B",
+        "text": "`object`",
+        "Explanation": "That happens when a string such as `'NA'` is assigned, not `np.nan`."
+      },
+      {
+        "label": "C",
+        "text": "`float64`",
+        "Explanation": "Correct: NaN is a floating-point value, so the Series is upcast to float64 (values print as 1.0, NaN, 3.0)."
+      },
+      {
+        "label": "D",
+        "text": "`category`",
+        "Explanation": "pandas never converts to category automatically."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "What type of value is `np.nan`?",
+    "course": "COM6001",
+    "week": "4"
   }
 ]

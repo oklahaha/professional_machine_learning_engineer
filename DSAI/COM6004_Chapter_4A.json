@@ -346,5 +346,253 @@
     "hints": "Think about the condition of class purity for the records present at node $t$.",
     "course": "COM6004",
     "week": "4A"
+  },
+  {
+    "question": "A decision tree node contains 3 records of class C0 and 1 record of class C1. What is its entropy?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.375$",
+        "Explanation": "$0.375$ is the Gini index ($1 - 0.75^2 - 0.25^2$), not the entropy."
+      },
+      {
+        "label": "B",
+        "text": "$0.811$",
+        "Explanation": "Correct: $-(0.75 \\log_2 0.75 + 0.25 \\log_2 0.25) = 0.311 + 0.5 = 0.811$."
+      },
+      {
+        "label": "C",
+        "text": "$0.25$",
+        "Explanation": "$0.25$ is the misclassification error $1 - 0.75$."
+      },
+      {
+        "label": "D",
+        "text": "$1.0$",
+        "Explanation": "Entropy is 1 only for a 50/50 two-class split."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Use $-\\sum p \\log_2 p$; $\\log_2 0.25 = -2$.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A parent node with 5 records of each class is split into child N1 (4 class-0, 1 class-1) and child N2 (1 class-0, 4 class-1). Using entropy, what is the information gain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.278$",
+        "Explanation": "Correct: parent entropy $= 1$; each child has entropy $0.722$, so $M = 0.722$ and gain $= 0.278$."
+      },
+      {
+        "label": "B",
+        "text": "$0.722$",
+        "Explanation": "That is the weighted child entropy $M$, not the gain $P - M$."
+      },
+      {
+        "label": "C",
+        "text": "$0.180$",
+        "Explanation": "That is the gain using the Gini index ($0.5 - 0.32$), not entropy."
+      },
+      {
+        "label": "D",
+        "text": "$1.0$",
+        "Explanation": "A gain of 1 would require both children to be pure."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compute P, then the weighted child impurity M, then subtract.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A node contains 2 records of class A and 6 records of class B. What is its misclassification error?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.375$",
+        "Explanation": "$0.375$ is the Gini index ($1 - 0.25^2 - 0.75^2$)."
+      },
+      {
+        "label": "B",
+        "text": "$0.811$",
+        "Explanation": "$0.811$ is the entropy of this node."
+      },
+      {
+        "label": "C",
+        "text": "$0.75$",
+        "Explanation": "$0.75$ is the frequency of the majority class; error is one minus it."
+      },
+      {
+        "label": "D",
+        "text": "$0.25$",
+        "Explanation": "Correct: $1 - \\max(0.25, 0.75) = 0.25$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The error is what you get wrong by predicting the majority class.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "An ordinal attribute Size takes values {Small, Medium, Large}. Which binary split is NOT valid?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{Small} vs {Medium, Large}",
+        "Explanation": "This keeps adjacent values together, so it preserves order."
+      },
+      {
+        "label": "B",
+        "text": "{Small, Medium} vs {Large}",
+        "Explanation": "This keeps adjacent values together, so it preserves order."
+      },
+      {
+        "label": "C",
+        "text": "{Small, Large} vs {Medium}",
+        "Explanation": "Correct: it groups the two extremes and separates the middle value, violating the order property."
+      },
+      {
+        "label": "D",
+        "text": "A three-way split {Small}, {Medium}, {Large}",
+        "Explanation": "A multi-way split with one partition per value is always allowed."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "An ordinal binary split must respect the ordering of values.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A linear SVM has learned $\\mathbf{w} = (1, -1)$ and $b = -1$. How does it classify the test record $\\mathbf{z} = (3, 1)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$-1$, because $\\mathbf{w} \\cdot \\mathbf{z} = 2$ is below the margin of 2.",
+        "Explanation": "Classification uses the sign of $\\mathbf{w} \\cdot \\mathbf{z} + b$, not a comparison with the margin width."
+      },
+      {
+        "label": "B",
+        "text": "$+1$, because $\\mathbf{w} \\cdot \\mathbf{z} + b = 1 \\ge 0$.",
+        "Explanation": "Correct: $3 - 1 - 1 = 1$, which is non-negative, so the record is $+1$ (it lies on the $+1$ bounding hyperplane)."
+      },
+      {
+        "label": "C",
+        "text": "$-1$, because $b$ is negative.",
+        "Explanation": "The sign of $b$ alone does not determine the class."
+      },
+      {
+        "label": "D",
+        "text": "It cannot be classified because it lies on the decision boundary.",
+        "Explanation": "The decision boundary is $\\mathbf{w} \\cdot \\mathbf{x} + b = 0$; this point gives $1$, not $0$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compute $\\mathbf{w} \\cdot \\mathbf{z} + b$ and take its sign.",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A linear SVM is trained, then all training records that are NOT support vectors are deleted and the SVM is retrained. What happens to the decision boundary?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It shifts towards the larger class.",
+        "Explanation": "Class sizes do not matter once the support vectors are fixed."
+      },
+      {
+        "label": "B",
+        "text": "It becomes undefined because too few points remain.",
+        "Explanation": "The support vectors alone determine $\\mathbf{w}$ and $b$."
+      },
+      {
+        "label": "C",
+        "text": "It moves to maximize the distance to the deleted points.",
+        "Explanation": "The deleted points never constrained the boundary."
+      },
+      {
+        "label": "D",
+        "text": "It does not change.",
+        "Explanation": "Correct: the decision boundary depends only on the support vectors."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Which records actually have non-zero Lagrange multipliers?",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "According to the lecture's classifier comparison, which classifier is rated excellent in robustness to noise?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$k$-Nearest Neighbor",
+        "Explanation": "$k$-NN is rated poor: a few noisy neighbours can flip a local vote."
+      },
+      {
+        "label": "B",
+        "text": "Support Vector Machine",
+        "Explanation": "Correct: SVM is rated excellent, since overfitting is handled by maximizing the margin."
+      },
+      {
+        "label": "C",
+        "text": "Decision Tree",
+        "Explanation": "Decision trees are rated good, not excellent."
+      },
+      {
+        "label": "D",
+        "text": "Naïve Bayes",
+        "Explanation": "Naïve Bayes is rated moderate."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Which model controls overfitting through a geometric margin?",
+    "course": "COM6004",
+    "week": "4A"
+  },
+  {
+    "question": "A 1-NN classifier misclassifies several test points that sit next to a single mislabeled training record. Which change most directly addresses this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Decrease $k$ further to make the classifier more local.",
+        "Explanation": "$k = 1$ is already the smallest; a small $k$ is what makes it sensitive to noise."
+      },
+      {
+        "label": "B",
+        "text": "Increase $k$ moderately so a majority vote outweighs the noisy point.",
+        "Explanation": "Correct: a small $k$ is sensitive to noise points; a larger neighbourhood votes them down (but too large a $k$ pulls in other classes)."
+      },
+      {
+        "label": "C",
+        "text": "Increase $k$ to the size of the training set.",
+        "Explanation": "Then every record gets the majority class; the neighbourhood includes points from other classes."
+      },
+      {
+        "label": "D",
+        "text": "Remove distance weighting from the vote.",
+        "Explanation": "With $k = 1$ there is only one vote, so weighting changes nothing."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about the trade-off in choosing k.",
+    "course": "COM6004",
+    "week": "4A"
   }
 ]

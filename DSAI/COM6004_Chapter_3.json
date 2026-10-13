@@ -288,5 +288,222 @@
     "hints": "Consider how a standard two-dimensional plot uses coordinates and visual styling to represent data records.",
     "course": "COM6004",
     "week": "3"
+  },
+  {
+    "question": "For the values $\\{1, 2, 3, 4, 5, 6, 7, 8, 10, 100\\}$, what are the mean, median and 10% trimmed mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mean $14.6$, median $5.5$, trimmed mean $5.625$.",
+        "Explanation": "Correct: mean $= 146/10$; median $= (5+6)/2$; trimming one value at each end leaves $45/8$."
+      },
+      {
+        "label": "B",
+        "text": "Mean $14.6$, median $5$, trimmed mean $14.6$.",
+        "Explanation": "The median of an even count averages the two middle values, and trimming removes the 100, which changes the mean."
+      },
+      {
+        "label": "C",
+        "text": "Mean $5.5$, median $14.6$, trimmed mean $5.625$.",
+        "Explanation": "The mean and median are swapped; the 100 pulls the mean up, not the median."
+      },
+      {
+        "label": "D",
+        "text": "Mean $14.6$, median $5.5$, trimmed mean $5.0$.",
+        "Explanation": "With 10 values a 10% trim removes 1 at each end, leaving $2$ to $10$: $45/8 = 5.625$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Trim 10% from each end before averaging.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "A box plot is drawn as in the lecture. A data point lies above the top whisker. What does that tell you?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is the median of the upper half of the data.",
+        "Explanation": "That would be the 75th percentile, the top of the box."
+      },
+      {
+        "label": "B",
+        "text": "It is plotted individually as an outlier, above the 90th percentile.",
+        "Explanation": "Correct: the top whisker marks the 90th percentile; points beyond it are drawn individually as outliers."
+      },
+      {
+        "label": "C",
+        "text": "It must be a data entry error and should be removed.",
+        "Explanation": "A box plot flags extreme values; it does not prove they are errors."
+      },
+      {
+        "label": "D",
+        "text": "It lies between the 75th and 90th percentiles.",
+        "Explanation": "That range is covered by the whisker itself, not points above it."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall which percentile each part of the box plot marks.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Two analysts draw histograms of the same petal-length data and get different-looking shapes. What is the most likely explanation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "One of them used a different random sample of the same size.",
+        "Explanation": "The data set is the same, so the counts are deterministic."
+      },
+      {
+        "label": "B",
+        "text": "Histograms of continuous data are always unstable.",
+        "Explanation": "The shape is deterministic for a fixed binning."
+      },
+      {
+        "label": "C",
+        "text": "One histogram plots the mean of each bin instead of the count.",
+        "Explanation": "Standard histograms plot counts; this is not the usual cause."
+      },
+      {
+        "label": "D",
+        "text": "They chose different numbers of bins.",
+        "Explanation": "Correct: the shape of a histogram depends on the number of bins."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "What parameter must you pick before drawing a histogram?",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Which is a key motivation for data exploration given in the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To make use of humans' ability to recognize patterns not captured by analysis tools.",
+        "Explanation": "Correct: this, along with selecting the right preprocessing or analysis tool, is a key motivation."
+      },
+      {
+        "label": "B",
+        "text": "To replace formal data mining algorithms entirely.",
+        "Explanation": "Exploration is preliminary; it informs, rather than replaces, later analysis."
+      },
+      {
+        "label": "C",
+        "text": "To guarantee the data contains no outliers.",
+        "Explanation": "Exploration may reveal outliers; it guarantees nothing about them."
+      },
+      {
+        "label": "D",
+        "text": "To build the final predictive model.",
+        "Explanation": "Model building comes after exploration."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Exploration is preliminary: what does it help you choose, and what human skill does it use?",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "For the Iris data, which plot would you use to show at a glance how strongly each pair of the four attributes is linearly related?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A histogram of each attribute.",
+        "Explanation": "Histograms show one attribute's distribution, not pairwise relationships."
+      },
+      {
+        "label": "B",
+        "text": "A box plot of each attribute.",
+        "Explanation": "Box plots summarize single-attribute distributions."
+      },
+      {
+        "label": "C",
+        "text": "A correlation matrix plot.",
+        "Explanation": "Correct: each cell shows the correlation between a pair of attributes, coloured by strength."
+      },
+      {
+        "label": "D",
+        "text": "A data matrix plot sorted by class.",
+        "Explanation": "A data matrix plot shows object-by-attribute values, not attribute-by-attribute correlations."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "You want one number per pair of attributes.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "Why is a data matrix plot of the Iris data more informative when the rows are sorted by species?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Sorting standardizes the attributes to mean 0 and standard deviation 1.",
+        "Explanation": "Standardization is a separate step; sorting changes only row order."
+      },
+      {
+        "label": "B",
+        "text": "Objects of the same class form contiguous blocks, so class-related patterns become visible.",
+        "Explanation": "Correct: matrix plots are useful when objects are sorted according to class."
+      },
+      {
+        "label": "C",
+        "text": "Sorting removes outliers from the plot.",
+        "Explanation": "Reordering rows removes nothing."
+      },
+      {
+        "label": "D",
+        "text": "Sorting converts the plot into a correlation matrix.",
+        "Explanation": "A correlation matrix is attribute-by-attribute; sorting objects does not produce one."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about what neighbouring rows have in common after sorting.",
+    "course": "COM6004",
+    "week": "3"
+  },
+  {
+    "question": "A data set has 30 attributes, too many to plot directly. Which approach does the lecture suggest for attribute selection in visualization?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Plot only the attribute with the largest variance.",
+        "Explanation": "Using a single attribute discards relationships; the lecture suggests 2-3 dimensions or pairs."
+      },
+      {
+        "label": "B",
+        "text": "Randomly drop attributes until three remain.",
+        "Explanation": "Random dropping is not one of the suggested approaches."
+      },
+      {
+        "label": "C",
+        "text": "Discretize every attribute into bins.",
+        "Explanation": "Discretization changes value types, not the number of dimensions."
+      },
+      {
+        "label": "D",
+        "text": "Reduce to two or three dimensions with dimensionality reduction, or view pairs of attributes.",
+        "Explanation": "Correct: both are the suggested ways to select attributes for visualization."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Screens show two or three dimensions at most.",
+    "course": "COM6004",
+    "week": "3"
   }
 ]

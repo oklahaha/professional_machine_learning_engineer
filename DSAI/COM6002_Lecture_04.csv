@@ -25,3 +25,21 @@ What is the fundamental difference between the WHERE clause and the HAVING claus
 "In SQL logical execution order, does ORDER BY execute before or after SELECT projection?",ORDER BY executes after the SELECT projection step.
 "Complete the filtering condition to find records where ID is greater than 100 and less than 102:
 SELECT * FROM Student WHERE ID _____ 100 _____ ID _____ 102;",> AND < (forming ID > 100 AND ID < 102)
+Which SQL sub-language does `INSERT INTO` belong to?,"DML (Data Manipulation Language), which adds and removes data."
+Which SQL sub-language covers granting access to users?,DCL (Data Control Language).
+Are SQL command keywords case-sensitive?,"No. Commands are case-insensitive, although usernames and passwords are case-sensitive."
+"What does `DECIMAL(a, b)` declare?","A decimal number with $a$ total digits, $b$ of them after the decimal point, e.g., `DECIMAL(5, 2)` holds 347.88."
+What is the difference between `CHAR(n)` and `VARCHAR(n)`?,`CHAR(n)` is fixed-length text of exactly $n$ characters; `VARCHAR(n)` is variable-length text of at most $n$ characters.
+Which SQL data type holds large binary data such as images?,`BLOB`.
+How does `NULL` differ from an empty string `''`?,`NULL` means the value does not exist or is unknown; `''` means there is a value and we know it is empty.
+What SQL command creates an index on the Name and Year columns of Student?,"`CREATE INDEX idx ON Student (Name, Year);`"
+How do you refer to an attribute when two joined tables share the same column name?,"Use `[table name].[attribute name]`, e.g., `Student.StudentID`."
+Is the `AS` keyword required when aliasing a table?,No. `FROM Student s` works the same as `FROM Student AS s`.
+How does SQL process a query that joins three tables?,"Each join is done sequentially: Student joins Result, then that result joins Module."
+"What requirements must two queries meet to be combined with `UNION`, `INTERSECT` or `EXCEPT`?",The same number of columns with compatible data types.
+How does `UNION ALL` differ from `UNION`?,`UNION ALL` is a multiset union that keeps duplicates; `UNION` is a set operation that removes them.
+What does a `WITH` statement do?,"It names a sub-query as a temporary table before the main query, e.g., `WITH T AS (SELECT ...) SELECT ... FROM T`."
+What is the syntax for modifying existing rows in SQL?,"`UPDATE table_name SET column1 = value1, ... WHERE condition;`"
+Where do `DISTINCT` and `LIMIT / OFFSET` fall in SQL's logical execution order?,"After `SELECT` projection: `DISTINCT`, then `ORDER BY`, then `LIMIT / OFFSET` last."
+Name two advantages and two limitations of SQLite (besides database-level locking).,"Lightweight and embeddable; but single-node (not scalable, not for remote access) and no built-in authentication."
+"For `SELECT * FROM Student a, Result b WHERE a.ID = b.ID AND a.Name = 'Tom'`, what is the efficient execution strategy?","Filter `Name = 'Tom'` in Student first, then compute the join on far fewer records."

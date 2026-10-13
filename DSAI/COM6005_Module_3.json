@@ -288,5 +288,253 @@
     "hints": "Review the decision matrix for hypothesis testing, comparing real-world truth with the test decision.",
     "course": "COM6005",
     "week": "3"
+  },
+  {
+    "question": "A sample of $n = 64$ has $\\bar{x} = 50$; the population SD is known to be $\\sigma = 8$. What is the $95\\%$ confidence interval for $\\mu$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(48.36, 51.64)$",
+        "Explanation": "This uses $z = 1.645$, the one-sided $95\\%$ value; a two-sided $95\\%$ CI needs $z_{0.025} = 1.96$."
+      },
+      {
+        "label": "B",
+        "text": "$(34.32, 65.68)$",
+        "Explanation": "This uses $\\sigma = 8$ as the margin's scale instead of the standard error $\\sigma/\\sqrt{n} = 1$."
+      },
+      {
+        "label": "C",
+        "text": "$(48.04, 51.96)$",
+        "Explanation": "Correct: $\\sigma/\\sqrt{n} = 8/8 = 1$, so $50 \\pm 1.96 \\times 1$."
+      },
+      {
+        "label": "D",
+        "text": "$(47.42, 52.58)$",
+        "Explanation": "This uses $z = 2.576$, which gives a $99\\%$ interval."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Margin = z times sigma over root n.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "With $\\sigma$ and the confidence level unchanged, what happens to the width of a $z$-based confidence interval when the sample size is quadrupled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is halved.",
+        "Explanation": "Correct: the width is proportional to $1/\\sqrt{n}$, and $\\sqrt{4} = 2$."
+      },
+      {
+        "label": "B",
+        "text": "It falls to one quarter.",
+        "Explanation": "The width scales with $1/\\sqrt{n}$, not $1/n$."
+      },
+      {
+        "label": "C",
+        "text": "It doubles.",
+        "Explanation": "More data narrows the interval; it never widens it, other things equal."
+      },
+      {
+        "label": "D",
+        "text": "It stays the same.",
+        "Explanation": "The standard error $\\sigma/\\sqrt{n}$ shrinks as $n$ grows."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Look at where n appears in the margin of error.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "A friend's coin lands Heads 5 times in a row. Testing $H_0$: fair coin against $H_1$: biased towards Heads at $\\alpha = 0.05$, what are the probability under $H_0$ and the decision?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.03125$; fail to reject $H_0$",
+        "Explanation": "$0.03125 < 0.05$, so the result is in the rejection region."
+      },
+      {
+        "label": "B",
+        "text": "$0.15625$; fail to reject $H_0$",
+        "Explanation": "This multiplies $0.5^5$ by 5 as if counting arrangements; there is only one way to get HHHHH."
+      },
+      {
+        "label": "C",
+        "text": "$0.5$; fail to reject $H_0$",
+        "Explanation": "$0.5$ is the probability of a single Head, not of five in a row."
+      },
+      {
+        "label": "D",
+        "text": "$0.03125$; reject $H_0$",
+        "Explanation": "Correct: $0.5^5 = 0.03125$, below $\\alpha = 0.05$, so the 'just lucky' explanation is rejected, accepting a $5\\%$ risk of a Type I error."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Multiply the probability of Heads five times.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "$H_0: \\mu = 50$ vs $H_1: \\mu \\ne 50$, with known $\\sigma = 6$, $n = 36$ and $\\bar{x} = 52$. What are the test statistic, p-value and decision at $\\alpha = 0.05$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$z = 2$, $p \\approx 0.0228$, reject $H_0$",
+        "Explanation": "$0.0228$ is the one-tailed area; a two-sided test doubles it."
+      },
+      {
+        "label": "B",
+        "text": "$z = 2$, $p \\approx 0.0455$, reject $H_0$",
+        "Explanation": "Correct: $z = (52 - 50)/(6/6) = 2$; two-sided $p = 2(1 - \\Phi(2)) \\approx 0.0455 < 0.05$."
+      },
+      {
+        "label": "C",
+        "text": "$z \\approx 0.33$, $p \\approx 0.74$, fail to reject $H_0$",
+        "Explanation": "This divides by $\\sigma = 6$ instead of the standard error $\\sigma/\\sqrt{n} = 1$."
+      },
+      {
+        "label": "D",
+        "text": "$z = 2$, $p \\approx 0.0455$, fail to reject $H_0$",
+        "Explanation": "The statistic and p-value are right, but $p < \\alpha$ means $H_0$ is rejected."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Use the standard error, then double the tail for a two-sided test.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "$H_0: \\mu \\le 10$, and a sample gives $\\bar{x} = 13$, $s^2 = 3$, $n = 100$. What is the standardised test statistic?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About $1.73$",
+        "Explanation": "This divides by $s = \\sqrt{3}$ without the $\\sqrt{n}$, i.e. it ignores the sample size."
+      },
+      {
+        "label": "B",
+        "text": "$10$",
+        "Explanation": "This divides by $s^2/\\sqrt{n} = 0.3$, treating the variance as the SD."
+      },
+      {
+        "label": "C",
+        "text": "About $17.32$",
+        "Explanation": "Correct: $(13 - 10)/(\\sqrt{3}/\\sqrt{100}) = 3/0.1732 \\approx 17.32$, so the p-value is essentially 0 and $H_0$ is rejected."
+      },
+      {
+        "label": "D",
+        "text": "$1$",
+        "Explanation": "This divides the difference by $s^2 = 3$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The standard error is s / sqrt(n), and s is the square root of 3.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "Values beyond $\\mu \\pm 3\\sigma$ are flagged as unusual. Under the empirical rule, what significance level $\\alpha$ does this implicitly use?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$4.5\\%$",
+        "Explanation": "This is the area outside $\\mu \\pm 2\\sigma$ ($100\\% - 95.5\\%$)."
+      },
+      {
+        "label": "B",
+        "text": "$0.15\\%$",
+        "Explanation": "This is only one tail; values beyond $\\pm 3\\sigma$ lie in both tails."
+      },
+      {
+        "label": "C",
+        "text": "$5\\%$",
+        "Explanation": "$5\\%$ corresponds to roughly $\\pm 1.96\\sigma$."
+      },
+      {
+        "label": "D",
+        "text": "$0.3\\%$",
+        "Explanation": "Correct: about $99.7\\%$ lies within $\\pm 3\\sigma$, so $\\alpha = 1 - 99.7\\% = 0.3\\%$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Subtract the coverage within plus or minus 3 sigma from 100%.",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "A right-tailed test returns $p = 0.011$. Which interpretation is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "If $H_0$ were true, a result at least as extreme as the one observed would occur with probability $0.011$.",
+        "Explanation": "Correct: the p-value is a conditional probability of the data (or more extreme) given $H_0$."
+      },
+      {
+        "label": "B",
+        "text": "There is a $1.1\\%$ probability that $H_0$ is true.",
+        "Explanation": "The p-value is not the probability of a hypothesis; that would need a Bayesian approach."
+      },
+      {
+        "label": "C",
+        "text": "There is a $98.9\\%$ probability that $H_1$ is true.",
+        "Explanation": "Again this treats the p-value as a probability of a state of nature, which it is not."
+      },
+      {
+        "label": "D",
+        "text": "The probability of a Type II error is $0.011$.",
+        "Explanation": "A Type II error concerns failing to reject a false $H_0$; the p-value is computed assuming $H_0$ is true."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The p-value is conditional on which hypothesis?",
+    "course": "COM6005",
+    "week": "3"
+  },
+  {
+    "question": "A $95\\%$ confidence interval for $\\mu$ is $(12.1, 15.3)$. For which null value $\\mu_0$ would a two-sided test at $\\alpha = 0.05$ reject $H_0: \\mu = \\mu_0$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\mu_0 = 13.7$",
+        "Explanation": "$13.7$ is the centre of the interval, so it is a highly plausible value and is not rejected."
+      },
+      {
+        "label": "B",
+        "text": "$\\mu_0 = 11.8$",
+        "Explanation": "Correct: $11.8$ lies outside the $95\\%$ CI, so the two-sided test gives $p < 0.05$."
+      },
+      {
+        "label": "C",
+        "text": "$\\mu_0 = 15.0$",
+        "Explanation": "$15.0$ is inside the interval, so $p \\ge 0.05$."
+      },
+      {
+        "label": "D",
+        "text": "$\\mu_0 = 12.5$",
+        "Explanation": "$12.5$ is inside the interval, so $H_0$ is not rejected."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Values outside the interval are the implausible ones.",
+    "course": "COM6005",
+    "week": "3"
   }
 ]

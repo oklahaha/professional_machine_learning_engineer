@@ -14,3 +14,9 @@ What regression model is specifically designated for classification problems wit
 Why is Euclidean distance sensitive to feature measurement scales?,Variables measured on larger numerical scales dominate the total distance calculation over variables with smaller scales.
 What is the primary operational difference between descriptive and inferential statistics?,"Descriptive statistics summarize observed data, while inferential statistics use sample data to draw conclusions about a population."
 "In supervised machine learning, what key information is missing in testing data compared to training data?","Testing data provides only predictor variables $X$, leaving target outcome $Y$ to be predicted."
+What is the difference between a population and a sample?,"A population is the entire group of people or things you want to study; a sample is a smaller, manageable subset chosen from that population."
+"In the lecture's salary example, what are the sample and the population?",Sample: salaries of HSUHK graduates. Population: salaries in the Hong Kong labour market.
+Which four location parameters are listed under descriptive statistics?,"Mean (average), median, mode and sum."
+Which linear-algebra tools are needed for regression?,"Matrices, solving linear equations and the matrix inverse."
+Which calculus ideas are listed as background for statistical modelling?,Derivatives and finding a maximum or minimum.
+"In $k$-NN with $k=5$, how are the class probabilities for a new point estimated?","As the proportion of the 5 nearest training points in each class, e.g. $P(\text{setosa}) = 5/5$ if all five are setosa."

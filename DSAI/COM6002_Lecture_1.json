@@ -317,5 +317,222 @@
     "hints": "This property prevents partial updates, such as deducting money from one bank account without crediting another.",
     "course": "COM6002",
     "week": "1"
+  },
+  {
+    "question": "Which of the following is NOT a drawback of file-based data management?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It requires minimal coding effort to store and read data",
+        "Explanation": "Correct. Convenience (minimal coding effort) is the main advantage of file-based storage, not a drawback."
+      },
+      {
+        "label": "B",
+        "text": "The whole file must be rewritten even for a tiny update",
+        "Explanation": "This is a drawback: file-based storage is inefficient because a tiny update rewrites the entire file."
+      },
+      {
+        "label": "C",
+        "text": "Fine-grained access control is hard to enforce across custom files",
+        "Explanation": "This is a drawback listed under data isolation and security."
+      },
+      {
+        "label": "D",
+        "text": "A failure during a write can leave the data partially updated",
+        "Explanation": "This is a drawback: without atomic transactions, partial writes leave the system inconsistent."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "One item in the list is actually the reason people still keep data in CSV files.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "A crypto analytics team stores BTC records with `Sentiment` and `Whale transactions`, ETH records with `BTC Correlation`, and DOGE records with `Twitter mention`. What is the main problem if they put all these records into a single relational table?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Relational tables cannot store decimal values like 0.000065",
+        "Explanation": "Incorrect. RDBMS types such as `DECIMAL` store small decimals without difficulty."
+      },
+      {
+        "label": "B",
+        "text": "The table needs a column for every attribute of every record type, so most cells become NULL",
+        "Explanation": "Correct. Records with different attributes do not share a fixed schema; forcing them into one table yields a sparse table full of NULLs, which motivates document stores such as MongoDB."
+      },
+      {
+        "label": "C",
+        "text": "The records would be impossible to sort by date",
+        "Explanation": "Incorrect. Any table with a Date column can be sorted with `ORDER BY`."
+      },
+      {
+        "label": "D",
+        "text": "Relational tables cannot hold more than one cryptocurrency symbol",
+        "Explanation": "Incorrect. A Symbol column can hold any number of distinct values; the issue is the varying attributes, not the symbols."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about how many columns each record would actually fill.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "A home security camera streams continuously at $2\\text{ Mbps}$. Approximately how much storage does one day of continuous recording need?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 172.8 GB",
+        "Explanation": "Incorrect. This forgets to divide by 8: $2 \\times 86{,}400 = 172{,}800$ megabits, not megabytes."
+      },
+      {
+        "label": "B",
+        "text": "About 0.9 GB",
+        "Explanation": "Incorrect. This multiplies by the number of seconds in an hour (3,600) and not a full day."
+      },
+      {
+        "label": "C",
+        "text": "About 21.6 GB",
+        "Explanation": "Correct. $2\\text{ Mbps} \\div 8 = 0.25\\text{ MB/s}$; $0.25 \\times 86{,}400\\text{ s} = 21{,}600\\text{ MB} \\approx 21.6\\text{ GB}$."
+      },
+      {
+        "label": "D",
+        "text": "About 5.4 GB",
+        "Explanation": "Incorrect. $0.25\\text{ MB/s} \\times 21{,}600\\text{ s}$ covers only 6 hours, not a full day."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Convert bits to bytes first, then multiply by the number of seconds in a day.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "The sentence \"There is a bird in a cage that can talk\" is used to illustrate which data quality concern?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Missing data",
+        "Explanation": "Incorrect. No value is absent; the problem is that the existing text has more than one interpretation."
+      },
+      {
+        "label": "B",
+        "text": "Duplicated data",
+        "Explanation": "Incorrect. Nothing is recorded twice."
+      },
+      {
+        "label": "C",
+        "text": "Outdated data",
+        "Explanation": "Incorrect. The issue is not the age of the information but its interpretation."
+      },
+      {
+        "label": "D",
+        "text": "Ambiguous data",
+        "Explanation": "Correct. The sentence admits two readings (the bird talks, or the cage talks), so the meaning of the data is ambiguous."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Ask who, exactly, can talk.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "A Twitter sentiment study collects about 2 GB of archived tweets per day. Roughly how much raw data accumulates in one year?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 60 GB",
+        "Explanation": "Incorrect. This multiplies by 30 (one month) rather than 365."
+      },
+      {
+        "label": "B",
+        "text": "About 7.3 TB",
+        "Explanation": "Incorrect. This is ten times too large: 730 GB is 0.73 TB."
+      },
+      {
+        "label": "C",
+        "text": "About 730 GB",
+        "Explanation": "Correct. $2\\text{ GB} \\times 365 = 730\\text{ GB}$, which illustrates the Volume characteristic."
+      },
+      {
+        "label": "D",
+        "text": "About 14 GB",
+        "Explanation": "Incorrect. This is only one week ($2 \\times 7$)."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Multiply the daily volume by the number of days in a year.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "Which challenge arises when scaling a database OUT (adding machines) that does not arise when scaling it UP (upgrading one machine)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The CPU and RAM of the server have a maximum upgrade limit",
+        "Explanation": "Incorrect. Hardware ceilings are a limitation of scaling up, not a new challenge of scaling out."
+      },
+      {
+        "label": "B",
+        "text": "Coordinating two machines that work on the same data record at the same time",
+        "Explanation": "Correct. Scale-out must handle concurrent work on the same record across machines, as well as the failure of individual machines."
+      },
+      {
+        "label": "C",
+        "text": "Queries must be written in SQL",
+        "Explanation": "Incorrect. The query language is independent of how the system is scaled."
+      },
+      {
+        "label": "D",
+        "text": "Data can no longer be stored in tables",
+        "Explanation": "Incorrect. Distributed relational databases still use tables."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about what can go wrong once more than one computer holds the data.",
+    "course": "COM6002",
+    "week": "1"
+  },
+  {
+    "question": "A pipeline uses Apache Airflow, Snowflake and a raw-data import job. Which mapping of component to pipeline layer is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Raw-data import job: Ingestion; Airflow: Orchestration; Snowflake: Serving",
+        "Explanation": "Correct. Ingestion extracts raw data into central storage, Airflow coordinates DAG dependencies, and Snowflake serves processed, business-ready data."
+      },
+      {
+        "label": "B",
+        "text": "Raw-data import job: Processing; Airflow: Serving; Snowflake: Orchestration",
+        "Explanation": "Incorrect. Airflow is a workflow scheduler (Orchestration) and Snowflake is a query engine for business-ready data (Serving)."
+      },
+      {
+        "label": "C",
+        "text": "Raw-data import job: Ingestion; Airflow: Processing; Snowflake: Ingestion",
+        "Explanation": "Incorrect. Airflow coordinates tasks rather than computing on data, and Snowflake serves data rather than extracting it from sources."
+      },
+      {
+        "label": "D",
+        "text": "Raw-data import job: Serving; Airflow: Orchestration; Snowflake: Ingestion",
+        "Explanation": "Incorrect. The import job extracts raw data (Ingestion) and Snowflake is the serving engine."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "One layer schedules, one stores business-ready data for applications, one brings data in.",
+    "course": "COM6002",
+    "week": "1"
   }
 ]

@@ -18,3 +18,27 @@ How can the built-in string method reference `str.upper` be passed to `DataFrame
 Why does passing `mapper=str.upper()` with execution brackets into `DataFrame.rename()` trigger a Python error?,It attempts to execute `str.upper()` immediately during argument passing without supplying the required string parameter.
 What lambda function passed to `mapper` in `df.rename()` removes the final character from every column name?,`lambda x: x[:-1]`
 What is the complete `DataFrame.rename()` call using a lambda function to convert all column names in `df` to lowercase?,"`df.rename(mapper=lambda x: x.lower(), axis='columns')`"
+"In Python, what is a class?","A blueprint for creating objects, defining the attributes and methods those objects will have."
+"How is a class's constructor named, and how can you inspect the Series constructor?","It has the same name as the class (e.g., `pd.Series()`); inspect it with `pd.Series.__init__`."
+"Using the lecture's analogy, how do an object, an attribute and a method differ?","An object is a noun, an attribute is an adjective describing it (e.g., `df.shape`), and a method is a verb, an action it performs (e.g., `df.head()`)."
+"Can a pandas Series have duplicate index labels, and what does selecting such a label return?",Yes; `s['Mon']` returns a Series containing every entry labelled 'Mon'.
+"Why does `s[2]` on a label-indexed Series raise a FutureWarning, and what should be used instead?",Treating `[]` keys as positions is deprecated (integer keys will become labels); use `s.iloc[2]` for position.
+What happens to an `int64` Series's dtype when one element is set to `np.nan`?,"It becomes `float64`, because NaN is a floating-point value."
+Do Series aggregations such as `s.mean()` include NaN values?,"No, NaN values are skipped by default."
+"In `pd.DataFrame([[1, 2], [3, 4]])`, what does each inner list become?",A row of the DataFrame.
+Which of `pd.DataFrame()`'s arguments are required?,"None: all arguments default to `None`, so `pd.DataFrame()` creates an empty DataFrame."
+How many rows do `df.head()` and `df.tail()` return by default?,"5 rows each — pass `n`, e.g. `df.head(10)`, to change it."
+Which file formats did the lecture classify as structured and which as semi-structured?,Structured: CSV and spreadsheets; semi-structured: JSON and XML.
+"What are the `index_col`, `usecols` and `parse_dates` parameters of `pd.read_csv()` for?","`index_col` sets column(s) as the index, `usecols` loads only a subset of columns, and `parse_dates` parses data as datetime."
+What is the default `sep` (delimiter) of `pd.read_csv()`?,A comma.
+What does the relative path `'./'` refer to when reading a file?,"The current folder, i.e., where the notebook is."
+Why should you only load pickle files from trusted sources?,"Pickle files are binary and cannot be previewed before loading, so you cannot check what you are opening."
+Which extra package does `pd.read_excel()` need for `.xlsx` files if it reports it missing?,`openpyxl` (install it with `%pip install openpyxl`).
+How can you force column dtypes when loading a file with `read_csv()` or `read_excel()`?,"Pass a dict mapping column names to dtypes, e.g., `dtype={'name': 'string', 'Gender': 'category'}`."
+Which pandas dtype does a column of strings or mixed types get by default?,`object`
+What are the default `axis` and `join` of `pd.concat()`?,`axis=0` (stack rows) and `join='outer'`.
+"What does `pd.merge(left, right)` join on when `on` is omitted?",The intersection of the column names shared by both DataFrames.
+What is the default `how` of `pd.merge()`?,`'inner'`: only the intersection of keys from both frames is kept.
+"In `pd.merge(..., how='left')`, which keys are kept?",Only the keys from the left frame (like a SQL left outer join); unmatched right-side fields become NaN.
+What suffixes does `pd.merge()` add to overlapping column names that are not join keys?,"`_x` for the left frame and `_y` for the right frame (default `suffixes=('_x', '_y')`)."
+"Besides `.str`, which other pandas accessors follow the same pattern?",The datetime accessor `.dt` and the categorical accessor `.cat`.

@@ -1,0 +1,31 @@
+"How does Python group statements into a block (e.g., inside an `if`)?",The block follows a colon and its statements share the same indentation level; four spaces is the recommended practice.
+What is the difference between `elif` and `else`?,`elif` takes a condition ('if something occurs'); `else` takes no condition and covers all other cases.
+What happens if you write an `elif` branch after an `else` branch?,"A `SyntaxError`, because `else` must be the last branch."
+What is the difference between `weather = 'sunny'` and `weather == 'sunny'`?,`=` is an assignment; `==` is a comparison (assertion) that returns `True` or `False`.
+What is the syntax of a conditional expression (ternary operator)?,`value_if_true if condition else value_if_false`
+What does iterating directly over a dictionary (`for k in d:`) give you?,The keys.
+What does iterating over `d.items()` give you?,"A `(key, value)` tuple for each pair."
+Since which Python version do dictionaries preserve insertion order?,Python 3.7.
+"What are the three call forms of `range()`, and is `stop` included?","`range(stop)`, `range(start, stop)`, `range(start, stop, step)`; stop is excluded."
+Does `range()` return a list?,No. It returns an iterable range object; wrap it in `list(range(...))` to get a list.
+What must you do yourself inside a `while` loop that a `for` loop does for you?,Increment/decrement the loop variable; otherwise the condition never changes and the loop never ends.
+"What do `10 / 2`, `11 // 3` and `11 % 3` evaluate to?","`5.0` (true division always returns a float), `3` (floor division), and `2` (remainder)."
+Which operator raises a number to a power in Python?,"`**`, e.g., `2 ** 3` gives `8`."
+"What do the logical operators `and`, `or` and `not` return?",`and`: True only if both are true; `or`: True if at least one is true; `not`: reverses the result.
+Why is `or` recommended over `|` when combining comparisons like `a%3==0` and `a%2==0`?,"`|` binds more tightly than `==`, so without brackets it is applied before the comparisons and gives a wrong result."
+What error does `len(1)` raise and why?,"`TypeError: object of type 'int' has no len()`, because an integer is not a sequence."
+Why define a function instead of copying and pasting the same block of code?,Copy-paste is error-prone and every copy must be changed separately; a function is changed in one place and makes code cleaner.
+How do positional and keyword arguments differ when calling a function?,Positional arguments are matched by order; keyword arguments (`a=1`) are matched by name and can be given in any order.
+When is a parameter's default value used?,"When the caller does not supply a value for that parameter, e.g., `def f(a=5)` then `f()`."
+How are arguments passed to a `*args` parameter collected?,Into a tuple.
+What happens when a `return` statement executes?,The function terminates immediately and sends the value back to the caller; any later statements in it are not run.
+Why does `print(my_list.append(0))` print `None`?,"`append()` modifies the list in place and has no return value, so it returns `None`."
+"If `a = 3` and a function runs `a = a + 1` on its parameter `a`, what is `a` outside the function afterwards?",Still 3: rebinding an immutable integer parameter inside a function does not affect the variable outside.
+"What is recursion, and what must every recursive function have?",A function calling itself on smaller subproblems; it needs a base case to stop the recursion.
+What are the drawbacks of recursion compared with iteration?,"Higher memory usage and slower performance, especially for large inputs."
+Name four debugging techniques covered in the lecture.,"Print statements, exception handling (`try-except`), logging, and IDE/command-line debuggers."
+How do you turn on debug-level messages with Python's `logging` module?,"`logging.basicConfig(level=logging.DEBUG)`, then emit messages with `logging.debug(...)`."
+What is a breakpoint?,A line marked in the debugger where execution pauses so you can inspect variable values.
+"In a debugger, how do 'step over', 'step into' and 'step out' differ?",Step over runs the current line without entering calls; step into enters a called function; step out finishes the current function and returns to the caller.
+"In the lecture's binary search, how is the middle index computed?",`mid = left + (right - left) // 2`
+"How are lambda functions mainly meant to be used, rather than on their own?","Embedded in another function, as an input parameter (e.g., a sort `key`) or as a return value."

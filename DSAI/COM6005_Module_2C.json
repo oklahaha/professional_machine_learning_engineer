@@ -288,5 +288,253 @@
     "hints": "Recall the basic subtraction formula used to calculate prediction error.",
     "course": "COM6005",
     "week": "2C"
+  },
+  {
+    "question": "$X \\sim B(100, 0.5)$. Using the normal approximation with continuity correction, what is $P(X \\le 55)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.8413$",
+        "Explanation": "This uses $z = (55 - 50)/5 = 1$ without the continuity correction."
+      },
+      {
+        "label": "B",
+        "text": "$0.5871$",
+        "Explanation": "This divides by the variance $25$ instead of the standard deviation $5$."
+      },
+      {
+        "label": "C",
+        "text": "$0.1357$",
+        "Explanation": "This is $P(X \\ge 56)$, the complement."
+      },
+      {
+        "label": "D",
+        "text": "$0.8643$",
+        "Explanation": "Correct: $\\mu = 50$, $\\sigma = \\sqrt{100(0.5)(0.5)} = 5$, $z = (55.5 - 50)/5 = 1.1$, $\\Phi(1.1) \\approx 0.8643$ (exact binomial $\\approx 0.8644$)."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Find mu = np and sigma = sqrt(np(1-p)), and add 0.5 to 55.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "$X \\sim B(100, 0.5)$. Using the normal approximation with continuity correction, what is $P(X \\ge 60)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0228$",
+        "Explanation": "This uses $z = (60 - 50)/5 = 2$ without the continuity correction."
+      },
+      {
+        "label": "B",
+        "text": "$0.0287$",
+        "Explanation": "Correct: $z = (59.5 - 50)/5 = 1.9$ and $1 - \\Phi(1.9) \\approx 0.0287$ (exact binomial $\\approx 0.0284$)."
+      },
+      {
+        "label": "C",
+        "text": "$0.0179$",
+        "Explanation": "This corrects in the wrong direction, using $60.5$; for $X \\ge 60$ the interval starts at $59.5$."
+      },
+      {
+        "label": "D",
+        "text": "$0.9713$",
+        "Explanation": "This is $\\Phi(1.9)$, i.e. $P(X \\le 59)$; the upper tail needs $1 - \\Phi$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "For 'at least 60', the bar for 60 starts at 59.5.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "Using the rule of thumb $np \\ge 10$ and $n(1-p) \\ge 10$, which Binomial can be approximated by a normal distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$n = 40$, $p = 0.2$",
+        "Explanation": "$np = 8 < 10$, so the rule is not met."
+      },
+      {
+        "label": "B",
+        "text": "$n = 100$, $p = 0.95$",
+        "Explanation": "$n(1-p) = 5 < 10$; $p$ is too close to 1."
+      },
+      {
+        "label": "C",
+        "text": "$n = 60$, $p = 0.3$",
+        "Explanation": "Correct: $np = 18$ and $n(1-p) = 42$, both at least 10."
+      },
+      {
+        "label": "D",
+        "text": "$n = 500$, $p = 0.01$",
+        "Explanation": "$np = 5 < 10$; with $p$ this small a Poisson approximation suits better."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Check both np and n(1-p).",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "What normal distribution approximates $X \\sim B(50, 0.3)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\mu = 15$, $\\sigma \\approx 3.24$",
+        "Explanation": "Correct: $\\mu = np = 15$ and $\\sigma^2 = np(1-p) = 10.5$, so $\\sigma = \\sqrt{10.5} \\approx 3.24$."
+      },
+      {
+        "label": "B",
+        "text": "$\\mu = 15$, $\\sigma = 10.5$",
+        "Explanation": "$10.5$ is the variance $\\sigma^2$; the standard deviation is its square root."
+      },
+      {
+        "label": "C",
+        "text": "$\\mu = 35$, $\\sigma \\approx 3.24$",
+        "Explanation": "$35 = n(1-p)$ is the expected number of failures; the mean number of successes is $np$."
+      },
+      {
+        "label": "D",
+        "text": "$\\mu = 15$, $\\sigma \\approx 2.12$",
+        "Explanation": "This uses $\\sqrt{np \\cdot p} = \\sqrt{4.5}$; the variance is $np(1-p)$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Mean np, variance np(1-p).",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "$X \\sim B(200, 0.01)$. Using the Poisson approximation, what is $P(X = 0)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.1381$",
+        "Explanation": "This uses $\\lambda = np(1-p) = 1.98$; the Poisson parameter is $\\lambda = np$."
+      },
+      {
+        "label": "B",
+        "text": "$0.3679$",
+        "Explanation": "This is $e^{-1}$, using $\\lambda = 1$."
+      },
+      {
+        "label": "C",
+        "text": "$0.0183$",
+        "Explanation": "This is $e^{-4}$, using $\\lambda = 4$."
+      },
+      {
+        "label": "D",
+        "text": "$0.1353$",
+        "Explanation": "Correct: $\\lambda = np = 2$ and $P(X=0) \\approx e^{-2} \\approx 0.1353$ (exact $0.99^{200} \\approx 0.1340$)."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Set lambda equal to the binomial mean.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "Heights follow $N(170, 5^2)$ cm. What does `norm.cdf(175, 170, 5)` return (to 4 d.p.)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0484$",
+        "Explanation": "This is `norm.pdf(175, 170, 5)`, a density height, not a probability."
+      },
+      {
+        "label": "B",
+        "text": "$0.8413$",
+        "Explanation": "Correct: $z = (175 - 170)/5 = 1$ and $\\Phi(1) \\approx 0.8413$, the proportion at or below 175 cm."
+      },
+      {
+        "label": "C",
+        "text": "$0.1587$",
+        "Explanation": "This is the upper tail $P(X > 175)$."
+      },
+      {
+        "label": "D",
+        "text": "$0.6827$",
+        "Explanation": "This is $P(165 < X < 175)$, within one standard deviation either side."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Standardise to z, then take the area to the left.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "For $X \\sim N(170, 10^2)$, which expression gives $P(160 < X < 180)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`norm.pdf(180, 170, 10) - norm.pdf(160, 170, 10)`",
+        "Explanation": "PDF values are densities; their difference is $0$ here by symmetry and is not an interval probability."
+      },
+      {
+        "label": "B",
+        "text": "`1 - norm.cdf(180, 170, 10)`",
+        "Explanation": "This is only the upper tail $P(X > 180)$."
+      },
+      {
+        "label": "C",
+        "text": "`norm.cdf(180, 170, 10) - norm.cdf(160, 170, 10)`",
+        "Explanation": "Correct: the area up to 180 minus the area up to 160 is $\\approx 0.6827$."
+      },
+      {
+        "label": "D",
+        "text": "`norm.cdf(180, 170, 10) + norm.cdf(160, 170, 10)`",
+        "Explanation": "Adding the two areas double-counts the region below 160; the CDFs must be subtracted."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "An interval probability is a difference of two cumulative areas.",
+    "course": "COM6005",
+    "week": "2C"
+  },
+  {
+    "question": "After fitting a linear regression, an analyst draws `sm.qqplot(residuals, fit=True, line=\"45\")`. What is this check for?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Whether the error terms follow the normal distribution assumed by linear regression",
+        "Explanation": "Correct: QQ-plots of residuals check the normality assumption of the error terms; points near the line support it."
+      },
+      {
+        "label": "B",
+        "text": "Whether the predictors are measured on the same scale",
+        "Explanation": "Scale differences matter for distance-based methods; a QQ-plot of residuals does not show them."
+      },
+      {
+        "label": "C",
+        "text": "Whether the residuals have a mean much larger than zero",
+        "Explanation": "A QQ-plot compares the shape of quantiles; the mean is usually inspected directly."
+      },
+      {
+        "label": "D",
+        "text": "Whether the sample size is large enough for a t-test",
+        "Explanation": "A QQ-plot assesses distributional shape, not whether $n$ is large enough."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "What do QQ-plots compare, and what does regression assume about the errors?",
+    "course": "COM6005",
+    "week": "2C"
   }
 ]

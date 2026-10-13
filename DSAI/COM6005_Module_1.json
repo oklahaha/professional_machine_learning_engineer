@@ -346,5 +346,191 @@
     "hints": "Consider what hypothesis testing aims to assess regarding whether observed patterns are genuine or accidental.",
     "course": "COM6005",
     "week": "1"
+  },
+  {
+    "question": "A new iris flower has (sepal length, sepal width) $= (5.3, 3.3)$. What is its Euclidean distance to the training point $(4.9, 3.0)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.25$",
+        "Explanation": "This is the squared distance $0.4^2 + 0.3^2$; the square root has not been taken."
+      },
+      {
+        "label": "B",
+        "text": "$0.7$",
+        "Explanation": "This adds the absolute differences $0.4 + 0.3$ (Manhattan distance), not the Euclidean distance."
+      },
+      {
+        "label": "C",
+        "text": "$0.5$",
+        "Explanation": "Correct: $\\sqrt{(5.3-4.9)^2 + (3.3-3.0)^2} = \\sqrt{0.16 + 0.09} = \\sqrt{0.25} = 0.5$."
+      },
+      {
+        "label": "D",
+        "text": "$0.35$",
+        "Explanation": "This averages the two differences; Euclidean distance squares, sums, then takes the square root."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Square each coordinate difference, add them, then take the square root.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "Using $k$-NN with $k = 5$, the five training points closest to a new flower are 3 versicolor and 2 virginica. What is the prediction?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Virginica, because it is the closest single neighbour.",
+        "Explanation": "$k$-NN with $k=5$ uses all five neighbours, not just the nearest one."
+      },
+      {
+        "label": "B",
+        "text": "Versicolor, with $P(\\text{versicolor}) = 3/5$.",
+        "Explanation": "Correct: the category proportions are $3/5$ versicolor and $2/5$ virginica, so the majority class versicolor is predicted."
+      },
+      {
+        "label": "C",
+        "text": "No prediction, because the neighbours disagree.",
+        "Explanation": "$k$-NN does not require unanimity; it predicts from the proportions."
+      },
+      {
+        "label": "D",
+        "text": "Setosa, because neither listed class has all five votes.",
+        "Explanation": "Setosa has $0/5$ of the neighbours, so it cannot be the prediction."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Count the proportion of each category among the k nearest points.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "A training table has columns Year, $X_1$ = %Driving License, $X_2$ = Income, $X_3$ = Tax and $Y$ = Fuel consumption, with 4 training rows (2016–2019) and one new row (2026) whose $Y$ is unknown. What are $n$ and $p$ for the training data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$n = 4$, $p = 3$",
+        "Explanation": "Correct: $n$ counts the 4 training rows and $p$ counts the 3 predictor columns $X_1, X_2, X_3$; Year is an identifier and $Y$ is the target."
+      },
+      {
+        "label": "B",
+        "text": "$n = 5$, $p = 3$",
+        "Explanation": "The 2026 row is new data with unknown $Y$; it is not part of the training rows."
+      },
+      {
+        "label": "C",
+        "text": "$n = 4$, $p = 5$",
+        "Explanation": "$p$ counts only the predictor columns in $X$, not Year or the target $Y$."
+      },
+      {
+        "label": "D",
+        "text": "$n = 3$, $p = 4$",
+        "Explanation": "This swaps rows and columns; there are 4 rows and 3 predictors."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "n counts training rows; p counts the columns of X only.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "A researcher uses the salaries of 200 HSUHK graduates to report that the mean salary in the whole Hong Kong labour market is plausibly between HK\\$18,000 and HK\\$21,000. Which statistical tool is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Descriptive statistics: a dispersion parameter",
+        "Explanation": "A dispersion parameter summarises spread in the observed data; it does not make a statement about a wider population."
+      },
+      {
+        "label": "B",
+        "text": "Inferential statistics: a hypothesis test",
+        "Explanation": "A hypothesis test decides whether a specific claim is supported; here a range of plausible values is reported instead."
+      },
+      {
+        "label": "C",
+        "text": "Descriptive statistics: a summary table",
+        "Explanation": "A table only presents the observed sample; the statement is about the population."
+      },
+      {
+        "label": "D",
+        "text": "Inferential statistics: a confidence interval",
+        "Explanation": "Correct: sample data are used to give a range of plausible values for a population parameter, which is a confidence interval."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Is the statement about the 200 graduates or about everyone? Is it a range or a yes/no claim?",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "Which pairing of a mathematical topic with the method that uses it matches the course's prerequisites?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Eigenvalues and eigenvectors → regression",
+        "Explanation": "Eigenvalues and eigenvectors are listed for principal component analysis, not regression."
+      },
+      {
+        "label": "B",
+        "text": "Matrix inverse → principal component analysis",
+        "Explanation": "The matrix inverse is listed for regression; PCA uses eigenvalues and eigenvectors."
+      },
+      {
+        "label": "C",
+        "text": "Matrix inverse → regression",
+        "Explanation": "Correct: matrices, solving linear equations and the matrix inverse are listed for use in regression."
+      },
+      {
+        "label": "D",
+        "text": "Eigenvalues and eigenvectors → $k$-nearest neighbour",
+        "Explanation": "$k$-NN relies on a distance measure, not on eigen-decomposition."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "One linear-algebra topic is tied to PCA, the other to regression.",
+    "course": "COM6005",
+    "week": "1"
+  },
+  {
+    "question": "Patients are described by tobacco use, family history and alcohol intake, and the target is whether they had a heart attack (Yes/No). Which method from the course suits this problem?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Linear regression, because some predictors are numeric",
+        "Explanation": "The type of model is decided by the target $Y$, not the predictors; a Yes/No target is not a continuous value."
+      },
+      {
+        "label": "B",
+        "text": "Logistic regression, because the target is categorical",
+        "Explanation": "Correct: a Yes/No outcome makes this a classification problem, and logistic regression is the course's method for classification."
+      },
+      {
+        "label": "C",
+        "text": "PCA, because there are several predictors",
+        "Explanation": "PCA is for large-$p$ problems; three predictors is a classical small-$p$ setting and PCA does not predict a class."
+      },
+      {
+        "label": "D",
+        "text": "LASSO, because the outcome is binary",
+        "Explanation": "LASSO is mentioned as a technique for large-$p$ problems, not as the choice for a binary target."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at the type of the target variable Y.",
+    "course": "COM6005",
+    "week": "1"
   }
 ]

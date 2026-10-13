@@ -164,8 +164,8 @@ and the `ModeSwitch` pill.
 
 - **Data.** `scripts/build-cards.mjs` (zero-dep) reads every `*.csv` in `DSAI/` — two columns,
   Front,Back, **no header and no tags** (both still accepted if present; a `COURSE::UNIT::topic` tag
-  overrides the file name) — and writes `quiz-app/data/cards.json` — **407 cards**, 4 courses,
-  19 units. `topic` is `""` and `tag` is `COURSE::UNIT` for tagless rows. Unlike `npm run extract`, it is **safe to re-run**: the CSVs are the source of truth and
+  overrides the file name) — and writes `quiz-app/data/cards.json` — **778 cards**, 4 courses,
+  22 units. `topic` is `""` and `tag` is `COURSE::UNIT` for tagless rows. Unlike `npm run extract`, it is **safe to re-run**: the CSVs are the source of truth and
   nothing in `cards.json` is hand-edited. Courses and units in `lib/cards.ts` are derived from the data,
   never hardcoded, which is the whole reason a new CSV needs no code change.
 - **Card ids are content hashes, not row numbers** — this is the load-bearing decision. SRS state lives
@@ -218,7 +218,7 @@ and the `ModeSwitch` pill.
 ## DSAI quiz (`/dsai/quiz`)
 
 - **Data.** `scripts/build-mcq.mjs` reads `DSAI/*.json` (arrays of `{question, options:[{label, text,
-  Explanation}], answers, hints, course, week}`) and writes `data/dsai-questions.json` — **211
+  Explanation}], answers, hints, course, week}`) and writes `data/dsai-questions.json` — **408
   questions**, all single-answer. It renames `Explanation`→`explanation` and `hints`→`hint`, ignores
   the record's `course`/`week` in favour of the file name, and **hard-fails without writing** on an
   answer letter that matches no option, a duplicate question, or < 2 options. Ids are the same content

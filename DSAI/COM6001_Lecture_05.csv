@@ -18,3 +18,20 @@ What method replaces default integer row indexing with a designated DataFrame co
 What method resets a custom index back to a standard integer position index?,`df.reset_index()`
 Why is calling `hero.columns.upper()` directly on DataFrame columns invalid?,"`upper()` is a string method, requiring the `.str` string accessor (e.g., `hero.columns.str.upper()`)."
 What is the functional difference between `df['A'] == 4` and `df['A'] = 4`?,"`df['A'] == 4` generates a Boolean comparison Series, whereas `df['A'] = 4` assigns the value 4 to all cells in column `'A'`."
+What does the `is` operator check when evaluating `df is df_ref`?,"Whether both names refer to the very same object in memory (identity), not merely whether their values are equal."
+"Which built-in Python function returns an object's memory identity, used to show that `df_ref = df` creates no new object?","`id()`: `id(df)` and `id(df_ref)` print the same number, while `id(df.copy())` prints a different one."
+Why does `copy.deepcopy(1)` return an object with the same `id()` as the original integer `1`?,"Python interns small integers in the range [-5, 256]: one shared object exists per value, so no separate copy is ever created."
+"Since `.loc` labels cannot be incremented (`hero.loc['Superman'+1]` fails), how do you get the row immediately after `'Superman'`?","Label-slice from Superman, then take position 1: `hero.loc['Superman':].iloc[1]`."
+"Why did `hero[~hero['race'].isin(['Human ', 'Mutant'])]` still return rows whose race is Human?","The list item `'Human '` has a trailing space, so it never matches `'Human'`; `isin()` only matches exact values."
+"Which columns does the column indexer `2:10:2` select in `hero.iloc[1:4, 2:10:2]`?","Every second column from position 2 up to (but excluding) 10: positions 2, 4, 6 and 8."
+"Besides Pandas dtypes such as `int64`, what other kind of type names does `select_dtypes(include=...)` accept?","General Python types such as `int`, `float`, `str` and `bool` (e.g. `include=['int']` works like `include=['int64']`), plus broad groups like `'number'`."
+Why must `hero.reset_index()` be written as `hero = hero.reset_index()` to take effect?,`reset_index()` returns a new DataFrame and leaves `hero` unchanged unless the result is reassigned (or `inplace=True` is used).
+"What does `inplace=True` do in `hero.drop(columns=['Unnamed: 0'], inplace=True)`?",It modifies `hero` directly (the method returns `None`) instead of returning a modified copy.
+"Which cells are changed by `df.iloc[0:2, 0:2] = 999`?",The four cells in rows at positions 0–1 and columns at positions 0–1 (stop positions excluded).
+How do you set every value in the first row of `df` to 1000 using positions?,"`df.iloc[0, :] = 1000`"
+"How do you sort `hero` by `'race'` ascending and, within each race, by `'height'` descending?","`hero.sort_values(by=['race', 'height'], ascending=[True, False])`"
+"`df.nlargest(n, 'col')` gives the same rows as which `sort_values` expression (but runs faster)?","`df.sort_values('col', ascending=False).head(n)`"
+What happens if you call `nlargest()` on a column of `object` or `category` dtype?,It raises a `TypeError`; `nlargest`/`nsmallest` only work on orderable numeric columns.
+"How do you return the 6 heroes with the smallest positive height, keeping all ties at the boundary?","`hero[hero['height'] > 0].nsmallest(6, 'height', keep='all')`"
+How do you add a `'BMI'` column when `height` is in cm and `weight` in kg?,`hero['BMI'] = hero['weight'] / (hero['height'] / 100) ** 2` (rescale cm to metres first).
+Which one-line expression returns a single `True` only if two Series `col1` and `col2` are identical element-wise?,"`(col1 == col2).all()` (an integer alternative is `(col1 != col2).sum()`, which is 0 when they are identical)."

@@ -317,5 +317,408 @@
     "hints": "Distinguish between commands that clear row content versus commands that destroy table schemas (`DROP TABLE`).",
     "course": "COM6002",
     "week": "4"
+  },
+  {
+    "question": "Student has rows (101, Alice), (102, Mary), (103, Alice). What does `SELECT * FROM Student WHERE (ID > 100 AND ID < 102) OR Name = 'Mary';` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Only (101, Alice)",
+        "Explanation": "Incorrect. The OR branch also admits Mary's row."
+      },
+      {
+        "label": "B",
+        "text": "(102, Mary) only",
+        "Explanation": "Incorrect. 101 satisfies the bracketed condition."
+      },
+      {
+        "label": "C",
+        "text": "All three rows",
+        "Explanation": "Incorrect. 103 is not below 102 and its name is not Mary."
+      },
+      {
+        "label": "D",
+        "text": "(101, Alice) and (102, Mary)",
+        "Explanation": "Correct. Only 101 satisfies 100 < ID < 102, and 102 satisfies Name = 'Mary'; 103 satisfies neither."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Evaluate the bracket first, then the OR for each row.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Table T has rows (A, B): (1,1), (1,2), (1,3), (2,NULL), (2,4), (3,NULL), (3,3), (3,4). What does `SELECT COUNT(*), COUNT(B), AVG(B) FROM T;` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "8, 8, 2.125",
+        "Explanation": "Incorrect. `COUNT(B)` ignores NULLs, and AVG divides 17 by the 6 non-NULL values, not by 8."
+      },
+      {
+        "label": "B",
+        "text": "8, 6, about 2.83",
+        "Explanation": "Correct. `COUNT(*)` counts all 8 rows; `COUNT(B)` and `AVG(B)` ignore NULLs: 6 values summing to 17, so $17/6 \\approx 2.83$."
+      },
+      {
+        "label": "C",
+        "text": "6, 6, about 2.83",
+        "Explanation": "Incorrect. `COUNT(*)` counts rows, including those whose B is NULL."
+      },
+      {
+        "label": "D",
+        "text": "8, 6, 2.5",
+        "Explanation": "Incorrect. 2.5 is the average of the table without NULLs (sum 20 over 8 rows)."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One of these functions counts rows, the others look at values.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Orders table T(Shop, Amount) has rows (1,1), (1,2), (1,3), (2,2), (2,4), (3,1), (3,3), (3,4). What does `SELECT Shop, SUM(Amount) FROM T WHERE Amount > 2 GROUP BY Shop HAVING SUM(Amount) > 5;` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "One row: (3, 8)",
+        "Explanation": "Incorrect. 8 is shop 3's total without the WHERE filter; the row with amount 1 is removed first."
+      },
+      {
+        "label": "B",
+        "text": "Three rows: (1, 3), (2, 4), (3, 7)",
+        "Explanation": "Incorrect. This ignores the HAVING filter on the totals."
+      },
+      {
+        "label": "C",
+        "text": "One row: (3, 7)",
+        "Explanation": "Correct. WHERE keeps (1,3), (2,4), (3,3), (3,4); group sums are 3, 4 and 7; HAVING keeps only shop 3 with 7."
+      },
+      {
+        "label": "D",
+        "text": "Three rows: (1, 6), (2, 6), (3, 8)",
+        "Explanation": "Incorrect. This ignores both WHERE and HAVING."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Apply WHERE to rows, then group, then HAVING to the group totals.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Student = {(102, Mary), (103, Alice), (101, Alice)} and Result = {(101, CS1001, B), (103, CS1002, B), (104, CS1001, A)}. What does `Student AS a RIGHT JOIN Result AS b ON a.ID = b.ID` produce?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3 rows: 101, 102 and 103, with NULL result columns for Mary",
+        "Explanation": "Incorrect. That is the LEFT JOIN result, which keeps all Student rows."
+      },
+      {
+        "label": "B",
+        "text": "3 rows: 101 and 103 matched, plus 104 with NULL student ID and name; Mary does not appear",
+        "Explanation": "Correct. All Result rows are kept; 104 has no Student match, so the Student columns are NULL, and unmatched Student 102 is dropped."
+      },
+      {
+        "label": "C",
+        "text": "2 rows: only 101 and 103",
+        "Explanation": "Incorrect. That is the INNER JOIN result."
+      },
+      {
+        "label": "D",
+        "text": "4 rows: 101, 102, 103 and 104",
+        "Explanation": "Incorrect. That is a full outer join, which keeps unmatched rows from both sides."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "A right join keeps every row of which table?",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Result has rows (101, CS1001, B), (103, CS1002, B), (104, CS1001, A). Which query correctly lists the IDs of students with a better grade than student 101 on CS1001?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT b.ID FROM Result a, Result b WHERE a.ID = 101 AND a.MCode = 'CS1001' AND b.MCode = 'CS1001' AND b.Grade < a.Grade`",
+        "Explanation": "Correct. This self join pairs 101's CS1001 row with other CS1001 rows; `b.Grade < a.Grade` keeps better grades and also filters out 101 itself, returning 104."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT b.ID FROM Result a, Result b WHERE a.ID = 101 AND a.MCode = 'CS1001' AND b.MCode = 'CS1001' AND b.Grade > a.Grade`",
+        "Explanation": "Incorrect. Grade A is alphabetically smaller than B, so `>` returns worse grades."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT ID FROM Result WHERE MCode = 'CS1001' AND Grade < Grade`",
+        "Explanation": "Incorrect. A WHERE clause compares values within one row; `Grade < Grade` is never true, which is why a self join is needed."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT b.ID FROM Result a, Result b WHERE a.ID = 101 AND b.Grade < a.Grade`",
+        "Explanation": "Incorrect. Without module conditions it compares grades across different modules."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Grade A sorts before B, and both copies of the table must be restricted to the module.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Result rows are (101, B), (103, B), (104, A) as (ID, Grade). What does `SELECT ID FROM Result ORDER BY Grade, ID DESC LIMIT 1 OFFSET 1;` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "104",
+        "Explanation": "Incorrect. 104 is the first row, which `OFFSET 1` skips."
+      },
+      {
+        "label": "B",
+        "text": "101",
+        "Explanation": "Incorrect. `DESC` applies only to ID, so among the B rows 103 comes before 101."
+      },
+      {
+        "label": "C",
+        "text": "103",
+        "Explanation": "Correct. Ascending grade puts 104 (A) first, then the B rows by ID descending: 103, 101. Skipping one row and taking one gives 103."
+      },
+      {
+        "label": "D",
+        "text": "101 and 103",
+        "Explanation": "Incorrect. `LIMIT 1` returns at most one row."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Sort fully first, then skip and take.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "T1 has column a with values 1, 2 and T2 has values 2, 3. How many rows does `SELECT a FROM T1 UNION SELECT a FROM T2` return, compared with `UNION ALL`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3 rows with UNION; 4 rows with UNION ALL",
+        "Explanation": "Correct. UNION removes the duplicate 2, giving {1, 2, 3}; UNION ALL keeps it, giving 1, 2, 2, 3."
+      },
+      {
+        "label": "B",
+        "text": "4 rows with UNION; 3 rows with UNION ALL",
+        "Explanation": "Incorrect. This reverses the two operators."
+      },
+      {
+        "label": "C",
+        "text": "1 row with UNION; 4 rows with UNION ALL",
+        "Explanation": "Incorrect. One row (the value 2) is what INTERSECT would return."
+      },
+      {
+        "label": "D",
+        "text": "3 rows with both",
+        "Explanation": "Incorrect. UNION ALL does not eliminate duplicates."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "One is a set operation, the other a multiset operation.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Which query correctly finds the average number of modules enrolled per major?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT Major, AVG(NumModule) FROM (SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule FROM Student S LEFT JOIN Result R ON S.StudentID = R.StudentID GROUP BY S.StudentID, S.Major) AS T GROUP BY Major`",
+        "Explanation": "Correct. The inner query counts modules per student, and the outer query averages those counts per major; the sub-query is named T."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT Major, AVG(COUNT(R.ModuleCode)) FROM Student S LEFT JOIN Result R ON S.StudentID = R.StudentID GROUP BY Major`",
+        "Explanation": "Incorrect. Aggregates cannot be nested in one statement; the counting must happen in a sub-query first."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT Major, COUNT(R.ModuleCode) FROM Student S LEFT JOIN Result R ON S.StudentID = R.StudentID GROUP BY Major`",
+        "Explanation": "Incorrect. This gives the total modules per major, not the average per student."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT Major, AVG(NumModule) FROM (SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule FROM Student S LEFT JOIN Result R ON S.StudentID = R.StudentID GROUP BY S.StudentID, S.Major) GROUP BY Major`",
+        "Explanation": "Incorrect. A sub-query in FROM must be given a table name, so this raises an error."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "You cannot average a count in the same SQL statement.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "To count the number of modules taken by each student, which GROUP BY is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT COUNT(*) FROM Result GROUP BY StudentName`",
+        "Explanation": "Incorrect. Two students with the same name would be merged into one group."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT COUNT(*) FROM Result GROUP BY StudentID`",
+        "Explanation": "Correct. StudentID uniquely identifies a student, so each group is one student."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT COUNT(*) FROM Result GROUP BY ModuleCode`",
+        "Explanation": "Incorrect. This counts students per module, not modules per student."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT COUNT(*) FROM Result HAVING StudentID`",
+        "Explanation": "Incorrect. HAVING filters groups; it does not form them."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "What uniquely identifies a student?",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "Which statement correctly changes student s123's Year to 2?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`UPDATE Student SET Year = 2 WHERE Student_ID = 's123';`",
+        "Explanation": "Correct. `UPDATE table SET column = value WHERE condition` modifies matching rows."
+      },
+      {
+        "label": "B",
+        "text": "`UPDATE TABLE Student SET Year = 2 WHERE Student_ID = 's123';`",
+        "Explanation": "Incorrect. `UPDATE` is followed directly by the table name, without the word TABLE."
+      },
+      {
+        "label": "C",
+        "text": "`INSERT INTO Student VALUES ('s123', 2);`",
+        "Explanation": "Incorrect. INSERT adds a new record rather than changing an existing one."
+      },
+      {
+        "label": "D",
+        "text": "`UPDATE Student SET Year = 2;`",
+        "Explanation": "Incorrect. Without WHERE every student's Year becomes 2."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The keyword that introduces new values follows the table name.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "For a student who has no rows in Result, what does `COUNT(R.ModuleCode)` return after `Student S LEFT JOIN Result R ... GROUP BY S.StudentID`, versus `COUNT(*)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both give 0",
+        "Explanation": "Incorrect. `COUNT(*)` counts rows, and the left join keeps one row for the student."
+      },
+      {
+        "label": "B",
+        "text": "Both give 1",
+        "Explanation": "Incorrect. `COUNT(R.ModuleCode)` ignores the NULL value."
+      },
+      {
+        "label": "C",
+        "text": "The student is excluded from the result entirely",
+        "Explanation": "Incorrect. That would happen with an INNER JOIN; a LEFT JOIN keeps all students."
+      },
+      {
+        "label": "D",
+        "text": "`COUNT(R.ModuleCode)` gives 0; `COUNT(*)` gives 1",
+        "Explanation": "Correct. The student appears in one joined row whose ModuleCode is NULL; `COUNT(column)` ignores NULLs while `COUNT(*)` counts the row."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The left join keeps the student with NULLs in the Result columns.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "`SELECT * FROM Student a, Result b WHERE a.ID = b.ID` is written as a Cartesian join plus a WHERE filter. How does it compare with the equivalent `INNER JOIN ... ON a.ID = b.ID`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Same result, but always much slower because the full Cartesian product is built",
+        "Explanation": "Incorrect. The optimizer rewrites this simple pattern, so the product is not materialised."
+      },
+      {
+        "label": "B",
+        "text": "Different result: the Cartesian form keeps unmatched rows with NULLs",
+        "Explanation": "Incorrect. That describes an outer join; the WHERE filter keeps only matching pairs."
+      },
+      {
+        "label": "C",
+        "text": "Same result, and in practice the same speed because the DBMS rewrites the query",
+        "Explanation": "Correct. Computing the full Cartesian product first would be slower, but existing DBMSs automatically rewrite it, so either style can be used."
+      },
+      {
+        "label": "D",
+        "text": "It produces a syntax error because joins require the JOIN keyword",
+        "Explanation": "Incorrect. Listing tables with commas in FROM is valid SQL."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about query rewriting by the DBMS.",
+    "course": "COM6002",
+    "week": "4"
+  },
+  {
+    "question": "What is the maximum value that a `DECIMAL(5, 2)` column can store?",
+    "options": [
+      {
+        "label": "A",
+        "text": "99999.99",
+        "Explanation": "Incorrect. This treats 5 as the number of digits before the decimal point."
+      },
+      {
+        "label": "B",
+        "text": "99.999",
+        "Explanation": "Incorrect. This uses three decimals instead of two."
+      },
+      {
+        "label": "C",
+        "text": "9999.9",
+        "Explanation": "Incorrect. This has only one decimal place."
+      },
+      {
+        "label": "D",
+        "text": "999.99",
+        "Explanation": "Correct. Five digits in total with two decimals leaves three digits before the point."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The first number is the total digits, the second the digits after the point.",
+    "course": "COM6002",
+    "week": "4"
   }
 ]

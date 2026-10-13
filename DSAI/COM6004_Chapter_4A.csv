@@ -18,3 +18,20 @@ Which two parameters must be computed from training data to evaluate a continuou
 Why do redundant or highly correlated attributes negatively affect Naïve Bayes performance?,They violate the class conditional independence assumption and improperly bias the probability estimates.
 How does the Naïve Bayes algorithm handle missing attribute values in data instances?,It ignores missing attribute entries when performing conditional probability calculations.
 Why is Naïve Bayes robust against isolated noise points in a training dataset?,Because parameter estimations rely on probabilities averaged across the entire training dataset rather than localized boundaries.
+Name four decision tree induction algorithms besides Hunt's algorithm.,"CART, ID3, C4.5, SLIQ and SPRINT (any four)."
+What is the entropy of a node $t$ with class frequencies $p_i(t)$?,$\text{Entropy}(t) = -\sum_{i=0}^{c-1} p_i(t) \log_2 p_i(t)$
+What is the misclassification error of a node $t$?,$\text{Error}(t) = 1 - \max_i p_i(t)$
+"How is the gain of a split defined, and which split is chosen?","$\text{Gain} = P - M$ (impurity before minus weighted impurity after); choose the test with the highest gain, i.e. the lowest $M$."
+"For a two-class problem, what are the maximum values of Gini, entropy and misclassification error?","Gini $0.5$, entropy $1$, error $0.5$, all at a 50/50 class split."
+What is the difference between static and dynamic discretization of continuous attributes in decision trees?,Static discretizes once at the beginning; dynamic repeats the discretization at each node.
+"How does a binary decision split on a continuous attribute work, and what is its drawback?","It tests $(A < v)$ or $(A \ge v)$, considering all possible cuts to find the best; it can be computationally intensive."
+What is the difference between pre-pruning and post-pruning?,Pre-pruning stops growing the tree early (early stopping rule); post-pruning grows the full tree and then trims nodes.
+Why can greedy decision tree induction miss the best tree?,"The space of possible trees is exponentially large, and greedy approaches make locally optimal splits."
+What three things does a nearest-neighbor classifier require?,"The set of labeled records, a distance metric, and the value of $k$."
+Why can nearest-neighbor classifiers produce decision boundaries of arbitrary shape?,They are local classifiers: each prediction depends only on nearby training points.
+How do irrelevant and redundant attributes affect $k$-NN?,Irrelevant attributes add noise to the proximity measure; redundant attributes bias it towards certain attributes.
+Why is computing $k$-NN proximity on only the attributes present in both instances a poor fix for missing values?,"It effectively uses a different proximity measure for each pair of instances, so the proximities are not comparable."
+What does the arm-length and reading-skills example illustrate?,"Conditional independence: the two are related overall, but independent once age is fixed."
+What optimization problem does a linear SVM solve?,Minimize $\frac{\|\mathbf{w}\|^2}{2}$ subject to $y_i(\mathbf{w} \cdot \mathbf{x}_i + b) \ge 1$ for all training records.
+How is a test record classified by a linear SVM once $\mathbf{w}$ and $b$ are found?,"$f(\mathbf{z}) = \text{sign}(\mathbf{w} \cdot \mathbf{z} + b)$: $+1$ if $\mathbf{w} \cdot \mathbf{z} + b \ge 0$, else $-1$."
+Why does SVM find a global optimum when many other methods do not?,"Its learning problem is a convex optimization problem, whereas many other methods use greedy, locally optimal approaches."

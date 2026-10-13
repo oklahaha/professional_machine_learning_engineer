@@ -16,3 +16,17 @@ Why is 'Building Age in Years' classified as a ratio variable?,Because it is qua
 "In statistical software like SPSS, under what single umbrella term are interval and ratio variables grouped?",Scale.
 Ordinal data differs from nominal data because ordinal categories have a meaningful _____.,order
 "Unlike ordinal data, ratio data allows for meaningful quantitative operations because it has equal intervals and a _____.",true zero
+How do you draw the training-set index for a random 70/30 split of 100 rows labelled 0–99?,"`np.random.choice(range(0, 100), size=70, replace=False)` (Python indexing starts at 0)."
+How do you make Rock twice as likely as Scissors or Paper when simulating 10000 games with `np.random.choice`?,"Pass true probabilities: `np.random.choice([""S"", ""R"", ""P""], p=[0.25, 0.5, 0.25], size=10000)`."
+"Given a simulated array `Result` of 10000 games, how is the probability of Scissors estimated?",`len(Result[Result=='S'])/10000` (the relative frequency of 'S').
+What do the probabilities of a PMF always sum to?,$1$.
+Which distribution is suggested for the time between two consecutive events?,Exponential distribution.
+Which distribution is suggested for the lifetime of a bulb or of small insects?,Weibull distribution.
+Which distribution is suggested for income?,Pareto distribution.
+Which distribution is suggested for biological measurements?,Normal distribution.
+How is the distribution of a categorical variable displayed?,"With a bar chart or pie chart, using either frequencies or proportions."
+How is the distribution of a continuous variable displayed?,Split its range into bins (classes) and draw a histogram of the counts; a cumulative frequency column gives the cumulative histogram.
+What is the formula of the normal probability density function?,"$\text{norm.pdf}(x, \mu, \sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{-(x-\mu)^2 / 2\sigma^2}$"
+How is the normal CDF defined from the normal PDF?,"$\text{norm.cdf}(x, \mu, \sigma) = \int_{-\infty}^{x} \text{norm.pdf}(s, \mu, \sigma)\, ds$"
+Which matplotlib call draws a discrete PMF as vertical lines with markers?,"`axes.stem(x, pmf_values, ...)` (a stem plot)."
+Which cumulative function applies to both discrete and continuous random variables?,"The CDF, $P(X \le x)$."

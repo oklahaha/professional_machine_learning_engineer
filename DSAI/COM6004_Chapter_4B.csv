@@ -28,3 +28,19 @@ Which confusion matrix outcomes bias the Recall metric?,Recall is biased towards
 "In hypothesis testing terms applied to confusion matrices, what corresponds to a Type I error ($\alpha$)?","A Type I error ($\alpha$) corresponds to a False Positive ($\text{FP}$), which is rejecting a true null hypothesis."
 "In hypothesis testing terms applied to confusion matrices, what corresponds to a Type II error ($\beta$)?","A Type II error ($\beta$) corresponds to a False Negative ($\text{FN}$), which is accepting a false null hypothesis."
 What is the strategy of class-based ordering for handling imbalanced class rules?,It assigns higher priority to classification rules that predict the rare class.
+What is another name for training errors?,Apparent errors: the errors committed on the training set.
+Why can't training error be used to estimate generalization error?,"It does not reflect how well the model performs on previously unseen records, especially when the model overfits."
+What three approaches are listed for estimating generalization error during model selection?,"Using a validation set, incorporating model complexity, and estimating statistical bounds."
+What is the drawback of using a validation set for model selection?,Less data is available for training.
+"Besides the learning algorithm, what factors can a model's measured performance depend on?","The class distribution, the cost of misclassification, and the size of the training and test sets."
+What extra information does repeated cross-validation provide?,An estimate of the variance of the generalization error.
+When is stratified cross-validation especially important?,When classes are imbalanced and the sample is small.
+What must a classifier produce in order to draw an ROC curve?,Continuous-valued outputs (scores) that can rank test records from most to least likely positive.
+What trade-off does an ROC curve display?,Detection rate (TPR) against false alarm rate (FPR) as the classifier's threshold changes.
+What is the formula for Precision?,$p = \frac{TP}{TP + FP}$
+Recall is the same quantity as which rate plotted on an ROC curve?,The True Positive Rate (TPR): $r = \frac{TP}{TP + FN}$.
+What is the formula for the F-measure?,"$F = \frac{2rp}{r + p} = \frac{2\,TP}{2\,TP + FP + FN}$"
+Which confusion matrix cell is the F-measure NOT biased towards?,"$C(\text{No}|\text{No})$, the true negatives; it depends on all other cells."
+What implicit cost assumption does the standard Bayes rule (predict + if $p(+|x) > p(-|x)$) make?,That $C(+|+) = C(-|-) = 0$ and $C(+|-) = C(-|+)$: correct predictions are free and both errors cost the same.
+"With zero cost for correct predictions, what is the cost-sensitive threshold for predicting +?","Predict + if $p(+|x) > \frac{C_{FP}}{C_{FP} + C_{FN}}$, where $C_{FP}$ and $C_{FN}$ are the costs of a false positive and a false negative."
+What does it mean when two ROC curves cross?,"Neither model consistently outperforms the other: one is better at small FPR, the other at large FPR."

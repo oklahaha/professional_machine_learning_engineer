@@ -1,0 +1,30 @@
+"What is an attribute, and what other names is it known by?","A property or characteristic of an object; also called a variable, field, characteristic, dimension or feature."
+What other names are used for a data object?,"Record, point, case, observation, sample, entity or instance."
+What four properties/operations determine an attribute's type?,"Distinctness, order, meaningful differences, and meaningful ratios."
+"Which properties does each attribute type possess: nominal, ordinal, interval, ratio?","Nominal: distinctness; ordinal: + order; interval: + meaningful differences; ratio: all four, including meaningful ratios."
+What distinguishes a discrete attribute from a continuous attribute?,"A discrete attribute has a finite or countably infinite set of values (e.g. zip codes, counts); a continuous attribute takes real-number values (e.g. height)."
+How is document data represented as record data?,Each document becomes a term vector whose components are terms and whose values are the number of times each term occurs.
+What is transaction data?,A special type of record data in which each transaction (e.g. one shopping trip) involves a set of items (the products bought).
+Name the three types of missing-value mechanism.,"Missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR)."
+What are the three ways of handling missing values?,"Eliminate the data objects or variables, estimate the missing values, or ignore the missing value during analysis."
+How does noise differ for objects versus attributes?,"For objects, noise is an extraneous object; for attributes, noise is a modification of the original values."
+When is data cleaning for duplicate data a major issue?,"When merging data from heterogeneous sources, e.g. the same person appearing with multiple email addresses."
+How are the ordinal dissimilarity and similarity between values $x$ and $y$ defined?,Map values to integers $0$ to $n-1$; $d = \frac{|x - y|}{n - 1}$ and $s = 1 - d$.
+What is the Minkowski distance between $\mathbf{x}$ and $\mathbf{y}$?,"$d(\mathbf{x}, \mathbf{y}) = \left( \sum_{k=1}^{n} |x_k - y_k|^r \right)^{1/r}$, a generalization of Euclidean distance."
+What is the Hamming distance?,The city-block ($L_1$) distance between two binary vectors: the number of bits that differ.
+What is the supremum ($L_{\max}$ or $L_\infty$) distance?,The maximum absolute difference between any component of the two vectors: $\max_k |x_k - y_k|$.
+What is the Mahalanobis distance?,"$\text{mahal}(\mathbf{x}, \mathbf{y}) = (\mathbf{x} - \mathbf{y})^T \Sigma^{-1} (\mathbf{x} - \mathbf{y})$, where $\Sigma$ is the covariance matrix, so it accounts for correlated attributes."
+What three properties must a distance satisfy to be a metric?,"Positive definiteness ($d \ge 0$, and $d = 0$ only if $\mathbf{x} = \mathbf{y}$), symmetry, and the triangle inequality $d(\mathbf{x}, \mathbf{z}) \le d(\mathbf{x}, \mathbf{y}) + d(\mathbf{y}, \mathbf{z})$."
+What is the formula for cosine similarity of document vectors $d_1$ and $d_2$?,"$\cos(d_1, d_2) = \frac{\langle d_1, d_2 \rangle}{\|d_1\| \, \|d_2\|}$"
+"What is the entropy $H(X)$ of a variable with outcome probabilities $p_1, \dots, p_n$, and what is its range?","$H(X) = -\sum_{i=1}^{n} p_i \log_2 p_i$, measured in bits, between $0$ and $\log_2 n$."
+How is mutual information $I(X;Y)$ computed from entropies?,"$I(X;Y) = H(X) + H(Y) - H(X,Y)$, where $H(X,Y)$ is the joint entropy."
+What is the maximum mutual information for discrete variables $X$ and $Y$?,"$\log_2(\min(n_X, n_Y))$, where $n_X$ and $n_Y$ are the numbers of values of $X$ and $Y$."
+What does the Maximal Information Coefficient (MIC) do?,"Applies mutual information to two continuous variables: try binnings with $n_X \times n_Y \le N^{0.6}$, normalize each MI by $\log_2(\min(n_X, n_Y))$, and take the highest value."
+"When combining similarities across mixed attribute types, when is the indicator $\delta_k$ set to $0$?","When attribute $k$ is asymmetric and both objects have value $0$, or when either object has a missing value for it."
+What are the three purposes of aggregation?,"Data reduction, change of scale (e.g. cities into regions, days into months), and more stable data with less variability."
+When is a sample representative?,When it has approximately the same properties of interest as the original data set; then using it works almost as well as the full data.
+What is the curse of dimensionality?,"As dimensionality increases, data becomes increasingly sparse, so density and distance between points become less meaningful."
+What is the goal of Principal Components Analysis (PCA)?,To find a projection that captures the largest amount of variation in the data.
+"What is binarization, and which analysis typically needs it?","Mapping a continuous or categorical attribute into one or more binary variables; association analysis, which needs asymmetric binary attributes."
+What is the difference between unsupervised and supervised discretization?,"Unsupervised discretization finds breaks in the data values alone (equal width, equal frequency, K-means); supervised discretization uses class labels to find breaks."
+What is an attribute transformation?,"A function that maps the entire set of values of an attribute to a new set of replacement values, so each old value can be identified with a new value."

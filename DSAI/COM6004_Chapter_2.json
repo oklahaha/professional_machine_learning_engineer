@@ -1,0 +1,467 @@
+[
+  {
+    "question": "Which attribute is a ratio attribute?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Temperature in Fahrenheit.",
+        "Explanation": "Fahrenheit has an arbitrary zero, so differences are meaningful but ratios are not: it is interval."
+      },
+      {
+        "label": "B",
+        "text": "Calendar dates.",
+        "Explanation": "Dates have meaningful differences but no true zero, so they are interval."
+      },
+      {
+        "label": "C",
+        "text": "Elapsed time to run a race.",
+        "Explanation": "Correct: elapsed time has a true zero, so 20 seconds really is twice 10 seconds."
+      },
+      {
+        "label": "D",
+        "text": "Taste rankings of potato chips on a 1-10 scale.",
+        "Explanation": "Rankings have order but differences are not meaningful: ordinal."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Ask whether 'twice as much' is physically meaningful.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Which operation is meaningful for an ordinal attribute such as grades but NOT for a nominal attribute such as eye colour?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Checking whether two values are equal.",
+        "Explanation": "Distinctness ($=$, $\\ne$) holds for both nominal and ordinal attributes."
+      },
+      {
+        "label": "B",
+        "text": "Ordering values (<, >).",
+        "Explanation": "Correct: order is the property ordinal attributes add on top of nominal distinctness."
+      },
+      {
+        "label": "C",
+        "text": "Computing the ratio of two values.",
+        "Explanation": "Ratios are only meaningful for ratio attributes, not ordinal ones."
+      },
+      {
+        "label": "D",
+        "text": "Computing the difference between two values.",
+        "Explanation": "Meaningful differences require an interval or ratio attribute."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Each attribute type adds one property to the one before it.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "A survey finds that respondents with high incomes are the ones most likely to leave the income question blank. Which missing-value mechanism is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Missing not at random (MNAR).",
+        "Explanation": "Correct: missingness depends on the unobserved value itself (income), so it is informative and cannot be detected from the observed data."
+      },
+      {
+        "label": "B",
+        "text": "Missing completely at random (MCAR).",
+        "Explanation": "MCAR requires missingness independent of all attributes; here it depends on income."
+      },
+      {
+        "label": "C",
+        "text": "Missing at random (MAR).",
+        "Explanation": "MAR means missingness depends on other observed variables, not on the missing value itself."
+      },
+      {
+        "label": "D",
+        "text": "Not a missing-value problem, because the attribute is not applicable.",
+        "Explanation": "Income applies to these adults; they simply declined to give it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Does the chance of being missing depend on the very value that is missing?",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Binary vectors $\\mathbf{x} = (1,0,1,1,0,0,1,0)$ and $\\mathbf{y} = (1,1,0,1,0,0,1,0)$. What are the Simple Matching Coefficient (SMC) and Jaccard Coefficient (JC)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "SMC $= 0.60$, JC $= 0.75$",
+        "Explanation": "These are swapped: SMC counts both 1-1 and 0-0 matches, so it is the larger value here."
+      },
+      {
+        "label": "B",
+        "text": "SMC $= 0.75$, JC $= 0.60$",
+        "Explanation": "Correct: $f_{11}=3, f_{00}=3, f_{10}=1, f_{01}=1$; SMC $= 6/8 = 0.75$ and JC $= 3/(3+1+1) = 0.60$."
+      },
+      {
+        "label": "C",
+        "text": "SMC $= 0.75$, JC $= 0.375$",
+        "Explanation": "JC divides $f_{11}$ by the number of non-zero attributes ($5$), not by all $8$ attributes."
+      },
+      {
+        "label": "D",
+        "text": "SMC $= 0.375$, JC $= 0.60$",
+        "Explanation": "$0.375$ ignores the $f_{00}$ matches, which SMC includes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Count f11, f00, f10 and f01 first; Jaccard ignores 0-0 matches.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Points $\\mathbf{x} = (1, 2, 3)$ and $\\mathbf{y} = (4, 6, 3)$. What are the city-block ($L_1$), Euclidean ($L_2$) and supremum ($L_\\infty$) distances?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$L_1 = 5$, $L_2 = 7$, $L_\\infty = 4$",
+        "Explanation": "The $L_1$ and $L_2$ values are swapped."
+      },
+      {
+        "label": "B",
+        "text": "$L_1 = 7$, $L_2 = 25$, $L_\\infty = 4$",
+        "Explanation": "$25$ is the squared Euclidean distance; take the square root."
+      },
+      {
+        "label": "C",
+        "text": "$L_1 = 7$, $L_2 = 5$, $L_\\infty = 3$",
+        "Explanation": "The supremum is the largest component difference, $|2 - 6| = 4$, not $3$."
+      },
+      {
+        "label": "D",
+        "text": "$L_1 = 7$, $L_2 = 5$, $L_\\infty = 4$",
+        "Explanation": "Correct: differences are $3, 4, 0$; $L_1 = 7$, $L_2 = \\sqrt{9+16} = 5$, $L_\\infty = 4$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compute the component differences once, then combine them three ways.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Document vectors $d_1 = (1, 2, 0, 2)$ and $d_2 = (2, 0, 1, 2)$. What is their cosine similarity?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.667$",
+        "Explanation": "Correct: $\\langle d_1, d_2 \\rangle = 2 + 0 + 0 + 4 = 6$, $\\|d_1\\| = \\|d_2\\| = 3$, so $6/9 = 0.667$."
+      },
+      {
+        "label": "B",
+        "text": "$0.222$",
+        "Explanation": "This omits the last component product $2 \\times 2 = 4$ from the dot product."
+      },
+      {
+        "label": "C",
+        "text": "$6$",
+        "Explanation": "6 is the dot product; it must be divided by the product of the vector lengths."
+      },
+      {
+        "label": "D",
+        "text": "$0.5$",
+        "Explanation": "This might come from counting shared non-zero terms (2 of 4) rather than computing the cosine."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Dot product over the product of the lengths.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "An ordinal attribute takes values {poor, fair, OK, good, wonderful}. Using the lecture's ordinal measure, what is the dissimilarity between 'fair' and 'wonderful'?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.60$",
+        "Explanation": "This divides by $n = 5$ instead of $n - 1 = 4$."
+      },
+      {
+        "label": "B",
+        "text": "$0.25$",
+        "Explanation": "$0.25$ is the similarity $s = 1 - d$, not the dissimilarity."
+      },
+      {
+        "label": "C",
+        "text": "$0.75$",
+        "Explanation": "Correct: map to $0$-$4$, so fair $= 1$, wonderful $= 4$; $d = |1 - 4|/(5 - 1) = 0.75$."
+      },
+      {
+        "label": "D",
+        "text": "$3$",
+        "Explanation": "This is the raw rank difference; ordinal dissimilarity is scaled to $[0,1]$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Map the values to integers 0 to n-1 and normalise.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "What is the entropy of a variable with three outcomes of probabilities $0.5$, $0.25$ and $0.25$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$1.0$ bit",
+        "Explanation": "1 bit is the entropy of a fair coin; this variable has an extra outcome."
+      },
+      {
+        "label": "B",
+        "text": "$1.5$ bits",
+        "Explanation": "Correct: $0.5(1) + 0.25(2) + 0.25(2) = 1.5$ bits."
+      },
+      {
+        "label": "C",
+        "text": "$\\log_2 3 \\approx 1.585$ bits",
+        "Explanation": "That is the maximum entropy for 3 outcomes, reached only with equal probabilities."
+      },
+      {
+        "label": "D",
+        "text": "$2.0$ bits",
+        "Explanation": "2 bits is the entropy of a fair four-sided die."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Use $-p \\log_2 p$; $-\\log_2 0.25 = 2$.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Student status and grade for 100 students: Undergrad-A 30, Undergrad-B 20, Grad-A 10, Grad-B 40. Given $H(\\text{Status}) = 1$, $H(\\text{Grade}) = 0.971$ and joint entropy $H(\\text{Status}, \\text{Grade}) = 1.846$, what is the mutual information?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.875$",
+        "Explanation": "This subtracts $H(\\text{Grade})$ from $H(\\text{Joint})$; MI adds both marginals and subtracts the joint."
+      },
+      {
+        "label": "B",
+        "text": "$1.971$",
+        "Explanation": "This is just the sum of the marginal entropies, without subtracting the joint entropy."
+      },
+      {
+        "label": "C",
+        "text": "$0$",
+        "Explanation": "MI of 0 would mean independence, but grade clearly depends on status here."
+      },
+      {
+        "label": "D",
+        "text": "$0.125$",
+        "Explanation": "Correct: $I = 1 + 0.971 - 1.846 \\approx 0.125$ bits, a weak dependence."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "$I(X;Y) = H(X) + H(Y) - H(X,Y)$.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "If the mutual information $I(X;Y)$ equals $H(X)$, what does that tell you?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$X$ and $Y$ are independent.",
+        "Explanation": "Independence corresponds to $I(X;Y) = 0$."
+      },
+      {
+        "label": "B",
+        "text": "Knowing $Y$ completely determines $X$.",
+        "Explanation": "Correct: all the information in $X$ is shared with $Y$."
+      },
+      {
+        "label": "C",
+        "text": "Knowing $X$ completely determines $Y$.",
+        "Explanation": "That is the case $I(X;Y) = H(Y)$."
+      },
+      {
+        "label": "D",
+        "text": "$X$ has more information than $Y$.",
+        "Explanation": "Since $I(X;Y) \\le \\min\\{H(X), H(Y)\\}$, $I = H(X)$ implies $H(X) \\le H(Y)$, the opposite."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Mutual information is the information shared; compare it to all the information X has.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Objects $\\mathbf{x}$ and $\\mathbf{y}$ have three attributes with similarities $s_1 = 1$, $s_2 = 0.5$, and attribute 3 is asymmetric binary with both objects equal to 0. Using the general approach for combining similarities, what is the overall similarity?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.50$",
+        "Explanation": "This divides by 3 while excluding attribute 3 from the sum; excluded attributes are removed from the denominator too."
+      },
+      {
+        "label": "B",
+        "text": "$0.83$",
+        "Explanation": "This treats the 0-0 match on an asymmetric attribute as a similarity of 1, which the indicator rules out."
+      },
+      {
+        "label": "C",
+        "text": "$0.75$",
+        "Explanation": "Correct: $\\delta_3 = 0$, so similarity $= (1 + 0.5)/(1 + 1) = 0.75$."
+      },
+      {
+        "label": "D",
+        "text": "$1.50$",
+        "Explanation": "This is the numerator only; it must be divided by the sum of the indicators."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Which attributes does the indicator variable switch off, and where does it appear in the formula?",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Which statement about sampling is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "In sampling without replacement, the same object can appear more than once in the sample.",
+        "Explanation": "That describes sampling with replacement; without replacement, each selected item is removed from the population."
+      },
+      {
+        "label": "B",
+        "text": "Stratified sampling draws random samples from each of several partitions of the data.",
+        "Explanation": "Correct: the data is split into partitions and each is sampled, so small groups are represented."
+      },
+      {
+        "label": "C",
+        "text": "A sample works almost as well as the full data only if it is larger than half the data set.",
+        "Explanation": "The key requirement is that the sample is representative, not a particular size."
+      },
+      {
+        "label": "D",
+        "text": "Simple random sampling gives a higher selection probability to rare objects.",
+        "Explanation": "Simple random sampling gives every item an equal probability of selection."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall the definitions of each sampling type in the lecture.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "Which of the following is NOT a purpose of dimensionality reduction?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Avoiding the curse of dimensionality.",
+        "Explanation": "This is a listed purpose."
+      },
+      {
+        "label": "B",
+        "text": "Reducing the time and memory required by data mining algorithms.",
+        "Explanation": "This is a listed purpose."
+      },
+      {
+        "label": "C",
+        "text": "Allowing data to be more easily visualized.",
+        "Explanation": "This is a listed purpose."
+      },
+      {
+        "label": "D",
+        "text": "Guaranteeing that every original attribute is kept unchanged.",
+        "Explanation": "Correct: dimensionality reduction removes or projects attributes; techniques like PCA replace original attributes with new ones."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Three of these are benefits; one contradicts what the technique does.",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "A dataset has four groups of 1-D points plus two extreme outliers. Which unsupervised discretization approach is most likely to waste intervals on nearly empty ranges because of the outliers?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Equal interval width.",
+        "Explanation": "Correct: the outliers stretch the range, so equal-width bins can end up nearly empty while groups are merged."
+      },
+      {
+        "label": "B",
+        "text": "Equal frequency.",
+        "Explanation": "Equal frequency puts the same number of points in each bin, so it is not dominated by the range."
+      },
+      {
+        "label": "C",
+        "text": "K-means.",
+        "Explanation": "K-means places breaks around the dense groups, so it adapts to the clusters."
+      },
+      {
+        "label": "D",
+        "text": "Supervised discretization using class labels.",
+        "Explanation": "This is not an unsupervised approach, and it places breaks using class information."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which approach depends only on the minimum and maximum values?",
+    "course": "COM6004",
+    "week": "2"
+  },
+  {
+    "question": "A model includes both the purchase price of a product and the sales tax paid on it. How should the sales-tax attribute be described?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Irrelevant, because tax contains no information useful for the task.",
+        "Explanation": "It does carry information, but the same information already contained in the price."
+      },
+      {
+        "label": "B",
+        "text": "Redundant, because it duplicates information contained in the price.",
+        "Explanation": "Correct: the two are highly correlated, so one duplicates the other."
+      },
+      {
+        "label": "C",
+        "text": "Noisy, because tax rates distort the original values.",
+        "Explanation": "Noise is a modification of original values; tax is a deterministic function of the price."
+      },
+      {
+        "label": "D",
+        "text": "An outlier, because tax values are much smaller than prices.",
+        "Explanation": "Outliers are unusual objects, not attributes on a different scale."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compare 'adds nothing new' with 'contains nothing useful'.",
+    "course": "COM6004",
+    "week": "2"
+  }
+]

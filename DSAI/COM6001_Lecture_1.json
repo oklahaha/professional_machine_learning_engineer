@@ -346,5 +346,253 @@
     "hints": "Distinguish between referencing a method by name versus invoking it with parentheses to execute its code and return a result.",
     "course": "COM6001",
     "week": "1"
+  },
+  {
+    "question": "A survey records customer satisfaction as `good`, `fair`, or `bad`. Which attribute type is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Nominal categorical",
+        "Explanation": "Nominal attributes have no inherent order, but good/fair/bad clearly has one."
+      },
+      {
+        "label": "B",
+        "text": "Ordinal categorical",
+        "Explanation": "Correct: the values are categories with a natural order, but the difference between 'good' and 'fair' is not a measurable quantity."
+      },
+      {
+        "label": "C",
+        "text": "Discrete numerical",
+        "Explanation": "Discrete numerical attributes are counts; these are labels, not numbers."
+      },
+      {
+        "label": "D",
+        "text": "Continuous numerical",
+        "Explanation": "Continuous attributes are measurements like temperature; these are categories."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Ask whether the values can be ranked, and whether the distance between them can be measured.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "A dataset stores customers' zip codes as numbers such as 10001 and 94105. How should this attribute be classified?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Continuous numerical, because the values are numbers",
+        "Explanation": "Being written with digits does not make a value a measurement; averaging zip codes is meaningless."
+      },
+      {
+        "label": "B",
+        "text": "Ordinal categorical, because zip codes can be sorted",
+        "Explanation": "Sorting zip codes produces no meaningful ranking of locations."
+      },
+      {
+        "label": "C",
+        "text": "Nominal categorical",
+        "Explanation": "Correct: zip codes are labels identifying areas, with no meaningful order or arithmetic, which the lecture lists as categorical."
+      },
+      {
+        "label": "D",
+        "text": "Binary, because each customer either has or lacks a zip code",
+        "Explanation": "Binary attributes take only two values; zip codes take many."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Would computing the mean of this column make any sense?",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Which of the following is NOT one of the 5 V's of big data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Velocity",
+        "Explanation": "Velocity (incoming streams, real-time analytics) is one of the 5 V's."
+      },
+      {
+        "label": "B",
+        "text": "Veracity",
+        "Explanation": "Veracity (accuracy of data) is one of the 5 V's."
+      },
+      {
+        "label": "C",
+        "text": "Value",
+        "Explanation": "Value is one of the 5 V's."
+      },
+      {
+        "label": "D",
+        "text": "Visualization",
+        "Explanation": "Correct: visualization is a data science activity, but the 5 V's are Volume, Velocity, Variety, Veracity, and Value."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Recall the five characteristics; one of these is a task, not a characteristic.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "A factory streams sensor readings every millisecond and must flag faults in real time. Which big-data characteristic is most directly challenged?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Velocity",
+        "Explanation": "Correct: velocity concerns fast incoming streams that need real-time analytics."
+      },
+      {
+        "label": "B",
+        "text": "Variety",
+        "Explanation": "Variety concerns different data types (graph, text, relational), not speed."
+      },
+      {
+        "label": "C",
+        "text": "Veracity",
+        "Explanation": "Veracity concerns accuracy; the scenario stresses speed of arrival."
+      },
+      {
+        "label": "D",
+        "text": "Value",
+        "Explanation": "Value concerns the usefulness extracted from data, not the arrival rate."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Focus on the words 'every millisecond' and 'real time'.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "John Snow mapped cholera cases in London and found they grouped around contaminated wells. Which analytic task does this illustrate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Prediction of future values from other variables",
+        "Explanation": "He did not forecast new cases; he described where existing cases occurred."
+      },
+      {
+        "label": "B",
+        "text": "Clustering, a descriptive method",
+        "Explanation": "Correct: grouping similar (nearby) cases revealed a human-interpretable pattern that described the outbreak."
+      },
+      {
+        "label": "C",
+        "text": "A recommendation system",
+        "Explanation": "Recommendation systems predict user preferences; nothing was recommended here."
+      },
+      {
+        "label": "D",
+        "text": "Real-time stream analytics",
+        "Explanation": "The analysis was done by hand on a map, long before computers."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Was he forecasting, or grouping similar data together to describe what happened?",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "Google Flu Trends estimated flu cases from the frequency of flu-related search keywords. What kind of analytic task is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Descriptive, because it summarises search history",
+        "Explanation": "The goal was to estimate an unknown quantity, not just to describe searches."
+      },
+      {
+        "label": "B",
+        "text": "Clustering of search users",
+        "Explanation": "No grouping of users was involved."
+      },
+      {
+        "label": "C",
+        "text": "Predictive, using some variables to estimate unknown values of another",
+        "Explanation": "Correct: search-keyword frequencies were used to predict the number of people getting flu."
+      },
+      {
+        "label": "D",
+        "text": "Data deployment, the final CRISP-DM phase",
+        "Explanation": "Deployment is a process phase, not a type of analytic task."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "One variable is used to estimate a different, unknown variable.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "In the CRISP-DM process, which phase comes immediately after Data Understanding?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Business Understanding",
+        "Explanation": "Business Understanding is the first phase, before Data Understanding."
+      },
+      {
+        "label": "B",
+        "text": "Data Modeling",
+        "Explanation": "Modeling comes after the data has been prepared."
+      },
+      {
+        "label": "C",
+        "text": "Evaluate the Results",
+        "Explanation": "Evaluation follows modeling."
+      },
+      {
+        "label": "D",
+        "text": "Prepare Data",
+        "Explanation": "Correct: the order is Business Understanding, Data Understanding, Prepare Data, Data Modeling, Evaluate, Deploy."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "You must get the data ready before you can build a model on it.",
+    "course": "COM6001",
+    "week": "1"
+  },
+  {
+    "question": "A model finds a highly accurate rule, but no analyst can interpret what the rule means. Which desired property of a discovered pattern is it missing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Valid",
+        "Explanation": "The rule is accurate, so it holds on data with some certainty."
+      },
+      {
+        "label": "B",
+        "text": "Understandable",
+        "Explanation": "Correct: patterns should be interpretable by humans; an opaque rule fails this property."
+      },
+      {
+        "label": "C",
+        "text": "Unexpected",
+        "Explanation": "Being hard to interpret is different from being obvious or non-obvious."
+      },
+      {
+        "label": "D",
+        "text": "Big",
+        "Explanation": "Size is not one of the four desired properties (valid, useful, unexpected, understandable)."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Which property is about humans being able to interpret the pattern?",
+    "course": "COM6001",
+    "week": "1"
   }
 ]

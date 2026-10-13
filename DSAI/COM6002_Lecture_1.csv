@@ -53,3 +53,12 @@ What type of NoSQL database is specialized for traversing complex relationships 
 How does motion-activated recording reduce video surveillance storage demands compared to continuous recording?,"It restricts recording to active event windows, eliminating stored footage during idle time."
 Which component of a data pipeline handles real-time health checks and alerts using tools like Grafana or Kibana?,The Monitoring component.
 Why must synchronization strategies be maintained between operational databases and a central Data Warehouse?,To regularly update the central warehouse with operational changes without overloading live transaction systems.
+"What is the main advantage of file-based data management (e.g., keeping data in a CSV file)?",Convenience: it needs minimal coding effort.
+Why is data isolation and security a weakness of file-based data management?,It is hard to enforce fine-grained access control across many custom files.
+"Besides missing, duplicated and ambiguous data, which two further data quality concerns threaten veracity?",Outdated data and inconsistent data.
+Why does high-velocity data often have to be captured in real time rather than downloaded later?,The data source does not always keep all the data for you to download later.
+Name three types of NoSQL database.,"Graph database, key-value store, and document store."
+"What problem arises if heterogeneous MongoDB-style records (e.g., BTC with Sentiment, ETH with BTC Correlation) are forced into one relational table?","Each record fills only some columns, so the table becomes wide and sparse with many NULL values."
+What are the two main challenges of scaling out (horizontal scaling) a database?,"Handling the failure of one of the machines, and coordinating two machines working on the same data record."
+Snowflake is an example of which data pipeline layer?,The Serving Layer.
+What accuracy did the initial Google Flu Trends paper claim against CDC data?,"97% accurate, before it later over-predicted doctor visits by a factor of two in 2012/2013."

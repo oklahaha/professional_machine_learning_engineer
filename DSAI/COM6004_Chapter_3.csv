@@ -18,3 +18,11 @@ The standard summary measure defined as the difference between the maximum and m
 Why is the range vulnerable to misrepresenting the overall dispersion of a dataset?,"Because it relies solely on the two extreme values, making it highly sensitive to outliers."
 Which two statistics serve as the most common measures of spread for continuous numerical data?,Variance and standard deviation.
 Why are percentiles generally preferred over frequency or mode for continuous attributes?,"Continuous values rarely repeat exactly, making percentile thresholds far more useful for describing distribution."
+What is data exploration?,A preliminary exploration of the data to better understand its characteristics.
+How is visualization defined in the lecture?,The conversion of data into a visual or tabular format so that characteristics of the data and relationships among items or attributes can be analyzed or reported.
+What two things can humans detect well when data is visualized?,"General patterns and trends, and outliers and unusual patterns."
+"In the lecture's box plot, which percentiles mark the box and the whiskers?",The box spans the 25th to 75th percentiles with the 50th (median) inside; the whiskers end at the 10th and 90th percentiles.
+What is a key use of placing several box plots side by side?,Comparing the distributions of different attributes.
+"In a histogram, what does the height of each bar indicate?",The number of objects whose values fall in that bin.
+What can plots of similarity or distance matrices be used for?,Visualizing the relationships between objects.
+How can a scatter plot display more than two attributes?,"Use a 3D scatter plot, or encode additional attributes in the size, shape and colour of the markers."

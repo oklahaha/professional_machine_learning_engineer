@@ -288,5 +288,253 @@
     "hints": "Recall that the Poisson PMF function in SciPy expects $k$ as the first argument followed by $\\lambda$ (the average rate).",
     "course": "COM6005",
     "week": "2B"
+  },
+  {
+    "question": "Each of 10 independent components fails with probability $0.2$. What is the probability that exactly 3 fail?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0080$",
+        "Explanation": "This is only $0.2^3$; the combination term and the probability of 7 non-failures are missing."
+      },
+      {
+        "label": "B",
+        "text": "$0.2013$",
+        "Explanation": "Correct: $\\binom{10}{3}(0.2)^3(0.8)^7 = 120 \\times 0.008 \\times 0.2097 \\approx 0.2013$."
+      },
+      {
+        "label": "C",
+        "text": "$0.0017$",
+        "Explanation": "This is $0.008 \\times 0.2097$ without the $\\binom{10}{3} = 120$ ways to choose which components fail."
+      },
+      {
+        "label": "D",
+        "text": "$0.8791$",
+        "Explanation": "This is $P(X \\le 3)$, the cumulative probability, not $P(X = 3)$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Binomial with n = 10, p = 0.2, k = 3.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "A batch of 5 items is produced, each independently defective with probability $0.1$. What is the probability of at least one defective item?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.5000$",
+        "Explanation": "This adds $0.1$ five times; probabilities of overlapping events cannot simply be added."
+      },
+      {
+        "label": "B",
+        "text": "$0.3281$",
+        "Explanation": "This is $P(X = 1) = 5(0.1)(0.9)^4$, exactly one defective, not at least one."
+      },
+      {
+        "label": "C",
+        "text": "$0.5905$",
+        "Explanation": "This is $0.9^5$, the probability of no defective items."
+      },
+      {
+        "label": "D",
+        "text": "$0.4095$",
+        "Explanation": "Correct: $P(X \\ge 1) = 1 - P(X = 0) = 1 - 0.9^5 = 0.4095$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Use the complement of 'none defective'.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "A help desk receives on average 3 emails per hour (Poisson). What is the probability of receiving no emails in a given hour?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0498$",
+        "Explanation": "Correct: $P(X=0) = \\frac{3^0 e^{-3}}{0!} = e^{-3} \\approx 0.0498$."
+      },
+      {
+        "label": "B",
+        "text": "$0$",
+        "Explanation": "With a Poisson rate of 3, zero events is unlikely but still possible."
+      },
+      {
+        "label": "C",
+        "text": "$0.1494$",
+        "Explanation": "This is $P(X = 1) = 3e^{-3}$."
+      },
+      {
+        "label": "D",
+        "text": "$0.3679$",
+        "Explanation": "This is $e^{-1}$, which would be the answer only if $\\lambda = 1$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Plug k = 0 into the Poisson PMF.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Accidents at a junction follow a Poisson distribution with $\\lambda = 2$ per week. What is $P(X \\le 2)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.2707$",
+        "Explanation": "This is only $P(X = 2) = 2^2 e^{-2}/2!$."
+      },
+      {
+        "label": "B",
+        "text": "$0.4060$",
+        "Explanation": "This is $P(X \\le 1) = e^{-2}(1 + 2)$, which leaves out $X = 2$."
+      },
+      {
+        "label": "C",
+        "text": "$0.6767$",
+        "Explanation": "Correct: $e^{-2}(1 + 2 + 2) = 5e^{-2} \\approx 0.6767$."
+      },
+      {
+        "label": "D",
+        "text": "$0.3233$",
+        "Explanation": "This is $P(X \\ge 3)$, the complement."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Add the PMF at k = 0, 1 and 2.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "A player makes each free throw with probability $0.8$. What is the probability that the first success comes within the first 3 attempts?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0320$",
+        "Explanation": "This is $P(X = 3)$ only, the first success on exactly the third attempt."
+      },
+      {
+        "label": "B",
+        "text": "$0.9920$",
+        "Explanation": "Correct: $P(X \\le 3) = 1 - (0.2)^3 = 0.992$; the only way to fail is to miss all three."
+      },
+      {
+        "label": "C",
+        "text": "$0.5120$",
+        "Explanation": "This is $0.8^3$, making all three shots, which is not the event asked about."
+      },
+      {
+        "label": "D",
+        "text": "$0.8000$",
+        "Explanation": "This is $P(X = 1)$ only."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The complement is 'miss all of the first three'.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "A fair die is rolled until the first 6 appears. What is the probability that the first 6 occurs on the 2nd roll?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$1/36$",
+        "Explanation": "This is the probability of two 6s in a row; the first roll must be a non-6."
+      },
+      {
+        "label": "B",
+        "text": "$1/3$",
+        "Explanation": "This adds $1/6 + 1/6$; the geometric PMF multiplies a failure by a success."
+      },
+      {
+        "label": "C",
+        "text": "$1/6$",
+        "Explanation": "This ignores the requirement that the first roll is not a 6."
+      },
+      {
+        "label": "D",
+        "text": "$5/36$",
+        "Explanation": "Correct: $(1 - 1/6)^{1} \\times 1/6 = 5/36 \\approx 0.1389$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Geometric with p = 1/6 and k = 2.",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Chips are tested one by one until the first defective one is found; each is defective with probability $0.02$. Which SciPy call gives the probability that the first defective chip is the 5th one tested?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.geom.pmf(5, 0.02)`",
+        "Explanation": "Correct: SciPy's geometric counts the trial on which the first success occurs, so $k = 5$ gives $(0.98)^4(0.02)$."
+      },
+      {
+        "label": "B",
+        "text": "`stats.geom.pmf(4, 0.02)`",
+        "Explanation": "This counts 4 failures as if $k$ were the number of failures; SciPy's $k$ is the trial number of the first success."
+      },
+      {
+        "label": "C",
+        "text": "`stats.binom.pmf(1, 5, 0.02)`",
+        "Explanation": "This is exactly one defective among 5 in any position, not the first defective being the 5th."
+      },
+      {
+        "label": "D",
+        "text": "`stats.poisson.pmf(5, 0.02)`",
+        "Explanation": "There is no fixed interval with an average rate here; this models 5 events with mean $0.02$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which distribution stops at the first success, and what does its k count?",
+    "course": "COM6005",
+    "week": "2B"
+  },
+  {
+    "question": "Calls arrive at an average of $4.5$ per minute (Poisson). Which expression gives the probability of at least one call in the next minute?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`1 - stats.poisson.pmf(1, 4.5)`",
+        "Explanation": "This removes only $P(X = 1)$; 'at least one' is the complement of $X = 0$."
+      },
+      {
+        "label": "B",
+        "text": "`stats.poisson.pmf(1, 4.5)`",
+        "Explanation": "This is exactly one call, not at least one."
+      },
+      {
+        "label": "C",
+        "text": "`1 - stats.poisson.pmf(0, 4.5)`",
+        "Explanation": "Correct: $P(X \\ge 1) = 1 - P(X = 0) = 1 - e^{-4.5} \\approx 0.9889$."
+      },
+      {
+        "label": "D",
+        "text": "`1 - stats.poisson.cdf(1, 4.5)`",
+        "Explanation": "This is $P(X \\ge 2)$, because the CDF at 1 already includes $X = 1$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "At least one is the complement of none.",
+    "course": "COM6005",
+    "week": "2B"
   }
 ]

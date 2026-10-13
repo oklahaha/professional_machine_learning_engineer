@@ -346,5 +346,284 @@
     "hints": "Identify the Series method designed to highlight cell-level differences between two aligned Series objects.",
     "course": "COM6001",
     "week": "5"
+  },
+  {
+    "question": "With `hero` indexed by hero name, which expression returns the row that comes immediately after `'Superman'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`hero.loc['Superman'+1]`",
+        "Explanation": "Labels are strings; adding 1 to a string raises a `TypeError`, and `.loc` cannot move to a neighbouring label."
+      },
+      {
+        "label": "B",
+        "text": "`hero.loc['Superman':].iloc[0]`",
+        "Explanation": "Position 0 of the slice is Superman's own row, not the next one."
+      },
+      {
+        "label": "C",
+        "text": "`hero.loc['Superman':].iloc[1]`",
+        "Explanation": "Correct. The label slice starts at Superman, and position 1 of that slice is the following row."
+      },
+      {
+        "label": "D",
+        "text": "`hero.iloc['Superman':][1]`",
+        "Explanation": "`.iloc` only accepts integer positions, so a string slice raises an error."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Combine a label-based slice with a position-based pick.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "For `df = pd.DataFrame([[1,2,3],[4,5,6],[7,2,9]], columns=['A','B','C'])`, how many rows does `df[(df['B'] == 2) & ~(df['C'] < 6)]` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1",
+        "Explanation": "Correct. `B == 2` keeps rows 0 and 2; `~(C < 6)` keeps rows where C is at least 6 (rows 1 and 2); only row 2 satisfies both."
+      },
+      {
+        "label": "B",
+        "text": "2",
+        "Explanation": "This counts the rows with `B == 2` but ignores the negated condition on C, which removes row 0 (C = 3)."
+      },
+      {
+        "label": "C",
+        "text": "0",
+        "Explanation": "Row 2 has B = 2 and C = 9, so it satisfies both conditions."
+      },
+      {
+        "label": "D",
+        "text": "3",
+        "Explanation": "The `&` operator requires both conditions; row 1 has B = 5 and fails the first one."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Evaluate each condition row by row, remembering that `~` flips a Boolean Series.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Starting from `df = pd.DataFrame([[1,2,3],[4,5,6],[7,2,9]], columns=['A','B','C'])`, what is `df['A'].sum()` after running `df.iloc[0:2, 0:2] = 999`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "2997",
+        "Explanation": "This assumes all three rows of column A were overwritten, but the stop position 2 is excluded."
+      },
+      {
+        "label": "B",
+        "text": "1011",
+        "Explanation": "This is 999 plus the original 1 and 7 values, as if only one cell had been changed."
+      },
+      {
+        "label": "C",
+        "text": "12",
+        "Explanation": "This is the original sum; the assignment does modify `df` in place."
+      },
+      {
+        "label": "D",
+        "text": "2005",
+        "Explanation": "Correct. Rows 0 and 1 of column A become 999 and row 2 keeps 7: 999 + 999 + 7 = 2005."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "`.iloc` slices exclude the stop position.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Why does `hero[~hero['race'].isin(['Human ', 'Mutant'])]` still contain heroes whose race is `'Human'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`~` only negates the first element of the list passed to `isin()`.",
+        "Explanation": "`~` negates the whole Boolean Series that `isin()` returns, element by element."
+      },
+      {
+        "label": "B",
+        "text": "The list contains `'Human '` with a trailing space, which never matches the value `'Human'` exactly.",
+        "Explanation": "Correct. `isin()` matches exact values, so the misspelled item excludes nothing and Human rows survive the negation."
+      },
+      {
+        "label": "C",
+        "text": "`isin()` is case-insensitive and also matches `'human'`, which confuses the negation.",
+        "Explanation": "`isin()` is case-sensitive and exact; the issue is the extra space, not case."
+      },
+      {
+        "label": "D",
+        "text": "Boolean indexing with `[]` ignores `~`; `.loc` must be used to negate a mask.",
+        "Explanation": "`df[mask]` and `df.loc[mask]` are interchangeable for Boolean masks, and both honour `~`."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look very closely at the strings inside the list.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "A hero DataFrame has `height` in centimetres and `weight` in kilograms. Which statement correctly adds a BMI column ($BMI = \\frac{weight}{height^2}$, height in metres)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`hero['BMI'] = hero['weight'] / hero['height'] ** 2`",
+        "Explanation": "Using centimetres directly makes every BMI 10,000 times too small."
+      },
+      {
+        "label": "B",
+        "text": "`hero['BMI'] = hero['weight'] / (hero['height'] * 100) ** 2`",
+        "Explanation": "Multiplying by 100 converts in the wrong direction (to tenths of millimetres)."
+      },
+      {
+        "label": "C",
+        "text": "`hero['BMI'] = (hero['weight'] / hero['height'] / 100) ** 2`",
+        "Explanation": "This squares the whole ratio, including the weight, which is not the BMI formula."
+      },
+      {
+        "label": "D",
+        "text": "`hero['BMI'] = hero['weight'] / (hero['height'] / 100) ** 2`",
+        "Explanation": "Correct. Heights are first rescaled to metres, then squared, and weight is divided by the result."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Check the unit conversion and what exactly is squared.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which expression returns the same rows as `hero.nlargest(5, 'height')` (ignoring ties)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`hero.sort_values('height', ascending=False).head(5)`",
+        "Explanation": "Correct. `nlargest` is equivalent to sorting descending and taking the first n rows, but is more efficient."
+      },
+      {
+        "label": "B",
+        "text": "`hero.sort_values('height').head(5)`",
+        "Explanation": "An ascending sort puts the shortest heroes first, so this returns the 5 smallest heights."
+      },
+      {
+        "label": "C",
+        "text": "`hero.sort_values('height', ascending=False).tail(5)`",
+        "Explanation": "After a descending sort the tail holds the smallest values."
+      },
+      {
+        "label": "D",
+        "text": "`hero.nsmallest(5, 'height')`",
+        "Explanation": "`nsmallest` returns the rows with the smallest values, the opposite of `nlargest`."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about the sort order and which end of the sorted frame you take.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "Which function correctly asserts with a single Boolean that two Series `col1` and `col2` hold identical values in every row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`(col1 == col2).value_counts()`",
+        "Explanation": "This returns a Series of counts (e.g. `True 446`), not a single Boolean value."
+      },
+      {
+        "label": "B",
+        "text": "`(col1 == col2).any()`",
+        "Explanation": "`any()` is `True` if at least one row matches, so it cannot confirm that all rows match."
+      },
+      {
+        "label": "C",
+        "text": "`(col1 == col2).all()`",
+        "Explanation": "Correct. `all()` collapses the element-wise comparison into one `True` only when every row is equal."
+      },
+      {
+        "label": "D",
+        "text": "`col1.compare(col2)`",
+        "Explanation": "`compare()` returns a DataFrame of the differing rows, not a single Boolean."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "You need a reduction that is True only when every element is True.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "After `i1 = 1` and `i1_copy = copy.deepcopy(i1)`, which statement about `id(i1) == id(i1_copy)` is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is `False`, because `deepcopy()` always allocates a brand-new object.",
+        "Explanation": "Immutable integers are not duplicated by `deepcopy()`; it returns the same object."
+      },
+      {
+        "label": "B",
+        "text": "It raises an error, because integers have no `copy()` method and cannot be deep-copied.",
+        "Explanation": "`copy.deepcopy()` accepts integers; only the `.copy()` method is missing on `int`."
+      },
+      {
+        "label": "C",
+        "text": "It is `True` only if `i1` was created with `int(1)` instead of a literal.",
+        "Explanation": "Small integers are interned no matter how they are created."
+      },
+      {
+        "label": "D",
+        "text": "It is `True`, because small integers in [-5, 256] are interned as a single shared object.",
+        "Explanation": "Correct. Python keeps one object per small integer value, so the 'copy' is the same object."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider how Python stores small, frequently used integers.",
+    "course": "COM6001",
+    "week": "5"
+  },
+  {
+    "question": "A hero DataFrame is indexed by name. You run `hero.reset_index()` (without reassignment) and then `hero.index`. What do you see?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The hero names, because `reset_index()` returned a new DataFrame that was discarded.",
+        "Explanation": "Correct. Without `hero = ...` or `inplace=True`, the original DataFrame keeps its name index."
+      },
+      {
+        "label": "B",
+        "text": "A RangeIndex 0 to 536, because `reset_index()` always modifies the DataFrame in place.",
+        "Explanation": "Pandas methods like `reset_index()` return a new object by default."
+      },
+      {
+        "label": "C",
+        "text": "An empty index, because the name column was moved out of the index.",
+        "Explanation": "The original `hero` is untouched, so its index is unchanged."
+      },
+      {
+        "label": "D",
+        "text": "An error, because `reset_index()` requires `drop=True` when the index is a string column.",
+        "Explanation": "String indexes can be reset; `drop=True` only discards the old index instead of making it a column."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Does the method return a new object or modify the original?",
+    "course": "COM6001",
+    "week": "5"
   }
 ]

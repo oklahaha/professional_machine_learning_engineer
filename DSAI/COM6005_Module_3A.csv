@@ -19,3 +19,13 @@ How does increasing the degrees of freedom affect the shape of the t-distributio
 "In a right-tailed t-test with calculated test statistic $T$, how is the p-value computed using the cumulative distribution function `t.cdf`?","$p\text{-value} = 1 - \text{t.cdf}(T, \nu)$"
 "In Python, which parameter in `stats.ttest_1samp` specifies a left-tailed alternative hypothesis $H_1: \mu < \mu_0$?",`alternative='less'`
 What sample condition determines whether an independent two-sample t-test should use a pooled vs. unpooled standard deviation?,Whether the two population variances are equal or unequal.
+"What assumptions does the one-sample t-test make about $y_1, \dots, y_n$?",They are independent and identically distributed (i.i.d.) normal random variables.
+What is the formula for the sample variance $s^2$?,$s^2 = \frac{(X_1 - \bar{X})^2 + \dots + (X_n - \bar{X})^2}{n - 1}$
+Which NumPy call gives the sample variance with the $n-1$ divisor?,`y.var(ddof=1)`
+"Which significance levels are common, and what does each signal?",$5\%$ is a lower standard for rejecting $H_0$; $1\%$ is a higher (stricter) standard.
+Which SciPy function runs a paired t-test?,"`stats.ttest_rel(x, y, alternative=...)`"
+Which SciPy call runs an independent two-sample t-test that assumes equal variances?,"`stats.ttest_ind(x, y, equal_var=True)`"
+What is a completely randomized design?,"Unrelated subjects are randomly assigned to the two treatments, so the two samples are independent."
+What is the trade-off of using unrelated subjects instead of a paired design?,It is easier to implement but statistically less accurate.
+Why is the pooled variance $s_p^2$ different from the variance of the combined $X$ and $Y$ data?,"Pooling uses only within-group variation; the combined variance also includes the between-group difference in means, which can be large."
+Why can't we just check whether the sample mean of tumour-size changes is above 0?,"Measurements have error, so the sample mean is never exactly 0 even if the treatment does nothing; the t-test decides how large is large enough."

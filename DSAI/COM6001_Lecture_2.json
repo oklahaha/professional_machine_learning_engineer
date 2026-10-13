@@ -288,5 +288,284 @@
     "hints": "Consider the built-in developer productivity and workflow tools integrated directly within an IDE interface.",
     "course": "COM6001",
     "week": "2"
+  },
+  {
+    "question": "Given `s = 'Hello, World!'`, what does `print(s[::-1])` output?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`Hello, World!`",
+        "Explanation": "That is `s[::]`; a step of -1 walks the string backwards."
+      },
+      {
+        "label": "B",
+        "text": "`H`",
+        "Explanation": "That is the result of `s[0::-1]`, which starts at index 0 and can only move left."
+      },
+      {
+        "label": "C",
+        "text": "`!dlroW ,olleH`",
+        "Explanation": "Correct: with step -1 the omitted start/stop default to the two ends in the reverse direction, giving the whole string reversed."
+      },
+      {
+        "label": "D",
+        "text": "An empty string",
+        "Explanation": "An empty result needs a start/stop pair that cannot be reached in the step direction; here both are omitted."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "A negative step changes the direction in which the defaults are taken.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Given `s = 'Hello, World!'`, what does `print(s[0::-1])` output?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`H`",
+        "Explanation": "Correct: it starts at index 0 and steps backwards to the beginning, so only the first character is taken."
+      },
+      {
+        "label": "B",
+        "text": "`!dlroW ,olleH`",
+        "Explanation": "That would need the start to default to the last character; here start is explicitly 0."
+      },
+      {
+        "label": "C",
+        "text": "`Hello, World!`",
+        "Explanation": "A step of -1 cannot move forward from index 0."
+      },
+      {
+        "label": "D",
+        "text": "An empty string",
+        "Explanation": "The start position itself is always included when it is valid, so the result is not empty."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Start at position 0 and move left: how many characters can you collect?",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Given `s = 'Hello, World!'`, what does `s[2:6]` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`llo, `",
+        "Explanation": "The stop index 6 is excluded, so the space at index 6 is not included."
+      },
+      {
+        "label": "B",
+        "text": "`ello`",
+        "Explanation": "Index 2 is the first `l`, not `e` (indices start at 0)."
+      },
+      {
+        "label": "C",
+        "text": "`llo`",
+        "Explanation": "This stops one character too early; index 5 (the comma) is included."
+      },
+      {
+        "label": "D",
+        "text": "`llo,`",
+        "Explanation": "Correct: indices 2, 3, 4, 5 give `l`, `l`, `o`, `,`; stop index 6 is excluded."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Count from 0 and remember the stop position is not included.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "After running `a = b = c = 1` and then `a = 2`, which statement is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`a is b` is True because they were assigned together",
+        "Explanation": "Reassigning `a` makes it point to a new object 2; it no longer shares the object with `b`."
+      },
+      {
+        "label": "B",
+        "text": "`b is c` is True and `a is b` is False",
+        "Explanation": "Correct: variables are references; `b` and `c` still point to the object 1, while `a` now points to 2."
+      },
+      {
+        "label": "C",
+        "text": "`b` and `c` also become 2",
+        "Explanation": "Assignment rebinds only the name `a`; `b` and `c` are unaffected."
+      },
+      {
+        "label": "D",
+        "text": "All three are False because integers are copied",
+        "Explanation": "`b` and `c` still refer to the same object, so `b is c` is True."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Variables are pointers to objects; assignment moves only one pointer.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Given `s1 = {1, 2, 3}` and `s2 = {2, 3, 4}`, what is `s2 - s1`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`{1}`",
+        "Explanation": "That is `s1 - s2`, the elements only in `s1`."
+      },
+      {
+        "label": "B",
+        "text": "`{2, 3}`",
+        "Explanation": "That is the common part `s1 & s2`."
+      },
+      {
+        "label": "C",
+        "text": "`{4}`",
+        "Explanation": "Correct: `s2 - s1` keeps the elements seen only in `s2`."
+      },
+      {
+        "label": "D",
+        "text": "`{1, 4}`",
+        "Explanation": "That is the symmetric difference, not `s2 - s1`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Set difference keeps the elements that appear only in the left-hand set.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "With `my_tup = ('com', 6001, 'john', 70.2)`, what happens when you run `my_tup[2] = 'Aileen'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A `TypeError` is raised because tuple elements cannot be changed",
+        "Explanation": "Correct: tuples are immutable, so item assignment is not supported."
+      },
+      {
+        "label": "B",
+        "text": "The third element becomes `'Aileen'`",
+        "Explanation": "That would work for a list, not a tuple."
+      },
+      {
+        "label": "C",
+        "text": "`'Aileen'` is appended to the end of the tuple",
+        "Explanation": "Tuples have no append and assignment never appends."
+      },
+      {
+        "label": "D",
+        "text": "The tuple is silently converted to a list",
+        "Explanation": "Python never converts the type automatically on assignment."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which of the main data structures is unchangeable after creation?",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "`my_set = {'com', 6001, 'john', 70.2}`. After `my_set.add('com')`, how many elements does `my_set` contain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5",
+        "Explanation": "A set cannot hold the same object twice, so `'com'` is not added again."
+      },
+      {
+        "label": "B",
+        "text": "3",
+        "Explanation": "Nothing is removed by `add()`."
+      },
+      {
+        "label": "C",
+        "text": "An error is raised",
+        "Explanation": "Adding an existing element is allowed; it simply has no effect."
+      },
+      {
+        "label": "D",
+        "text": "4",
+        "Explanation": "Correct: sets store unique members only, so the duplicate `'com'` is ignored."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "What is special about the members of a set?",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "Why does `int.upper()` fail while `'abc'.upper()` works?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`upper` is a function that must be called as `upper('abc')`",
+        "Explanation": "`upper` is a method of string objects, not a stand-alone function."
+      },
+      {
+        "label": "B",
+        "text": "Methods belong to particular objects or classes, and the `int` class has no `upper` method",
+        "Explanation": "Correct: a method can only be called through an object whose class defines it."
+      },
+      {
+        "label": "C",
+        "text": "Integers must be cast to float before calling methods",
+        "Explanation": "Floats do not have `upper` either; the issue is which class defines the method."
+      },
+      {
+        "label": "D",
+        "text": "`upper` needs an index argument such as `upper(0)`",
+        "Explanation": "`str.upper()` takes no arguments."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about the difference between functions and methods.",
+    "course": "COM6001",
+    "week": "2"
+  },
+  {
+    "question": "With `s = 'Hello, World!'`, what does `print(f'There are {len(s)} chars in this string')` output?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`There are 12 chars in this string`",
+        "Explanation": "This misses one character; the comma, space and `!` all count."
+      },
+      {
+        "label": "B",
+        "text": "`There are {len(s)} chars in this string`",
+        "Explanation": "The `f` prefix makes Python evaluate the expression in the braces."
+      },
+      {
+        "label": "C",
+        "text": "`There are 13 chars in this string`",
+        "Explanation": "Correct: `Hello, World!` has 13 characters including the comma, space and exclamation mark."
+      },
+      {
+        "label": "D",
+        "text": "`There are 10 chars in this string`",
+        "Explanation": "Only the letters are 10; punctuation and spaces are characters too."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Count every character, including punctuation and the space.",
+    "course": "COM6001",
+    "week": "2"
   }
 ]

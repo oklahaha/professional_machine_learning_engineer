@@ -17,3 +17,12 @@ Which SciPy call calculates the probability of receiving exactly 6 calls in a mi
 How does the random variable $X$ differ between a Binomial distribution and a Geometric distribution?,"Binomial counts successes across fixed $n$ trials, whereas Geometric counts total trials needed until the first success."
 Which probability distribution is suitable for modeling rare events occurring over a large number of possible trials within a fixed time interval?,Poisson distribution
 "In the Binomial PMF, what is the formula for the combination term $\binom{n}{k}$?",$\binom{n}{k} = \frac{n!}{k!(n-k)!}$
+What are the core conditions of a Binomial distribution?,"Each trial has only two outcomes, the success probability $p$ is constant, and all trials are independent."
+What are the core conditions of a Geometric distribution?,"Trials are independent with two outcomes each, and the experiment stops as soon as the first success happens."
+What is the general PMF of a Geometric distribution?,$\Pr(X = k) = (1-p)^{k-1} p$
+What values can a Geometric random variable take?,"$k \in \{1, 2, 3, \dots\}$; it starts at 1 because at least one trial is needed."
+"In the Geometric PMF, what does the factor $(1-p)^{k-1}$ represent?",The probability of failing $k-1$ times in a row before the success on trial $k$.
+"In the Binomial PMF, what do $p^k$ and $(1-p)^{n-k}$ represent?",$p^k$ is the probability of the $k$ successes; $(1-p)^{n-k}$ is the probability of the $n-k$ failures.
+What is a single trial with two outcomes and a fixed success probability $p$ called?,A Bernoulli trial; a Binomial count is the number of successes in $n$ independent Bernoulli trials.
+"Which of Binomial, Geometric and Poisson has no fixed limit on the number of trials?",Geometric: it continues until the first success.
+"Rolling a die until a 6 appears follows which distribution, with what parameter?",Geometric with $p = 1/6$.

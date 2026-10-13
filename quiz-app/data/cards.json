@@ -240,6 +240,176 @@
     "deck": "COM6001_Lecture_1"
   },
   {
+    "id": "5a33b091bb0b",
+    "front": "In structured data, what other names are used for an 'object' (a row described by attributes)?",
+    "back": "Record, point, case, sample, entity, or instance.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "91f14e963cd5",
+    "front": "What distinguishes a nominal categorical attribute from an ordinal one?",
+    "back": "Nominal values have no order (e.g., eye color); ordinal values have an order but the gaps between them are not meaningfully comparable (e.g., good/fair/bad).",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "a689c601bf00",
+    "front": "How do discrete and continuous numerical attributes differ? Give an example of each.",
+    "back": "Discrete attributes take countable values (e.g., counts); continuous attributes can take any value in a range (e.g., temperature).",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "8d87459ecd47",
+    "front": "What is a binary attribute?",
+    "back": "A special case of attribute with only two possible values, such as yes/no or exists/not exists.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "134312eb3e4e",
+    "front": "What do the four levels of the DIKW pyramid stand for?",
+    "back": "Data, Information, Knowledge, Wisdom.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "4b4837d8b4f6",
+    "front": "What four properties should patterns discovered by data analytics have?",
+    "back": "Valid, useful, unexpected, and understandable.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "91f97878bd16",
+    "front": "In data analytics, what does it mean for a discovered pattern to be 'valid'?",
+    "back": "It holds on new data with some certainty.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "1e01b38faffb",
+    "front": "What does it mean for a discovered pattern to be 'useful'?",
+    "back": "It should be possible to act on it, e.g., to make decisions.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "bbe5d01f5148",
+    "front": "What are the 5 V's of big data?",
+    "back": "Volume, Velocity, Variety, Veracity, and Value.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "ef4b58adf03e",
+    "front": "Which of the 5 V's refers to the accuracy (trustworthiness) of the data?",
+    "back": "Veracity.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "175a15d5cffd",
+    "front": "Which of the 5 V's refers to incoming data streams that require real-time analytics?",
+    "back": "Velocity.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "f2b4df7f65fa",
+    "front": "Give three examples of the 'Variety' of big data mentioned in the lecture.",
+    "back": "Social networks (graph data), tweets (text, image, video), and click logs (relational data).",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "1a298e3c810d",
+    "front": "How do descriptive and predictive data analytic methods differ?",
+    "back": "Descriptive methods find human-interpretable patterns that describe the data; predictive methods use some variables to predict unknown or future values of other variables.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "11abb667ec53",
+    "front": "How did John Snow's cholera investigation in London use clustering?",
+    "back": "He plotted cholera cases on a city map and saw them cluster around particular wells, revealing those wells as the contaminated source.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "b2054001a8d4",
+    "front": "What did Google Flu Trends use to predict the number of people getting flu?",
+    "back": "The frequency of flu-related keywords searched in Google's search history.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "2e84c3e9e7a5",
+    "front": "What does CRISP-DM stand for?",
+    "back": "CRoss Industry Standard Process for Data Mining.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
+    "id": "e7fae7354da4",
+    "front": "List the six phases of the CRISP-DM process in order.",
+    "back": "Business Understanding, Data Understanding, Prepare Data, Data Modeling, Evaluate the Results, Deploy.",
+    "course": "COM6001",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6001::Lecture_1",
+    "deck": "COM6001_Lecture_1"
+  },
+  {
     "id": "b61214ee69ab",
     "front": "Scenario: In Week 2, a student asks GenAI to 'Write the complete code to solve Question 1 of Lab 2.' Is this ethical AI use or academic misconduct?",
     "back": "Academic misconduct; requesting direct code solutions for assignment questions is strictly prohibited in Weeks 2–3.",
@@ -388,6 +558,566 @@
     "topic": "",
     "tag": "COM6001::Lecture_2",
     "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "e9bd746ac766",
+    "front": "Does Python need to be compiled before run time?",
+    "back": "No. Python is a scripting language whose code is executed line by line as it runs.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "db612d96ead5",
+    "front": "How does Python's execution speed compare with Java and C?",
+    "back": "Python programs generally run slower than Java and C.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "a47a1d15958b",
+    "front": "When is a variable created in Python?",
+    "back": "The moment you first assign a value to it; Python has no command for declaring variables.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "588f9efe9a07",
+    "front": "Which built-in function returns the data type of a variable?",
+    "back": "`type()`",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "b794ac4f418e",
+    "front": "What is the term for explicitly specifying a variable's data type, e.g., `int('3')`?",
+    "back": "Casting.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "72f05e18c1f4",
+    "front": "What are the rules for Python variable names?",
+    "back": "Cannot start with a number, no spaces, case sensitive, and avoid special keywords.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "cb29ddfecd32",
+    "front": "Why is assigning `print = 1` a bad idea?",
+    "back": "It overrides the meaning of the built-in `print` function, so `print(...)` stops working.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "2efd18eb3d92",
+    "front": "What does the `is` operator check?",
+    "back": "Whether two variables refer to the same object in memory.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "bdf859c9965a",
+    "front": "Which Jupyter command lists all variables in the current workspace?",
+    "back": "`whos`",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "454962603ebc",
+    "front": "For a string of length N, what ranges do positive and reverse (negative) indices cover?",
+    "back": "Positive: 0 to N-1; reverse: -1 to -N.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "84da29d5fbde",
+    "front": "In string slicing `[start:stop:step]`, what are the default values and is `stop` included?",
+    "back": "start = 0, stop = the very end, step = 1; the stop position is excluded.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "8dc23d240836",
+    "front": "How does a method differ from a function in Python?",
+    "back": "A function is defined independently and called by name (`print(x)`); a method belongs to an object or class and is called through an object (`st.upper()`).",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "310ac8e3ab10",
+    "front": "How do you write an f-string that embeds an expression?",
+    "back": "Prefix the string with `f` and put the expression in curly brackets, e.g., `f'There are {len(s)} chars'`.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "41831e160a95",
+    "front": "How must the Boolean values be written in Python?",
+    "back": "`True` and `False`, with a capital first letter.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "2432216f7954",
+    "front": "Why would you choose a tuple instead of a list?",
+    "back": "Tuples are immutable, which guarantees the elements are not changed and protects data integrity.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "23df61a2ee00",
+    "front": "For sets `s1` and `s2`, what do `s1 - s2` and `s1 & s2` return?",
+    "back": "`s1 - s2`: elements only in `s1`; `s1 & s2`: the common elements of both sets.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "5cf65981de5f",
+    "front": "Which method inserts a new element into a set?",
+    "back": "`.add()`",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "b7544399ebd5",
+    "front": "How do you insert a new key-value pair into a dictionary `d`?",
+    "back": "Assign it: `d[new_key] = new_value`.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "5a9931b7739f",
+    "front": "What does `list.pop()` do when called without an index?",
+    "back": "Removes and returns the last item of the list.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "61344d55f441",
+    "front": "What is a docstring?",
+    "back": "Documentation inside the source code, enclosed in triple quotes directly under a function or class definition.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "5b6c0aabc260",
+    "front": "How do you print the raw docstring of `list.append`?",
+    "back": "`print(list.append.__doc__)`",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "580702e2c7b8",
+    "front": "When calling `help()` on a method, why should you omit its parentheses, as in `help(list.append)`?",
+    "back": "So Python receives the method object itself rather than running it.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "993b0a459b8b",
+    "front": "In a Jupyter markdown cell, how do you make a level-1 and a level-2 heading?",
+    "back": "`# text` for level 1 and `## text` for level 2.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "ba4eba747ce6",
+    "front": "In markdown, how do you make text italic and bold?",
+    "back": "Wrap it in single asterisks `*text*` for italic and double asterisks `**text**` for bold.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "ce99a222bc97",
+    "front": "What is a raw cell in a Jupyter notebook?",
+    "back": "A cell of plain text that is neither rendered nor executed, with no input-output distinction.",
+    "course": "COM6001",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6001::Lecture_2",
+    "deck": "COM6001_Lecture_2"
+  },
+  {
+    "id": "954960fb7842",
+    "front": "How does Python group statements into a block (e.g., inside an `if`)?",
+    "back": "The block follows a colon and its statements share the same indentation level; four spaces is the recommended practice.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "a34e505c925e",
+    "front": "What is the difference between `elif` and `else`?",
+    "back": "`elif` takes a condition ('if something occurs'); `else` takes no condition and covers all other cases.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "0174da637c44",
+    "front": "What happens if you write an `elif` branch after an `else` branch?",
+    "back": "A `SyntaxError`, because `else` must be the last branch.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "1e262b808485",
+    "front": "What is the difference between `weather = 'sunny'` and `weather == 'sunny'`?",
+    "back": "`=` is an assignment; `==` is a comparison (assertion) that returns `True` or `False`.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "4444b4f416c2",
+    "front": "What is the syntax of a conditional expression (ternary operator)?",
+    "back": "`value_if_true if condition else value_if_false`",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "cde9ce23723d",
+    "front": "What does iterating directly over a dictionary (`for k in d:`) give you?",
+    "back": "The keys.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "da619a613ed7",
+    "front": "What does iterating over `d.items()` give you?",
+    "back": "A `(key, value)` tuple for each pair.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "ca20377bd83d",
+    "front": "Since which Python version do dictionaries preserve insertion order?",
+    "back": "Python 3.7.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "70330f14f343",
+    "front": "What are the three call forms of `range()`, and is `stop` included?",
+    "back": "`range(stop)`, `range(start, stop)`, `range(start, stop, step)`; stop is excluded.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "0da71bc2c7f3",
+    "front": "Does `range()` return a list?",
+    "back": "No. It returns an iterable range object; wrap it in `list(range(...))` to get a list.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "0b45b7da9ad7",
+    "front": "What must you do yourself inside a `while` loop that a `for` loop does for you?",
+    "back": "Increment/decrement the loop variable; otherwise the condition never changes and the loop never ends.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "f5546c05d02b",
+    "front": "What do `10 / 2`, `11 // 3` and `11 % 3` evaluate to?",
+    "back": "`5.0` (true division always returns a float), `3` (floor division), and `2` (remainder).",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "82a63dd86c35",
+    "front": "Which operator raises a number to a power in Python?",
+    "back": "`**`, e.g., `2 ** 3` gives `8`.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "d4481444a8ba",
+    "front": "What do the logical operators `and`, `or` and `not` return?",
+    "back": "`and`: True only if both are true; `or`: True if at least one is true; `not`: reverses the result.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "06562ed5d30b",
+    "front": "Why is `or` recommended over `|` when combining comparisons like `a%3==0` and `a%2==0`?",
+    "back": "`|` binds more tightly than `==`, so without brackets it is applied before the comparisons and gives a wrong result.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "0920ff295aa5",
+    "front": "What error does `len(1)` raise and why?",
+    "back": "`TypeError: object of type 'int' has no len()`, because an integer is not a sequence.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "538203eb8d05",
+    "front": "Why define a function instead of copying and pasting the same block of code?",
+    "back": "Copy-paste is error-prone and every copy must be changed separately; a function is changed in one place and makes code cleaner.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "14ea7ff84953",
+    "front": "How do positional and keyword arguments differ when calling a function?",
+    "back": "Positional arguments are matched by order; keyword arguments (`a=1`) are matched by name and can be given in any order.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "eee6a89fab9f",
+    "front": "When is a parameter's default value used?",
+    "back": "When the caller does not supply a value for that parameter, e.g., `def f(a=5)` then `f()`.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "9cf940c5a81a",
+    "front": "How are arguments passed to a `*args` parameter collected?",
+    "back": "Into a tuple.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "51098aad4701",
+    "front": "What happens when a `return` statement executes?",
+    "back": "The function terminates immediately and sends the value back to the caller; any later statements in it are not run.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "d3ceb1fe171b",
+    "front": "Why does `print(my_list.append(0))` print `None`?",
+    "back": "`append()` modifies the list in place and has no return value, so it returns `None`.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "461b165c8324",
+    "front": "If `a = 3` and a function runs `a = a + 1` on its parameter `a`, what is `a` outside the function afterwards?",
+    "back": "Still 3: rebinding an immutable integer parameter inside a function does not affect the variable outside.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "ad5594bd8602",
+    "front": "What is recursion, and what must every recursive function have?",
+    "back": "A function calling itself on smaller subproblems; it needs a base case to stop the recursion.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "f25e3f2e7c2f",
+    "front": "What are the drawbacks of recursion compared with iteration?",
+    "back": "Higher memory usage and slower performance, especially for large inputs.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "ba0030b7409d",
+    "front": "Name four debugging techniques covered in the lecture.",
+    "back": "Print statements, exception handling (`try-except`), logging, and IDE/command-line debuggers.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "fc5b5c1d5b15",
+    "front": "How do you turn on debug-level messages with Python's `logging` module?",
+    "back": "`logging.basicConfig(level=logging.DEBUG)`, then emit messages with `logging.debug(...)`.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "2127d39a8e99",
+    "front": "What is a breakpoint?",
+    "back": "A line marked in the debugger where execution pauses so you can inspect variable values.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "4d5ab2697596",
+    "front": "In a debugger, how do 'step over', 'step into' and 'step out' differ?",
+    "back": "Step over runs the current line without entering calls; step into enters a called function; step out finishes the current function and returns to the caller.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "0bcbe834fcf8",
+    "front": "In the lecture's binary search, how is the middle index computed?",
+    "back": "`mid = left + (right - left) // 2`",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
+  },
+  {
+    "id": "2abdf33e47c5",
+    "front": "How are lambda functions mainly meant to be used, rather than on their own?",
+    "back": "Embedded in another function, as an input parameter (e.g., a sort `key`) or as a return value.",
+    "course": "COM6001",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6001::Lecture_3",
+    "deck": "COM6001_Lecture_3"
   },
   {
     "id": "ce5e7ce93f36",
@@ -583,6 +1313,246 @@
     "id": "99de156559e5",
     "front": "What is the complete `DataFrame.rename()` call using a lambda function to convert all column names in `df` to lowercase?",
     "back": "`df.rename(mapper=lambda x: x.lower(), axis='columns')`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "a5944f7d81ca",
+    "front": "In Python, what is a class?",
+    "back": "A blueprint for creating objects, defining the attributes and methods those objects will have.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "12735e494f10",
+    "front": "How is a class's constructor named, and how can you inspect the Series constructor?",
+    "back": "It has the same name as the class (e.g., `pd.Series()`); inspect it with `pd.Series.__init__`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "739c286c9f83",
+    "front": "Using the lecture's analogy, how do an object, an attribute and a method differ?",
+    "back": "An object is a noun, an attribute is an adjective describing it (e.g., `df.shape`), and a method is a verb, an action it performs (e.g., `df.head()`).",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "7ad456bed5df",
+    "front": "Can a pandas Series have duplicate index labels, and what does selecting such a label return?",
+    "back": "Yes; `s['Mon']` returns a Series containing every entry labelled 'Mon'.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "e9754e3631a7",
+    "front": "Why does `s[2]` on a label-indexed Series raise a FutureWarning, and what should be used instead?",
+    "back": "Treating `[]` keys as positions is deprecated (integer keys will become labels); use `s.iloc[2]` for position.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "e00578b6bd9e",
+    "front": "What happens to an `int64` Series's dtype when one element is set to `np.nan`?",
+    "back": "It becomes `float64`, because NaN is a floating-point value.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "b21b110f5214",
+    "front": "Do Series aggregations such as `s.mean()` include NaN values?",
+    "back": "No, NaN values are skipped by default.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "e2b1c09dc60f",
+    "front": "In `pd.DataFrame([[1, 2], [3, 4]])`, what does each inner list become?",
+    "back": "A row of the DataFrame.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "a2b6cc3cd16d",
+    "front": "Which of `pd.DataFrame()`'s arguments are required?",
+    "back": "None: all arguments default to `None`, so `pd.DataFrame()` creates an empty DataFrame.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "56df1d0d60f5",
+    "front": "How many rows do `df.head()` and `df.tail()` return by default?",
+    "back": "5 rows each — pass `n`, e.g. `df.head(10)`, to change it.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "2896bbbda24a",
+    "front": "Which file formats did the lecture classify as structured and which as semi-structured?",
+    "back": "Structured: CSV and spreadsheets; semi-structured: JSON and XML.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "731919531fe4",
+    "front": "What are the `index_col`, `usecols` and `parse_dates` parameters of `pd.read_csv()` for?",
+    "back": "`index_col` sets column(s) as the index, `usecols` loads only a subset of columns, and `parse_dates` parses data as datetime.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "f3436e109586",
+    "front": "What is the default `sep` (delimiter) of `pd.read_csv()`?",
+    "back": "A comma.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "f71239157a92",
+    "front": "What does the relative path `'./'` refer to when reading a file?",
+    "back": "The current folder, i.e., where the notebook is.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "8f6d81271c41",
+    "front": "Why should you only load pickle files from trusted sources?",
+    "back": "Pickle files are binary and cannot be previewed before loading, so you cannot check what you are opening.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "d9954ee7958e",
+    "front": "Which extra package does `pd.read_excel()` need for `.xlsx` files if it reports it missing?",
+    "back": "`openpyxl` (install it with `%pip install openpyxl`).",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "2a652a33e86e",
+    "front": "How can you force column dtypes when loading a file with `read_csv()` or `read_excel()`?",
+    "back": "Pass a dict mapping column names to dtypes, e.g., `dtype={'name': 'string', 'Gender': 'category'}`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "d063899daa69",
+    "front": "Which pandas dtype does a column of strings or mixed types get by default?",
+    "back": "`object`",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "a33791f33a3b",
+    "front": "What are the default `axis` and `join` of `pd.concat()`?",
+    "back": "`axis=0` (stack rows) and `join='outer'`.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "7f9a7b2ca136",
+    "front": "What does `pd.merge(left, right)` join on when `on` is omitted?",
+    "back": "The intersection of the column names shared by both DataFrames.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "f534578731de",
+    "front": "What is the default `how` of `pd.merge()`?",
+    "back": "`'inner'`: only the intersection of keys from both frames is kept.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "8e2921ea5d4b",
+    "front": "In `pd.merge(..., how='left')`, which keys are kept?",
+    "back": "Only the keys from the left frame (like a SQL left outer join); unmatched right-side fields become NaN.",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "d0e9c0738a9c",
+    "front": "What suffixes does `pd.merge()` add to overlapping column names that are not join keys?",
+    "back": "`_x` for the left frame and `_y` for the right frame (default `suffixes=('_x', '_y')`).",
+    "course": "COM6001",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6001::Lecture_4",
+    "deck": "COM6001_Lecture_4"
+  },
+  {
+    "id": "bcd8a195272a",
+    "front": "Besides `.str`, which other pandas accessors follow the same pattern?",
+    "back": "The datetime accessor `.dt` and the categorical accessor `.cat`.",
     "course": "COM6001",
     "unit": "Lecture_4",
     "topic": "",
@@ -790,6 +1760,176 @@
     "deck": "COM6001_Lecture_05"
   },
   {
+    "id": "6210b7023d40",
+    "front": "What does the `is` operator check when evaluating `df is df_ref`?",
+    "back": "Whether both names refer to the very same object in memory (identity), not merely whether their values are equal.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "28d4e887ccf9",
+    "front": "Which built-in Python function returns an object's memory identity, used to show that `df_ref = df` creates no new object?",
+    "back": "`id()`: `id(df)` and `id(df_ref)` print the same number, while `id(df.copy())` prints a different one.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "794332db3bd7",
+    "front": "Why does `copy.deepcopy(1)` return an object with the same `id()` as the original integer `1`?",
+    "back": "Python interns small integers in the range [-5, 256]: one shared object exists per value, so no separate copy is ever created.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "fb4cf14020ce",
+    "front": "Since `.loc` labels cannot be incremented (`hero.loc['Superman'+1]` fails), how do you get the row immediately after `'Superman'`?",
+    "back": "Label-slice from Superman, then take position 1: `hero.loc['Superman':].iloc[1]`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "4d1a141d8063",
+    "front": "Why did `hero[~hero['race'].isin(['Human ', 'Mutant'])]` still return rows whose race is Human?",
+    "back": "The list item `'Human '` has a trailing space, so it never matches `'Human'`; `isin()` only matches exact values.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "cf92a52002ee",
+    "front": "Which columns does the column indexer `2:10:2` select in `hero.iloc[1:4, 2:10:2]`?",
+    "back": "Every second column from position 2 up to (but excluding) 10: positions 2, 4, 6 and 8.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "3b3a5505a700",
+    "front": "Besides Pandas dtypes such as `int64`, what other kind of type names does `select_dtypes(include=...)` accept?",
+    "back": "General Python types such as `int`, `float`, `str` and `bool` (e.g. `include=['int']` works like `include=['int64']`), plus broad groups like `'number'`.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "a7db531f8e01",
+    "front": "Why must `hero.reset_index()` be written as `hero = hero.reset_index()` to take effect?",
+    "back": "`reset_index()` returns a new DataFrame and leaves `hero` unchanged unless the result is reassigned (or `inplace=True` is used).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "f05c136b7446",
+    "front": "What does `inplace=True` do in `hero.drop(columns=['Unnamed: 0'], inplace=True)`?",
+    "back": "It modifies `hero` directly (the method returns `None`) instead of returning a modified copy.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "12ee28b4db9b",
+    "front": "Which cells are changed by `df.iloc[0:2, 0:2] = 999`?",
+    "back": "The four cells in rows at positions 0–1 and columns at positions 0–1 (stop positions excluded).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "e4d47d8f4aa5",
+    "front": "How do you set every value in the first row of `df` to 1000 using positions?",
+    "back": "`df.iloc[0, :] = 1000`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "4ce358768198",
+    "front": "How do you sort `hero` by `'race'` ascending and, within each race, by `'height'` descending?",
+    "back": "`hero.sort_values(by=['race', 'height'], ascending=[True, False])`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "8d3539823286",
+    "front": "`df.nlargest(n, 'col')` gives the same rows as which `sort_values` expression (but runs faster)?",
+    "back": "`df.sort_values('col', ascending=False).head(n)`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "50784cdb05e6",
+    "front": "What happens if you call `nlargest()` on a column of `object` or `category` dtype?",
+    "back": "It raises a `TypeError`; `nlargest`/`nsmallest` only work on orderable numeric columns.",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "388c97c0c486",
+    "front": "How do you return the 6 heroes with the smallest positive height, keeping all ties at the boundary?",
+    "back": "`hero[hero['height'] > 0].nsmallest(6, 'height', keep='all')`",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "beaa696e6ff3",
+    "front": "How do you add a `'BMI'` column when `height` is in cm and `weight` in kg?",
+    "back": "`hero['BMI'] = hero['weight'] / (hero['height'] / 100) ** 2` (rescale cm to metres first).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
+    "id": "e8caecb4fe6b",
+    "front": "Which one-line expression returns a single `True` only if two Series `col1` and `col2` are identical element-wise?",
+    "back": "`(col1 == col2).all()` (an integer alternative is `(col1 != col2).sum()`, which is 0 when they are identical).",
+    "course": "COM6001",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6001::Lecture_5",
+    "deck": "COM6001_Lecture_05"
+  },
+  {
     "id": "8e72591589b9",
     "front": "How can DataFrame.info() be used to determine the exact number of missing values in a specific column?",
     "back": "Subtract the column's non-null row count reported by info() from the total row count of the DataFrame.",
@@ -958,6 +2098,536 @@
     "topic": "",
     "tag": "COM6001::Lecture_6",
     "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "d001d3473660",
+    "front": "Which `DataFrame.drop_duplicates()` parameters choose which occurrence survives and renumber the rows from 0?",
+    "back": "`keep=` (`'first'`, `'last'` or `False` to keep none) and `ignore_index=True`.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "3e02ef53a0ba",
+    "front": "How do you find duplicated passengers who have different `PassengerId`s but identical values in every other column?",
+    "back": "Exclude the ID from the comparison, e.g. `df.duplicated(subset=df.columns.drop('PassengerId'))`.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "803bbd03d392",
+    "front": "Name three strings that `pd.read_csv()` recognises as NaN by default.",
+    "back": "Any of: an empty field, `'NA'`, `'#N/A'`, `'#N/A N/A'`, `'null'` (custom placeholders like -999 need `na_values`).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "55cc3c4702d0",
+    "front": "Why can't you count missing values with `(s == np.nan).sum()`?",
+    "back": "NaN never equals anything, including itself (`np.nan == np.nan` is False), so the sum is always 0; use `s.isna()` instead.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "22bef3eb3891",
+    "front": "What are three common causes of missing data?",
+    "back": "Typing errors when creating the dataset; hardware/sensor malfunctions or communication errors; values missing by the nature of the data (e.g. not applicable).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "a9e429f197e0",
+    "front": "What are the three general strategies for handling missing values?",
+    "back": "Drop the row/column (many missing), fill it with a constant, statistical or predicted value (few missing), or keep it and use methods that accept missing values.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "62bca4a7326f",
+    "front": "Which `dropna()` call drops a row only if every value in it is missing?",
+    "back": "`df.dropna(how='all')`, equivalently `df.dropna(thresh=1)` (keep rows with at least one value).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "3241f19f99de",
+    "front": "How can you measure how much information a `dropna()` removed?",
+    "back": "Compare `nunique()` before and after (e.g. 217 countries shrink to 115) or the drop in `shape[0]` as a percentage of the original rows.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "e453baded4bb",
+    "front": "Does filling a numeric column's missing values with its mean change the column's mean?",
+    "back": "No. Inserting values equal to the mean leaves the mean unchanged, though it pulls the median toward the mean and shrinks the spread.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "e6332d66611e",
+    "front": "What does a column whose median is smaller than its mean suggest about its distribution?",
+    "back": "It is right-skewed (a long tail of large values pulls the mean up).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "c180d22cd7a9",
+    "front": "Which four statistics does `describe()` return for a non-numeric (categorical) column?",
+    "back": "`count`, `unique`, `top` (most frequent value) and `freq` (its count).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "048d3fe86f38",
+    "front": "When several categories tie for the highest count, how do `describe()` and `mode()` differ?",
+    "back": "`describe()` reports one of them arbitrarily as `top`, while `mode()` returns all of the tied values.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "a713748bfe5f",
+    "front": "What is the default `strategy` of scikit-learn's `SimpleImputer`, and what are the alternatives?",
+    "back": "`'mean'` by default; alternatives are `'median'`, `'most_frequent'` and `'constant'` (with `fill_value`).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "9eec92e609e3",
+    "front": "Why do integer columns such as `year` become `float64` after `wdi[numeric_cols] = imputer.fit_transform(wdi[numeric_cols])`?",
+    "back": "`fit_transform()` returns a single float NumPy array for all columns, so the assigned values are floats.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "715b149ec029",
+    "front": "Which extra import must run before `from sklearn.impute import IterativeImputer` works?",
+    "back": "`from sklearn.experimental import enable_iterative_imputer` (the estimator is still experimental).",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "f23df61c37fd",
+    "front": "What estimator does `IterativeImputer` use by default?",
+    "back": "`BayesianRidge()`, a linear regression model with Bayesian regularisation.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "8e89acdba611",
+    "front": "How does scikit-learn's `KNNImputer` estimate a missing value?",
+    "back": "From the values of the k nearest neighbouring samples, i.e. the rows most similar on the other features.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "9aaae1adfd62",
+    "front": "Why are categorical columns imputed with `SimpleImputer(strategy='most_frequent')` rather than `IterativeImputer`?",
+    "back": "Regression-based imputation predicts numbers, which is meaningless for categories, so the most frequent value is used instead.",
+    "course": "COM6001",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6001::Lecture_6",
+    "deck": "COM6001_Lecture_06"
+  },
+  {
+    "id": "ce062085dd49",
+    "front": "What is an outlier?",
+    "back": "An unusual observation that is distinct from most of the others; it may not reflect the true phenomenon and can mislead analysis.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "05e047cb5ce8",
+    "front": "What are three possible causes of outliers?",
+    "back": "Rare but real cases (which you may want to keep), measurement or data-entry errors, and data mixed up from different sources or categories.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "e919b9c02952",
+    "front": "What methods can be used to find potential outliers in numerical data?",
+    "back": "Summary statistics (min, max, mean, percentiles), the interquartile range (IQR) method, and visualisation such as histograms and box plots.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "c58e8553657f",
+    "front": "What does the X% percentile of a column mean?",
+    "back": "With the data sorted from smallest to largest, it is the value at or below which X% of the data falls.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "38c7351249f7",
+    "front": "Which percentiles correspond to Q1, Q2 (median) and Q3?",
+    "back": "The 25th, 50th and 75th percentiles respectively.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "4c403a3d992c",
+    "front": "How do you get the 33rd percentile of a Series `s`, and what range must the argument be in?",
+    "back": "`s.quantile(0.33)`; the argument is a fraction in [0, 1].",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "d3e5fc04e730",
+    "front": "What is the interquartile range (IQR)?",
+    "back": "$IQR = Q_3 - Q_1$, the spread of the middle 50% of the data.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "4d0b1d2c4317",
+    "front": "What are the IQR-based upper and lower bounds for outliers?",
+    "back": "Upper bound $Q_3 + 1.5\\,IQR$ and lower bound $Q_1 - 1.5\\,IQR$; values beyond them are potential outliers.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "d19eb0e461f3",
+    "front": "What does the normalised distance `(des.loc['max'] - des.loc['75%']) / des.loc['75%']` on a `describe()` table flag?",
+    "back": "Columns whose maximum lies far above the third quartile relative to its size, i.e. columns likely to contain large outliers.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "1df5ce231f55",
+    "front": "Which parameters of `df.hist()` set the number of equal-width bins and the plot size?",
+    "back": "`bins=N` and `figsize=(width, height)`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "9357b5941607",
+    "front": "Which pandas call draws a box plot of one column to visualise IQR-based outliers?",
+    "back": "`df.boxplot(column='col_name')`",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "fe6064a4506e",
+    "front": "What is capping, as a way to treat outliers?",
+    "back": "Limiting extreme values to a threshold (e.g. the 99th percentile) so they have less impact, without removing the data points.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "c6db306d822d",
+    "front": "What one statement caps the values of `'atms_per_100000'` above its 99th percentile `p99`?",
+    "back": "`wdi.loc[wdi['atms_per_100000'] > p99, 'atms_per_100000'] = p99`",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "4fbefd2851f3",
+    "front": "When should you summarise a column with the mean and standard deviation rather than the five-number summary?",
+    "back": "When there are no outliers and the data are normally distributed; for skewed data or outliers, use the five-number summary and report the outliers.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "e30e754f4b66",
+    "front": "Which statistical test (beyond the course scope) checks whether data are normally distributed?",
+    "back": "The Kolmogorov–Smirnov test (normal quantile plots are the graphical counterpart).",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "e0de4ef262cf",
+    "front": "Which `datetime` class represents a duration, such as the result of subtracting two datetimes?",
+    "back": "`datetime.timedelta`",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "3ecde27d2d81",
+    "front": "How do you express a `datetime.timedelta` as a number of days?",
+    "back": "Divide it by `datetime.timedelta(days=1)`, which yields a float.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "5e5e0cbd23fe",
+    "front": "What are the two ways to turn a date column read as strings into `datetime64` in pandas?",
+    "back": "Parse it while loading with `pd.read_csv(..., parse_dates=['col'])`, or convert after loading with `df['col'] = pd.to_datetime(df['col'])`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "a318ef6b78f5",
+    "front": "What type is each element of a `datetime64[ns]` column?",
+    "back": "A pandas `Timestamp` object.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "a0ce961649e9",
+    "front": "How do `.dt.dayofweek` and `.dt.day_name()` differ?",
+    "back": "`.dt.dayofweek` returns an integer (Monday = 0 … Sunday = 6); `.dt.day_name()` returns the weekday name as a string.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "62edaf5d9703",
+    "front": "What is the difference between dividing a `Timedelta` by another `Timedelta` and by a plain number?",
+    "back": "`Timedelta / Timedelta` gives a float (e.g. number of weeks), while `Timedelta / number` gives another `Timedelta`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "7d59db9e699d",
+    "front": "How do you compute the time until 1 Jan 2022 for every row of a datetime column `col`?",
+    "back": "`pd.Timestamp('2022-01-01') - df['col']`, which gives a `timedelta64` Series (reverse the order for time since).",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "1e7747fd43aa",
+    "front": "What is the difference between nominal and ordinal categorical features?",
+    "back": "Nominal categories have no rank (red, green, blue); ordinal categories have a natural order (low, mid, high).",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "63aee8d83908",
+    "front": "What does one-hot encoding do, and which kind of categorical feature is it for?",
+    "back": "It creates one binary (0/1) column per category; it suits nominal features, where no order exists.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "c50f70bbf8a1",
+    "front": "By default, which columns does `pd.get_dummies(df)` encode and how are the new columns named?",
+    "back": "All non-numeric columns, each replaced by Boolean columns named `column_value` (e.g. `color_red`); numeric columns are left as they are.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "1e954863a2eb",
+    "front": "In what order does a default `OrdinalEncoder()` assign integers to categories?",
+    "back": "Sorted (alphabetical) order of the categories seen in `fit()`, starting at 0.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "3498dbec6e18",
+    "front": "How do you make an `OrdinalEncoder` encode a size column as S = 0, M = 1, L = 2?",
+    "back": "Pass the order explicitly: `OrdinalEncoder(categories=[['S', 'M', 'L']])`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "163386cc714a",
+    "front": "What must the sample data passed to `OrdinalEncoder.fit()` contain?",
+    "back": "Every unique value of each column to be encoded; otherwise unseen categories cannot be transformed.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "d0bbc17e7362",
+    "front": "How should cyclic categories such as compass directions be encoded?",
+    "back": "With sine and cosine transformations, which preserve their cyclic nature.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "b63665db806e",
+    "front": "What is binning?",
+    "back": "Transforming a numerical feature into categories by dividing its values into groups (e.g. height into short, medium, tall).",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "fd674b699aa2",
+    "front": "How do `pd.cut()` and `pd.qcut()` differ?",
+    "back": "`cut()` splits the value range into intervals (equal-width or custom edges); `qcut()` splits by quantiles so each group holds roughly the same number of rows.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "f17edd1ec132",
+    "front": "What does `retbins=True` add to the output of `pd.cut()` or `pd.qcut()`?",
+    "back": "It also returns the array of bin edges used, so you unpack two values: `labels, bins = pd.cut(..., retbins=True)`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "5b99f866a67a",
+    "front": "What happens to values that fall outside all the custom edges given to `pd.cut(..., bins=[...])`?",
+    "back": "They are assigned NaN; check with `value_counts(dropna=False)`.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "f742883d19b4",
+    "front": "How many labels must be passed to `pd.cut()` with a list of bin edges?",
+    "back": "One fewer than the number of edges, i.e. one label per interval.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
+  },
+  {
+    "id": "d2d7f8186758",
+    "front": "Why can `pd.qcut(s, q=4)` still produce groups with unequal counts?",
+    "back": "Repeated values at the quantile boundaries cannot be split between groups.",
+    "course": "COM6001",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6001::Lecture_7",
+    "deck": "COM6001_Lecture_07"
   },
   {
     "id": "7e4e6b9457df",
@@ -1510,6 +3180,96 @@
     "deck": "COM6002_Lecture_1"
   },
   {
+    "id": "0dc336b64ecb",
+    "front": "What is the main advantage of file-based data management (e.g., keeping data in a CSV file)?",
+    "back": "Convenience: it needs minimal coding effort.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "9c3c85243ce9",
+    "front": "Why is data isolation and security a weakness of file-based data management?",
+    "back": "It is hard to enforce fine-grained access control across many custom files.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "2048ea71c56a",
+    "front": "Besides missing, duplicated and ambiguous data, which two further data quality concerns threaten veracity?",
+    "back": "Outdated data and inconsistent data.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "1905b756187a",
+    "front": "Why does high-velocity data often have to be captured in real time rather than downloaded later?",
+    "back": "The data source does not always keep all the data for you to download later.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "e4b421c3b491",
+    "front": "Name three types of NoSQL database.",
+    "back": "Graph database, key-value store, and document store.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "afb2dace868c",
+    "front": "What problem arises if heterogeneous MongoDB-style records (e.g., BTC with Sentiment, ETH with BTC Correlation) are forced into one relational table?",
+    "back": "Each record fills only some columns, so the table becomes wide and sparse with many NULL values.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "9a3a52652dc2",
+    "front": "What are the two main challenges of scaling out (horizontal scaling) a database?",
+    "back": "Handling the failure of one of the machines, and coordinating two machines working on the same data record.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "6634bad52f0e",
+    "front": "Snowflake is an example of which data pipeline layer?",
+    "back": "The Serving Layer.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
+    "id": "4ef134efd758",
+    "front": "What accuracy did the initial Google Flu Trends paper claim against CDC data?",
+    "back": "97% accurate, before it later over-predicted doctor visits by a factor of two in 2012/2013.",
+    "course": "COM6002",
+    "unit": "Lecture_1",
+    "topic": "",
+    "tag": "COM6002::Lecture_1",
+    "deck": "COM6002_Lecture_1"
+  },
+  {
     "id": "d3ac4ff7fc4d",
     "front": "What is the primary intended purpose of an HTTP GET request?",
     "back": "An HTTP GET request is intended to retrieve data from a server.",
@@ -1700,6 +3460,166 @@
     "deck": "COM6002_Lecture_2"
   },
   {
+    "id": "f9dd26c1c6c9",
+    "front": "What is the difference between internal and external data sources?",
+    "back": "Internal data is captured by an organisation's own systems (e.g., a Point-of-Sale system); external data comes from third-party APIs, web scraping or partners' databases.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "f41096d6dcca",
+    "front": "What does the acronym CRUD stand for?",
+    "back": "Create, Read, Update, Delete: the basic database operations used to capture internal data.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "02c23efbb70f",
+    "front": "Why is a RESTful API described as stateless?",
+    "back": "Each request is independent: one request receives one complete response.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "ce2ad08801b3",
+    "front": "Why is a streaming API described as stateful?",
+    "back": "Messages are usually deltas (changes), so the client must maintain state built from previous messages.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "58111966c574",
+    "front": "Name three API types other than RESTful and streaming.",
+    "back": "FIX (Financial Information eXchange), SOAP, and GraphQL.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "2eb520191517",
+    "front": "What are the three main concerns when relying on a third-party data API?",
+    "back": "Rate limiting, data availability (not all data is offered via the API), and data quality.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "b2e8ee76eb8d",
+    "front": "Is HTTP POST more secure than GET because it encrypts the request body?",
+    "back": "No. Encryption depends on HTTPS, which both GET and POST can use; POST's advantage is only that parameters are not in the logged URL.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "b8017b3e4ef5",
+    "front": "Where should an API key usually be placed in an HTTP request?",
+    "back": "In the request headers, as specified by the API documentation.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "57e878ec5150",
+    "front": "In a Pub/Sub system, does a producer know how many consumers subscribe to its topic?",
+    "back": "No. Producers push event records to a topic without knowing how many consumers have subscribed.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "4e93220f990e",
+    "front": "How many parties are involved in Pub/Sub versus a Webhook?",
+    "back": "Pub/Sub has three (producer, broker, consumer); a Webhook has two (source and destination).",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "81b2af56351e",
+    "front": "Which delivery models does Pub/Sub support compared with a Webhook?",
+    "back": "Pub/Sub supports pull or push; a Webhook is push-only.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "b77b3cf3c361",
+    "front": "In an HTML page, how are images provided?",
+    "back": "HTML is a text file that uses tags to structure content; image data are provided in external files.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "72cda075e726",
+    "front": "How does a crawler read all pages of one website?",
+    "back": "It extracts links from each page, visits those on the same domain, and avoids visiting the same link twice (e.g., with Scrapy).",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "08c262665f91",
+    "front": "What are the trade-offs of converting a whole webpage to plain text (e.g., with Beautiful Soup)?",
+    "back": "It is generic but yields unstructured data of limited clarity; it is often used for the web-browsing function of text-only LLMs.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "1ea31c286b15",
+    "front": "What mechanism do Selenium and Playwright rely on to control a browser?",
+    "back": "Browsers' native automation capabilities (built for automated testing), exposed through a Python API.",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
+    "id": "5360cefe198b",
+    "front": "How can CAPTCHA solving be framed technically?",
+    "back": "As a machine learning problem (e.g., image or audio classification).",
+    "course": "COM6002",
+    "unit": "Lecture_2",
+    "topic": "",
+    "tag": "COM6002::Lecture_2",
+    "deck": "COM6002_Lecture_2"
+  },
+  {
     "id": "035e4abe688d",
     "front": "What does the Atomicity property guarantee in database transactions?",
     "back": "It guarantees that a transaction executes in an all-or-nothing manner, where either all operations complete or none take effect.",
@@ -1863,6 +3783,236 @@
     "id": "909d35750fda",
     "front": "What primary operational purpose does the Two-Phase Locking (2PL) protocol fulfill?",
     "back": "It prevents shared data corruption by ensuring serializable execution among concurrent transactions.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "b196c9275333",
+    "front": "In relational database terminology, what is a table called?",
+    "back": "A relation.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "8eaea6540fd7",
+    "front": "What is the Big O cost of finding any ONE student in a class of $n$ students?",
+    "back": "$O(1)$: constant time regardless of $n$.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "86a40b554f1b",
+    "front": "What are the best-case, worst-case and average-case costs of a linear search for one name in a list?",
+    "back": "Best $O(1)$, worst $O(n)$, average $O(n)$ (half the list on average).",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "e7fa6e9524a7",
+    "front": "What does $\\lg n$ denote in the lecture's Big O notation?",
+    "back": "The binary logarithm (base 2); $\\log$ alone denotes base 10.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "4d3f5f0abb6a",
+    "front": "In a B tree search, how do we know a value does not exist?",
+    "back": "The search reaches the leaf level without finding it.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "b99096390b2c",
+    "front": "In a B+ tree, what is the rule for values relative to a separator?",
+    "back": "Values on the left are smaller; values on the right are larger than or equal to the separator.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "67d0aadc7f64",
+    "front": "Must a separator value in a B+ tree non-leaf node exist in the database?",
+    "back": "No. A separator only guides the search, so a value like 20 can be a separator even if no record has 20.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "24a16b1d1f84",
+    "front": "In a B+ tree range query, when does the scan of sibling leaves stop?",
+    "back": "When the next sibling's smallest value already exceeds the upper bound of the range.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "43dd7738570d",
+    "front": "What is the update cost of a B / B+ tree index?",
+    "back": "$O(\\lg n)$, the same order as its search cost.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "94f9d562d935",
+    "front": "What does it mean that a B / B+ tree is balanced?",
+    "back": "The path length from the root to every leaf node is the same.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "b80701b32e03",
+    "front": "Can one table have more than one index?",
+    "back": "Yes. A table can have multiple indices, e.g., one on module code and one on grade.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "557a1f3ad386",
+    "front": "Why is the space overhead of an index smaller than the records themselves?",
+    "back": "The index stores only pointers to records; there is always only one copy of the record contents.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "a7266077a62d",
+    "front": "How does an RDBMS query optimizer choose a query plan?",
+    "back": "It keeps statistics about the database (e.g., number of records) and automatically picks the estimated best plan.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "c13cff6d1a71",
+    "front": "What are the two main challenges in handling database transactions?",
+    "back": "Concurrency control (many users on the same data) and recovery (restoring contents after failure).",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "828c55fdacfd",
+    "front": "Why does an ATM wait for an \"OK\" acknowledgement from the central database after an update?",
+    "back": "The network may drop a message; if no OK arrives in time, the ATM resends the message.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "c0ebac7feea5",
+    "front": "What defines a correct concurrent execution of transactions?",
+    "back": "One equivalent to a serial execution, where transactions run one by one; any serial order is deemed correct.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "54733e6527ff",
+    "front": "Name two concurrency control methods other than two-phase locking.",
+    "back": "Timestamp ordering and Multi-Version Concurrency Control (MVCC).",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "0e5650c8698c",
+    "front": "Does a transaction holding a writelock on $x$ also need a readlock on $x$?",
+    "back": "No. A writelock is an upgraded readlock, so it also permits reading.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "7ac2da8f26d5",
+    "front": "What is the core principle of log-based recovery?",
+    "back": "Save to the log before writing to the database system.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "5bd5ef6cbe73",
+    "front": "What three kinds of entries must a recovery log contain?",
+    "back": "A record of each transaction's start, a record of its commit, and the update contents.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "5ff1e0577165",
+    "front": "How does a blocking checkpoint work?",
+    "back": "All database updates are stopped, a snapshot is taken, and recovery only scans back to the closest checkpoint.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "f1c0806e1097",
+    "front": "Besides a snapshot, what does a fuzzy checkpoint record?",
+    "back": "The list of transactions that are running at the time of the checkpoint.",
+    "course": "COM6002",
+    "unit": "Lecture_3",
+    "topic": "",
+    "tag": "COM6002::Lecture_3",
+    "deck": "COM6002_Lecture_3"
+  },
+  {
+    "id": "391eb1279620",
+    "front": "What is the worst-case recovery cost with fuzzy checkpoints?",
+    "back": "$O(n)$: scanning backwards to the first log entry, which only happens with a very short log or an unreasonably long transaction.",
     "course": "COM6002",
     "unit": "Lecture_3",
     "topic": "",
@@ -2090,6 +4240,186 @@
     "deck": "COM6002_Lecture_04"
   },
   {
+    "id": "7bdf4d9ccd3a",
+    "front": "Which SQL sub-language does `INSERT INTO` belong to?",
+    "back": "DML (Data Manipulation Language), which adds and removes data.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "8e8b121f0805",
+    "front": "Which SQL sub-language covers granting access to users?",
+    "back": "DCL (Data Control Language).",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "8e14748485f8",
+    "front": "Are SQL command keywords case-sensitive?",
+    "back": "No. Commands are case-insensitive, although usernames and passwords are case-sensitive.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "c4587c343e13",
+    "front": "What does `DECIMAL(a, b)` declare?",
+    "back": "A decimal number with $a$ total digits, $b$ of them after the decimal point, e.g., `DECIMAL(5, 2)` holds 347.88.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "a14b7ed613bd",
+    "front": "What is the difference between `CHAR(n)` and `VARCHAR(n)`?",
+    "back": "`CHAR(n)` is fixed-length text of exactly $n$ characters; `VARCHAR(n)` is variable-length text of at most $n$ characters.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "b0cfc030b4e6",
+    "front": "Which SQL data type holds large binary data such as images?",
+    "back": "`BLOB`.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "249df933fcb4",
+    "front": "How does `NULL` differ from an empty string `''`?",
+    "back": "`NULL` means the value does not exist or is unknown; `''` means there is a value and we know it is empty.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "d5b1a321fae9",
+    "front": "What SQL command creates an index on the Name and Year columns of Student?",
+    "back": "`CREATE INDEX idx ON Student (Name, Year);`",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "1c986f4f715d",
+    "front": "How do you refer to an attribute when two joined tables share the same column name?",
+    "back": "Use `[table name].[attribute name]`, e.g., `Student.StudentID`.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "afe66ed0dc0c",
+    "front": "Is the `AS` keyword required when aliasing a table?",
+    "back": "No. `FROM Student s` works the same as `FROM Student AS s`.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "966d28801676",
+    "front": "How does SQL process a query that joins three tables?",
+    "back": "Each join is done sequentially: Student joins Result, then that result joins Module.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "76a77bf7c6ef",
+    "front": "What requirements must two queries meet to be combined with `UNION`, `INTERSECT` or `EXCEPT`?",
+    "back": "The same number of columns with compatible data types.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "66972b8ed7e4",
+    "front": "How does `UNION ALL` differ from `UNION`?",
+    "back": "`UNION ALL` is a multiset union that keeps duplicates; `UNION` is a set operation that removes them.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "6a3624e8add9",
+    "front": "What does a `WITH` statement do?",
+    "back": "It names a sub-query as a temporary table before the main query, e.g., `WITH T AS (SELECT ...) SELECT ... FROM T`.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "c6158b201aa1",
+    "front": "What is the syntax for modifying existing rows in SQL?",
+    "back": "`UPDATE table_name SET column1 = value1, ... WHERE condition;`",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "9d5ba64d9bb7",
+    "front": "Where do `DISTINCT` and `LIMIT / OFFSET` fall in SQL's logical execution order?",
+    "back": "After `SELECT` projection: `DISTINCT`, then `ORDER BY`, then `LIMIT / OFFSET` last.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "4ebc7fa89b54",
+    "front": "Name two advantages and two limitations of SQLite (besides database-level locking).",
+    "back": "Lightweight and embeddable; but single-node (not scalable, not for remote access) and no built-in authentication.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
+    "id": "6eba2e78eae2",
+    "front": "For `SELECT * FROM Student a, Result b WHERE a.ID = b.ID AND a.Name = 'Tom'`, what is the efficient execution strategy?",
+    "back": "Filter `Name = 'Tom'` in Student first, then compute the join on far fewer records.",
+    "course": "COM6002",
+    "unit": "Lecture_4",
+    "topic": "",
+    "tag": "COM6002::Lecture_4",
+    "deck": "COM6002_Lecture_04"
+  },
+  {
     "id": "770efabd252e",
     "front": "Concept: Classification",
     "back": "Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.",
@@ -2310,6 +4640,406 @@
     "deck": "COM6004_Chapter_1"
   },
   {
+    "id": "6f188fcfe9d8",
+    "front": "What is a widely used definition of data mining as an extraction process?",
+    "back": "The non-trivial extraction of implicit, previously unknown and potentially useful information from data.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "f96d8b636203",
+    "front": "Besides predictive modeling, clustering and association rules, what fourth core data mining task is listed?",
+    "back": "Anomaly detection.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "f40e6f98dda9",
+    "front": "Name three data characteristics that make traditional data analysis techniques unsuitable for data mining.",
+    "back": "Data that is large-scale, high dimensional, heterogeneous, complex or distributed (any three).",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "fa90aa735406",
+    "front": "From a scientific viewpoint, what two things does data mining help scientists with?",
+    "back": "Automated analysis of massive datasets, and hypothesis formation.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "4f17ee7662de",
+    "front": "From a commercial viewpoint, why do companies turn to data mining?",
+    "back": "Lots of data is collected and warehoused, computers are cheaper and more powerful, and competitive pressure pushes firms to offer better, customized services (e.g. in CRM).",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "52abaf6d0232",
+    "front": "What two broad purposes do applications of cluster analysis serve?",
+    "back": "Understanding (e.g. grouping related documents, genes or stocks) and summarization (reducing the size of large data sets).",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "03a5c5557099",
+    "front": "In clustering-based market segmentation, how is the clustering quality measured?",
+    "back": "By observing the buying patterns of customers in the same cluster versus those in different clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "51e2f3fa4e87",
+    "front": "In supermarket shelf management, what data is processed to find items bought together?",
+    "back": "Point-of-sale data collected with barcode scanners.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "e5603d445bcb",
+    "front": "What three general benefits do big data technology and analytics offer society?",
+    "back": "Better understanding of problems, evidence-based solutions, and reduced costs.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "bc4a3f7b7731",
+    "front": "What lesson does the 2010 Haiti earthquake response illustrate about big data in disaster management?",
+    "back": "Data quality is paramount for prioritizing information and minimizing incorrect use of limited rescue resources.",
+    "course": "COM6004",
+    "unit": "Chapter_1",
+    "topic": "",
+    "tag": "COM6004::Chapter_1",
+    "deck": "COM6004_Chapter_1"
+  },
+  {
+    "id": "e9d8e4d6f6aa",
+    "front": "What is an attribute, and what other names is it known by?",
+    "back": "A property or characteristic of an object; also called a variable, field, characteristic, dimension or feature.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "8fd7c7115951",
+    "front": "What other names are used for a data object?",
+    "back": "Record, point, case, observation, sample, entity or instance.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "9a4898c9b064",
+    "front": "What four properties/operations determine an attribute's type?",
+    "back": "Distinctness, order, meaningful differences, and meaningful ratios.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "9565c82ac251",
+    "front": "Which properties does each attribute type possess: nominal, ordinal, interval, ratio?",
+    "back": "Nominal: distinctness; ordinal: + order; interval: + meaningful differences; ratio: all four, including meaningful ratios.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "cb6d840e1f07",
+    "front": "What distinguishes a discrete attribute from a continuous attribute?",
+    "back": "A discrete attribute has a finite or countably infinite set of values (e.g. zip codes, counts); a continuous attribute takes real-number values (e.g. height).",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "a5d409604c8b",
+    "front": "How is document data represented as record data?",
+    "back": "Each document becomes a term vector whose components are terms and whose values are the number of times each term occurs.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "2819e6e306a8",
+    "front": "What is transaction data?",
+    "back": "A special type of record data in which each transaction (e.g. one shopping trip) involves a set of items (the products bought).",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "651cc6fb6b62",
+    "front": "Name the three types of missing-value mechanism.",
+    "back": "Missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR).",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "caae0b58f828",
+    "front": "What are the three ways of handling missing values?",
+    "back": "Eliminate the data objects or variables, estimate the missing values, or ignore the missing value during analysis.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "e0c94af87592",
+    "front": "How does noise differ for objects versus attributes?",
+    "back": "For objects, noise is an extraneous object; for attributes, noise is a modification of the original values.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "c3853b0b879b",
+    "front": "When is data cleaning for duplicate data a major issue?",
+    "back": "When merging data from heterogeneous sources, e.g. the same person appearing with multiple email addresses.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "4e81af4f36a6",
+    "front": "How are the ordinal dissimilarity and similarity between values $x$ and $y$ defined?",
+    "back": "Map values to integers $0$ to $n-1$; $d = \\frac{|x - y|}{n - 1}$ and $s = 1 - d$.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "2224ab69710c",
+    "front": "What is the Minkowski distance between $\\mathbf{x}$ and $\\mathbf{y}$?",
+    "back": "$d(\\mathbf{x}, \\mathbf{y}) = \\left( \\sum_{k=1}^{n} |x_k - y_k|^r \\right)^{1/r}$, a generalization of Euclidean distance.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "999b7f92170f",
+    "front": "What is the Hamming distance?",
+    "back": "The city-block ($L_1$) distance between two binary vectors: the number of bits that differ.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "7339f3a3be3d",
+    "front": "What is the supremum ($L_{\\max}$ or $L_\\infty$) distance?",
+    "back": "The maximum absolute difference between any component of the two vectors: $\\max_k |x_k - y_k|$.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "421a991833a4",
+    "front": "What is the Mahalanobis distance?",
+    "back": "$\\text{mahal}(\\mathbf{x}, \\mathbf{y}) = (\\mathbf{x} - \\mathbf{y})^T \\Sigma^{-1} (\\mathbf{x} - \\mathbf{y})$, where $\\Sigma$ is the covariance matrix, so it accounts for correlated attributes.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "5c6108c721cc",
+    "front": "What three properties must a distance satisfy to be a metric?",
+    "back": "Positive definiteness ($d \\ge 0$, and $d = 0$ only if $\\mathbf{x} = \\mathbf{y}$), symmetry, and the triangle inequality $d(\\mathbf{x}, \\mathbf{z}) \\le d(\\mathbf{x}, \\mathbf{y}) + d(\\mathbf{y}, \\mathbf{z})$.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "ddd484dbd026",
+    "front": "What is the formula for cosine similarity of document vectors $d_1$ and $d_2$?",
+    "back": "$\\cos(d_1, d_2) = \\frac{\\langle d_1, d_2 \\rangle}{\\|d_1\\| \\, \\|d_2\\|}$",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "f5c10fe82ffd",
+    "front": "What is the entropy $H(X)$ of a variable with outcome probabilities $p_1, \\dots, p_n$, and what is its range?",
+    "back": "$H(X) = -\\sum_{i=1}^{n} p_i \\log_2 p_i$, measured in bits, between $0$ and $\\log_2 n$.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "4b28461f7933",
+    "front": "How is mutual information $I(X;Y)$ computed from entropies?",
+    "back": "$I(X;Y) = H(X) + H(Y) - H(X,Y)$, where $H(X,Y)$ is the joint entropy.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "1765e54781fa",
+    "front": "What is the maximum mutual information for discrete variables $X$ and $Y$?",
+    "back": "$\\log_2(\\min(n_X, n_Y))$, where $n_X$ and $n_Y$ are the numbers of values of $X$ and $Y$.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "c34ef6c2f1e3",
+    "front": "What does the Maximal Information Coefficient (MIC) do?",
+    "back": "Applies mutual information to two continuous variables: try binnings with $n_X \\times n_Y \\le N^{0.6}$, normalize each MI by $\\log_2(\\min(n_X, n_Y))$, and take the highest value.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "c21322989d29",
+    "front": "When combining similarities across mixed attribute types, when is the indicator $\\delta_k$ set to $0$?",
+    "back": "When attribute $k$ is asymmetric and both objects have value $0$, or when either object has a missing value for it.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "74d35f4a7e18",
+    "front": "What are the three purposes of aggregation?",
+    "back": "Data reduction, change of scale (e.g. cities into regions, days into months), and more stable data with less variability.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "47db35e5af6f",
+    "front": "When is a sample representative?",
+    "back": "When it has approximately the same properties of interest as the original data set; then using it works almost as well as the full data.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "832acfc8fe5c",
+    "front": "What is the curse of dimensionality?",
+    "back": "As dimensionality increases, data becomes increasingly sparse, so density and distance between points become less meaningful.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "3380ab6f24f1",
+    "front": "What is the goal of Principal Components Analysis (PCA)?",
+    "back": "To find a projection that captures the largest amount of variation in the data.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "6f7bc122f192",
+    "front": "What is binarization, and which analysis typically needs it?",
+    "back": "Mapping a continuous or categorical attribute into one or more binary variables; association analysis, which needs asymmetric binary attributes.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "7909e42bb014",
+    "front": "What is the difference between unsupervised and supervised discretization?",
+    "back": "Unsupervised discretization finds breaks in the data values alone (equal width, equal frequency, K-means); supervised discretization uses class labels to find breaks.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
+    "id": "8ffef953f814",
+    "front": "What is an attribute transformation?",
+    "back": "A function that maps the entire set of values of an attribute to a new set of replacement values, so each old value can be identified with a new value.",
+    "course": "COM6004",
+    "unit": "Chapter_2",
+    "topic": "",
+    "tag": "COM6004::Chapter_2",
+    "deck": "COM6004_Chapter_2"
+  },
+  {
     "id": "7afc356395be",
     "front": "What are summary statistics?",
     "back": "Numbers that summarize key properties of a dataset, such as frequency, location, and spread.",
@@ -2510,6 +5240,86 @@
     "deck": "COM6004_Chapter_3"
   },
   {
+    "id": "7f93f2919fc1",
+    "front": "What is data exploration?",
+    "back": "A preliminary exploration of the data to better understand its characteristics.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "15ca911b26df",
+    "front": "How is visualization defined in the lecture?",
+    "back": "The conversion of data into a visual or tabular format so that characteristics of the data and relationships among items or attributes can be analyzed or reported.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "46703c44639f",
+    "front": "What two things can humans detect well when data is visualized?",
+    "back": "General patterns and trends, and outliers and unusual patterns.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "78f8b83ebfc4",
+    "front": "In the lecture's box plot, which percentiles mark the box and the whiskers?",
+    "back": "The box spans the 25th to 75th percentiles with the 50th (median) inside; the whiskers end at the 10th and 90th percentiles.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "6cdaf3e05d2d",
+    "front": "What is a key use of placing several box plots side by side?",
+    "back": "Comparing the distributions of different attributes.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "cc680a21b643",
+    "front": "In a histogram, what does the height of each bar indicate?",
+    "back": "The number of objects whose values fall in that bin.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "21688ee5c687",
+    "front": "What can plots of similarity or distance matrices be used for?",
+    "back": "Visualizing the relationships between objects.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
+    "id": "7585c1910469",
+    "front": "How can a scatter plot display more than two attributes?",
+    "back": "Use a 3D scatter plot, or encode additional attributes in the size, shape and colour of the markers.",
+    "course": "COM6004",
+    "unit": "Chapter_3",
+    "topic": "",
+    "tag": "COM6004::Chapter_3",
+    "deck": "COM6004_Chapter_3"
+  },
+  {
     "id": "33a4654e10b4",
     "front": "In Bayesian classification, what formula calculates the posterior probability $P(Y \\mid X_1, X_2, \\dots, X_d)$ using Bayes' theorem?",
     "back": "$P(Y \\mid X_1, X_2, \\dots, X_d) = \\frac{P(X_1, X_2, \\dots, X_d \\mid Y) P(Y)}{P(X_1, X_2, \\dots, X_d)}$",
@@ -2703,6 +5513,176 @@
     "id": "cdb7c079b6f0",
     "front": "Why is Naïve Bayes robust against isolated noise points in a training dataset?",
     "back": "Because parameter estimations rely on probabilities averaged across the entire training dataset rather than localized boundaries.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "de2db5ccb071",
+    "front": "Name four decision tree induction algorithms besides Hunt's algorithm.",
+    "back": "CART, ID3, C4.5, SLIQ and SPRINT (any four).",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "1b590ca3dc48",
+    "front": "What is the entropy of a node $t$ with class frequencies $p_i(t)$?",
+    "back": "$\\text{Entropy}(t) = -\\sum_{i=0}^{c-1} p_i(t) \\log_2 p_i(t)$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "7be21376a081",
+    "front": "What is the misclassification error of a node $t$?",
+    "back": "$\\text{Error}(t) = 1 - \\max_i p_i(t)$",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "3ad392bd4f23",
+    "front": "How is the gain of a split defined, and which split is chosen?",
+    "back": "$\\text{Gain} = P - M$ (impurity before minus weighted impurity after); choose the test with the highest gain, i.e. the lowest $M$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "f288a1c8e166",
+    "front": "For a two-class problem, what are the maximum values of Gini, entropy and misclassification error?",
+    "back": "Gini $0.5$, entropy $1$, error $0.5$, all at a 50/50 class split.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "aa5c23c7de34",
+    "front": "What is the difference between static and dynamic discretization of continuous attributes in decision trees?",
+    "back": "Static discretizes once at the beginning; dynamic repeats the discretization at each node.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "184e2031c328",
+    "front": "How does a binary decision split on a continuous attribute work, and what is its drawback?",
+    "back": "It tests $(A < v)$ or $(A \\ge v)$, considering all possible cuts to find the best; it can be computationally intensive.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "abdefb4e7cc3",
+    "front": "What is the difference between pre-pruning and post-pruning?",
+    "back": "Pre-pruning stops growing the tree early (early stopping rule); post-pruning grows the full tree and then trims nodes.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "35567f321a65",
+    "front": "Why can greedy decision tree induction miss the best tree?",
+    "back": "The space of possible trees is exponentially large, and greedy approaches make locally optimal splits.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "cadd0336dfcc",
+    "front": "What three things does a nearest-neighbor classifier require?",
+    "back": "The set of labeled records, a distance metric, and the value of $k$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "0288f22f32ba",
+    "front": "Why can nearest-neighbor classifiers produce decision boundaries of arbitrary shape?",
+    "back": "They are local classifiers: each prediction depends only on nearby training points.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "44da93255753",
+    "front": "How do irrelevant and redundant attributes affect $k$-NN?",
+    "back": "Irrelevant attributes add noise to the proximity measure; redundant attributes bias it towards certain attributes.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "fd079a88af14",
+    "front": "Why is computing $k$-NN proximity on only the attributes present in both instances a poor fix for missing values?",
+    "back": "It effectively uses a different proximity measure for each pair of instances, so the proximities are not comparable.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "5218effc6c23",
+    "front": "What does the arm-length and reading-skills example illustrate?",
+    "back": "Conditional independence: the two are related overall, but independent once age is fixed.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "aa8d5b849656",
+    "front": "What optimization problem does a linear SVM solve?",
+    "back": "Minimize $\\frac{\\|\\mathbf{w}\\|^2}{2}$ subject to $y_i(\\mathbf{w} \\cdot \\mathbf{x}_i + b) \\ge 1$ for all training records.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "1ecc01512c5e",
+    "front": "How is a test record classified by a linear SVM once $\\mathbf{w}$ and $b$ are found?",
+    "back": "$f(\\mathbf{z}) = \\text{sign}(\\mathbf{w} \\cdot \\mathbf{z} + b)$: $+1$ if $\\mathbf{w} \\cdot \\mathbf{z} + b \\ge 0$, else $-1$.",
+    "course": "COM6004",
+    "unit": "Chapter_4A",
+    "topic": "",
+    "tag": "COM6004::Chapter_4A",
+    "deck": "COM6004_Chapter_4A"
+  },
+  {
+    "id": "68d565be0bc9",
+    "front": "Why does SVM find a global optimum when many other methods do not?",
+    "back": "Its learning problem is a convex optimization problem, whereas many other methods use greedy, locally optimal approaches.",
     "course": "COM6004",
     "unit": "Chapter_4A",
     "topic": "",
@@ -3010,6 +5990,166 @@
     "deck": "COM6004_Chapter_4B"
   },
   {
+    "id": "b8d6d533db9b",
+    "front": "What is another name for training errors?",
+    "back": "Apparent errors: the errors committed on the training set.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "b310a1e1f8ae",
+    "front": "Why can't training error be used to estimate generalization error?",
+    "back": "It does not reflect how well the model performs on previously unseen records, especially when the model overfits.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "1c0eaae0875e",
+    "front": "What three approaches are listed for estimating generalization error during model selection?",
+    "back": "Using a validation set, incorporating model complexity, and estimating statistical bounds.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "fe910d9049be",
+    "front": "What is the drawback of using a validation set for model selection?",
+    "back": "Less data is available for training.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "66f4e2fd2230",
+    "front": "Besides the learning algorithm, what factors can a model's measured performance depend on?",
+    "back": "The class distribution, the cost of misclassification, and the size of the training and test sets.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "d8f0ef196cf4",
+    "front": "What extra information does repeated cross-validation provide?",
+    "back": "An estimate of the variance of the generalization error.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "2524cc03cf13",
+    "front": "When is stratified cross-validation especially important?",
+    "back": "When classes are imbalanced and the sample is small.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "c41dd18c172c",
+    "front": "What must a classifier produce in order to draw an ROC curve?",
+    "back": "Continuous-valued outputs (scores) that can rank test records from most to least likely positive.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "c50cbffee48d",
+    "front": "What trade-off does an ROC curve display?",
+    "back": "Detection rate (TPR) against false alarm rate (FPR) as the classifier's threshold changes.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "64ac91c1bbae",
+    "front": "What is the formula for Precision?",
+    "back": "$p = \\frac{TP}{TP + FP}$",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "4c0acfcab508",
+    "front": "Recall is the same quantity as which rate plotted on an ROC curve?",
+    "back": "The True Positive Rate (TPR): $r = \\frac{TP}{TP + FN}$.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "d974f92d03db",
+    "front": "What is the formula for the F-measure?",
+    "back": "$F = \\frac{2rp}{r + p} = \\frac{2\\,TP}{2\\,TP + FP + FN}$",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "98b0e8aed9d4",
+    "front": "Which confusion matrix cell is the F-measure NOT biased towards?",
+    "back": "$C(\\text{No}|\\text{No})$, the true negatives; it depends on all other cells.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "623c047930e6",
+    "front": "What implicit cost assumption does the standard Bayes rule (predict + if $p(+|x) > p(-|x)$) make?",
+    "back": "That $C(+|+) = C(-|-) = 0$ and $C(+|-) = C(-|+)$: correct predictions are free and both errors cost the same.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "9a70c4a0e6f5",
+    "front": "With zero cost for correct predictions, what is the cost-sensitive threshold for predicting +?",
+    "back": "Predict + if $p(+|x) > \\frac{C_{FP}}{C_{FP} + C_{FN}}$, where $C_{FP}$ and $C_{FN}$ are the costs of a false positive and a false negative.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
+    "id": "09ee10587e28",
+    "front": "What does it mean when two ROC curves cross?",
+    "back": "Neither model consistently outperforms the other: one is better at small FPR, the other at large FPR.",
+    "course": "COM6004",
+    "unit": "Chapter_4B",
+    "topic": "",
+    "tag": "COM6004::Chapter_4B",
+    "deck": "COM6004_Chapter_4B"
+  },
+  {
     "id": "6b92fcc2703a",
     "front": "In statistical dataset notation, what do $n$ and $p$ represent?",
     "back": "$n$ represents the number of sample rows (observations), and $p$ represents the number of predictor columns (features).",
@@ -3163,6 +6303,66 @@
     "id": "3f74ad5ab829",
     "front": "In supervised machine learning, what key information is missing in testing data compared to training data?",
     "back": "Testing data provides only predictor variables $X$, leaving target outcome $Y$ to be predicted.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "465fb54a9bb4",
+    "front": "What is the difference between a population and a sample?",
+    "back": "A population is the entire group of people or things you want to study; a sample is a smaller, manageable subset chosen from that population.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "aae0ae524f53",
+    "front": "In the lecture's salary example, what are the sample and the population?",
+    "back": "Sample: salaries of HSUHK graduates. Population: salaries in the Hong Kong labour market.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "ab6e27b44209",
+    "front": "Which four location parameters are listed under descriptive statistics?",
+    "back": "Mean (average), median, mode and sum.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "cad4d36beeca",
+    "front": "Which linear-algebra tools are needed for regression?",
+    "back": "Matrices, solving linear equations and the matrix inverse.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "3f63864b2d48",
+    "front": "Which calculus ideas are listed as background for statistical modelling?",
+    "back": "Derivatives and finding a maximum or minimum.",
+    "course": "COM6005",
+    "unit": "Module_1",
+    "topic": "",
+    "tag": "COM6005::Module_1",
+    "deck": "COM6005_Module_1"
+  },
+  {
+    "id": "616b30f4ba29",
+    "front": "In $k$-NN with $k=5$, how are the class probabilities for a new point estimated?",
+    "back": "As the proportion of the 5 nearest training points in each class, e.g. $P(\\text{setosa}) = 5/5$ if all five are setosa.",
     "course": "COM6005",
     "unit": "Module_1",
     "topic": "",
@@ -3343,6 +6543,146 @@
     "id": "80229b919057",
     "front": "Unlike ordinal data, ratio data allows for meaningful quantitative operations because it has equal intervals and a _____.",
     "back": "true zero",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "9141ff5741d2",
+    "front": "How do you draw the training-set index for a random 70/30 split of 100 rows labelled 0–99?",
+    "back": "`np.random.choice(range(0, 100), size=70, replace=False)` (Python indexing starts at 0).",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "5f6ebc36ce2d",
+    "front": "How do you make Rock twice as likely as Scissors or Paper when simulating 10000 games with `np.random.choice`?",
+    "back": "Pass true probabilities: `np.random.choice([\"S\", \"R\", \"P\"], p=[0.25, 0.5, 0.25], size=10000)`.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "a4f660af63b6",
+    "front": "Given a simulated array `Result` of 10000 games, how is the probability of Scissors estimated?",
+    "back": "`len(Result[Result=='S'])/10000` (the relative frequency of 'S').",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "9a4c8b5b6ae2",
+    "front": "What do the probabilities of a PMF always sum to?",
+    "back": "$1$.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "11b829366b80",
+    "front": "Which distribution is suggested for the time between two consecutive events?",
+    "back": "Exponential distribution.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "6922e7d4091b",
+    "front": "Which distribution is suggested for the lifetime of a bulb or of small insects?",
+    "back": "Weibull distribution.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "3470b6609788",
+    "front": "Which distribution is suggested for income?",
+    "back": "Pareto distribution.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "75bc775fb414",
+    "front": "Which distribution is suggested for biological measurements?",
+    "back": "Normal distribution.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "87315c347607",
+    "front": "How is the distribution of a categorical variable displayed?",
+    "back": "With a bar chart or pie chart, using either frequencies or proportions.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "208f618778b7",
+    "front": "How is the distribution of a continuous variable displayed?",
+    "back": "Split its range into bins (classes) and draw a histogram of the counts; a cumulative frequency column gives the cumulative histogram.",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "dfd11f8ff294",
+    "front": "What is the formula of the normal probability density function?",
+    "back": "$\\text{norm.pdf}(x, \\mu, \\sigma) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-(x-\\mu)^2 / 2\\sigma^2}$",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "b913667614da",
+    "front": "How is the normal CDF defined from the normal PDF?",
+    "back": "$\\text{norm.cdf}(x, \\mu, \\sigma) = \\int_{-\\infty}^{x} \\text{norm.pdf}(s, \\mu, \\sigma)\\, ds$",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "856a350399f5",
+    "front": "Which matplotlib call draws a discrete PMF as vertical lines with markers?",
+    "back": "`axes.stem(x, pmf_values, ...)` (a stem plot).",
+    "course": "COM6005",
+    "unit": "Module_2A",
+    "topic": "",
+    "tag": "COM6005::Module_2A",
+    "deck": "COM6005_Module_2A"
+  },
+  {
+    "id": "1d3306a1ec74",
+    "front": "Which cumulative function applies to both discrete and continuous random variables?",
+    "back": "The CDF, $P(X \\le x)$.",
     "course": "COM6005",
     "unit": "Module_2A",
     "topic": "",
@@ -3540,6 +6880,96 @@
     "deck": "COM6005_Module_2B"
   },
   {
+    "id": "5f0b99809211",
+    "front": "What are the core conditions of a Binomial distribution?",
+    "back": "Each trial has only two outcomes, the success probability $p$ is constant, and all trials are independent.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "3d7569b0847d",
+    "front": "What are the core conditions of a Geometric distribution?",
+    "back": "Trials are independent with two outcomes each, and the experiment stops as soon as the first success happens.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "1db8ac8e2025",
+    "front": "What is the general PMF of a Geometric distribution?",
+    "back": "$\\Pr(X = k) = (1-p)^{k-1} p$",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "a74594b54cdf",
+    "front": "What values can a Geometric random variable take?",
+    "back": "$k \\in \\{1, 2, 3, \\dots\\}$; it starts at 1 because at least one trial is needed.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "e0181b420a7a",
+    "front": "In the Geometric PMF, what does the factor $(1-p)^{k-1}$ represent?",
+    "back": "The probability of failing $k-1$ times in a row before the success on trial $k$.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "612e1d4d25a0",
+    "front": "In the Binomial PMF, what do $p^k$ and $(1-p)^{n-k}$ represent?",
+    "back": "$p^k$ is the probability of the $k$ successes; $(1-p)^{n-k}$ is the probability of the $n-k$ failures.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "76b22a3a47ff",
+    "front": "What is a single trial with two outcomes and a fixed success probability $p$ called?",
+    "back": "A Bernoulli trial; a Binomial count is the number of successes in $n$ independent Bernoulli trials.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "e1d581669fe0",
+    "front": "Which of Binomial, Geometric and Poisson has no fixed limit on the number of trials?",
+    "back": "Geometric: it continues until the first success.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
+    "id": "cf9c1bb801b6",
+    "front": "Rolling a die until a 6 appears follows which distribution, with what parameter?",
+    "back": "Geometric with $p = 1/6$.",
+    "course": "COM6005",
+    "unit": "Module_2B",
+    "topic": "",
+    "tag": "COM6005::Module_2B",
+    "deck": "COM6005_Module_2B"
+  },
+  {
     "id": "46dbf6efc05a",
     "front": "What does the SciPy function scipy.stats.norm.pdf calculate?",
     "back": "It calculates the probability density function value (density/frequency) at a given point.",
@@ -3683,6 +7113,96 @@
     "id": "28736111e6c5",
     "front": "How is a theoretical normal density curve overlay generated for x-values using SciPy and Matplotlib?",
     "back": "By plotting the x-coordinates against plt.plot(x, norm.pdf(x, loc=0, scale=1)).",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "a22ca7e3ec6e",
+    "front": "Which assumption about the error terms underlies the statistical methods of linear regression?",
+    "back": "That the errors (residuals) follow a bell-shaped, normal distribution.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "674c2cf9c44b",
+    "front": "Why is a QQ-plot preferred over overlaying a normal curve on a histogram?",
+    "back": "It is a more abstract but more precise way to compare the data with the ideal distribution.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "56479e402ac4",
+    "front": "Can a QQ-plot compare data with distributions other than the normal?",
+    "back": "Yes; the normal is the usual reference, but other theoretical distributions can be used.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "e64d14b5c8eb",
+    "front": "Which two attributes of the result of `stats.normaltest(...)` are printed in the lecture?",
+    "back": "`res.statistic` (the test statistic) and `res.pvalue` (the p-value).",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "b32f4a0afb09",
+    "front": "Besides $np \\ge 10$ and $n(1-p) \\ge 10$, what weaker threshold do some sources use for the normal approximation to the Binomial?",
+    "back": "$5$ instead of $10$: $np \\ge 5$ and $n(1-p) \\ge 5$.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "f47e6c760a00",
+    "front": "What is the continuity correction when approximating $P(X \\le k)$ for a Binomial with a normal distribution?",
+    "back": "Use $P(Y \\le k + 0.5)$: the discrete value $k$ is spread over $[k-0.5, k+0.5]$.",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "ab47371807de",
+    "front": "What is the formula for standardising a normal value $x$ into a $z$-score?",
+    "back": "$z = \\frac{x - \\mu}{\\sigma}$",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "4528c71a13ef",
+    "front": "How do you compute $P(a < X < b)$ for $X \\sim N(\\mu, \\sigma^2)$ in SciPy?",
+    "back": "`norm.cdf(b, mu, sigma) - norm.cdf(a, mu, sigma)`",
+    "course": "COM6005",
+    "unit": "Module_2C",
+    "topic": "",
+    "tag": "COM6005::Module_2C",
+    "deck": "COM6005_Module_2C"
+  },
+  {
+    "id": "8872bc904b7a",
+    "front": "What does 'simulation' of a normal distribution mean?",
+    "back": "Generating random numbers by computer that look like real normally-distributed data.",
     "course": "COM6005",
     "unit": "Module_2C",
     "topic": "",
@@ -3863,6 +7383,96 @@
     "id": "6c36c829c61f",
     "front": "When $H_0$ is false, what two mutually exclusive test outcomes are possible?",
     "back": "Correctly rejecting $H_0$ (Power, $1 - \\beta$) or failing to reject $H_0$ (Type II error, $\\beta$).",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "e0c3368333cf",
+    "front": "What is a point estimate?",
+    "back": "A single sample statistic used as the estimate of a population parameter, e.g. $\\bar{x}, s^2 \\to \\mu, \\sigma^2$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "ee66c067410b",
+    "front": "What kind of reasoning uses a sample to conclude a characteristic of the population?",
+    "back": "Inductive reasoning.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "2506ffa0b47e",
+    "front": "On what statistical property is an interval estimate based?",
+    "back": "The sampling distribution, e.g. the Central Limit Theorem that the sample mean is normally distributed.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "33cfc5a918cf",
+    "front": "Under the empirical rule, roughly what percentage of normal data lies within $\\pm 1\\sigma$ and within $\\pm 2\\sigma$ of the mean?",
+    "back": "About $68.3\\%$ within $\\pm 1\\sigma$ and about $95.5\\%$ within $\\pm 2\\sigma$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "d8ab7ffbc9fe",
+    "front": "From what probability statement is the $z$-based confidence interval derived?",
+    "back": "$P(-z_{\\alpha/2} \\le \\frac{\\bar{x}-\\mu}{\\sigma/\\sqrt{n}} \\le z_{\\alpha/2}) = 1 - \\alpha$, which rearranges into $\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}$.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "5bf81ba865e8",
+    "front": "In statistics, what are 'hypotheses'?",
+    "back": "The possible states of nature, i.e. possible values of a population characteristic.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "108d76518e97",
+    "front": "What does a confidence interval give, compared with what a hypothesis test decides?",
+    "back": "A CI gives a range of plausible values for an unknown parameter; a hypothesis test decides whether a specific claim about the population is supported by the data.",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "dfb91f5498e8",
+    "front": "What is $z_{\\alpha/2}$ for a $95\\%$ confidence interval?",
+    "back": "$1.96$",
+    "course": "COM6005",
+    "unit": "Module_3",
+    "topic": "",
+    "tag": "COM6005::Module_3",
+    "deck": "COM6005_Module_3"
+  },
+  {
+    "id": "5d0a2f28300a",
+    "front": "What is $z_{\\alpha/2}$ for a $99\\%$ confidence interval?",
+    "back": "About $2.576$.",
     "course": "COM6005",
     "unit": "Module_3",
     "topic": "",
@@ -4063,6 +7673,106 @@
     "id": "669330256382",
     "front": "What sample condition determines whether an independent two-sample t-test should use a pooled vs. unpooled standard deviation?",
     "back": "Whether the two population variances are equal or unequal.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "e7efca35dd04",
+    "front": "What assumptions does the one-sample t-test make about $y_1, \\dots, y_n$?",
+    "back": "They are independent and identically distributed (i.i.d.) normal random variables.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "8c05ccfe53ef",
+    "front": "What is the formula for the sample variance $s^2$?",
+    "back": "$s^2 = \\frac{(X_1 - \\bar{X})^2 + \\dots + (X_n - \\bar{X})^2}{n - 1}$",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "937d74cc3cf8",
+    "front": "Which NumPy call gives the sample variance with the $n-1$ divisor?",
+    "back": "`y.var(ddof=1)`",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "e9f15c22f1c5",
+    "front": "Which significance levels are common, and what does each signal?",
+    "back": "$5\\%$ is a lower standard for rejecting $H_0$; $1\\%$ is a higher (stricter) standard.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "a315fecb5ca3",
+    "front": "Which SciPy function runs a paired t-test?",
+    "back": "`stats.ttest_rel(x, y, alternative=...)`",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "b2e893a37b96",
+    "front": "Which SciPy call runs an independent two-sample t-test that assumes equal variances?",
+    "back": "`stats.ttest_ind(x, y, equal_var=True)`",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "59126e27c6da",
+    "front": "What is a completely randomized design?",
+    "back": "Unrelated subjects are randomly assigned to the two treatments, so the two samples are independent.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "2d60632103f3",
+    "front": "What is the trade-off of using unrelated subjects instead of a paired design?",
+    "back": "It is easier to implement but statistically less accurate.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "665526d2deb6",
+    "front": "Why is the pooled variance $s_p^2$ different from the variance of the combined $X$ and $Y$ data?",
+    "back": "Pooling uses only within-group variation; the combined variance also includes the between-group difference in means, which can be large.",
+    "course": "COM6005",
+    "unit": "Module_3A",
+    "topic": "",
+    "tag": "COM6005::Module_3A",
+    "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "ae327b3cc6e5",
+    "front": "Why can't we just check whether the sample mean of tumour-size changes is above 0?",
+    "back": "Measurements have error, so the sample mean is never exactly 0 even if the treatment does nothing; the t-test decides how large is large enough.",
     "course": "COM6005",
     "unit": "Module_3A",
     "topic": "",

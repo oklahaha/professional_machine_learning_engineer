@@ -15,3 +15,21 @@ Which pd.read_csv() parameter allows custom numerical placeholders like -999 to 
 How can you check if a column contains missing values using only the nunique() method?,Subtract df.nunique(dropna=True) from df.nunique(dropna=False); a result of 1 indicates the presence of missing values.
 How does DataFrame.duplicated(keep=False) treat repeated rows compared to keep='first'?,"It marks every instance of a duplicated row as True, without preserving any occurrence as False."
 Which expression counts the total number of rows in a DataFrame df that contain at least one missing value?,df.isna().any(axis=1).sum()
+Which `DataFrame.drop_duplicates()` parameters choose which occurrence survives and renumber the rows from 0?,"`keep=` (`'first'`, `'last'` or `False` to keep none) and `ignore_index=True`."
+How do you find duplicated passengers who have different `PassengerId`s but identical values in every other column?,"Exclude the ID from the comparison, e.g. `df.duplicated(subset=df.columns.drop('PassengerId'))`."
+Name three strings that `pd.read_csv()` recognises as NaN by default.,"Any of: an empty field, `'NA'`, `'#N/A'`, `'#N/A N/A'`, `'null'` (custom placeholders like -999 need `na_values`)."
+Why can't you count missing values with `(s == np.nan).sum()`?,"NaN never equals anything, including itself (`np.nan == np.nan` is False), so the sum is always 0; use `s.isna()` instead."
+What are three common causes of missing data?,Typing errors when creating the dataset; hardware/sensor malfunctions or communication errors; values missing by the nature of the data (e.g. not applicable).
+What are the three general strategies for handling missing values?,"Drop the row/column (many missing), fill it with a constant, statistical or predicted value (few missing), or keep it and use methods that accept missing values."
+Which `dropna()` call drops a row only if every value in it is missing?,"`df.dropna(how='all')`, equivalently `df.dropna(thresh=1)` (keep rows with at least one value)."
+How can you measure how much information a `dropna()` removed?,Compare `nunique()` before and after (e.g. 217 countries shrink to 115) or the drop in `shape[0]` as a percentage of the original rows.
+Does filling a numeric column's missing values with its mean change the column's mean?,"No. Inserting values equal to the mean leaves the mean unchanged, though it pulls the median toward the mean and shrinks the spread."
+What does a column whose median is smaller than its mean suggest about its distribution?,It is right-skewed (a long tail of large values pulls the mean up).
+Which four statistics does `describe()` return for a non-numeric (categorical) column?,"`count`, `unique`, `top` (most frequent value) and `freq` (its count)."
+"When several categories tie for the highest count, how do `describe()` and `mode()` differ?","`describe()` reports one of them arbitrarily as `top`, while `mode()` returns all of the tied values."
+"What is the default `strategy` of scikit-learn's `SimpleImputer`, and what are the alternatives?","`'mean'` by default; alternatives are `'median'`, `'most_frequent'` and `'constant'` (with `fill_value`)."
+Why do integer columns such as `year` become `float64` after `wdi[numeric_cols] = imputer.fit_transform(wdi[numeric_cols])`?,"`fit_transform()` returns a single float NumPy array for all columns, so the assigned values are floats."
+Which extra import must run before `from sklearn.impute import IterativeImputer` works?,`from sklearn.experimental import enable_iterative_imputer` (the estimator is still experimental).
+What estimator does `IterativeImputer` use by default?,"`BayesianRidge()`, a linear regression model with Bayesian regularisation."
+How does scikit-learn's `KNNImputer` estimate a missing value?,"From the values of the k nearest neighbouring samples, i.e. the rows most similar on the other features."
+Why are categorical columns imputed with `SimpleImputer(strategy='most_frequent')` rather than `IterativeImputer`?,"Regression-based imputation predicts numbers, which is meaningless for categories, so the most frequent value is used instead."

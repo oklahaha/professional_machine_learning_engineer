@@ -15,3 +15,26 @@ How does a database system resolve an active deadlock once it is detected?,The s
 What causes a cascading rollback in database concurrency control?,It occurs when rolling back one transaction forces other transactions that read its uncommitted updates to also roll back.
 What are the two primary strategic options for a transaction encountering a lock conflict?,The transaction can either wait for the lock to be released or abort and roll back.
 What primary operational purpose does the Two-Phase Locking (2PL) protocol fulfill?,It prevents shared data corruption by ensuring serializable execution among concurrent transactions.
+"In relational database terminology, what is a table called?",A relation.
+What is the Big O cost of finding any ONE student in a class of $n$ students?,$O(1)$: constant time regardless of $n$.
+"What are the best-case, worst-case and average-case costs of a linear search for one name in a list?","Best $O(1)$, worst $O(n)$, average $O(n)$ (half the list on average)."
+What does $\lg n$ denote in the lecture's Big O notation?,The binary logarithm (base 2); $\log$ alone denotes base 10.
+"In a B tree search, how do we know a value does not exist?",The search reaches the leaf level without finding it.
+"In a B+ tree, what is the rule for values relative to a separator?",Values on the left are smaller; values on the right are larger than or equal to the separator.
+Must a separator value in a B+ tree non-leaf node exist in the database?,"No. A separator only guides the search, so a value like 20 can be a separator even if no record has 20."
+"In a B+ tree range query, when does the scan of sibling leaves stop?",When the next sibling's smallest value already exceeds the upper bound of the range.
+What is the update cost of a B / B+ tree index?,"$O(\lg n)$, the same order as its search cost."
+What does it mean that a B / B+ tree is balanced?,The path length from the root to every leaf node is the same.
+Can one table have more than one index?,"Yes. A table can have multiple indices, e.g., one on module code and one on grade."
+Why is the space overhead of an index smaller than the records themselves?,The index stores only pointers to records; there is always only one copy of the record contents.
+How does an RDBMS query optimizer choose a query plan?,"It keeps statistics about the database (e.g., number of records) and automatically picks the estimated best plan."
+What are the two main challenges in handling database transactions?,Concurrency control (many users on the same data) and recovery (restoring contents after failure).
+"Why does an ATM wait for an ""OK"" acknowledgement from the central database after an update?","The network may drop a message; if no OK arrives in time, the ATM resends the message."
+What defines a correct concurrent execution of transactions?,"One equivalent to a serial execution, where transactions run one by one; any serial order is deemed correct."
+Name two concurrency control methods other than two-phase locking.,Timestamp ordering and Multi-Version Concurrency Control (MVCC).
+Does a transaction holding a writelock on $x$ also need a readlock on $x$?,"No. A writelock is an upgraded readlock, so it also permits reading."
+What is the core principle of log-based recovery?,Save to the log before writing to the database system.
+What three kinds of entries must a recovery log contain?,"A record of each transaction's start, a record of its commit, and the update contents."
+How does a blocking checkpoint work?,"All database updates are stopped, a snapshot is taken, and recovery only scans back to the closest checkpoint."
+"Besides a snapshot, what does a fuzzy checkpoint record?",The list of transactions that are running at the time of the checkpoint.
+What is the worst-case recovery cost with fuzzy checkpoints?,"$O(n)$: scanning backwards to the first log entry, which only happens with a very short log or an unreasonably long transaction."

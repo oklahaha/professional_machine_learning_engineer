@@ -346,5 +346,253 @@
     "hints": "Think about what happens to a running total of accumulated probabilities as more possible outcomes are included.",
     "course": "COM6005",
     "week": "2A"
+  },
+  {
+    "question": "What does `stats.binom.cdf(5, 10, 0.5)` return (to 4 d.p.)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.2461$",
+        "Explanation": "This is `stats.binom.pmf(5, 10, 0.5)`, the probability of exactly 5 heads."
+      },
+      {
+        "label": "B",
+        "text": "$0.3770$",
+        "Explanation": "This is $1 - 0.6230$, the probability of 6 or more heads."
+      },
+      {
+        "label": "C",
+        "text": "$0.5000$",
+        "Explanation": "The binomial is symmetric here, but $P(X \\le 5)$ includes the middle value $X=5$, so it exceeds $0.5$."
+      },
+      {
+        "label": "D",
+        "text": "$0.6230$",
+        "Explanation": "Correct: the CDF adds $P(X=0) + \\dots + P(X=5) = 638/1024 \\approx 0.6230$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "cdf means 'at most', so add up the PMF from 0 to 5.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "What does `stats.norm.cdf(0, loc=0, scale=1)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.5$",
+        "Explanation": "Correct: half of the symmetric standard normal curve lies at or below its mean of $0$."
+      },
+      {
+        "label": "B",
+        "text": "$0.3989$",
+        "Explanation": "This is `stats.norm.pdf(0, 0, 1)`, the density height at the peak, not an area."
+      },
+      {
+        "label": "C",
+        "text": "$0$",
+        "Explanation": "This would be the probability of exactly $X=0$; the CDF is the area up to $0$."
+      },
+      {
+        "label": "D",
+        "text": "$1$",
+        "Explanation": "The CDF only reaches $1$ as $x \\to \\infty$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about the area to the left of the centre of a symmetric bell curve.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "A fair coin is flipped 10 times. What is the probability of getting 2 heads or fewer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.0439$",
+        "Explanation": "This is only $P(X=2) = 45/1024$; the probabilities of 0 and 1 head are missing."
+      },
+      {
+        "label": "B",
+        "text": "$0.0547$",
+        "Explanation": "Correct: $P(X \\le 2) = (1 + 10 + 45)/1024 = 56/1024 \\approx 0.0547$, i.e. `stats.binom.cdf(2, 10, 0.5)`."
+      },
+      {
+        "label": "C",
+        "text": "$0.9453$",
+        "Explanation": "This is the complement $P(X \\ge 3)$."
+      },
+      {
+        "label": "D",
+        "text": "$0.0010$",
+        "Explanation": "This is only $P(X=0) = 1/1024$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Add P(X=0), P(X=1) and P(X=2), each using C(10,k)/1024.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "For a fair six-sided die, what is $\\text{CMF}(2) = P(X \\le 2)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$1/6$",
+        "Explanation": "This is the PMF of a single face, $P(X=2)$."
+      },
+      {
+        "label": "B",
+        "text": "$2/3$",
+        "Explanation": "This is $P(X \\le 4)$."
+      },
+      {
+        "label": "C",
+        "text": "$1/3$",
+        "Explanation": "Correct: $P(X=1) + P(X=2) = 1/6 + 1/6 = 1/3$."
+      },
+      {
+        "label": "D",
+        "text": "$1/36$",
+        "Explanation": "This multiplies probabilities, as for two independent rolls; the CMF adds them."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The CMF is a running total of PMF values.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Which distribution does the lecture suggest for modelling the lifetime of a light bulb?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Exponential",
+        "Explanation": "The exponential is listed for the time between two consecutive events."
+      },
+      {
+        "label": "B",
+        "text": "Pareto",
+        "Explanation": "The Pareto is listed for income."
+      },
+      {
+        "label": "C",
+        "text": "Poisson",
+        "Explanation": "The Poisson models a count of events in a fixed interval, not a lifetime."
+      },
+      {
+        "label": "D",
+        "text": "Weibull",
+        "Explanation": "Correct: the Weibull is listed for the lifetime of bulbs, small insects, etc."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Each named distribution was matched to one kind of data.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Which call simulates 10000 games of Scissor, Rock, Paper in which Rock appears twice as often as each of the other two?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`np.random.choice([\"S\", \"R\", \"P\"], p=[0.25, 0.5, 0.25], size=10000)`",
+        "Explanation": "Correct: the probabilities line up with the labels, giving Rock $0.5$ and Scissors and Paper $0.25$ each."
+      },
+      {
+        "label": "B",
+        "text": "`np.random.choice([\"S\", \"R\", \"P\"], p=[0.5, 0.25, 0.25], size=10000)`",
+        "Explanation": "This gives the $0.5$ to Scissors, the first label, not to Rock."
+      },
+      {
+        "label": "C",
+        "text": "`np.random.choice([\"S\", \"R\", \"P\"], size=10000)`",
+        "Explanation": "With no `p`, all three outcomes are equally likely."
+      },
+      {
+        "label": "D",
+        "text": "`np.random.choice([\"S\", \"R\", \"P\"], p=[0.25, 0.5, 0.25], size=10000, replace=False)`",
+        "Explanation": "You cannot draw 10000 items without replacement from only 3 labels; this raises an error."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The p list is matched to the labels by position.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Rows of a dataset are labelled 0 to 99. Which call selects a random 70% of rows as the training index?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`np.random.choice(range(1, 100), size=70, replace=False)`",
+        "Explanation": "`range(1, 100)` leaves out row 0, so not every row can be selected."
+      },
+      {
+        "label": "B",
+        "text": "`np.random.choice(range(0, 100), size=70, replace=True)`",
+        "Explanation": "With replacement, the same row can be picked twice, so fewer than 70 distinct rows end up in training."
+      },
+      {
+        "label": "C",
+        "text": "`np.random.choice(range(0, 100), size=70, replace=False)`",
+        "Explanation": "Correct: 70 distinct indices from 0 to 99, since Python indexing starts at 0."
+      },
+      {
+        "label": "D",
+        "text": "`np.random.choice(range(0, 70), size=70, replace=False)`",
+        "Explanation": "This always returns rows 0 to 69 in shuffled order, so the last 30 rows are never in training."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Python indices start at 0, and a row must not appear twice.",
+    "course": "COM6005",
+    "week": "2A"
+  },
+  {
+    "question": "Why does the lecture draw the binomial CDF with `axes.step(..., where=\"mid\")` rather than a smooth line?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Because the CDF of a discrete variable decreases between integers.",
+        "Explanation": "No CDF ever decreases; it is non-decreasing."
+      },
+      {
+        "label": "B",
+        "text": "Because the cumulative probability stays constant between integer values and jumps at each integer.",
+        "Explanation": "Correct: a discrete variable has no probability between integers, so the running total is flat there and jumps at each possible value."
+      },
+      {
+        "label": "C",
+        "text": "Because `plot` cannot draw values between 0 and 1.",
+        "Explanation": "`plot` can draw any values; the choice reflects the shape of a discrete CDF."
+      },
+      {
+        "label": "D",
+        "text": "Because a step plot shows the PMF and the CDF together.",
+        "Explanation": "The PMF is drawn separately with `stem`; the step plot shows only the CDF."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "What happens to P(X ≤ x) as x moves from 3 to 3.5?",
+    "course": "COM6005",
+    "week": "2A"
   }
 ]

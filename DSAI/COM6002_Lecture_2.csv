@@ -17,3 +17,19 @@ What scenario triggers an HTTP 404 Not Found response code?,An HTTP 404 response
 What broad class of failure is denoted by HTTP response status codes in the 5xx range?,HTTP 5xx status codes denote server-side failures where the server fails to complete an apparently valid request.
 What error condition triggers an HTTP 500 Internal Server Error response?,An HTTP 500 response indicates an unexpected generic error on the server side that prevents request processing.
 What condition causes a server to return an HTTP 503 Service Unavailable status code?,An HTTP 503 status code indicates that the server is temporarily incapable of handling requests due to overload or maintenance.
+What is the difference between internal and external data sources?,"Internal data is captured by an organisation's own systems (e.g., a Point-of-Sale system); external data comes from third-party APIs, web scraping or partners' databases."
+What does the acronym CRUD stand for?,"Create, Read, Update, Delete: the basic database operations used to capture internal data."
+Why is a RESTful API described as stateless?,Each request is independent: one request receives one complete response.
+Why is a streaming API described as stateful?,"Messages are usually deltas (changes), so the client must maintain state built from previous messages."
+Name three API types other than RESTful and streaming.,"FIX (Financial Information eXchange), SOAP, and GraphQL."
+What are the three main concerns when relying on a third-party data API?,"Rate limiting, data availability (not all data is offered via the API), and data quality."
+Is HTTP POST more secure than GET because it encrypts the request body?,"No. Encryption depends on HTTPS, which both GET and POST can use; POST's advantage is only that parameters are not in the logged URL."
+Where should an API key usually be placed in an HTTP request?,"In the request headers, as specified by the API documentation."
+"In a Pub/Sub system, does a producer know how many consumers subscribe to its topic?",No. Producers push event records to a topic without knowing how many consumers have subscribed.
+How many parties are involved in Pub/Sub versus a Webhook?,"Pub/Sub has three (producer, broker, consumer); a Webhook has two (source and destination)."
+Which delivery models does Pub/Sub support compared with a Webhook?,Pub/Sub supports pull or push; a Webhook is push-only.
+"In an HTML page, how are images provided?",HTML is a text file that uses tags to structure content; image data are provided in external files.
+How does a crawler read all pages of one website?,"It extracts links from each page, visits those on the same domain, and avoids visiting the same link twice (e.g., with Scrapy)."
+"What are the trade-offs of converting a whole webpage to plain text (e.g., with Beautiful Soup)?",It is generic but yields unstructured data of limited clarity; it is often used for the web-browsing function of text-only LLMs.
+What mechanism do Selenium and Playwright rely on to control a browser?,"Browsers' native automation capabilities (built for automated testing), exposed through a Python API."
+How can CAPTCHA solving be framed technically?,"As a machine learning problem (e.g., image or audio classification)."

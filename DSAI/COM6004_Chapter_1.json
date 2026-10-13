@@ -288,5 +288,160 @@
     "hints": "Consider the ethical and legal concerns individuals face when their personal information is brokered and analyzed.",
     "course": "COM6004",
     "week": "1"
+  },
+  {
+    "question": "Which of the following activities is best described as data mining rather than simple information retrieval or querying?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Looking up a customer's phone number in a company directory.",
+        "Explanation": "This is a direct lookup of known information; nothing implicit or previously unknown is discovered."
+      },
+      {
+        "label": "B",
+        "text": "Sorting all sales records by date to print a monthly report.",
+        "Explanation": "Sorting and reporting is routine data processing; it does not extract new, non-trivial patterns."
+      },
+      {
+        "label": "C",
+        "text": "Discovering that certain combinations of symptoms and test results are associated with a disease.",
+        "Explanation": "Correct: this is non-trivial extraction of implicit, previously unknown and potentially useful information from data."
+      },
+      {
+        "label": "D",
+        "text": "Retrieving every web page that contains the keyword 'Amazon'.",
+        "Explanation": "Keyword retrieval returns documents matching a query; it does not discover new patterns."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Data mining finds information that was implicit and previously unknown, not information you could simply look up.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "A satellite agency wants to label each image pixel as water body, urban area or forest using a set of already-labelled pixels. Which task is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Clustering, because the land covers form natural groups.",
+        "Explanation": "Clustering finds groups without predefined labels; here the categories are predefined and labelled examples exist."
+      },
+      {
+        "label": "B",
+        "text": "Classification, because a model maps attributes to predefined categorical labels.",
+        "Explanation": "Correct: classifying land covers using satellite data is one of the lecture's examples of classification."
+      },
+      {
+        "label": "C",
+        "text": "Regression, because pixel intensities are continuous.",
+        "Explanation": "The inputs may be continuous, but the target (land-cover type) is categorical, so it is not regression."
+      },
+      {
+        "label": "D",
+        "text": "Association rule discovery, because land covers co-occur.",
+        "Explanation": "Association analysis finds co-occurring items in transactions; it does not assign a label to each record."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at the type of the target and whether labelled examples are available.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "Which of the following clustering applications serves the purpose of summarization rather than understanding?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Grouping genes and proteins that have similar functionality.",
+        "Explanation": "This helps scientists understand the data, so it is an 'understanding' application."
+      },
+      {
+        "label": "B",
+        "text": "Grouping stocks with similar price fluctuations.",
+        "Explanation": "This is listed under understanding: it reveals structure in the market."
+      },
+      {
+        "label": "C",
+        "text": "Grouping related documents for browsing.",
+        "Explanation": "This is listed under understanding: it helps users explore related content."
+      },
+      {
+        "label": "D",
+        "text": "Replacing a very large data set with cluster prototypes to reduce its size.",
+        "Explanation": "Correct: summarization means reducing the size of large data sets."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "One purpose is about insight; the other is about making the data smaller.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "In a document clustering application, how is the similarity measure between documents formed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "From the frequencies of important terms appearing in each document.",
+        "Explanation": "Correct: frequently occurring terms are identified and a similarity measure is based on their frequencies."
+      },
+      {
+        "label": "B",
+        "text": "From the predefined topic label attached to each document.",
+        "Explanation": "Clustering does not use predefined labels; that would be classification."
+      },
+      {
+        "label": "C",
+        "text": "From the order in which the documents were published.",
+        "Explanation": "Publication order says nothing about content similarity."
+      },
+      {
+        "label": "D",
+        "text": "From the number of association rules each document satisfies.",
+        "Explanation": "Association rules are a different task and are not used to measure document similarity here."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think of each document as a bag of words.",
+    "course": "COM6004",
+    "week": "1"
+  },
+  {
+    "question": "A telecom company wants to reduce mailing costs by targeting customers likely to buy a new phone product. Which choice of class attribute fits the lecture's churn-prediction approach?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The customer's monthly bill amount, predicted by regression.",
+        "Explanation": "The bill is an input attribute here; the decision of interest is categorical."
+      },
+      {
+        "label": "B",
+        "text": "The cluster each customer falls into after K-means.",
+        "Explanation": "Clusters are unsupervised groupings, not a known historical outcome."
+      },
+      {
+        "label": "C",
+        "text": "Customers' frequently co-purchased products.",
+        "Explanation": "Co-purchase patterns are association rules, not a class label."
+      },
+      {
+        "label": "D",
+        "text": "The {buy, don't buy} decision customers made for a similar product introduced before.",
+        "Explanation": "Correct: past decisions on a similar product form the class attribute, and demographic and lifestyle data are the inputs."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The label comes from history: what customers did last time.",
+    "course": "COM6004",
+    "week": "1"
   }
 ]

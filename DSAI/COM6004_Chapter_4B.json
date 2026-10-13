@@ -317,5 +317,253 @@
     "hints": "Focus on the term that refers to decreasing the representation of the overrepresented majority class.",
     "course": "COM6004",
     "week": "4B"
+  },
+  {
+    "question": "A classifier on an imbalanced set gives TP $= 10$, FN $= 0$, FP $= 10$, TN $= 980$. What are its precision, recall and F-measure?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Precision $0.5$, recall $1.0$, F $0.667$",
+        "Explanation": "Correct: $p = 10/20$, $r = 10/10$, $F = 2(0.5)(1)/(1.5) = 0.667$."
+      },
+      {
+        "label": "B",
+        "text": "Precision $1.0$, recall $0.5$, F $0.667$",
+        "Explanation": "Precision and recall are swapped; FP affects precision and FN affects recall."
+      },
+      {
+        "label": "C",
+        "text": "Precision $0.5$, recall $1.0$, F $0.75$",
+        "Explanation": "$0.75$ is the arithmetic mean; the F-measure is the harmonic mean."
+      },
+      {
+        "label": "D",
+        "text": "Precision $0.99$, recall $1.0$, F $0.99$",
+        "Explanation": "$0.99$ is the accuracy; precision is TP/(TP+FP)."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "F is the harmonic mean of precision and recall.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Model X: TP $= 40$, FN $= 10$, FP $= 10$, TN $= 40$. Model Y: TP $= 40$, FN $= 10$, FP $= 1000$, TN $= 4000$. Which statement is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both models have the same precision, because their TP and FN are identical.",
+        "Explanation": "Precision depends on FP: $40/50 = 0.8$ for X but $40/1040 \\approx 0.038$ for Y."
+      },
+      {
+        "label": "B",
+        "text": "Model Y has a higher TPR, because it has more records.",
+        "Explanation": "TPR is $40/50 = 0.8$ for both."
+      },
+      {
+        "label": "C",
+        "text": "Both models have the same TPR and FPR, but very different precision.",
+        "Explanation": "Correct: TPR $= 0.8$ and FPR $= 0.2$ for both, yet precision falls from $0.8$ to about $0.038$ when negatives dominate."
+      },
+      {
+        "label": "D",
+        "text": "Model Y has a lower FPR, because it has many more true negatives.",
+        "Explanation": "FPR $= 1000/5000 = 0.2$, the same as X's $10/50$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compute TPR, FPR and precision for each; which ones are sensitive to class skew?",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Three classifiers on 50 positives and 50 negatives give (TP, FN, FP, TN) of (10, 40, 10, 40), (25, 25, 25, 25) and (40, 10, 40, 10). What do they have in common?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They all have the same recall.",
+        "Explanation": "Recall is $0.2$, $0.5$ and $0.8$ respectively."
+      },
+      {
+        "label": "B",
+        "text": "They all lie on the ROC diagonal, performing like random guessing.",
+        "Explanation": "Correct: in each case TPR equals FPR ($0.2$, $0.5$, $0.8$), and precision is $0.5$ for all three."
+      },
+      {
+        "label": "C",
+        "text": "They all have accuracy above 50%.",
+        "Explanation": "Each has accuracy exactly 50%."
+      },
+      {
+        "label": "D",
+        "text": "They all lie below the ROC diagonal.",
+        "Explanation": "TPR equals FPR, so they lie on, not below, the diagonal."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compare TPR with FPR for each classifier.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Six test records sorted by score: $0.9(+), 0.8(+), 0.7(-), 0.6(+), 0.55(-), 0.4(-)$. At the threshold 'predict + if score $\\ge 0.6$', what ROC point (FPR, TPR) is obtained?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(0.33, 0.67)$",
+        "Explanation": "The record scoring exactly 0.6 is a positive and meets the threshold, so all 3 positives are caught: TPR is 1."
+      },
+      {
+        "label": "B",
+        "text": "$(0.25, 0.75)$",
+        "Explanation": "These are fractions of the 4 predicted positives; TPR and FPR divide by the actual positives and actual negatives."
+      },
+      {
+        "label": "C",
+        "text": "$(0, 1.0)$",
+        "Explanation": "The record with score 0.7 is a negative predicted positive, so FPR is not 0."
+      },
+      {
+        "label": "D",
+        "text": "$(0.33, 1.0)$",
+        "Explanation": "Correct: TP $= 3$ of 3 positives, so TPR $= 1$; FP $= 1$ of 3 negatives, so FPR $= 0.33$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "TPR = TP/(TP+FN), FPR = FP/(FP+TN).",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Using the same six scored records, $0.9(+), 0.8(+), 0.7(-), 0.6(+), 0.55(-), 0.4(-)$, what is the area under the ROC curve (AUC)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.5$",
+        "Explanation": "0.5 is random guessing; positives here mostly score above negatives."
+      },
+      {
+        "label": "B",
+        "text": "$0.889$",
+        "Explanation": "Correct: of the $3 \\times 3 = 9$ positive-negative pairs, the positive scores higher in 8, so AUC $= 8/9$."
+      },
+      {
+        "label": "C",
+        "text": "$1.0$",
+        "Explanation": "AUC 1 needs every positive above every negative, but 0.6(+) is below 0.7(-)."
+      },
+      {
+        "label": "D",
+        "text": "$0.667$",
+        "Explanation": "This would be the AUC if two positive-negative pairs were mis-ordered (6/9 correct)."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "AUC equals the fraction of positive-negative pairs ranked correctly.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "With cost matrix $C(+|+) = -1$, $C(-|+) = 100$, $C(+|-) = 1$, $C(-|-) = 0$, model M1 has accuracy 80% and cost 3910. Model M2 has TP $= 250$, FN $= 45$, FP $= 5$, TN $= 200$. What does comparing them show?",
+    "options": [
+      {
+        "label": "A",
+        "text": "M2 has higher accuracy (90%) but a higher cost (4255), so accuracy and cost can disagree.",
+        "Explanation": "Correct: $-250 + 45(100) + 5(1) + 0 = 4255 > 3910$, despite M2's accuracy of $450/500 = 90\\%$."
+      },
+      {
+        "label": "B",
+        "text": "M2 has both higher accuracy and lower cost, so it dominates M1.",
+        "Explanation": "M2's 45 false negatives at 100 each make its cost higher."
+      },
+      {
+        "label": "C",
+        "text": "M2 has lower accuracy (80%) and lower cost.",
+        "Explanation": "M2's accuracy is $(250 + 200)/500 = 90\\%$."
+      },
+      {
+        "label": "D",
+        "text": "Accuracy and cost always rank models identically.",
+        "Explanation": "They agree only under special conditions, such as equal misclassification costs."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Count M2's expensive false negatives.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "A false negative costs 99 and a false positive costs 1, and correct predictions cost nothing. Above what posterior $p(+|x)$ should a cost-sensitive classifier predict +?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.5$",
+        "Explanation": "0.5 is the threshold only when both errors cost the same."
+      },
+      {
+        "label": "B",
+        "text": "$0.99$",
+        "Explanation": "This inverts the logic: expensive false negatives should make you predict + more readily, not less."
+      },
+      {
+        "label": "C",
+        "text": "$0.01$",
+        "Explanation": "Correct: predict + if $p(+|x) > C_{FP}/(C_{FP} + C_{FN}) = 1/100 = 0.01$."
+      },
+      {
+        "label": "D",
+        "text": "$0.0101$",
+        "Explanation": "This uses $1/99$; the denominator is the sum of both costs, $1 + 99$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the expected cost of predicting +, $(1 - p)C_{FP}$, with that of predicting -, $p\\,C_{FN}$.",
+    "course": "COM6004",
+    "week": "4B"
+  },
+  {
+    "question": "Which description of evaluation methods is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Leave-one-out cross-validation uses $k = 2$ folds.",
+        "Explanation": "Leave-one-out uses $k = n$, one record per test fold."
+      },
+      {
+        "label": "B",
+        "text": "Random subsampling repeats the holdout method several times.",
+        "Explanation": "Correct: random subsampling is repeated holdout."
+      },
+      {
+        "label": "C",
+        "text": "The holdout method trains on 1/3 of the data and tests on 2/3.",
+        "Explanation": "It is the other way around: 2/3 for training and 1/3 for testing."
+      },
+      {
+        "label": "D",
+        "text": "In $k$-fold cross-validation, the folds overlap so every record is tested $k$ times.",
+        "Explanation": "The $k$ subsets are disjoint, and each record is tested exactly once."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall the definitions of holdout, random subsampling and cross-validation.",
+    "course": "COM6004",
+    "week": "4B"
   }
 ]

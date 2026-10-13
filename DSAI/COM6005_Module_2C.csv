@@ -13,3 +13,12 @@ What does the fit=True argument do when executing sm.qqplot()?,It automatically 
 "What visual feature does line=""45"" add to a QQ-plot generated with statsmodels?",It adds a $45$-degree reference line for comparing empirical quantiles against theoretical quantiles.
 Which SciPy statistical function performs a test for the null hypothesis that a sample comes from a normal distribution?,The function scipy.stats.normaltest() performs this test.
 How is a theoretical normal density curve overlay generated for x-values using SciPy and Matplotlib?,"By plotting the x-coordinates against plt.plot(x, norm.pdf(x, loc=0, scale=1))."
+Which assumption about the error terms underlies the statistical methods of linear regression?,"That the errors (residuals) follow a bell-shaped, normal distribution."
+Why is a QQ-plot preferred over overlaying a normal curve on a histogram?,It is a more abstract but more precise way to compare the data with the ideal distribution.
+Can a QQ-plot compare data with distributions other than the normal?,"Yes; the normal is the usual reference, but other theoretical distributions can be used."
+Which two attributes of the result of `stats.normaltest(...)` are printed in the lecture?,`res.statistic` (the test statistic) and `res.pvalue` (the p-value).
+"Besides $np \ge 10$ and $n(1-p) \ge 10$, what weaker threshold do some sources use for the normal approximation to the Binomial?",$5$ instead of $10$: $np \ge 5$ and $n(1-p) \ge 5$.
+What is the continuity correction when approximating $P(X \le k)$ for a Binomial with a normal distribution?,"Use $P(Y \le k + 0.5)$: the discrete value $k$ is spread over $[k-0.5, k+0.5]$."
+What is the formula for standardising a normal value $x$ into a $z$-score?,$z = \frac{x - \mu}{\sigma}$
+"How do you compute $P(a < X < b)$ for $X \sim N(\mu, \sigma^2)$ in SciPy?","`norm.cdf(b, mu, sigma) - norm.cdf(a, mu, sigma)`"
+What does 'simulation' of a normal distribution mean?,Generating random numbers by computer that look like real normally-distributed data.

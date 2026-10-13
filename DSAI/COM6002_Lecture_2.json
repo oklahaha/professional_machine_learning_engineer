@@ -346,5 +346,253 @@
     "hints": "Identify who initiates the transaction when data needs to move from source to destination.",
     "course": "COM6002",
     "week": "2"
+  },
+  {
+    "question": "A developer argues: \"Use POST instead of GET because POST encrypts the request body.\" Which assessment is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The reasoning is right: POST bodies are always encrypted, while GET URLs never are",
+        "Explanation": "Incorrect. Over plain HTTP neither is encrypted; over HTTPS both are."
+      },
+      {
+        "label": "B",
+        "text": "The reasoning is wrong: GET is more secure because URLs are hashed by the browser",
+        "Explanation": "Incorrect. Browsers do not hash URLs; URLs are stored and displayed in readable form."
+      },
+      {
+        "label": "C",
+        "text": "The reasoning is right, but only when the body is in JSON format",
+        "Explanation": "Incorrect. The Content-Type of the body has nothing to do with encryption."
+      },
+      {
+        "label": "D",
+        "text": "The reasoning is wrong: encryption comes from HTTPS, which both GET and POST can use",
+        "Explanation": "Correct. POST is only slightly more secure because parameters stay out of the URL that is logged in history, bookmarks and the developer console, not because of encryption."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider which protocol actually provides encryption.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "One event must be delivered to 50 downstream services. Why does a Pub/Sub broker scale better than Webhooks here?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The producer publishes once to the broker and the distributed cluster handles fan-out to subscribers",
+        "Explanation": "Correct. With Webhooks the source must manage an individual HTTP POST to every destination, whereas Pub/Sub moves fan-out to the broker."
+      },
+      {
+        "label": "B",
+        "text": "Webhooks cannot send data to more than one destination",
+        "Explanation": "Incorrect. A source can call many webhook URLs; it just has to manage each call itself."
+      },
+      {
+        "label": "C",
+        "text": "Pub/Sub messages are smaller because they omit the payload",
+        "Explanation": "Incorrect. Pub/Sub messages carry the full event record."
+      },
+      {
+        "label": "D",
+        "text": "Pub/Sub uses a two-party architecture with fewer network hops",
+        "Explanation": "Incorrect. Pub/Sub has three parties (producer, broker, consumer); Webhooks have two."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Count how many HTTP calls the source itself has to make in each design.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "A client connected to a streaming price feed loses connectivity for a few seconds and misses several messages. Why is this a bigger problem than missing a RESTful response?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Streaming servers resend every missed message automatically, causing duplicates",
+        "Explanation": "Incorrect. A plain stream does not replay missed messages; that is a property of persistent Pub/Sub brokers."
+      },
+      {
+        "label": "B",
+        "text": "RESTful responses are encrypted while streaming messages are not",
+        "Explanation": "Incorrect. Encryption depends on the transport (e.g., TLS), not on REST versus streaming."
+      },
+      {
+        "label": "C",
+        "text": "Streaming messages are usually deltas, so the client's reconstructed state becomes wrong",
+        "Explanation": "Correct. Streaming is stateful: each message changes previously received state, so gaps corrupt the local picture until it is resynchronised."
+      },
+      {
+        "label": "D",
+        "text": "Streaming connections end automatically after one message",
+        "Explanation": "Incorrect. A stream stays open until the client stops it; it delivers multiple messages."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about what each streaming message usually contains.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Binance publishes delisting announcements on its website, but they are not offered through its API. Which API concern does this illustrate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Rate limiting",
+        "Explanation": "Incorrect. Rate limiting restricts how often you may call an endpoint, not which data it offers."
+      },
+      {
+        "label": "B",
+        "text": "Data quality",
+        "Explanation": "Incorrect. Data quality concerns wrong values, such as a price 10 times too high."
+      },
+      {
+        "label": "C",
+        "text": "Data availability",
+        "Explanation": "Correct. Not all data are provided via the API, so web scraping or an automated browser is needed."
+      },
+      {
+        "label": "D",
+        "text": "HTTP 404 Not Found",
+        "Explanation": "Incorrect. A 404 is a response code for a missing resource, not a description of an API's coverage."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The data exists; the question is whether the API exposes it.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "A paid provider's sentiment metric for a coin stayed positive after the coin collapsed. Which API concern does this illustrate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Data quality",
+        "Explanation": "Correct. The lecture cites a sentiment feed still positive after the LUNA incident as a data quality problem with paid providers."
+      },
+      {
+        "label": "B",
+        "text": "Rate limiting",
+        "Explanation": "Incorrect. Nothing was throttled; the values themselves were questionable."
+      },
+      {
+        "label": "C",
+        "text": "Data availability",
+        "Explanation": "Incorrect. The data was available through the API; it was simply unreliable."
+      },
+      {
+        "label": "D",
+        "text": "Network latency",
+        "Explanation": "Incorrect. Latency concerns delay, not whether the values make sense."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The data was delivered on time and in full; was it right?",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Three consumers subscribe to a Kafka topic. A producer publishes one event to that topic. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The producer must send three copies, one per consumer",
+        "Explanation": "Incorrect. That describes Webhooks; in Pub/Sub the broker handles fan-out."
+      },
+      {
+        "label": "B",
+        "text": "Only the first consumer to read the event receives it, and the event is then deleted",
+        "Explanation": "Incorrect. Pub/Sub messages are persistent and replayable."
+      },
+      {
+        "label": "C",
+        "text": "The event is lost unless all three consumers are online at that moment",
+        "Explanation": "Incorrect. Messages are stored on disk, so consumers can read them later."
+      },
+      {
+        "label": "D",
+        "text": "The producer sends it once; each of the three consumers receives the message",
+        "Explanation": "Correct. Each consumer of a topic gets new messages, and the producer does not need to know how many consumers exist."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Recall what the producer knows, and what each subscriber receives.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "A team needs accurate, structured product prices from a website whose layout rarely changes. Which extraction method best fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Converting the whole page to plain text",
+        "Explanation": "Incorrect. This is generic but produces unstructured text of limited clarity."
+      },
+      {
+        "label": "B",
+        "text": "Manually mapping the HTML structure to the fields to extract",
+        "Explanation": "Correct. Mapping the HTML structure is the most accurate and gives structured data; its weakness (breaking on layout changes) matters little for a stable site."
+      },
+      {
+        "label": "C",
+        "text": "Sending screenshots to a vision-enabled LLM",
+        "Explanation": "Incorrect. Each extraction is an LLM call, which is expensive and may be less reliable."
+      },
+      {
+        "label": "D",
+        "text": "Reading the site's robots.txt file",
+        "Explanation": "Incorrect. robots.txt states which paths bots may access; it contains no product data."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Weigh accuracy and structure against generality.",
+    "course": "COM6002",
+    "week": "2"
+  },
+  {
+    "question": "Which of the following is an example of an internal data source for a retailer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Prices fetched from a third-party market-data API",
+        "Explanation": "Incorrect. A third-party API is an external source."
+      },
+      {
+        "label": "B",
+        "text": "Transactions recorded by its own Point-of-Sale system",
+        "Explanation": "Correct. Data captured by internal systems such as POS is internal data, accessed through database CRUD operations."
+      },
+      {
+        "label": "C",
+        "text": "Product reviews scraped from a competitor's website",
+        "Explanation": "Incorrect. Web scraping collects external data."
+      },
+      {
+        "label": "D",
+        "text": "Stock levels read from a business partner's database",
+        "Explanation": "Incorrect. A partner's database is listed as an external source."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Internal means captured by the organisation's own systems.",
+    "course": "COM6002",
+    "week": "2"
   }
 ]

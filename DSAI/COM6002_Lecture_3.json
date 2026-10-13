@@ -346,5 +346,315 @@
     "hints": "Consider the specific ACID rule that guarantees committed state changes are never lost.",
     "course": "COM6002",
     "week": "3"
+  },
+  {
+    "question": "Instagram has about 3 billion user accounts. If a program scans 100 million records per second, how long does a full linear scan take, and roughly how many steps does a balanced $O(\\lg n)$ index search need instead?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 3 seconds for the scan; about 9 steps for the index",
+        "Explanation": "Incorrect. The scan is off by a factor of 10, and 9 is roughly $\\log_{10}$ of 3 billion, not $\\lg$."
+      },
+      {
+        "label": "B",
+        "text": "About 30 seconds for the scan; about 3 billion steps for the index",
+        "Explanation": "Incorrect. An index search is logarithmic, not linear, in the number of records."
+      },
+      {
+        "label": "C",
+        "text": "About 30 seconds for the scan; about 32 steps for the index",
+        "Explanation": "Correct. $3\\times10^9 \\div 10^8 = 30$ s, while $\\lg(3\\times10^9) \\approx 31.5$, so about 32 halvings suffice."
+      },
+      {
+        "label": "D",
+        "text": "About 300 seconds for the scan; about 1 step for the index",
+        "Explanation": "Incorrect. The scan time is 30 s, and a tree search costs $O(\\lg n)$, not $O(1)$, in general."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Divide for the scan; for the index, ask how many times 3 billion can be halved.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "In a knockout tournament with 64 players, each game eliminates one player and many games run in parallel per round. How many rounds and how many games are needed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "6 rounds and 32 games",
+        "Explanation": "Incorrect. 32 is only the number of games in the first round."
+      },
+      {
+        "label": "B",
+        "text": "63 rounds and 63 games",
+        "Explanation": "Incorrect. Games within a round run in parallel, so rounds grow as $\\lg n$, not $n$."
+      },
+      {
+        "label": "C",
+        "text": "6 rounds and 63 games",
+        "Explanation": "Correct. Rounds are $\\lg 64 = 6$ ($O(\\lg n)$), and 63 players must each lose once, so 63 games ($O(n)$)."
+      },
+      {
+        "label": "D",
+        "text": "32 rounds and 64 games",
+        "Explanation": "Incorrect. The number of rounds halves the field each time, and a champion never loses, so there are $n-1$ games."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Each round halves the players; each game removes exactly one player.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Account X starts at 1000. Transaction T1 increases X by 1%; T2 decreases X by 100. Which final values count as correct results?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Only 910, because T1 started first",
+        "Explanation": "Incorrect. Every serial order is deemed correct, regardless of which transaction started first."
+      },
+      {
+        "label": "B",
+        "text": "Both 910 and 909",
+        "Explanation": "Correct. T1 then T2 gives $1010 - 100 = 910$; T2 then T1 gives $900 \\times 1.01 = 909$. Both are serial executions, so both are correct."
+      },
+      {
+        "label": "C",
+        "text": "Only 909, because subtraction must precede percentages",
+        "Explanation": "Incorrect. There is no required operation order; either serial execution is correct."
+      },
+      {
+        "label": "D",
+        "text": "1010 or 900, depending on which update is lost",
+        "Explanation": "Incorrect. These are lost-update results from incorrect interleavings, not serial results."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Run the two transactions one by one, in each possible order.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "X = 100 and Y = 100. ATM 1 runs `X = X + 100; Y = Y - 100` and ATM 2 runs `Y = Y + 100; X = X - 100`. Interleaved without locking, ATM 2 reads X = 200 but ATM 1 had read Y = 100 before ATM 2 wrote Y = 200, so the database ends at X = 100, Y = 0. Why is this result wrong?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The total dropped from 200 to 100, so one transaction's update was lost",
+        "Explanation": "Correct. Any serial execution leaves X = 100 and Y = 100 (total 200); the interleaving overwrote updates based on stale reads."
+      },
+      {
+        "label": "B",
+        "text": "It is correct, because each ATM's transaction was itself correct",
+        "Explanation": "Incorrect. Individually correct transactions can still produce incorrect results when interleaved without concurrency control."
+      },
+      {
+        "label": "C",
+        "text": "It is wrong only because Y became zero, which is not allowed",
+        "Explanation": "Incorrect. A zero balance is legal; the problem is that the result matches no serial execution."
+      },
+      {
+        "label": "D",
+        "text": "It is wrong because the ATMs should have used delta logging",
+        "Explanation": "Incorrect. Logging concerns recovery, not the correctness of concurrent execution."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compare the total money before and after.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Initially all values are 0. The log reads: `T3`, `T3, X, 12`, `T1`, `T3, Y, 10`, `T2`, `T1, A, 60`, `T1, B, 30`, `T3, Z, 8`, `T2, M, 100`, `T3 commit`, then a crash. What are A, M, X and Z after recovery?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A = 0, M = 0, X = 12, Z = 8",
+        "Explanation": "Correct. T3 committed, so its updates (X = 12, Y = 10, Z = 8) are redone; T1 and T2 are incomplete, so A, B and M are undone back to 0."
+      },
+      {
+        "label": "B",
+        "text": "A = 60, M = 100, X = 12, Z = 8",
+        "Explanation": "Incorrect. T1 and T2 never committed, so their writes to A and M must be undone."
+      },
+      {
+        "label": "C",
+        "text": "A = 0, M = 0, X = 12, Z = 0",
+        "Explanation": "Incorrect. Z = 8 was written by committed T3, so it must be redone even if it had not reached the disk."
+      },
+      {
+        "label": "D",
+        "text": "A = 0, M = 0, X = 0, Z = 0",
+        "Explanation": "Incorrect. T3 committed before the crash, so Durability requires its effects to survive."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Only transactions with a commit record keep their effects.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "A query asks for students who got grade A in module COM6104. Which single index lets the RDBMS go straight to the matching record pointers?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A B+ tree index on module code only",
+        "Explanation": "Incorrect. It finds all COM6104 records, which must still be checked for grade A."
+      },
+      {
+        "label": "B",
+        "text": "A B+ tree index on grade only",
+        "Explanation": "Incorrect. It finds all A grades in every module, which must still be filtered by module."
+      },
+      {
+        "label": "C",
+        "text": "An inverted index on student ID",
+        "Explanation": "Incorrect. Inverted indices support keyword search, and student ID is not a condition of this query."
+      },
+      {
+        "label": "D",
+        "text": "A B+ tree index on the composite key (module code, grade)",
+        "Explanation": "Correct. The composite key (COM6104, A) points exactly to the matching records, with no further filtering."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Which index's key matches both conditions of the query at once?",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Which index type is the best fit for the query \"find all restaurants within 1 km of me\"?",
+    "options": [
+      {
+        "label": "A",
+        "text": "R-tree",
+        "Explanation": "Correct. R-trees index multi-dimensional spatial data for queries such as nearest object or objects within a distance."
+      },
+      {
+        "label": "B",
+        "text": "B+ tree",
+        "Explanation": "Incorrect. B / B+ trees support one-dimensional search."
+      },
+      {
+        "label": "C",
+        "text": "Inverted index",
+        "Explanation": "Incorrect. Inverted indices map terms to documents for keyword search."
+      },
+      {
+        "label": "D",
+        "text": "Hash of the restaurant name",
+        "Explanation": "Incorrect. Name lookup does not support distance queries."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The query involves more than one dimension.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Which statement about logging updates as before-after values versus delta values is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Delta values need more storage but make recovery simpler",
+        "Explanation": "Incorrect. Deltas are smaller, and they complicate recovery."
+      },
+      {
+        "label": "B",
+        "text": "Both need the same storage, but delta values cannot be undone",
+        "Explanation": "Incorrect. Deltas can be undone by reversing them, provided you know whether they were applied."
+      },
+      {
+        "label": "C",
+        "text": "Before-after values make the log unnecessary at commit time",
+        "Explanation": "Incorrect. Every log format still needs start and commit records."
+      },
+      {
+        "label": "D",
+        "text": "Before-after values need more storage but make recovery more straightforward",
+        "Explanation": "Correct. Storing (x, 10, 15) costs more space, but recovery can directly restore or reapply values; deltas (x, +5) need a mechanism to tell whether the disk holds the before or after value."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider what you need to know about the disk value during recovery.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "With fuzzy checkpoints, the latest checkpoint before a crash lists running transactions {T2, T5}. Scanning backwards from the crash, which transactions may require scanning past that checkpoint?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No transactions; recovery always stops at the latest checkpoint",
+        "Explanation": "Incorrect. That holds for blocking checkpoints; fuzzy checkpoints do not stop running transactions."
+      },
+      {
+        "label": "B",
+        "text": "Only T2 and T5",
+        "Explanation": "Correct. Committed work before the checkpoint is already in the snapshot; only the transactions running at the checkpoint may have earlier log entries to chase."
+      },
+      {
+        "label": "C",
+        "text": "Every transaction in the whole log",
+        "Explanation": "Incorrect. Checkpoints exist precisely to avoid scanning the entire log."
+      },
+      {
+        "label": "D",
+        "text": "Only transactions that started after the checkpoint",
+        "Explanation": "Incorrect. Those transactions' entries all lie after the checkpoint, so no further scanning is needed for them."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Transactions that committed before the checkpoint are already in its image.",
+    "course": "COM6002",
+    "week": "3"
+  },
+  {
+    "question": "Why should you not rely on the RDBMS query optimizer to make every query efficient?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It ignores indices and always performs a full scan",
+        "Explanation": "Incorrect. Choosing between index-based and scan-based plans is its job."
+      },
+      {
+        "label": "B",
+        "text": "It handles rewriting of simple patterns (e.g., filter-join) but has a hard time with complex queries",
+        "Explanation": "Correct. So the recommendation is to write efficient SQL yourself and build indices based on your usage."
+      },
+      {
+        "label": "C",
+        "text": "It has no statistics about the database",
+        "Explanation": "Incorrect. It keeps statistics such as the number of records."
+      },
+      {
+        "label": "D",
+        "text": "It can only run after the query has been executed once",
+        "Explanation": "Incorrect. The optimizer picks a plan before execution."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about which query shapes it can rewrite.",
+    "course": "COM6002",
+    "week": "3"
   }
 ]

@@ -269,7 +269,7 @@ export default function DsaiQuizApp() {
     goto(0);
   }
 
-  // Keys: A–D or 1–4 pick, Enter checks, ←/→ move, h shows the hint.
+  // Keys: A–D or 1–4 pick, Enter checks, ←/→ move, h toggles the hint.
   useEffect(() => {
     if (!hydrated) return;
     function onKey(e: KeyboardEvent) {
@@ -288,7 +288,7 @@ export default function DsaiQuizApp() {
         check();
       } else if (k === "arrowright") goto(pos + 1);
       else if (k === "arrowleft") goto(pos - 1);
-      else if (k === "h" && q.hint) setHintShown(true);
+      else if (k === "h" && q.hint && !revealed) setHintShown((v) => !v);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -388,7 +388,7 @@ export default function DsaiQuizApp() {
           onSelect={select}
           onCheck={check}
           onClear={clearCurrent}
-          onHint={() => setHintShown(true)}
+          onHint={() => setHintShown((v) => !v)}
         />
       )}
 

@@ -15,7 +15,7 @@ type Props = {
   onSelect: (label: string) => void;
   onCheck: () => void;
   onClear: () => void;
-  onHint: () => void;
+  onHint: () => void; // toggles the hint open/closed
 };
 
 function sameSet(a: string[], b: string[]) {
@@ -78,23 +78,23 @@ export default function McqCard({
 
         {question.hint && !revealed && (
           <div className="mt-4">
-            {hintShown ? (
-              <div className="animate-verdict-in rounded-xl border border-iris/30 bg-iris/5 px-4 py-3">
-                <div className="mb-1 font-mono text-[10px] uppercase tracking-widest text-iris/90">
-                  hint
-                </div>
+            <button
+              type="button"
+              onClick={onHint}
+              aria-expanded={hintShown}
+              className="rounded-lg border border-iris/30 bg-iris/10 px-2.5 py-1 font-mono text-[11px] text-iris transition hover:bg-iris/20"
+            >
+              <span aria-hidden className="mr-1 inline-block transition-transform">
+                {hintShown ? "▾" : "▸"}
+              </span>
+              {hintShown ? "hide hint" : "show hint"} <span className="text-iris/50">· h</span>
+            </button>
+            {hintShown && (
+              <div className="animate-verdict-in mt-2 rounded-xl border border-iris/30 bg-iris/5 px-4 py-3">
                 <p className="font-sans text-sm leading-relaxed text-paperdim">
                   <RichText text={question.hint} />
                 </p>
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={onHint}
-                className="rounded-lg border border-iris/30 bg-iris/10 px-2.5 py-1 font-mono text-[11px] text-iris transition hover:bg-iris/20"
-              >
-                ? show hint <span className="text-iris/50">· h</span>
-              </button>
             )}
           </div>
         )}

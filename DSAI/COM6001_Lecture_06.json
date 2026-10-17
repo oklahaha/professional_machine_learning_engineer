@@ -4,22 +4,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df['col'].nunique(dropna=True) == 1",
+        "text": "`df['col'].nunique(dropna=True) == 1`",
         "Explanation": "Counting unique values while ignoring nulls returns 1 when all non-null entries in that column are identical."
       },
       {
         "label": "B",
-        "text": "df['col'].duplicated().sum() == 0",
+        "text": "`df['col'].duplicated().sum() == 0`",
         "Explanation": "Summing duplicates to 0 indicates that every single value in the column is completely unique, rather than identical."
       },
       {
         "label": "C",
-        "text": "df['col'].isna().sum() == 1",
+        "text": "`df['col'].isna().sum() == 1`",
         "Explanation": "Checking if the missing value sum equals 1 only indicates the count of missing entries, not the variance of non-null values."
       },
       {
         "label": "D",
-        "text": "df['col'].compare(df['col']) == 0",
+        "text": "`df['col'].compare(df['col']) == 0`",
         "Explanation": "Comparing a column against itself yields an empty comparison regardless of how many distinct values exist in the column."
       }
     ],
@@ -33,22 +33,22 @@
     "options": [
       {
         "label": "A",
-        "text": "Check if df[['col1', 'col2']].value_counts() yields exactly 3 total row combinations.",
+        "text": "Check if `df[['col1', 'col2']].value_counts()` yields exactly 3 total row combinations.",
         "Explanation": "When two columns are one-to-one mapped, the number of distinct value combinations across rows must match the number of unique individual categories."
       },
       {
         "label": "B",
-        "text": "Verify that df['col1'].nunique() is equal to df['col2'].nunique().",
+        "text": "Verify that `df['col1'].nunique()` is equal to `df['col2'].nunique()`.",
         "Explanation": "Having the same count of unique values in both columns is a necessary prerequisite but does not guarantee that specific values always pair exclusively together."
       },
       {
         "label": "C",
-        "text": "Compare df['col1'] == df['col2'] and check if all resulting values are True.",
+        "text": "Compare `df['col1']` == `df['col2']` and check if all resulting values are True.",
         "Explanation": "Checking equality only tests whether both columns hold identical string names, not whether different labels map one-to-one."
       },
       {
         "label": "D",
-        "text": "Check if df[['col1', 'col2']].drop_duplicates() returns more rows than df['col1'].nunique().",
+        "text": "Check if `df[['col1', 'col2']].drop_duplicates()` returns more rows than `df['col1'].nunique()`.",
         "Explanation": "If the dropped duplicates DataFrame has more rows than individual unique values, it proves that at least one category is paired with multiple distinct values."
       }
     ],
@@ -63,12 +63,12 @@
       {
         "label": "A",
         "text": "The first occurrence of a duplicate row is marked False, while subsequent identical rows are marked True.",
-        "Explanation": "By default, keep='first' considers the initial sighting of a record valid (False for duplicate) and flags all subsequent identical rows as duplicates (True)."
+        "Explanation": "By default, `keep='first'` considers the initial sighting of a record valid (False for duplicate) and flags all subsequent identical rows as duplicates (True)."
       },
       {
         "label": "B",
         "text": "All occurrences of duplicate rows, including the first one, are marked True.",
-        "Explanation": "Marking every repeated row True occurs when keep=False is passed, which flags all copies for complete removal."
+        "Explanation": "Marking every repeated row True occurs when `keep=False` is passed, which flags all copies for complete removal."
       },
       {
         "label": "C",
@@ -78,7 +78,7 @@
       {
         "label": "D",
         "text": "The final occurrence is marked False, while all preceding copies are marked True.",
-        "Explanation": "Preserving the final occurrence and flagging earlier copies requires setting the parameter to keep='last'."
+        "Explanation": "Preserving the final occurrence and flagging earlier copies requires setting the parameter to `keep='last'`."
       }
     ],
     "answers": ["A"],
@@ -102,7 +102,7 @@
       {
         "label": "C",
         "text": "It drops columns that have fewer than 18 non-null entries.",
-        "Explanation": "Operating along axis=0 applies the dropping operation across rows rather than columns."
+        "Explanation": "Operating along `axis=0` applies the dropping operation across rows rather than columns."
       },
       {
         "label": "D",
@@ -149,22 +149,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df[cat_cols].mode().loc[0]",
-        "Explanation": "Calling mode() calculates the most frequent values, and selecting row index 0 returns a Series indexed by column names containing top categories."
+        "text": "`df[cat_cols].mode().loc[0]`",
+        "Explanation": "Calling `mode()` calculates the most frequent values, and selecting row index 0 returns a Series indexed by column names containing top categories."
       },
       {
         "label": "B",
-        "text": "df[cat_cols].mean()",
+        "text": "`df[cat_cols].mean()`",
         "Explanation": "Mean calculations require numerical data and cannot be computed on categorical or string columns."
       },
       {
         "label": "C",
-        "text": "df[cat_cols].value_counts()[0]",
-        "Explanation": "Calling value_counts() on a multi-column DataFrame returns counts of row combinations rather than a single mode per column."
+        "text": "`df[cat_cols].value_counts()[0]`",
+        "Explanation": "Calling `value_counts()` on a multi-column DataFrame returns counts of row combinations rather than a single mode per column."
       },
       {
         "label": "D",
-        "text": "df[cat_cols].nunique().idxmax()",
+        "text": "`df[cat_cols].nunique().idxmax()`",
         "Explanation": "This returns the column label with the highest number of distinct categories rather than the most frequent category values themselves."
       }
     ],
@@ -183,17 +183,17 @@
       },
       {
         "label": "B",
-        "text": "Passing inplace=True directly as an argument to fit_transform().",
+        "text": "Passing `inplace=True` directly as an argument to `fit_transform()`.",
         "Explanation": "Scikit-Learn estimators do not support an inplace parameter; they return transformed arrays."
       },
       {
         "label": "C",
-        "text": "Calling the SimpleImputer.to_dataframe() conversion method.",
-        "Explanation": "SimpleImputer does not possess a built-in method named to_dataframe()."
+        "text": "Calling the `SimpleImputer.to_dataframe()` conversion method.",
+        "Explanation": "SimpleImputer does not possess a built-in method named `to_dataframe()`."
       },
       {
         "label": "D",
-        "text": "Executing df.update_imputer() on the pandas object.",
+        "text": "Executing `df.update_imputer()` on the pandas object.",
         "Explanation": "Pandas DataFrames do not have an update_imputer method."
       }
     ],
@@ -294,22 +294,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df.select_dtypes(exclude='number').columns",
-        "Explanation": "Passing exclude='number' filters out integer and floating-point columns, isolating categorical and string columns."
+        "text": "`df.select_dtypes(exclude='number').columns`",
+        "Explanation": "Passing `exclude='number'` filters out integer and floating-point columns, isolating categorical and string columns."
       },
       {
         "label": "B",
-        "text": "df.select_dtypes(include='string').columns",
+        "text": "`df.select_dtypes(include='string').columns`",
         "Explanation": "Categorical columns in pandas are often stored under object dtype, so filtering strictly by 'string' may miss object columns."
       },
       {
         "label": "C",
-        "text": "df.filter(items=['categorical']).columns",
+        "text": "`df.filter(items=['categorical']).columns`",
         "Explanation": "The filter method selects specific matching column names rather than filtering by underlying data types."
       },
       {
         "label": "D",
-        "text": "df.drop_types(include='number').columns",
+        "text": "`df.drop_types(include='number').columns`",
         "Explanation": "Pandas DataFrames do not feature a method named drop_types."
       }
     ],
@@ -324,17 +324,17 @@
       {
         "label": "A",
         "text": "Every column containing at least one missing value is completely removed.",
-        "Explanation": "By default along axis=1, dropna removes any column that contains any missing entries."
+        "Explanation": "By default along `axis=1`, dropna removes any column that contains any missing entries."
       },
       {
         "label": "B",
         "text": "Every row containing at least one missing value is completely removed.",
-        "Explanation": "Dropping rows is the behavior when operating along axis=0."
+        "Explanation": "Dropping rows is the behavior when operating along `axis=0`."
       },
       {
         "label": "C",
         "text": "Only columns where 100% of the values are missing are removed.",
-        "Explanation": "Removing only fully empty columns requires explicitly setting how='all'."
+        "Explanation": "Removing only fully empty columns requires explicitly setting `how='all'`."
       },
       {
         "label": "D",

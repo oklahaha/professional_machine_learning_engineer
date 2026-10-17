@@ -72,12 +72,12 @@
       },
       {
         "label": "C",
-        "text": "!==",
+        "text": "`!==`",
         "Explanation": "Strict equality operators like `!==` belong to languages like JavaScript rather than standard SQL syntax."
       },
       {
         "label": "D",
-        "text": "NOT=",
+        "text": "`NOT=`",
         "Explanation": "SQL uses the keyword `NOT` prior to full logical conditions, but `NOT=` is invalid operator syntax."
       }
     ],

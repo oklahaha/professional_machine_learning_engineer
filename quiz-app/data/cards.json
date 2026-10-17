@@ -6150,6 +6150,846 @@
     "deck": "COM6004_Chapter_4B"
   },
   {
+    "id": "4ec6da5e9706",
+    "front": "What is the main distinction between agglomerative and divisive hierarchical clustering?",
+    "back": "Agglomerative starts with individual points as clusters and merges them, while divisive starts with one all-inclusive cluster and splits it.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "54ccfacd159e",
+    "front": "How is inter-cluster distance calculated in MIN (Single Link) hierarchical clustering?",
+    "back": "It is defined as the distance between the two closest points belonging to different clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "66557e8e38bb",
+    "front": "Why can merge decisions made during hierarchical clustering be problematic in subsequent steps?",
+    "back": "Once two clusters are merged (or split), the decision cannot be undone at later steps.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "fc810de4a899",
+    "front": "What is the relationship between Between-Cluster Sum of Squares (BSS) and Within-Cluster Sum of Squares (WSS/SSE)?",
+    "back": "For a fixed dataset, $\\text{BSS} + \\text{WSS} = \\text{constant}$, meaning maximizing separation (BSS) minimizes cohesion error (WSS).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "ad14aac47836",
+    "front": "What is the standard time complexity for traditional hierarchical clustering algorithms, and to what can it be reduced?",
+    "back": "Standard time complexity is $O(N^3)$, which can be reduced to $O(N^2 \\log N)$ with optimized data structures.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "f01d8d795fa8",
+    "front": "How is inter-cluster proximity determined in the Distance Between Centroids approach?",
+    "back": "It is measured as the distance between the centroid (mean) of the first cluster and the centroid of the second cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "02d5e279a752",
+    "front": "How is inter-cluster distance defined in MAX (Complete Link) hierarchical clustering?",
+    "back": "It is defined as the distance between the two most distant points belonging to different clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "e5f1d6383050",
+    "front": "How is a noise point defined in the DBSCAN algorithm?",
+    "back": "Any point that is neither a core point nor a border point.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "9017afd1d466",
+    "front": "Why is Group Average considered a compromise between MIN and MAX linkage methods?",
+    "back": "It averages all pairwise distances, so no single closest pair (MIN) or farthest pair (MAX) decides a merge. Like MAX it is less susceptible to noise and outliers than MIN, but it is still biased towards globular clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "29168d4c24c1",
+    "front": "How does K-means define each cluster center?",
+    "back": "Each cluster is associated with a centroid, which is typically the mean of all points assigned to that cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "fd4d08d80fd5",
+    "front": "What structural limitations does basic K-means face regarding data distributions?",
+    "back": "It struggles when clusters have differing sizes, differing densities, non-globular shapes, or when outliers are present.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "2184e03afe3f",
+    "front": "How does increasing the number of clusters $K$ affect the Sum of Squared Error (SSE)?",
+    "back": "The best achievable SSE never increases as $K$ grows, reaching zero when $K$ equals the number of points. So increasing $K$ is an easy way to cut SSE, but a good clustering with smaller $K$ can still have lower SSE than a poor clustering with larger $K$.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "63ea2367bca9",
+    "front": "How does hierarchical clustering differ from partitional clustering?",
+    "back": "Hierarchical clustering produces a set of nested clusters organized as a hierarchical tree, whereas partitional clustering produces a single flat division of non-overlapping subsets.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "349ad3aa6759",
+    "front": "What is a partitional clustering?",
+    "back": "A division of data objects into non-overlapping subsets such that each data object is in exactly one subset.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "f575b5d5b0f9",
+    "front": "In cluster analysis, how are intra-cluster and inter-cluster distances optimized?",
+    "back": "Intra-cluster distances are minimized, while inter-cluster distances are maximized.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8749fd7969c2",
+    "front": "What graphical technique is used to determine the parameters $\\text{Eps}$ and $\\text{MinPts}$ in DBSCAN?",
+    "back": "Plotting the sorted distance of every point to its $k$-th nearest neighbor and identifying the sharp bend (knee) in the curve.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "346e127c40f1",
+    "front": "What is the space complexity of traditional hierarchical clustering for $N$ data points?",
+    "back": "$O(N^2)$, because it requires storing the $N \\times N$ proximity matrix.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "4b5ef3a9e634",
+    "front": "How is inter-cluster distance computed in the Group Average approach?",
+    "back": "It is computed as the average of all pairwise distances between points in the two distinct clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "3e54f258bb06",
+    "front": "Term: Dendrogram",
+    "back": "A tree-like diagram that records the sequence of merges or splits in a hierarchical clustering algorithm.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "9741e73ca9bf",
+    "front": "What is a primary strength of the MIN (Single Link) distance metric in hierarchical clustering?",
+    "back": "It can handle non-elliptical or arbitrarily shaped clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "0a589e38a0e5",
+    "front": "What is a key practical advantage of using a dendrogram for cluster selection?",
+    "back": "Any desired number of clusters can be obtained by cutting the dendrogram at the appropriate height level without re-running the algorithm.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "5685723e5029",
+    "front": "How can K-means be adapted to capture natural clusters with non-globular shapes or differing sizes?",
+    "back": "By finding a larger number of small sub-clusters ($K$ higher than true clusters) and merging them in a post-processing step.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "693c088b46e3",
+    "front": "How is the Silhouette Coefficient $s$ for an individual point $i$ calculated?",
+    "back": "$s = \\frac{b - a}{\\max(a, b)}$, where $a$ is the average intra-cluster distance and $b$ is the minimum average distance to another cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "a491125b3795",
+    "front": "What shape bias does MAX (Complete Link) hierarchical clustering exhibit?",
+    "back": "It tends to break large clusters and is strongly biased toward finding globular clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "a47df526cd12",
+    "front": "What is the algorithmic time complexity of basic K-means per iteration?",
+    "back": "$O(n \\cdot K \\cdot d)$ per iteration (every point compared with every centroid over all attributes), so $O(n \\cdot K \\cdot I \\cdot d)$ in total for $I$ iterations — linear in $n$.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8e18b68b1c4c",
+    "front": "In fuzzy clustering, what restriction is placed on the membership weights of a single point?",
+    "back": "A point belongs to every cluster with a weight between 0 and 1, and the sum of these weights across all clusters must equal 1.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "31f29d3be988",
+    "front": "Under what primary conditions does DBSCAN struggle to identify true clusters?",
+    "back": "When clusters have widely varying densities or when dealing with high-dimensional data.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "bb719baafd75",
+    "front": "What defines a center-based cluster?",
+    "back": "A set of objects where every object is closer (or more similar) to the center of its cluster than to the center of any other cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "7a353f9a0863",
+    "front": "What is the main weakness of MIN (Single Link) hierarchical clustering?",
+    "back": "It is highly sensitive to noise and outliers, which can cause undesirable chaining of clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "dd7eaa414ae1",
+    "front": "In cluster validation, what does an ideal similarity matrix contain for a dataset?",
+    "back": "An entry of 1 if the corresponding pair of points belongs to the same cluster, and 0 if they belong to different clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8c80d571ebfc",
+    "front": "What formula measures cluster cohesion in K-means using Sum of Squared Error (SSE)?",
+    "back": "$\\text{SSE} = \\sum_{i=1}^{K} \\sum_{x \\in C_i} \\|x - m_i\\|^2$, where $m_i$ is the centroid of cluster $C_i$.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "540b25513fd4",
+    "front": "What is a border point in DBSCAN?",
+    "back": "A point that is not a core point itself, but falls within the $\\text{Eps}$-neighborhood of a core point.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "5b3b16619f31",
+    "front": "What defines a density-based cluster?",
+    "back": "A dense region of points separated from other dense regions by regions of low density.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "c2772cced39f",
+    "front": "How does K-means++ improve upon random centroid initialization?",
+    "back": "After a random first centroid, each new centroid is sampled with probability proportional to a point's minimum squared distance to the centroids already chosen, which favours widely separated starting points.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "2f7604856468",
+    "front": "How does DBSCAN classify a point as a core point?",
+    "back": "If it has at least a specified number of points ($\\text{MinPts}$) within a defined radius ($\\text{Eps}$), including the point itself.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "224b93520759",
+    "front": "What are the two broad purposes of cluster analysis named in the lecture?",
+    "back": "Understanding (e.g. grouping related documents, genes/proteins with similar function, or stocks with similar price fluctuations) and Summarization (reducing the size of large data sets).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d219078f0cdc",
+    "front": "Why is the notion of a cluster said to be ambiguous?",
+    "back": "The same points can reasonably be grouped into two, four or six clusters depending on the level of detail — clusters are \"in the eye of the beholder\".",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "bcd905adca7a",
+    "front": "What is the difference between exclusive and non-exclusive clustering?",
+    "back": "In exclusive clustering each point belongs to exactly one cluster; in non-exclusive clustering a point may belong to several clusters, e.g. to represent multiple classes or 'border' points.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "f0ddf06f9811",
+    "front": "What is the difference between partial and complete clustering?",
+    "back": "Complete clustering assigns every object to a cluster; partial clustering clusters only some of the data (e.g. leaving noise unassigned).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "0bc88eae7c1d",
+    "front": "What does a heterogeneous set of clusters mean?",
+    "back": "The clusters have widely different sizes, shapes and densities.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8d2e0ab0a3dc",
+    "front": "Which kind of clustering shares fuzzy clustering's characteristics?",
+    "back": "Probabilistic clustering — each point has a probability of belonging to each cluster, and the probabilities sum to 1.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "9f8254d17369",
+    "front": "Term: Well-separated cluster",
+    "back": "A set of points in which any point is closer (more similar) to every other point in the cluster than to any point not in the cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d88caf9aaa2a",
+    "front": "Term: Contiguity-based (nearest neighbour / transitive) cluster",
+    "back": "A set of points in which each point is closer to one or more other points in the cluster than to any point outside it, so clusters can form chains of any shape.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "fb76d747326b",
+    "front": "What is the difference between a centroid and a medoid?",
+    "back": "A centroid is the average of all points in the cluster (it need not be an actual data point); a medoid is the most representative actual point of the cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "eeb64eb0022f",
+    "front": "When are density-based cluster definitions most appropriate?",
+    "back": "When clusters are irregular or intertwined, and when noise and outliers are present.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "f5df2a6d6425",
+    "front": "Which characteristics of the input data affect proximity or density in clustering?",
+    "back": "Dimensionality (sparseness / curse of dimensionality), attribute type, special relationships such as autocorrelation, the distribution of the data, and noise and outliers.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "285619ed5aa4",
+    "front": "What are the steps of the basic K-means algorithm?",
+    "back": "Select $K$ points as initial centroids; repeat: assign each point to its closest centroid, then recompute each cluster's centroid; until the centroids stop changing.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d175f5043015",
+    "front": "Why do K-means results vary from one run to another?",
+    "back": "The initial centroids are often chosen randomly, and different starting points can converge to different local solutions.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "97bbbbdc78ed",
+    "front": "What stopping condition is often used in practice for K-means, and why?",
+    "back": "\"Until relatively few points change clusters\", because most of the convergence happens in the first few iterations.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "2994d1b9c4d6",
+    "front": "Which representative point $m_i$ minimises the SSE of a cluster?",
+    "back": "The mean (centroid) of the points in the cluster.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "4426c299083a",
+    "front": "If there are 10 equal-sized real clusters, what is the probability that random initialisation picks one centroid from each?",
+    "back": "$\\frac{10!}{10^{10}} \\approx 0.00036$ — so a good random start becomes very unlikely as $K$ grows.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "83a5005b176a",
+    "front": "What strategies help with the K-means initial centroids problem?",
+    "back": "Multiple runs; sampling and using hierarchical clustering to find initial centroids; generating more clusters and merging them hierarchically; selecting more than $k$ initial centroids and choosing the most widely separated; and K-means++.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d48357056bd2",
+    "front": "Why are multiple runs alone a weak fix for poor K-means initialisation?",
+    "back": "They help, but \"probability is not on your side\": for large $K$ the chance of any one run getting a good start is tiny.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "061fc6e30c95",
+    "front": "What is the trade-off of K-means++ compared with random initialisation?",
+    "back": "It is slower, but very consistently gives lower SSE and guarantees an $O(\\log k)$ approximation ratio in expectation.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "20a67c7fe3f1",
+    "front": "What pre-processing steps help K-means?",
+    "back": "Normalising the data and eliminating outliers.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "1169f04666ac",
+    "front": "What post-processing steps can improve a K-means clustering?",
+    "back": "Eliminate small clusters that may be outliers, split 'loose' clusters with relatively high SSE, and merge clusters that are close and have relatively low SSE.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "65a5c2fd878b",
+    "front": "What are the strengths of hierarchical clustering?",
+    "back": "You do not need to assume a number of clusters in advance (cut the dendrogram at any level), and the hierarchy may correspond to a meaningful taxonomy, such as the animal kingdom.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "bae8da3ac434",
+    "front": "What are the steps of the basic agglomerative clustering algorithm?",
+    "back": "Compute the proximity matrix and make each point a cluster; repeat: merge the two closest clusters and update the proximity matrix; until a single cluster remains.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "ca6ada60793c",
+    "front": "What is the key operation in agglomerative hierarchical clustering?",
+    "back": "Computing the proximity between two clusters — the different definitions of inter-cluster distance are what distinguish the algorithms.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "7b796fd4e1ea",
+    "front": "Why does traditional hierarchical clustering take $O(N^3)$ time?",
+    "back": "There are $N$ merge steps, and at each step the $N^2$ proximity matrix must be searched and updated.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d7d986039e8f",
+    "front": "Does hierarchical clustering optimise a global objective function?",
+    "back": "No — no global objective function is directly minimised; it makes local merge decisions that cannot be undone (unlike K-means, which minimises SSE).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "e9dbcdd4b6c0",
+    "front": "What is the main strength of MAX (Complete Link) clustering?",
+    "back": "It is less susceptible to noise and outliers than MIN.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "1aff1f137611",
+    "front": "Why does Group Average use average rather than total pairwise proximity?",
+    "back": "Total proximity favours large clusters (they have more pairs), so average connectivity is needed for scalability.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "72a56e8b8c16",
+    "front": "Why evaluate clusters at all, given that clusters are \"in the eye of the beholder\"?",
+    "back": "To avoid finding patterns in noise, and to compare clustering algorithms, two sets of clusters, or two individual clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "7ac238560753",
+    "front": "What are the five aspects of cluster validation?",
+    "back": "1. Clustering tendency (does non-random structure exist?) 2. Comparing with external labels 3. Judging fit to the data without external information 4. Comparing two clusterings 5. Determining the correct number of clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "460fd69bef67",
+    "front": "Term: Clustering tendency",
+    "back": "Whether non-random structure actually exists in a data set — checked before trusting any clustering of it.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8ca5af0092cf",
+    "front": "Term: Internal index",
+    "back": "A measure of the goodness of a clustering structure that uses only the data, without external information; SSE is an example.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "c2b4f81f1ab3",
+    "front": "When validating clusters via correlation, why are only $n(n-1)/2$ entries needed?",
+    "back": "The proximity matrix and the ideal similarity matrix are both symmetric, so only one triangle (excluding the diagonal) needs to be compared.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "0ac4538d8bc1",
+    "front": "What does a high correlation between the ideal similarity and proximity matrices indicate, and when is it a poor measure?",
+    "back": "It indicates that points in the same cluster are close to each other. It is not a good measure for some density- or contiguity-based clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "0c676e415ee7",
+    "front": "How is a similarity matrix used to visually validate clusters?",
+    "back": "Order its rows and columns by cluster label: crisp blocks on the diagonal show well-separated clusters, while clusters found in random data give blurry, less crisp blocks.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d1ec4050ab8e",
+    "front": "How can SSE be used to estimate the number of clusters?",
+    "back": "Plot SSE against $K$ and look for a knee (elbow) where adding more clusters stops reducing SSE much.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "53bf76bd7c0b",
+    "front": "How does the statistical framework for cluster validity judge a result?",
+    "back": "It compares the index value with the values obtained from random data: the more atypical (unlikely under randomness) the result, the more likely it reflects real structure.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "371b648bd2c9",
+    "front": "In the lecture's example, why is an SSE of 0.005 for three clusters judged valid?",
+    "back": "SSE values for three clusters in 500 random data sets (100 points, $x$ and $y$ in 0.2–0.8) are far higher, so 0.005 is very unlikely to arise from random data.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "4d62933015a9",
+    "front": "What do cluster cohesion and cluster separation measure?",
+    "back": "Cohesion measures how closely related the objects in a cluster are (e.g. WSS/SSE); separation measures how distinct a cluster is from the others (e.g. BSS).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "11b2903be2db",
+    "front": "What is the formula for the Between-Cluster Sum of Squares (BSS)?",
+    "back": "$\\text{BSS} = \\sum_i |C_i| (m - m_i)^2$, where $|C_i|$ is the size of cluster $i$, $m_i$ its centroid and $m$ the overall mean.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "e7f01ed56c40",
+    "front": "Data $\\{1, 2, 4, 5\\}$ are split into $\\{1,2\\}$ and $\\{4,5\\}$. What are WSS and BSS?",
+    "back": "Centroids 1.5 and 4.5, overall mean 3: $\\text{WSS} = 4 \\times 0.5^2 = 1$ and $\\text{BSS} = 2(1.5)^2 + 2(1.5)^2 = 9$, totalling 10 — the same as with one cluster (WSS 10, BSS 0).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "e09dc7434b62",
+    "front": "How are cohesion and separation defined in the proximity graph approach?",
+    "back": "Cohesion is the sum of the weights of all links within a cluster; separation is the sum of the weights of links between nodes in the cluster and nodes outside it.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "5b878c618b80",
+    "front": "What range does the silhouette coefficient take, and how is it interpreted?",
+    "back": "Typically between 0 and 1, and the closer to 1 the better. It goes negative when $a > b$ — the point is closer on average to another cluster than to its own.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "ed90dc0b0014",
+    "front": "A point has $a = 2$ and $b = 5$. What is its silhouette coefficient?",
+    "back": "$s = \\frac{5 - 2}{\\max(2, 5)} = 0.6$.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "a27aca6a26a8",
+    "front": "How do you get a silhouette coefficient for a whole cluster or clustering?",
+    "back": "Average the silhouette coefficients of the points in that cluster or clustering.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "faf7e2499bc0",
+    "front": "How is density defined in DBSCAN?",
+    "back": "The number of points within a specified radius $\\text{Eps}$ of a point (counting the point itself).",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "f04f097eaf70",
+    "front": "What are the steps of the DBSCAN algorithm?",
+    "back": "1. Label all points as core, border or noise 2. Eliminate noise points 3. Put an edge between all core points within $\\text{Eps}$ of each other 4. Make each group of connected core points a separate cluster 5. Assign each border point to one of its associated core points' clusters.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "b64347379497",
+    "front": "When does DBSCAN work well?",
+    "back": "It can handle clusters of different shapes and sizes, and it is resistant to noise.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "8de32cf8c150",
+    "front": "Why does the sorted $k$-th nearest neighbour distance plot reveal $\\text{Eps}$?",
+    "back": "Points inside clusters have their $k$-th nearest neighbour at a short distance, while noise points have it much farther away, so the curve bends sharply at a good $\\text{Eps}$.",
+    "course": "COM6004",
+    "unit": "Chapter_5",
+    "topic": "",
+    "tag": "COM6004::Chapter_5",
+    "deck": "COM6004_Chapter_5"
+  },
+  {
     "id": "6b92fcc2703a",
     "front": "In statistical dataset notation, what do $n$ and $p$ represent?",
     "back": "$n$ represents the number of sample rows (observations), and $p$ represents the number of predictor columns (features).",

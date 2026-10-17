@@ -1,0 +1,1162 @@
+[
+  {
+    "question": "What fundamental distance criteria must be satisfied to form a well-defined clustering structure?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Intra-cluster distances are minimized, and inter-cluster distances are maximized.",
+        "Explanation": "Clustering aims to make objects within the same group as similar as possible while keeping different groups as distinct as possible."
+      },
+      {
+        "label": "B",
+        "text": "Inter-cluster distances are minimized, and intra-cluster distances are maximized.",
+        "Explanation": "Minimizing inter-cluster distances would bring different clusters closer together, while maximizing intra-cluster distances would scatter points within the same group."
+      },
+      {
+        "label": "C",
+        "text": "Both intra-cluster and inter-cluster distances are minimized.",
+        "Explanation": "Minimizing inter-cluster distances forces separate clusters to merge rather than remain distinct."
+      },
+      {
+        "label": "D",
+        "text": "Both intra-cluster and inter-cluster distances are maximized.",
+        "Explanation": "Maximizing intra-cluster distances degrades cluster cohesion by spreading out member points."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider how you would want points inside the same cluster to compare to points in neighboring clusters.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "If a dataset contains $K$ real clusters of equal size $n$, what is the probability of selecting exactly one initial centroid from each cluster when choosing $K$ initial points at random?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{K!}{K^K}$",
+        "Explanation": "This formula counts the number of ways to pick one point from each of the $K$ equal-sized clusters divided by all possible selections of $K$ centroids across those clusters."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{1}{K!}$",
+        "Explanation": "This expression represents the reciprocal of permutations of $K$ items rather than taking cluster choice probabilities into account."
+      },
+      {
+        "label": "C",
+        "text": "$\\frac{n^K}{K^n}$",
+        "Explanation": "This ratio incorrectly incorporates the number of items per cluster $n$ into the exponent instead of evaluating cluster selections."
+      },
+      {
+        "label": "D",
+        "text": "$\\frac{K^K}{K!}$",
+        "Explanation": "This is the inverted form of the correct probability and yields a value greater than 1 for $K > 1$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about the total number of choices for assigning initial centroids to distinct clusters versus all possible cluster assignments.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "How does the K-means++ algorithm select subsequent initial centroids after randomly choosing the first centroid?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By selecting a point with probability proportional to its minimum squared distance to currently selected centroids.",
+        "Explanation": "K-means++ uses weighted probability based on squared distance to favor choosing new centroids that are widely separated from existing ones."
+      },
+      {
+        "label": "B",
+        "text": "By selecting the point that maximizes the total Sum of Squared Error (SSE) across all remaining data points.",
+        "Explanation": "K-means++ relies on a randomized probabilistic sampling scheme rather than deterministically picking the single worst SSE point."
+      },
+      {
+        "label": "C",
+        "text": "By choosing points sequentially from regions with the highest density of unassigned points.",
+        "Explanation": "Density targeting is a feature of algorithms like DBSCAN, whereas K-means++ focuses on spatial separation."
+      },
+      {
+        "label": "D",
+        "text": "By running hierarchical agglomerative clustering on a sample to determine exact cluster centers.",
+        "Explanation": "Hierarchical clustering on a sample is a separate strategy for initialization, not the mechanism used by K-means++."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Focus on how K-means++ ensures newly picked centroids are well-spaced from those already picked.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "What is the time complexity of the standard K-means algorithm, where $n$ is the number of points, $K$ is the number of clusters, $I$ is the number of iterations, and $d$ is the number of attributes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$O(n \\cdot K \\cdot I \\cdot d)$",
+        "Explanation": "In each iteration, distance calculations are computed for every point against every centroid across all attributes."
+      },
+      {
+        "label": "B",
+        "text": "$O(n^2 \\cdot K \\cdot d)$",
+        "Explanation": "This quadratic dependence on $n$ applies to distance matrix calculations in hierarchical clustering rather than K-means."
+      },
+      {
+        "label": "C",
+        "text": "$O(n \\cdot K^2 \\cdot I)$",
+        "Explanation": "K-means compares each point against $K$ centroids, not $K^2$ centroids."
+      },
+      {
+        "label": "D",
+        "text": "$O(n^3 \\cdot d)$",
+        "Explanation": "A cubic complexity in $n$ is characteristic of naive hierarchical clustering implementations, not K-means."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall the basic loop: for each iteration, every point is compared to every cluster center across all dimensions.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "How can K-means be adapted during execution to successfully capture complex, non-globular shapes or clusters of differing densities?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By generating a larger number of small sub-clusters and merging them in a post-processing step.",
+        "Explanation": "Finding many smaller clusters allows K-means to break down irregular or varied-density shapes into spherical pieces that can later be reassembled."
+      },
+      {
+        "label": "B",
+        "text": "By increasing the maximum number of iterations $I$ until centroids adjust to irregular boundaries.",
+        "Explanation": "Increasing iterations only allows existing spherical hyperplanes to stabilize; it does not change the geometric bias of K-means."
+      },
+      {
+        "label": "C",
+        "text": "By substituting Euclidean distance with the Sum of Squared Error (SSE) objective function.",
+        "Explanation": "SSE is an evaluation metric for cluster cohesion, not a distance metric between individual points and centroids."
+      },
+      {
+        "label": "D",
+        "text": "By removing all border points prior to running initial centroid assignments.",
+        "Explanation": "Eliminating potential border points discards valid data and does not correct K-means' centroid-based geometric restrictions."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how breaking a non-spherical shape into smaller spherical components might help overcome K-means' limitations.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which property distinguishes the MIN (Single Link) hierarchical clustering metric from MAX (Complete Link)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "MIN defines proximity using the two closest points in different clusters and can process non-elliptical shapes.",
+        "Explanation": "By looking at the shortest distance between any pair of points in two clusters, MIN can follow non-spherical continuous chains of points."
+      },
+      {
+        "label": "B",
+        "text": "MIN measures cluster distance based on the two most distant points, making it robust against noise.",
+        "Explanation": "Taking the most distant pair describes MAX (Complete Link), not MIN."
+      },
+      {
+        "label": "C",
+        "text": "MAX defines distance via the closest pair of points, frequently splitting large globular structures.",
+        "Explanation": "MAX evaluates the maximum pairwise distance between clusters, not the minimum."
+      },
+      {
+        "label": "D",
+        "text": "MAX calculates average pairwise proximity across all points, balancing single link and complete link behavior.",
+        "Explanation": "Averaging all pairwise proximities describes the Group Average technique rather than MAX."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider which point-pair selection rule allows MIN to form 'chains' across arbitrary shapes.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which statement accurately describes the Group Average approach in hierarchical agglomerative clustering?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It represents a compromise between MIN and MAX, making it less susceptible to noise and outliers.",
+        "Explanation": "By averaging all pairwise distances between two clusters, Group Average balances sensitivity to noise (MIN) and sensitivity to cluster size extremes (MAX)."
+      },
+      {
+        "label": "B",
+        "text": "It calculates inter-cluster distance using only cluster centroids, eliminating pairwise point evaluations.",
+        "Explanation": "Centroid-based distance is a distinct scheme; Group Average explicitly averages pairwise distances between all constituent points."
+      },
+      {
+        "label": "C",
+        "text": "It easily follows non-globular shapes and resists breaking apart long continuous clusters.",
+        "Explanation": "Group Average remains biased toward globular shapes due to its overall distance averaging property."
+      },
+      {
+        "label": "D",
+        "text": "It reduces the algorithmic space complexity to $O(N)$ by bypassing the full proximity matrix.",
+        "Explanation": "Agglomerative hierarchical clustering algorithms generally require storing an $O(N^2)$ proximity matrix."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about how averaging all point pairs lies between looking at only the closest pair or only the furthest pair.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "In cluster evaluation, how are the Within-Cluster Sum of Squares (WSS/SSE) and Between-Cluster Sum of Squares (BSS) related for a fixed dataset?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The sum of $BSS$ and $WSS$ remains constant regardless of the clustering structure.",
+        "Explanation": "Total variation in a dataset is fixed, so any reduction in internal cluster error ($WSS$) directly increases the separation between cluster centers ($BSS$)."
+      },
+      {
+        "label": "B",
+        "text": "$BSS$ and $WSS$ both reach zero when the optimal number of clusters is chosen.",
+        "Explanation": "As $WSS$ approaches zero (maximum cohesion), $BSS$ approaches the total sum of squares (maximum separation)."
+      },
+      {
+        "label": "C",
+        "text": "$BSS$ is inversely proportional to the square of $WSS$ as $K$ increases.",
+        "Explanation": "The relationship is additive ($BSS + WSS = \\text{Total}$), not an inverse square relationship."
+      },
+      {
+        "label": "D",
+        "text": "The difference $BSS - WSS$ is maximized when $K = 1$.",
+        "Explanation": "When $K = 1$, all points belong to one cluster, yielding $BSS = 0$ and maximum $WSS$."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider the total variance of the dataset and how partitioning data divides that variance into internal vs. external components.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "For an individual point $i$, how is its Silhouette Coefficient $s$ calculated, given $a$ (average distance to points in its cluster) and $b$ (minimum average distance to points in another cluster)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$s = \\frac{b - a}{\\max(a, b)}$",
+        "Explanation": "This formula yields values close to 1 when $a \\ll b$ (well-clustered) and negative values when $a > b$ (misassigned)."
+      },
+      {
+        "label": "B",
+        "text": "$s = \\frac{a - b}{\\min(a, b)}$",
+        "Explanation": "Subtracting $b$ from $a$ in the numerator inverts the sign, making good assignments negative."
+      },
+      {
+        "label": "C",
+        "text": "$s = \\frac{a + b}{\\max(a, b)}$",
+        "Explanation": "Adding distances in the numerator prevents evaluating whether internal distance is smaller than neighbor distance."
+      },
+      {
+        "label": "D",
+        "text": "$s = \\frac{b}{a + b}$",
+        "Explanation": "This ratio normalizes $b$ over total distance rather than measuring the difference between internal and external proximity."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The coefficient compares the within-cluster distance $a$ and nearest-neighbor-cluster distance $b$, scaled by whichever value is larger.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Under the DBSCAN algorithm, how is a data point classified as a 'border point'?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It has fewer than $MinPts$ in its $Eps$-neighborhood but falls within the $Eps$-neighborhood of a core point.",
+        "Explanation": "A border point lacks sufficient local neighbor density to be a core point itself, but resides within distance $Eps$ of a valid core point."
+      },
+      {
+        "label": "B",
+        "text": "It contains at least $MinPts$ within its $Eps$-neighborhood, including itself.",
+        "Explanation": "Having at least $MinPts$ within distance $Eps$ defines a core point."
+      },
+      {
+        "label": "C",
+        "text": "It has fewer than $MinPts$ in its $Eps$-neighborhood and is not within range of any core point.",
+        "Explanation": "A point with insufficient neighbors that is not near any core point is classified as noise."
+      },
+      {
+        "label": "D",
+        "text": "It is a core point that lies within distance $Eps$ of two distinct cluster centers.",
+        "Explanation": "Core points are defined solely by their neighbor count within $Eps$, regardless of nearby centers."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Recall the two conditions: neighbor count relative to $MinPts$ and proximity to a core point.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "In which scenario does DBSCAN typically struggle to identify meaningful clusters?",
+    "options": [
+      {
+        "label": "A",
+        "text": "When the dataset contains regions with widely varying densities.",
+        "Explanation": "DBSCAN relies on global $Eps$ and $MinPts$ parameters, which cannot simultaneously capture both high-density and low-density clusters."
+      },
+      {
+        "label": "B",
+        "text": "When clusters exhibit complex, non-globular shapes.",
+        "Explanation": "Handling arbitrary non-globular shapes is a primary strength of density-based clustering like DBSCAN."
+      },
+      {
+        "label": "C",
+        "text": "When the dataset contains severe noise and background outliers.",
+        "Explanation": "DBSCAN explicitly identifies and filters noise points into a separate category."
+      },
+      {
+        "label": "D",
+        "text": "When the total number of clusters $K$ is unknown prior to running the algorithm.",
+        "Explanation": "Unlike K-means, DBSCAN automatically determines the number of clusters without requiring $K$ as an input."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Think about what happens when fixed global parameters ($Eps$ and $MinPts$) are applied across areas with different point concentrations.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "How can a practitioner estimate a suitable value for the $Eps$ parameter in DBSCAN?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By plotting sorted distances to each point's $k$-th nearest neighbor and looking for a sharp elbow in the curve.",
+        "Explanation": "The sharp knee or elbow indicates the distance threshold where points transition from dense cluster interiors to sparse noise regions."
+      },
+      {
+        "label": "B",
+        "text": "By calculating the maximum distance where all dataset points become classified as core points.",
+        "Explanation": "Forcing all points to become core points eliminates noise detection and merges distinct clusters together."
+      },
+      {
+        "label": "C",
+        "text": "By running preliminary K-means runs and selecting $Eps$ as the average distance between centroids.",
+        "Explanation": "Centroid distances in K-means reflect global cluster spreads rather than local density radii."
+      },
+      {
+        "label": "D",
+        "text": "By setting $Eps$ equal to the value where the Sum of Squared Error (SSE) drops to zero.",
+        "Explanation": "SSE measures centroid distance error in partitional algorithms and is not used to tune DBSCAN's density radius."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Look for a method that tracks distance transitions between dense cluster members and isolated background points.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "In which type of clustering may a single point belong to more than one cluster, for example to represent 'border' points?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Partitional clustering",
+        "Explanation": "Partitional clustering divides the data into non-overlapping subsets — each point is in exactly one."
+      },
+      {
+        "label": "B",
+        "text": "Complete clustering",
+        "Explanation": "Complete versus partial is about whether every point is clustered, not whether a point can be in several clusters."
+      },
+      {
+        "label": "C",
+        "text": "Non-exclusive clustering",
+        "Explanation": "Non-exclusive clusterings allow points to belong to multiple clusters, e.g. to represent multiple classes or border points."
+      },
+      {
+        "label": "D",
+        "text": "Homogeneous clustering",
+        "Explanation": "Homogeneous versus heterogeneous describes whether clusters have similar sizes, shapes and densities."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Look for the term that is the opposite of 'each point is in exactly one cluster'.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "A cluster is defined as a set of points in which each point is closer to one or more other points in the cluster than to any point not in the cluster. Which type of cluster is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Well-separated",
+        "Explanation": "Well-separated requires every point to be closer to *every* other point in the cluster, not just to one or more."
+      },
+      {
+        "label": "B",
+        "text": "Contiguity-based",
+        "Explanation": "This is the nearest-neighbour (transitive) definition: being close to at least one member is enough, so chains of points form one cluster."
+      },
+      {
+        "label": "C",
+        "text": "Center-based",
+        "Explanation": "Center-based clusters are defined by distance to the cluster's center, not to other individual points."
+      },
+      {
+        "label": "D",
+        "text": "Density-based",
+        "Explanation": "Density-based clusters are dense regions separated by low-density regions; the definition is about density, not nearest neighbours."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Note the phrase 'one or more other points' rather than 'every other point'.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "How does a medoid differ from a centroid as the center of a cluster?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A medoid is the average of all points in the cluster.",
+        "Explanation": "The average of all points is the centroid."
+      },
+      {
+        "label": "B",
+        "text": "A medoid is always the point farthest from the cluster mean.",
+        "Explanation": "A medoid is the most representative point, which is close to the cluster's center, not far from it."
+      },
+      {
+        "label": "C",
+        "text": "A medoid is only defined for density-based clusters.",
+        "Explanation": "Medoids are used as centers of center-based clusters, e.g. in K-medoids."
+      },
+      {
+        "label": "D",
+        "text": "A medoid is the most representative actual data point, whereas a centroid need not be a data point.",
+        "Explanation": "The centroid is an average and may fall where there is no data; the medoid is always one of the points."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "One of the two is guaranteed to be a member of the data set.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "K-means is run on the 1-D points $\\{1, 2, 3, 8, 9, 10\\}$ with $K = 2$ and initial centroids 1 and 2. What are the centroids after the first update step?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1.5 and 7.5",
+        "Explanation": "This would require points 1 and 2 to form one cluster, but 2 is itself an initial centroid, so it is assigned to the second cluster."
+      },
+      {
+        "label": "B",
+        "text": "1 and 6.4",
+        "Explanation": "Only point 1 is closest to centroid 1; points 2, 3, 8, 9, 10 are closest to centroid 2, whose mean is $32 / 5 = 6.4$."
+      },
+      {
+        "label": "C",
+        "text": "2 and 9",
+        "Explanation": "These are the final centroids after the second iteration, not the first update."
+      },
+      {
+        "label": "D",
+        "text": "1 and 2",
+        "Explanation": "The centroids are recomputed as cluster means after the assignment step, so they move."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Assign each point to its nearest initial centroid first, then take the mean of each group.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "K-means on $\\{1, 2, 3, 8, 9, 10\\}$ converges to the clusters $\\{1, 2, 3\\}$ and $\\{8, 9, 10\\}$. What is the SSE of this clustering?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0",
+        "Explanation": "SSE is zero only when every point sits exactly on its centroid."
+      },
+      {
+        "label": "B",
+        "text": "2",
+        "Explanation": "This is the SSE of only one of the two clusters."
+      },
+      {
+        "label": "C",
+        "text": "4",
+        "Explanation": "Centroids are 2 and 9; each cluster contributes $1^2 + 0^2 + 1^2 = 2$, so SSE $= 4$."
+      },
+      {
+        "label": "D",
+        "text": "6",
+        "Explanation": "This sums the absolute distances incorrectly; SSE squares the distance of each point to its centroid."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Find each cluster's mean, then sum the squared distances of its points to it.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which statement about using SSE to compare K-means clusterings is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "SSE always increases as $K$ increases.",
+        "Explanation": "The best achievable SSE decreases as $K$ grows, reaching zero when $K = n$."
+      },
+      {
+        "label": "B",
+        "text": "The best $K$ is the one that minimises SSE.",
+        "Explanation": "SSE is minimised (to zero) by making every point its own cluster, which is useless."
+      },
+      {
+        "label": "C",
+        "text": "SSE cannot be used to compare two clusterings of the same data.",
+        "Explanation": "Comparing clusterings is exactly what SSE is good for: given two sets of clusters, prefer the one with smaller error."
+      },
+      {
+        "label": "D",
+        "text": "A good clustering with smaller $K$ can have lower SSE than a poor clustering with higher $K$.",
+        "Explanation": "Increasing $K$ is an easy way to reduce SSE, but a poorly initialised clustering with more clusters can still be worse."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Think about what happens to SSE when $K$ equals the number of points, and what a bad initialisation does.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "A data set has 3 real clusters of equal size. If 3 initial centroids are chosen at random, what is the probability that each real cluster gets exactly one centroid?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{1}{3} \\approx 0.333$",
+        "Explanation": "This is the probability for a single centroid landing in one particular cluster, not all three landing in different ones."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{3!}{3^3} \\approx 0.222$",
+        "Explanation": "Using $P = \\frac{K!}{K^K}$: $\\frac{6}{27} \\approx 0.222$."
+      },
+      {
+        "label": "C",
+        "text": "$\\frac{1}{3!} \\approx 0.167$",
+        "Explanation": "This is the reciprocal of the number of orderings, not a probability over cluster choices."
+      },
+      {
+        "label": "D",
+        "text": "$\\frac{3^3}{3!} = 4.5$",
+        "Explanation": "This is the inverted ratio and exceeds 1, so it cannot be a probability."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Apply $P = \\frac{K!}{K^K}$.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "K-means++ runs on the 1-D points $\\{0, 1, 3, 4\\}$, and the first centroid chosen is 0. What is the probability that 4 is chosen as the second centroid?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\frac{1}{4} = 0.25$",
+        "Explanation": "That would be uniform random selection; K-means++ weights points by squared distance."
+      },
+      {
+        "label": "B",
+        "text": "$\\frac{4}{8} = 0.5$",
+        "Explanation": "This weights by plain distance ($0 + 1 + 3 + 4 = 8$), not squared distance."
+      },
+      {
+        "label": "C",
+        "text": "$\\frac{16}{26} \\approx 0.615$",
+        "Explanation": "Squared distances to the nearest centroid are 0, 1, 9, 16 (sum 26), so 4 is chosen with probability $16 / 26$."
+      },
+      {
+        "label": "D",
+        "text": "1",
+        "Explanation": "K-means++ samples randomly; it does not deterministically pick the farthest point."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Square each point's distance to the nearest chosen centroid and normalise by the total.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "What is the main trade-off of K-means++ compared with random initialisation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is faster but gives higher SSE.",
+        "Explanation": "It is the other way round: K-means++ is slower but gives better SSE."
+      },
+      {
+        "label": "B",
+        "text": "It removes the need to specify $K$.",
+        "Explanation": "K-means++ only changes how the $K$ initial centroids are picked; $K$ must still be given."
+      },
+      {
+        "label": "C",
+        "text": "It guarantees the globally optimal clustering.",
+        "Explanation": "It guarantees an $O(\\log k)$ approximation ratio in expectation, not the optimum."
+      },
+      {
+        "label": "D",
+        "text": "It can be slower, but very consistently produces lower SSE.",
+        "Explanation": "The extra distance computations cost time, but the well-spread starting centroids reliably give better results."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Selecting each centroid needs distances from every point to the current centroids.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "During K-means post-processing, what should be done with a 'loose' cluster that has relatively high SSE?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Merge it with its closest cluster.",
+        "Explanation": "Merging is for clusters that are close together and have relatively low SSE."
+      },
+      {
+        "label": "B",
+        "text": "Split it.",
+        "Explanation": "A high-SSE cluster is not cohesive, so splitting it can reduce the total SSE."
+      },
+      {
+        "label": "C",
+        "text": "Remove it as an outlier cluster.",
+        "Explanation": "Removal is for small clusters that may represent outliers, not large loose ones."
+      },
+      {
+        "label": "D",
+        "text": "Normalise its attributes.",
+        "Explanation": "Normalisation is a pre-processing step applied to the whole data set before clustering."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "High SSE means its points are spread far from their centroid.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which of the following is a limitation of agglomerative hierarchical clustering?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The number of clusters must be fixed before running it.",
+        "Explanation": "This is a limitation of K-means; a dendrogram can be cut at any level afterwards."
+      },
+      {
+        "label": "B",
+        "text": "It cannot produce a tree of nested clusters.",
+        "Explanation": "Producing nested clusters organised as a tree is exactly what hierarchical clustering does."
+      },
+      {
+        "label": "C",
+        "text": "No global objective function is directly minimised, and merges cannot be undone.",
+        "Explanation": "Each merge is a local decision; once two clusters are combined, later steps cannot separate them."
+      },
+      {
+        "label": "D",
+        "text": "Its time complexity is linear in the number of points.",
+        "Explanation": "It needs $O(N^2)$ space and typically $O(N^3)$ time — far from linear."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Compare it with K-means, which explicitly minimises SSE.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Four points have distances $d(A,B)=2$, $d(A,C)=8$, $d(A,D)=10$, $d(B,C)=3$, $d(B,D)=9$, $d(C,D)=7$. After A and B are merged first, what is the distance between $\\{A,B\\}$ and C under MIN (single link)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3",
+        "Explanation": "Single link uses the closest pair across the clusters: $\\min(d(A,C), d(B,C)) = \\min(8, 3) = 3$."
+      },
+      {
+        "label": "B",
+        "text": "5.5",
+        "Explanation": "5.5 is the group-average distance $(8 + 3) / 2$."
+      },
+      {
+        "label": "C",
+        "text": "8",
+        "Explanation": "8 is the complete-link (MAX) distance."
+      },
+      {
+        "label": "D",
+        "text": "7",
+        "Explanation": "7 is the distance between C and D, not between $\\{A,B\\}$ and C."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Single link looks at the one closest pair of points from the two clusters.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Using the same distances ($d(A,B)=2$, $d(A,C)=8$, $d(A,D)=10$, $d(B,C)=3$, $d(B,D)=9$, $d(C,D)=7$) and MAX (complete link), which merge happens after A and B are merged?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\{A,B\\}$ with C at distance 3",
+        "Explanation": "3 is the single-link distance; complete link uses the farthest pair, $\\max(8, 3) = 8$."
+      },
+      {
+        "label": "B",
+        "text": "$\\{A,B\\}$ with D at distance 9",
+        "Explanation": "Complete link gives $\\{A,B\\}$–D $= \\max(10, 9) = 10$, the largest of the options."
+      },
+      {
+        "label": "C",
+        "text": "$\\{A,B\\}$ with C at distance 8",
+        "Explanation": "8 is the correct complete-link distance, but C–D at 7 is smaller, so it is merged first."
+      },
+      {
+        "label": "D",
+        "text": "C with D at distance 7",
+        "Explanation": "The complete-link distances are $\\{A,B\\}$–C = 8, $\\{A,B\\}$–D = 10 and C–D = 7, so C and D merge next."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Recompute $\\{A,B\\}$–C and $\\{A,B\\}$–D using the farthest pair, then pick the smallest entry.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Using the same distances ($d(A,C)=8$, $d(B,C)=3$), what is the Group Average distance between $\\{A,B\\}$ and C?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3",
+        "Explanation": "3 is the single-link (minimum) distance."
+      },
+      {
+        "label": "B",
+        "text": "5.5",
+        "Explanation": "Group average takes the mean of all cross-cluster pairs: $(8 + 3) / 2 = 5.5$."
+      },
+      {
+        "label": "C",
+        "text": "8",
+        "Explanation": "8 is the complete-link (maximum) distance."
+      },
+      {
+        "label": "D",
+        "text": "11",
+        "Explanation": "11 is the total pairwise proximity; group average divides by the number of pairs, because totals favour large clusters."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Average every pairwise distance between a point in $\\{A,B\\}$ and a point in $\\{C\\}$.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Why does traditional agglomerative hierarchical clustering need $O(N^3)$ time?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each of the $N$ points is compared with every centroid in each of $N$ iterations.",
+        "Explanation": "Centroid comparisons describe K-means, whose cost is linear in $n$."
+      },
+      {
+        "label": "B",
+        "text": "It must try all possible dendrograms over $N$ points.",
+        "Explanation": "The number of possible dendrograms is exponential; the greedy algorithm never enumerates them."
+      },
+      {
+        "label": "C",
+        "text": "There are $N$ merge steps, and at each one the $N^2$ proximity matrix is searched and updated.",
+        "Explanation": "$N$ steps × $O(N^2)$ work per step gives $O(N^3)$, which can be reduced to $O(N^2 \\log N)$ with cleverness."
+      },
+      {
+        "label": "D",
+        "text": "Computing a single proximity between two clusters takes $O(N^3)$.",
+        "Explanation": "One proximity is cheap; the cost comes from repeating matrix searches and updates."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Count the merge steps and the size of the structure examined at each step.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Roughly how many entries must a traditional hierarchical clustering store for $N = 10{,}000$ points?",
+    "options": [
+      {
+        "label": "A",
+        "text": "On the order of $10^8$",
+        "Explanation": "Space is $O(N^2)$ for the proximity matrix: $(10^4)^2 = 10^8$ entries."
+      },
+      {
+        "label": "B",
+        "text": "On the order of $10^4$",
+        "Explanation": "$10^4$ would be linear space, but the full proximity matrix is needed."
+      },
+      {
+        "label": "C",
+        "text": "On the order of $10^{12}$",
+        "Explanation": "$10^{12}$ corresponds to $N^3$, which is the time bound, not the space bound."
+      },
+      {
+        "label": "D",
+        "text": "On the order of $10^4 \\log 10^4$",
+        "Explanation": "$N \\log N$ is not the space requirement of the proximity matrix."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Space is dominated by the proximity matrix.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Why does Group Average linkage use the average pairwise proximity rather than the total?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Averages are faster to compute than totals.",
+        "Explanation": "Both need every pairwise proximity, so neither is cheaper."
+      },
+      {
+        "label": "B",
+        "text": "The total cannot be computed from a proximity matrix.",
+        "Explanation": "The total is just the sum of the same entries the average uses."
+      },
+      {
+        "label": "C",
+        "text": "Averages make the method able to follow non-globular chains.",
+        "Explanation": "Group Average remains biased towards globular clusters."
+      },
+      {
+        "label": "D",
+        "text": "Total proximity favours large clusters, so the average is needed for scalability.",
+        "Explanation": "A large cluster has more pairs and so a larger total; averaging removes that size bias."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Think about how the number of point pairs grows with cluster size.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which aspect of cluster validation asks whether non-random structure actually exists in the data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Determining the correct number of clusters",
+        "Explanation": "This assumes structure exists and asks how many clusters it has."
+      },
+      {
+        "label": "B",
+        "text": "Determining the clustering tendency",
+        "Explanation": "Clustering tendency is about distinguishing real, non-random structure from randomness."
+      },
+      {
+        "label": "C",
+        "text": "Comparing results with external class labels",
+        "Explanation": "That is external validation and requires known labels."
+      },
+      {
+        "label": "D",
+        "text": "Comparing two sets of cluster analyses",
+        "Explanation": "That compares clustering results with each other, not with randomness."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "This check comes before trusting any clustering of the data.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "When validating a clustering of $n = 100$ points by correlating the ideal similarity matrix with the proximity matrix, how many entries need to be correlated?",
+    "options": [
+      {
+        "label": "A",
+        "text": "10,000",
+        "Explanation": "This counts the full $n \\times n$ matrix, including duplicates and the diagonal."
+      },
+      {
+        "label": "B",
+        "text": "100",
+        "Explanation": "This counts only the diagonal, which carries no information."
+      },
+      {
+        "label": "C",
+        "text": "4,950",
+        "Explanation": "Both matrices are symmetric, so only $n(n-1)/2 = 100 \\times 99 / 2 = 4{,}950$ entries are needed."
+      },
+      {
+        "label": "D",
+        "text": "9,900",
+        "Explanation": "This is $n(n-1)$, counting each pair twice."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Both matrices are symmetric.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "For which kind of clusters is correlation between the ideal similarity and proximity matrices NOT a good validity measure?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Some density- or contiguity-based clusters",
+        "Explanation": "Points at opposite ends of a long, irregular cluster are far apart even though they are in the same cluster, which lowers the correlation."
+      },
+      {
+        "label": "B",
+        "text": "Well-separated globular clusters",
+        "Explanation": "These are exactly the clusters for which correlation works well."
+      },
+      {
+        "label": "C",
+        "text": "Clusters found by K-means",
+        "Explanation": "The lecture's correlation examples use K-means clusterings."
+      },
+      {
+        "label": "D",
+        "text": "Clusters in two-dimensional data",
+        "Explanation": "Dimensionality is not the issue; cluster shape is."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Consider a long, snake-like cluster: are all its members close to each other?",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Three clusters found in a data set have SSE 0.005. In 500 random data sets of the same size and range, three clusters always have much higher SSE. What does the statistical framework conclude?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The clustering is invalid because its SSE differs from the random values.",
+        "Explanation": "Differing from random is the evidence for structure, not against it."
+      },
+      {
+        "label": "B",
+        "text": "SSE cannot be interpreted without external class labels.",
+        "Explanation": "The framework interprets the index by comparing it with random data, without external labels."
+      },
+      {
+        "label": "C",
+        "text": "More clusters are needed to match the random data's SSE.",
+        "Explanation": "The goal is not to match random data."
+      },
+      {
+        "label": "D",
+        "text": "The result is atypical for random data, so the clusters likely reflect real structure.",
+        "Explanation": "The more unlikely an index value is under randomness, the more likely the clusters are valid."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "The framework asks how unusual the observed value would be if the data were random.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "The 1-D data $\\{1, 2, 4, 5\\}$ is clustered into $\\{1, 2\\}$ and $\\{4, 5\\}$. What are WSS and BSS?",
+    "options": [
+      {
+        "label": "A",
+        "text": "WSS = 10, BSS = 0",
+        "Explanation": "These are the values for $K = 1$, where all points share the overall mean 3."
+      },
+      {
+        "label": "B",
+        "text": "WSS = 1, BSS = 9",
+        "Explanation": "Centroids 1.5 and 4.5: WSS $= 4 \\times 0.5^2 = 1$; BSS $= 2(3-1.5)^2 + 2(4.5-3)^2 = 9$. Total is 10."
+      },
+      {
+        "label": "C",
+        "text": "WSS = 9, BSS = 1",
+        "Explanation": "The values are swapped; these clusters are tight, so WSS is small."
+      },
+      {
+        "label": "D",
+        "text": "WSS = 1, BSS = 4.5",
+        "Explanation": "BSS weights each squared centroid distance by cluster size $|C_i| = 2$."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Use BSS $= \\sum_i |C_i|(m - m_i)^2$ with overall mean $m = 3$, and check that WSS + BSS equals the $K = 1$ total.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "A point has average distance $a = 4$ to the points in its own cluster and $b = 2$ to the nearest other cluster. What is its silhouette coefficient, and what does it suggest?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0.5 — the point is well clustered.",
+        "Explanation": "The sign is wrong: $b - a$ is negative here."
+      },
+      {
+        "label": "B",
+        "text": "2 — the point is a core point.",
+        "Explanation": "Silhouette values cannot exceed 1, and 'core point' is a DBSCAN term."
+      },
+      {
+        "label": "C",
+        "text": "−0.5 — the point is probably in the wrong cluster.",
+        "Explanation": "$s = (2 - 4) / \\max(4, 2) = -0.5$; a negative value means it is closer to another cluster than to its own."
+      },
+      {
+        "label": "D",
+        "text": "0 — the point lies on a cluster boundary.",
+        "Explanation": "Zero happens when $a = b$, which is not the case here."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Compute $s = \\frac{b - a}{\\max(a, b)}$ and look at the sign.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "In DBSCAN with $MinPts = 4$ (counting the point itself), point Q has 2 other points within $Eps$, one of which is a core point. Point R has 1 other point within $Eps$, and it is a border point. How are Q and R classified?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Q is a border point; R is noise.",
+        "Explanation": "Q has only 3 points including itself (< 4) but lies near a core point, so it is border. R is not near any core point, so it is noise."
+      },
+      {
+        "label": "B",
+        "text": "Q is a core point; R is a border point.",
+        "Explanation": "Q has 3 points in its neighbourhood including itself, below $MinPts = 4$."
+      },
+      {
+        "label": "C",
+        "text": "Both are border points.",
+        "Explanation": "R's only neighbour is a border point, not a core point, so R is noise."
+      },
+      {
+        "label": "D",
+        "text": "Both are noise points.",
+        "Explanation": "Q lies within $Eps$ of a core point, which makes it a border point."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "Check each point's count against $MinPts$, then check whether a core point is within $Eps$.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "After DBSCAN labels points and eliminates noise, how are the clusters formed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each core point starts a new cluster, and clusters are merged by single link until $K$ remain.",
+        "Explanation": "DBSCAN does not take $K$ as input and does not use hierarchical merging."
+      },
+      {
+        "label": "B",
+        "text": "Border points are assigned to their nearest centroid.",
+        "Explanation": "DBSCAN has no centroids; border points join the cluster of an associated core point."
+      },
+      {
+        "label": "C",
+        "text": "All points within $Eps$ of any point are merged into one cluster.",
+        "Explanation": "Only core points are linked; border points do not connect clusters."
+      },
+      {
+        "label": "D",
+        "text": "Core points within $Eps$ of each other are connected, each connected group becomes a cluster, and border points join a cluster of an associated core point.",
+        "Explanation": "These are steps 3–5 of the DBSCAN algorithm."
+      }
+    ],
+    "answers": ["D"],
+    "hints": "Only one point type is linked to form the backbone of the clusters.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "In the proximity graph approach to internal validation, how is cluster cohesion measured?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By the sum of the weights of links between the cluster and nodes outside it",
+        "Explanation": "That is cluster separation."
+      },
+      {
+        "label": "B",
+        "text": "By the distance between the cluster's centroid and the overall mean",
+        "Explanation": "That is the centroid-based contribution to BSS, not the graph-based cohesion."
+      },
+      {
+        "label": "C",
+        "text": "By the sum of the weights of all links within the cluster",
+        "Explanation": "Cohesion in the graph view adds up the weights of the edges that stay inside the cluster."
+      },
+      {
+        "label": "D",
+        "text": "By the number of nodes in the cluster",
+        "Explanation": "Size alone says nothing about how closely related the members are."
+      }
+    ],
+    "answers": ["C"],
+    "hints": "Cohesion is about how tightly the members of one cluster are linked to each other.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "How can SSE be used to estimate the number of clusters in a data set?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Choose the $K$ with the lowest SSE.",
+        "Explanation": "SSE keeps falling as $K$ grows, reaching zero at $K = n$."
+      },
+      {
+        "label": "B",
+        "text": "Plot SSE against $K$ and look for a knee where the decrease levels off.",
+        "Explanation": "Up to the natural number of clusters SSE drops sharply; beyond it, extra clusters give only small reductions."
+      },
+      {
+        "label": "C",
+        "text": "Choose the $K$ at which SSE equals BSS.",
+        "Explanation": "There is no rule that the right $K$ makes the two equal."
+      },
+      {
+        "label": "D",
+        "text": "Choose the $K$ with the highest SSE.",
+        "Explanation": "A high SSE means poor cohesion."
+      }
+    ],
+    "answers": ["B"],
+    "hints": "Look at the shape of the SSE curve, not its minimum.",
+    "course": "COM6004",
+    "week": "5"
+  },
+  {
+    "question": "Which data characteristic makes proximity measures less meaningful as the number of attributes grows?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Sparseness — the curse of dimensionality",
+        "Explanation": "In high dimensions data becomes sparse, and distances between points become less distinguishable."
+      },
+      {
+        "label": "B",
+        "text": "Autocorrelation",
+        "Explanation": "Autocorrelation is a special relationship in the data (e.g. over time or space), not a dimensionality effect."
+      },
+      {
+        "label": "C",
+        "text": "Attribute type",
+        "Explanation": "Attribute type determines which proximity measure fits, not how it degrades with more dimensions."
+      },
+      {
+        "label": "D",
+        "text": "Partial clustering",
+        "Explanation": "Partial versus complete describes a clustering, not a property of the input data."
+      }
+    ],
+    "answers": ["A"],
+    "hints": "The lecture links dimensionality with a well-known 'curse'.",
+    "course": "COM6004",
+    "week": "5"
+  }
+]

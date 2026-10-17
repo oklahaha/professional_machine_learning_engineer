@@ -38,7 +38,7 @@
       },
       {
         "label": "B",
-        "text": "<function __main__.<lambda>>",
+        "text": "`<function __main__.<lambda>>`",
         "Explanation": "The second pair of parentheses invokes the lambda function returned by the outer function call rather than leaving it unexecuted."
       },
       {
@@ -149,22 +149,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df.describe()",
+        "text": "`df.describe()`",
         "Explanation": "The `describe()` method calculates statistical metrics such as mean, standard deviation, and quartiles for numerical columns."
       },
       {
         "label": "B",
-        "text": "df.dtypes",
+        "text": "`df.dtypes`",
         "Explanation": "The `dtypes` attribute lists column data types without providing memory usage or non-null entry details."
       },
       {
         "label": "C",
-        "text": "df.info()",
+        "text": "`df.info()`",
         "Explanation": "The `info()` method summarizes concise table metadata including column count, non-null counts, data types, and total memory usage."
       },
       {
         "label": "D",
-        "text": "df.shape",
+        "text": "`df.shape`",
         "Explanation": "The `shape` attribute returns a simple tuple indicating row and column dimensions."
       }
     ],
@@ -265,7 +265,7 @@
     "options": [
       {
         "label": "A",
-        "text": ".str.lower() is a display-only method that prints formatted text without returning an index object.",
+        "text": "`.str.lower()` is a display-only method that prints formatted text without returning an index object.",
         "Explanation": "The string accessor returns a modified Index object containing lowercased string values."
       },
       {
@@ -294,22 +294,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df.rename(columns=lambda col: col.rstrip('_'))",
+        "text": "`df.rename(columns=lambda col: col.rstrip('_'))`",
         "Explanation": "Passing a lambda function to the `columns` parameter of `rename` applies the transformation element-wise across all column labels."
       },
       {
         "label": "B",
-        "text": "df.rename(mapper=lambda col: col.replace('_'))",
+        "text": "`df.rename(mapper=lambda col: col.replace('_'))`",
         "Explanation": "The `replace` string method requires two arguments (target and replacement) and must be configured with axis mapping."
       },
       {
         "label": "C",
-        "text": "df.str.rename(lambda x: x[:-1])",
+        "text": "`df.str.rename(lambda x: x[:-1])`",
         "Explanation": "The `.str` accessor applies to Series or Index objects, whereas DataFrame uses the `rename` method for label transformations."
       },
       {
         "label": "D",
-        "text": "df.rename(axis=0, mapper=lambda x: x.rstrip('_'))",
+        "text": "`df.rename(axis=0, mapper=lambda x: x.rstrip('_'))`",
         "Explanation": "Setting `axis=0` applies the rename transformation to the row index instead of column labels."
       }
     ],
@@ -323,22 +323,22 @@
     "options": [
       {
         "label": "A",
-        "text": "pd.merge() automatically drops rows containing missing values (`NaN`).",
+        "text": "`pd.merge()` automatically drops rows containing missing values (`NaN`).",
         "Explanation": "Inner merges retain matching key values between datasets rather than dropping missing value rows."
       },
       {
         "label": "B",
-        "text": "pd.merge() aligns records based on key value equality, discarding non-matching names, whereas column concatenation joins strictly by row index position.",
+        "text": "`pd.merge()` aligns records based on key value equality, discarding non-matching names, whereas column concatenation joins strictly by row index position.",
         "Explanation": "Merging matches rows by value equality within specified key columns, whereas concatenation by row position pairs records based purely on row index position alignment."
       },
       {
         "label": "C",
-        "text": "pd.concat() automatically removes duplicate hero records before combining.",
+        "text": "`pd.concat()` automatically removes duplicate hero records before combining.",
         "Explanation": "Concatenation retains all original rows from both DataFrames regardless of duplicate content."
       },
       {
         "label": "D",
-        "text": "pd.merge() can only process numerical data types, ignoring text columns.",
+        "text": "`pd.merge()` can only process numerical data types, ignoring text columns.",
         "Explanation": "Both `merge` and `concat` operations process string and numeric data types equally."
       }
     ],

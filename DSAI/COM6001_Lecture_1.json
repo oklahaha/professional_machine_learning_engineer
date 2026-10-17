@@ -4,22 +4,22 @@
     "options": [
       {
         "label": "A",
-        "text": "(lambda x, y: x - y)(10, 4)",
+        "text": "`(lambda x, y: x - y)(10, 4)`",
         "Explanation": "Enclosing the lambda expression in parentheses allows it to be called immediately by appending the input arguments in a subsequent set of parentheses."
       },
       {
         "label": "B",
-        "text": "lambda (x, y): x - y (10, 4)",
+        "text": "`lambda (x, y): x - y (10, 4)`",
         "Explanation": "Placing parentheses around parameter names inside the lambda definition creates invalid syntax for variable argument binding."
       },
       {
         "label": "C",
-        "text": "def lambda(x, y): return x - y (10, 4)",
+        "text": "`def lambda(x, y): return x - y (10, 4)`",
         "Explanation": "Combining the 'def' keyword with 'lambda' is invalid syntax because lambda expressions are anonymous constructs created without standard function declarations."
       },
       {
         "label": "D",
-        "text": "lambda x, y: x - y, (10, 4)",
+        "text": "`lambda x, y: x - y, (10, 4)`",
         "Explanation": "Separating the lambda definition and arguments with a comma creates a tuple containing a function object and data rather than invoking the function."
       }
     ],
@@ -178,22 +178,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df.dtypes",
+        "text": "`df.dtypes`",
         "Explanation": "`dtypes` is a structural property (attribute) that returns the data types of each column without needing function execution parentheses."
       },
       {
         "label": "B",
-        "text": "df.head()",
+        "text": "`df.head()`",
         "Explanation": "`head()` is an action-oriented method used to retrieve the first $n$ rows of a DataFrame."
       },
       {
         "label": "C",
-        "text": "df.info()",
+        "text": "`df.info()`",
         "Explanation": "`info()` is a summary method that prints detailed DataFrame metadata."
       },
       {
         "label": "D",
-        "text": "df.describe()",
+        "text": "`df.describe()`",
         "Explanation": "`describe()` is a method that computes statistical metrics across numerical columns."
       }
     ],
@@ -207,22 +207,22 @@
     "options": [
       {
         "label": "A",
-        "text": "df['city'] returns a 1D Pandas Series, whereas df[['city']] returns a 2D Pandas DataFrame.",
+        "text": "`df['city']` returns a 1D Pandas Series, whereas `df[['city']]` returns a 2D Pandas DataFrame.",
         "Explanation": "Passing a single string extracts a 1D Series object, while passing a list containing the column name returns a 2D DataFrame object."
       },
       {
         "label": "B",
-        "text": "df['city'] selects a row with label 'city', while df[['city']] selects a column.",
+        "text": "`df['city']` selects a row with label 'city', while `df[['city']]` selects a column.",
         "Explanation": "Both single and double bracket indexing target columns when provided string column names."
       },
       {
         "label": "C",
-        "text": "df['city'] creates a deep copy of the data, while df[['city']] creates a shallow view.",
+        "text": "`df['city']` creates a deep copy of the data, while `df[['city']]` creates a shallow view.",
         "Explanation": "The single vs. double bracket syntax dictates output structural type rather than memory copying strategies."
       },
       {
         "label": "D",
-        "text": "df['city'] returns a standard Python list, while df[['city']] returns a NumPy array.",
+        "text": "`df['city']` returns a standard Python list, while `df[['city']]` returns a NumPy array.",
         "Explanation": "Both indexing operations return native Pandas objects (Series and DataFrame respectively)."
       }
     ],
@@ -294,7 +294,7 @@
     "options": [
       {
         "label": "A",
-        "text": "merge matches rows based on matching string values in 'hero_names', whereas concat(axis=1) joins rows strictly by row index position regardless of column values.",
+        "text": "merge matches rows based on matching string values in 'hero_names', whereas `concat(axis=1)` joins rows strictly by row index position regardless of column values.",
         "Explanation": "`merge()` evaluates row content within the join key column and drops non-matching entries, while `concat(axis=1)` pairs rows by index position."
       },
       {
@@ -304,7 +304,7 @@
       },
       {
         "label": "C",
-        "text": "concat(axis=1) automatically eliminates duplicate column names prior to combining tables.",
+        "text": "`concat(axis=1)` automatically eliminates duplicate column names prior to combining tables.",
         "Explanation": "`concat(axis=1)` keeps all columns from both DataFrames, preserving duplicate column names if present."
       },
       {
@@ -328,7 +328,7 @@
       },
       {
         "label": "B",
-        "text": "Lambda functions are not supported inside the df.rename method.",
+        "text": "Lambda functions are not supported inside the `df.rename` method.",
         "Explanation": "Lambda functions are fully supported as mappers within `df.rename()` provided they return valid string names."
       },
       {
@@ -338,7 +338,7 @@
       },
       {
         "label": "D",
-        "text": "The axis parameter must be specified as axis=1 when using custom lambda functions.",
+        "text": "The axis parameter must be specified as `axis=1` when using custom lambda functions.",
         "Explanation": "`axis='columns'` and `axis=1` are functionally identical string and integer representations in Pandas."
       }
     ],

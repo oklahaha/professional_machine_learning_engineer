@@ -1,0 +1,84 @@
+What is the main distinction between agglomerative and divisive hierarchical clustering?,"Agglomerative starts with individual points as clusters and merges them, while divisive starts with one all-inclusive cluster and splits it."
+How is inter-cluster distance calculated in MIN (Single Link) hierarchical clustering?,It is defined as the distance between the two closest points belonging to different clusters.
+Why can merge decisions made during hierarchical clustering be problematic in subsequent steps?,"Once two clusters are merged (or split), the decision cannot be undone at later steps."
+What is the relationship between Between-Cluster Sum of Squares (BSS) and Within-Cluster Sum of Squares (WSS/SSE)?,"For a fixed dataset, $\text{BSS} + \text{WSS} = \text{constant}$, meaning maximizing separation (BSS) minimizes cohesion error (WSS)."
+"What is the standard time complexity for traditional hierarchical clustering algorithms, and to what can it be reduced?","Standard time complexity is $O(N^3)$, which can be reduced to $O(N^2 \log N)$ with optimized data structures."
+How is inter-cluster proximity determined in the Distance Between Centroids approach?,It is measured as the distance between the centroid (mean) of the first cluster and the centroid of the second cluster.
+How is inter-cluster distance defined in MAX (Complete Link) hierarchical clustering?,It is defined as the distance between the two most distant points belonging to different clusters.
+How is a noise point defined in the DBSCAN algorithm?,Any point that is neither a core point nor a border point.
+Why is Group Average considered a compromise between MIN and MAX linkage methods?,"It averages all pairwise distances, so no single closest pair (MIN) or farthest pair (MAX) decides a merge. Like MAX it is less susceptible to noise and outliers than MIN, but it is still biased towards globular clusters."
+How does K-means define each cluster center?,"Each cluster is associated with a centroid, which is typically the mean of all points assigned to that cluster."
+What structural limitations does basic K-means face regarding data distributions?,"It struggles when clusters have differing sizes, differing densities, non-globular shapes, or when outliers are present."
+How does increasing the number of clusters $K$ affect the Sum of Squared Error (SSE)?,"The best achievable SSE never increases as $K$ grows, reaching zero when $K$ equals the number of points. So increasing $K$ is an easy way to cut SSE, but a good clustering with smaller $K$ can still have lower SSE than a poor clustering with larger $K$."
+How does hierarchical clustering differ from partitional clustering?,"Hierarchical clustering produces a set of nested clusters organized as a hierarchical tree, whereas partitional clustering produces a single flat division of non-overlapping subsets."
+What is a partitional clustering?,A division of data objects into non-overlapping subsets such that each data object is in exactly one subset.
+"In cluster analysis, how are intra-cluster and inter-cluster distances optimized?","Intra-cluster distances are minimized, while inter-cluster distances are maximized."
+What graphical technique is used to determine the parameters $\text{Eps}$ and $\text{MinPts}$ in DBSCAN?,Plotting the sorted distance of every point to its $k$-th nearest neighbor and identifying the sharp bend (knee) in the curve.
+What is the space complexity of traditional hierarchical clustering for $N$ data points?,"$O(N^2)$, because it requires storing the $N \times N$ proximity matrix."
+How is inter-cluster distance computed in the Group Average approach?,It is computed as the average of all pairwise distances between points in the two distinct clusters.
+Term: Dendrogram,A tree-like diagram that records the sequence of merges or splits in a hierarchical clustering algorithm.
+What is a primary strength of the MIN (Single Link) distance metric in hierarchical clustering?,It can handle non-elliptical or arbitrarily shaped clusters.
+What is a key practical advantage of using a dendrogram for cluster selection?,Any desired number of clusters can be obtained by cutting the dendrogram at the appropriate height level without re-running the algorithm.
+How can K-means be adapted to capture natural clusters with non-globular shapes or differing sizes?,By finding a larger number of small sub-clusters ($K$ higher than true clusters) and merging them in a post-processing step.
+How is the Silhouette Coefficient $s$ for an individual point $i$ calculated?,"$s = \frac{b - a}{\max(a, b)}$, where $a$ is the average intra-cluster distance and $b$ is the minimum average distance to another cluster."
+What shape bias does MAX (Complete Link) hierarchical clustering exhibit?,It tends to break large clusters and is strongly biased toward finding globular clusters.
+What is the algorithmic time complexity of basic K-means per iteration?,"$O(n \cdot K \cdot d)$ per iteration (every point compared with every centroid over all attributes), so $O(n \cdot K \cdot I \cdot d)$ in total for $I$ iterations — linear in $n$."
+"In fuzzy clustering, what restriction is placed on the membership weights of a single point?","A point belongs to every cluster with a weight between 0 and 1, and the sum of these weights across all clusters must equal 1."
+Under what primary conditions does DBSCAN struggle to identify true clusters?,When clusters have widely varying densities or when dealing with high-dimensional data.
+What defines a center-based cluster?,A set of objects where every object is closer (or more similar) to the center of its cluster than to the center of any other cluster.
+What is the main weakness of MIN (Single Link) hierarchical clustering?,"It is highly sensitive to noise and outliers, which can cause undesirable chaining of clusters."
+"In cluster validation, what does an ideal similarity matrix contain for a dataset?","An entry of 1 if the corresponding pair of points belongs to the same cluster, and 0 if they belong to different clusters."
+What formula measures cluster cohesion in K-means using Sum of Squared Error (SSE)?,"$\text{SSE} = \sum_{i=1}^{K} \sum_{x \in C_i} \|x - m_i\|^2$, where $m_i$ is the centroid of cluster $C_i$."
+What is a border point in DBSCAN?,"A point that is not a core point itself, but falls within the $\text{Eps}$-neighborhood of a core point."
+What defines a density-based cluster?,A dense region of points separated from other dense regions by regions of low density.
+How does K-means++ improve upon random centroid initialization?,"After a random first centroid, each new centroid is sampled with probability proportional to a point's minimum squared distance to the centroids already chosen, which favours widely separated starting points."
+How does DBSCAN classify a point as a core point?,"If it has at least a specified number of points ($\text{MinPts}$) within a defined radius ($\text{Eps}$), including the point itself."
+What are the two broad purposes of cluster analysis named in the lecture?,"Understanding (e.g. grouping related documents, genes/proteins with similar function, or stocks with similar price fluctuations) and Summarization (reducing the size of large data sets)."
+Why is the notion of a cluster said to be ambiguous?,"The same points can reasonably be grouped into two, four or six clusters depending on the level of detail — clusters are ""in the eye of the beholder""."
+What is the difference between exclusive and non-exclusive clustering?,"In exclusive clustering each point belongs to exactly one cluster; in non-exclusive clustering a point may belong to several clusters, e.g. to represent multiple classes or 'border' points."
+What is the difference between partial and complete clustering?,Complete clustering assigns every object to a cluster; partial clustering clusters only some of the data (e.g. leaving noise unassigned).
+What does a heterogeneous set of clusters mean?,"The clusters have widely different sizes, shapes and densities."
+Which kind of clustering shares fuzzy clustering's characteristics?,"Probabilistic clustering — each point has a probability of belonging to each cluster, and the probabilities sum to 1."
+Term: Well-separated cluster,A set of points in which any point is closer (more similar) to every other point in the cluster than to any point not in the cluster.
+Term: Contiguity-based (nearest neighbour / transitive) cluster,"A set of points in which each point is closer to one or more other points in the cluster than to any point outside it, so clusters can form chains of any shape."
+What is the difference between a centroid and a medoid?,A centroid is the average of all points in the cluster (it need not be an actual data point); a medoid is the most representative actual point of the cluster.
+When are density-based cluster definitions most appropriate?,"When clusters are irregular or intertwined, and when noise and outliers are present."
+Which characteristics of the input data affect proximity or density in clustering?,"Dimensionality (sparseness / curse of dimensionality), attribute type, special relationships such as autocorrelation, the distribution of the data, and noise and outliers."
+What are the steps of the basic K-means algorithm?,"Select $K$ points as initial centroids; repeat: assign each point to its closest centroid, then recompute each cluster's centroid; until the centroids stop changing."
+Why do K-means results vary from one run to another?,"The initial centroids are often chosen randomly, and different starting points can converge to different local solutions."
+"What stopping condition is often used in practice for K-means, and why?","""Until relatively few points change clusters"", because most of the convergence happens in the first few iterations."
+Which representative point $m_i$ minimises the SSE of a cluster?,The mean (centroid) of the points in the cluster.
+"If there are 10 equal-sized real clusters, what is the probability that random initialisation picks one centroid from each?",$\frac{10!}{10^{10}} \approx 0.00036$ — so a good random start becomes very unlikely as $K$ grows.
+What strategies help with the K-means initial centroids problem?,Multiple runs; sampling and using hierarchical clustering to find initial centroids; generating more clusters and merging them hierarchically; selecting more than $k$ initial centroids and choosing the most widely separated; and K-means++.
+Why are multiple runs alone a weak fix for poor K-means initialisation?,"They help, but ""probability is not on your side"": for large $K$ the chance of any one run getting a good start is tiny."
+What is the trade-off of K-means++ compared with random initialisation?,"It is slower, but very consistently gives lower SSE and guarantees an $O(\log k)$ approximation ratio in expectation."
+What pre-processing steps help K-means?,Normalising the data and eliminating outliers.
+What post-processing steps can improve a K-means clustering?,"Eliminate small clusters that may be outliers, split 'loose' clusters with relatively high SSE, and merge clusters that are close and have relatively low SSE."
+What are the strengths of hierarchical clustering?,"You do not need to assume a number of clusters in advance (cut the dendrogram at any level), and the hierarchy may correspond to a meaningful taxonomy, such as the animal kingdom."
+What are the steps of the basic agglomerative clustering algorithm?,Compute the proximity matrix and make each point a cluster; repeat: merge the two closest clusters and update the proximity matrix; until a single cluster remains.
+What is the key operation in agglomerative hierarchical clustering?,Computing the proximity between two clusters — the different definitions of inter-cluster distance are what distinguish the algorithms.
+Why does traditional hierarchical clustering take $O(N^3)$ time?,"There are $N$ merge steps, and at each step the $N^2$ proximity matrix must be searched and updated."
+Does hierarchical clustering optimise a global objective function?,"No — no global objective function is directly minimised; it makes local merge decisions that cannot be undone (unlike K-means, which minimises SSE)."
+What is the main strength of MAX (Complete Link) clustering?,It is less susceptible to noise and outliers than MIN.
+Why does Group Average use average rather than total pairwise proximity?,"Total proximity favours large clusters (they have more pairs), so average connectivity is needed for scalability."
+"Why evaluate clusters at all, given that clusters are ""in the eye of the beholder""?","To avoid finding patterns in noise, and to compare clustering algorithms, two sets of clusters, or two individual clusters."
+What are the five aspects of cluster validation?,1. Clustering tendency (does non-random structure exist?) 2. Comparing with external labels 3. Judging fit to the data without external information 4. Comparing two clusterings 5. Determining the correct number of clusters.
+Term: Clustering tendency,Whether non-random structure actually exists in a data set — checked before trusting any clustering of it.
+Term: Internal index,"A measure of the goodness of a clustering structure that uses only the data, without external information; SSE is an example."
+"When validating clusters via correlation, why are only $n(n-1)/2$ entries needed?","The proximity matrix and the ideal similarity matrix are both symmetric, so only one triangle (excluding the diagonal) needs to be compared."
+"What does a high correlation between the ideal similarity and proximity matrices indicate, and when is it a poor measure?",It indicates that points in the same cluster are close to each other. It is not a good measure for some density- or contiguity-based clusters.
+How is a similarity matrix used to visually validate clusters?,"Order its rows and columns by cluster label: crisp blocks on the diagonal show well-separated clusters, while clusters found in random data give blurry, less crisp blocks."
+How can SSE be used to estimate the number of clusters?,Plot SSE against $K$ and look for a knee (elbow) where adding more clusters stops reducing SSE much.
+How does the statistical framework for cluster validity judge a result?,"It compares the index value with the values obtained from random data: the more atypical (unlikely under randomness) the result, the more likely it reflects real structure."
+"In the lecture's example, why is an SSE of 0.005 for three clusters judged valid?","SSE values for three clusters in 500 random data sets (100 points, $x$ and $y$ in 0.2–0.8) are far higher, so 0.005 is very unlikely to arise from random data."
+What do cluster cohesion and cluster separation measure?,Cohesion measures how closely related the objects in a cluster are (e.g. WSS/SSE); separation measures how distinct a cluster is from the others (e.g. BSS).
+What is the formula for the Between-Cluster Sum of Squares (BSS)?,"$\text{BSS} = \sum_i |C_i| (m - m_i)^2$, where $|C_i|$ is the size of cluster $i$, $m_i$ its centroid and $m$ the overall mean."
+"Data $\{1, 2, 4, 5\}$ are split into $\{1,2\}$ and $\{4,5\}$. What are WSS and BSS?","Centroids 1.5 and 4.5, overall mean 3: $\text{WSS} = 4 \times 0.5^2 = 1$ and $\text{BSS} = 2(1.5)^2 + 2(1.5)^2 = 9$, totalling 10 — the same as with one cluster (WSS 10, BSS 0)."
+How are cohesion and separation defined in the proximity graph approach?,Cohesion is the sum of the weights of all links within a cluster; separation is the sum of the weights of links between nodes in the cluster and nodes outside it.
+"What range does the silhouette coefficient take, and how is it interpreted?","Typically between 0 and 1, and the closer to 1 the better. It goes negative when $a > b$ — the point is closer on average to another cluster than to its own."
+A point has $a = 2$ and $b = 5$. What is its silhouette coefficient?,"$s = \frac{5 - 2}{\max(2, 5)} = 0.6$."
+How do you get a silhouette coefficient for a whole cluster or clustering?,Average the silhouette coefficients of the points in that cluster or clustering.
+How is density defined in DBSCAN?,The number of points within a specified radius $\text{Eps}$ of a point (counting the point itself).
+What are the steps of the DBSCAN algorithm?,"1. Label all points as core, border or noise 2. Eliminate noise points 3. Put an edge between all core points within $\text{Eps}$ of each other 4. Make each group of connected core points a separate cluster 5. Assign each border point to one of its associated core points' clusters."
+When does DBSCAN work well?,"It can handle clusters of different shapes and sizes, and it is resistant to noise."
+Why does the sorted $k$-th nearest neighbour distance plot reveal $\text{Eps}$?,"Points inside clusters have their $k$-th nearest neighbour at a short distance, while noise points have it much farther away, so the curve bends sharply at a good $\text{Eps}$."

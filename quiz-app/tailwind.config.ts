@@ -39,18 +39,8 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(-4px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
-        "glow-pulse": {
-          "0%, 100%": { textShadow: "0 0 10px rgba(46,230,255,0.45), 0 0 24px rgba(46,230,255,0.18)" },
-          "50%": { textShadow: "0 0 14px rgba(46,230,255,0.7), 0 0 36px rgba(46,230,255,0.3)" },
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-3px)" },
-        },
       },
       animation: {
-        "glow-pulse": "glow-pulse 3.6s ease-in-out infinite",
-        float: "float 5s ease-in-out infinite",
         "cell-in": "cell-in 0.32s cubic-bezier(0.22, 1, 0.36, 1)",
         "verdict-in": "verdict-in 0.25s ease-out",
       },

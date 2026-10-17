@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import MotionToggle from "@/components/MotionToggle";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -34,6 +35,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#04050D",
+  viewportFit: "cover", // lets the phone nav bars pad for the home indicator (env(safe-area-inset-*))
 };
 
 export default function RootLayout({
@@ -47,6 +49,9 @@ export default function RootLayout({
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <body>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         {/* Decorative space scene, pure CSS (see globals.css). Fixed behind every route. */}
         <div aria-hidden className="cosmos">
           <div className="cosmos-nebula" />
@@ -58,6 +63,9 @@ export default function RootLayout({
           <div className="cosmos-lines" />
         </div>
         {children}
+        <footer className="flex justify-center px-4 pb-28 pt-4 sm:pb-8">
+          <MotionToggle />
+        </footer>
       </body>
     </html>
   );

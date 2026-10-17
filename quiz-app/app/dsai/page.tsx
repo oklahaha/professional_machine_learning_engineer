@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
-import ModeSwitch from "@/components/ModeSwitch";
+import ModeSwitch, { HomeLink } from "@/components/ModeSwitch";
 import Tile from "@/components/Tile";
 
 export const metadata: Metadata = {
@@ -16,44 +16,48 @@ const mcqDecks = new Set(mcqRaw.map((q) => q.deck)).size;
 
 export default function Page() {
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 pb-10 pt-8 sm:pt-14">
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span aria-hidden className="neon-glyph animate-float">◆</span>
-            <h1 className="neon-title font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Data Science &amp; AI
-            </h1>
-          </div>
-          <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.2em] text-mist">{courses.join(" · ")}</p>
+    <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
+      <div className="flex items-center justify-between gap-4">
+        <HomeLink />
+        <div className="seg">
+          <ModeSwitch source="dsai" />
         </div>
-        <ModeSwitch source="dsai" />
+      </div>
+      <header className="mb-10 mt-8 sm:mb-14 sm:mt-12">
+        <h1 className="neon-title text-balance font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl">
+          Data Science &amp; AI
+        </h1>
+        <p className="mt-4 max-w-xl font-sans text-lg leading-relaxed text-paperdim">
+          MSc revision across {courses.length} courses: <span translate="no">{courses.join(", ")}</span>.
+        </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <Tile
           href="/dsai/flashcards"
           glyph="▣"
-          kicker="anki-style · spaced repetition"
           title="Flashcards"
-          blurb="Recall the answer, then grade yourself Again / Hard / Good / Easy. Cards come back on an SM-2 schedule."
+          subtitle="Spaced repetition, Anki-style"
+          blurb="Recall the answer, then grade yourself Again, Hard, Good or Easy. Cards come back on an SM-2 schedule."
           stats={[
             { label: "cards", value: cardsRaw.length },
             { label: "decks", value: cardDecks },
           ]}
+          action="Review cards"
         />
         <Tile
           href="/dsai/quiz"
           glyph="◉"
-          kicker="multiple choice · per-option feedback"
           title="Quiz"
+          subtitle="Multiple choice with per-option feedback"
           blurb="Pick an answer, ask for a hint if you need one, and see why every option is right or wrong."
           stats={[
             { label: "questions", value: mcqRaw.length },
             { label: "decks", value: mcqDecks },
           ]}
+          action="Take the quiz"
         />
       </div>
-    </div>
+    </main>
   );
 }

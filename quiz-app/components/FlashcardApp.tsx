@@ -15,6 +15,7 @@ import {
   STARTING_EASE,
   buildQueue,
   countCards,
+  GRADE_LABEL,
   dayKey,
   previewIntervals,
   requeue,
@@ -28,7 +29,7 @@ import {
 } from "@/lib/srs";
 import DeckPanel, { type CourseStat } from "./DeckPanel";
 import Flashcard from "./Flashcard";
-import ModeSwitch from "./ModeSwitch";
+import ModeSwitch, { HomeLink } from "./ModeSwitch";
 
 // v1: SM-2 states keyed by the content-hash card id. Deliberately not the quiz's key —
 // the two modes share a build, not a save file.
@@ -39,6 +40,8 @@ const EMPTY_DAY: DayLog = { newDone: 0, reviewsDone: 0 };
 
 type DayLog = { newDone: number; reviewsDone: number };
 type Limits = { newPerDay: number; reviewPerDay: number };
+// Everything one grade changed, as it was before: enough to put the card back exactly.
+type Undo = { states: States; log: Record<string, DayLog>; queue: string[]; label: string };
 
 type Persisted = {
   version: 1;
@@ -143,6 +146,8 @@ export default function FlashcardApp() {
   const [queue, setQueue] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [showLimits, setShowLimits] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
+  const [undo, setUndo] = useState<Undo | null>(null); // the last grade, until anything else changes the queue
   const [hydrated, setHydrated] = useState(false);
   // Session clock. Stays 0 until hydration so the server render and the first client render
   // agree — what is "due" depends on the wall clock, which the server cannot know.
@@ -277,25 +282,56 @@ export default function FlashcardApp() {
       let nextQueue = stillLearning ? requeue(queue, id) : queue.filter((x) => x !== id);
       if (nextQueue.length === 0) nextQueue = fill(nextStates, nextLog, limits, deck, at);
 
+      setUndo({ states, log, queue, label: GRADE_LABEL[g] });
       setStates(nextStates);
       setLog(nextLog);
       setQueue(nextQueue);
       setRevealed(false);
       setNow(at);
+      setAnnouncement(
+        `${GRADE_LABEL[g]}. ${stillLearning ? "Back" : "Due again"} in ${previews[g]}. ${
+          nextQueue.length > 0 ? "Next card." : "Queue empty."
+        }`,
+      );
     },
-    [queue, states, log, limits, deck, fill],
+    [queue, states, log, limits, deck, fill, previews],
   );
 
-  // Anki's keys: space reveals, 1–4 grade. Ignored while typing in the limit inputs.
+  // One step back, as Anki's undo: the graded card returns to the front of the queue face-down,
+  // with its schedule and today's counts as they were before the grade.
+  const undoGrade = useCallback(() => {
+    if (!undo) return;
+    setStates(undo.states);
+    setLog(undo.log);
+    setQueue(undo.queue);
+    setRevealed(false);
+    setNow(Date.now());
+    setUndo(null);
+    setAnnouncement(`${undo.label} undone. The card is back.`);
+  }, [undo]);
+
+  const reveal = useCallback(() => {
+    setRevealed(true);
+    setAnnouncement("Answer shown. Grade it Again, Hard, Good or Easy, keys 1 to 4.");
+  }, []);
+
+  // Anki's keys: space reveals, 1–4 grade. Ignored while typing in the limit inputs, and
+  // space/Enter on a focused control is that control's own press (the card handles its own).
   useEffect(() => {
     if (!hydrated) return;
     function onKey(e: KeyboardEvent) {
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      if (e.key === "z" && !e.metaKey && !e.ctrlKey && !e.altKey && undo) {
+        e.preventDefault();
+        undoGrade();
+        return;
+      }
       if (!queue[0]) return;
       if (!revealed && (e.key === " " || e.key === "Enter")) {
+        if (el?.closest("button, a, [role='button']")) return;
         e.preventDefault();
-        setRevealed(true);
+        reveal();
         return;
       }
       if (revealed && e.key >= "1" && e.key <= "4") {
@@ -305,16 +341,20 @@ export default function FlashcardApp() {
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [hydrated, revealed, queue, grade]);
+  }, [hydrated, revealed, queue, grade, reveal, undo, undoGrade]);
 
   const applyLimits = useCallback(
     (next: Limits) => {
       const at = Date.now();
+      const nextQueue = fill(states, log, next, deck, at);
       setLimits(next);
       setNow(at);
-      setQueue(fill(states, log, next, deck, at));
+      setQueue(nextQueue);
+      setUndo(null);
+      // A different card now on top must start face-down, or its answer is on show.
+      if (nextQueue[0] !== queue[0]) setRevealed(false);
     },
-    [states, log, deck, fill],
+    [states, log, deck, fill, queue],
   );
 
   // Any filter change re-cuts the deck, so the queue is rebuilt from scratch — a half-graded
@@ -324,6 +364,7 @@ export default function FlashcardApp() {
       const at = Date.now();
       setFilter(next);
       setRevealed(false);
+      setUndo(null);
       setNow(at);
       setQueue(fill(states, log, limits, cardsForFilter(next), at));
     },
@@ -343,11 +384,12 @@ export default function FlashcardApp() {
   const clearFilter = useCallback(() => applyFilter(EMPTY_FILTER), [applyFilter]);
 
   function resetAll() {
-    if (!window.confirm("Forget every card's review history and start over?")) return;
+    if (!window.confirm("Forget every card’s review history and start over?")) return;
     const at = Date.now();
     setStates({});
     setLog({});
     setRevealed(false);
+    setUndo(null);
     setNow(at);
     setQueue(fill({}, {}, limits, deck, at));
   }
@@ -359,6 +401,7 @@ export default function FlashcardApp() {
     const at = Date.now();
     setShuffleSeed(seed);
     setRevealed(false);
+    setUndo(null);
     setNow(at);
     setQueue(fill(states, log, limits, deck, at, seed));
   }
@@ -370,149 +413,200 @@ export default function FlashcardApp() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-2xl flex-col px-4 pb-10 pt-5 sm:pt-8">
-      <header className="mb-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span aria-hidden className="neon-glyph animate-float">◆</span>
-              <h1 className="neon-title font-display text-lg font-semibold tracking-tight sm:text-xl">
-                DSAI Flashcards
-              </h1>
-            </div>
-            <p className="mt-0.5 font-mono text-[11px] text-mist">
-              data science &amp; ai · spaced repetition
-            </p>
+    <div className="study-shell pb-12">
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+        <div>
+          <HomeLink />
+          <div className="mt-1.5 flex items-center gap-2.5">
+            <span aria-hidden className="neon-glyph text-lg">◆</span>
+            <h1 className="neon-title text-balance font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+              <span translate="no">DSAI</span> Flashcards
+            </h1>
           </div>
+          <p className="hud-label mt-1">Data Science &amp; AI, spaced repetition</p>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-2">
+        {/* Two groups, not one bar: where you are (Cards / Quiz), then what is switched on. One bar
+            wrapped mid-group on a phone and made the page link read as one more toggle. */}
+        <div className="flex flex-wrap items-center gap-2 self-center">
+          <div className="seg">
             <ModeSwitch source="dsai" />
+          </div>
+          <div className="seg">
             <button
               onClick={toggleShuffle}
               aria-pressed={shuffleSeed !== 0}
               title="Study cards in random order instead of deck order"
-              className="chip-toggle"
+              className="seg-item"
             >
-              ⤨ shuffle
+              Shuffle
             </button>
             <button
               onClick={() => setShowLimits((s) => !s)}
-              aria-pressed={showLimits}
+              aria-expanded={showLimits}
               title="Daily new-card and review limits"
-              className="chip-toggle"
+              className="seg-item"
             >
-              ⚙ limits
+              Limits
             </button>
           </div>
         </div>
-
-        <div className="holo mt-4 flex items-end gap-5 rounded-lg px-4 py-3">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-mist">
-              queue
-            </div>
-            <div className="readout font-mono text-3xl font-semibold leading-none tracking-tight tabular-nums">
-              {hydrated ? queue.length : <span className="text-mist">—</span>}
-            </div>
-          </div>
-          <dl className="mb-0.5 grid grid-cols-4 gap-x-4 font-mono text-xs sm:gap-x-5">
-            <Stat label="due" value={counts.due} tone="text-paper" />
-            <Stat label="new" value={counts.fresh} tone="text-iris" />
-            <Stat label="learning" value={counts.learning} tone="text-amber" />
-            <Stat label="mature" value={`${counts.mature}/${counts.total}`} tone="text-paperdim" />
-          </dl>
-        </div>
-
-        {showLimits && (
-          <div className="holo animate-verdict-in mt-3 flex flex-wrap items-center gap-4 rounded-lg px-4 py-3 font-mono text-[11px] text-mist">
-            <LimitInput
-              label="new / day"
-              value={limits.newPerDay}
-              onChange={(v) => applyLimits({ ...limits, newPerDay: v })}
-            />
-            <LimitInput
-              label="reviews / day"
-              value={limits.reviewPerDay}
-              onChange={(v) => applyLimits({ ...limits, reviewPerDay: v })}
-            />
-            <span className="ml-auto tabular-nums text-mist/70">
-              today: {today.newDone} new · {today.reviewsDone} reviews
-            </span>
-            <button
-              onClick={resetAll}
-              className="rounded-lg px-2 py-1.5 uppercase tracking-widest text-mist/70 transition hover:text-wrong"
-            >
-              reset
-            </button>
-          </div>
-        )}
-
-        <DeckPanel
-          stats={courseStats}
-          filter={filter}
-          onToggleCourse={toggleCourse}
-          onToggleUnit={toggleUnit}
-          onClear={clearFilter}
-        />
       </header>
 
-      {!hydrated ? (
-        <div className="holo rounded-lg p-10 text-center font-mono text-xs text-mist">
-          loading deck…
-        </div>
-      ) : card && cardState ? (
-        <Flashcard
-          key={card.id}
-          card={card}
-          state={cardState}
-          queueLeft={queue.length}
-          revealed={revealed}
-          previews={previews}
-          onReveal={() => setRevealed(true)}
-          onGrade={grade}
-        />
-      ) : (
-        <Done
-          counts={counts}
-          today={today}
-          onCheckAgain={checkAgain}
-          onMoreNew={() => applyLimits({ ...limits, newPerDay: limits.newPerDay + 10 })}
-          canAddNew={counts.fresh > 0}
-        />
-      )}
+      {/* What a sighted user sees happen on the card: the answer turning up, the grade landing. */}
+      <p role="status" className="sr-only">
+        {announcement}
+      </p>
+
+      <div className="study-grid">
+
+        <main id="main" className="study-main">
+          {!hydrated ? (
+            // A card's height (face min-height plus its header and footer), so nothing under it moves.
+            <div className="holo hud-label flex min-h-[21.5rem] items-center justify-center rounded-lg p-10 text-center sm:min-h-[23.5rem]">
+              Loading the deck…
+            </div>
+          ) : card && cardState ? (
+            <Flashcard
+              key={card.id}
+              card={card}
+              state={cardState}
+              queueLeft={queue.length}
+              revealed={revealed}
+              previews={previews}
+              onReveal={reveal}
+              onGrade={grade}
+            />
+          ) : (
+            <Done
+              counts={counts}
+              today={today}
+              onCheckAgain={checkAgain}
+              onMoreNew={() => applyLimits({ ...limits, newPerDay: limits.newPerDay + 10 })}
+              canAddNew={counts.fresh > 0}
+            />
+          )}
+
+          {hydrated && undo && (
+            <div className="mt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={undoGrade}
+                className="hud-label rounded-md px-3 py-2 underline-offset-4 transition hover:text-paper hover:underline"
+              >
+                Undo “{undo.label}” <span className="text-mist">(Z)</span>
+              </button>
+            </div>
+          )}
+        </main>
+
+        <aside className="study-rail" aria-label="Progress and filters">
+          <div className="holo flex flex-wrap items-end gap-x-5 gap-y-2 rounded-lg px-4 py-3 sm:px-5 sm:py-4 md:col-span-2">
+            <div className="flex flex-col-reverse">
+              <div className="hud-label">in queue</div>
+              <div className="readout hud-figure text-[32px] leading-none">
+                {hydrated ? queue.length : <span className="text-mist">–</span>}
+              </div>
+            </div>
+            {/* Neutral figures: colour only marks reviews waiting today, the one count that asks
+                for action. (New, learning and mature are states, not verdicts.) */}
+            <dl className="mb-0.5 grid grid-cols-4 gap-x-4 sm:gap-x-5">
+              <Stat label="due" value={counts.due} tone={counts.due > 0 ? "text-signal" : "text-paper"} />
+              <Stat label="new" value={counts.fresh} tone="text-paper" />
+              <Stat label="learning" value={counts.learning} tone="text-paper" />
+              <Stat label="mature" value={`${counts.mature}/${counts.total}`} tone="text-paper" />
+            </dl>
+          </div>
+
+          {showLimits && (
+            <div className="holo hud-label animate-verdict-in flex flex-wrap items-center gap-4 rounded-lg px-4 py-3 md:col-span-2">
+              <LimitInput
+                name="new-per-day"
+                label="New a day"
+                value={limits.newPerDay}
+                onChange={(v) => applyLimits({ ...limits, newPerDay: v })}
+              />
+              <LimitInput
+                name="reviews-per-day"
+                label="Reviews a day"
+                value={limits.reviewPerDay}
+                onChange={(v) => applyLimits({ ...limits, reviewPerDay: v })}
+              />
+              <span className="tabular-nums">
+                Today: {today.newDone} new, {today.reviewsDone} reviews
+              </span>
+              <button
+                onClick={resetAll}
+                className="ml-auto rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong"
+              >
+                Reset review history
+              </button>
+            </div>
+          )}
+
+          <div className="md:col-span-2">
+            <DeckPanel
+              stats={courseStats}
+              filter={filter}
+              onToggleCourse={toggleCourse}
+              onToggleUnit={toggleUnit}
+              onClear={clearFilter}
+            />
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
 
 function Stat({ label, value, tone }: { label: string; value: number | string; tone: string }) {
   return (
-    <div>
-      <dt className="text-[10px] uppercase tracking-widest text-mist">{label}</dt>
-      <dd className={`text-base font-semibold tabular-nums ${tone}`}>{value}</dd>
+    <div className="flex flex-col-reverse">
+      <dt className="hud-label">{label}</dt>
+      <dd className={`hud-figure text-xl ${tone}`}>{value}</dd>
     </div>
   );
 }
 
 function LimitInput({
+  name,
   label,
   value,
   onChange,
 }: {
+  name: string;
   label: string;
   value: number;
   onChange: (v: number) => void;
 }) {
+  // Committed on Enter or leaving the field, not per keystroke: typing 25 would otherwise
+  // rebuild the queue at a limit of 2 on the way, and the field could never be cleared.
+  const [draft, setDraft] = useState<string | null>(null);
+
+  function commit() {
+    if (draft === null) return;
+    const n = parseInt(draft, 10);
+    if (!Number.isNaN(n)) onChange(Math.min(9999, Math.max(0, n)));
+    setDraft(null);
+  }
+
   return (
     <label className="flex items-center gap-2">
-      <span className="uppercase tracking-widest">{label}</span>
+      <span>{label}</span>
       <input
         type="number"
+        name={name}
+        inputMode="numeric"
+        autoComplete="off"
         min={0}
         max={9999}
-        value={value}
-        onChange={(e) => {
-          const n = parseInt(e.target.value, 10);
-          if (!Number.isNaN(n)) onChange(Math.min(9999, Math.max(0, n)));
+        enterKeyHint="done"
+        value={draft ?? value}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") commit();
+          else if (e.key === "Escape") setDraft(null);
         }}
         className="field w-16 px-2 py-1.5 text-center text-sm tabular-nums"
       />
@@ -535,18 +629,17 @@ function Done({
 }) {
   return (
     <section className="holo-card animate-cell-in rounded-lg p-8 text-center">
-      <div className="font-mono text-[11px] uppercase tracking-widest text-signal/80">
-        // queue empty
-      </div>
-      <h2 className="neon-title mt-3 font-display text-xl font-semibold">
+      <h2 className="neon-title font-display text-3xl font-semibold tracking-tight">
         Nothing left for today
       </h2>
-      <p className="mx-auto mt-2 max-w-sm font-sans text-sm leading-relaxed text-mist">
+      <p className="mx-auto mt-3 max-w-md font-sans text-base leading-relaxed text-paperdim">
         {today.newDone + today.reviewsDone > 0
           ? `You did ${today.reviewsDone} review${today.reviewsDone === 1 ? "" : "s"} and introduced ${today.newDone} new card${today.newDone === 1 ? "" : "s"}.`
           : "Everything scheduled for today is already done."}{" "}
         {counts.fresh > 0
-          ? `${counts.fresh} card${counts.fresh === 1 ? "" : "s"} in this deck are still unseen — they are held back by the daily new-card limit.`
+          ? counts.fresh === 1
+            ? "1 card in this deck is still unseen — it is held back by the daily new-card limit."
+            : `${counts.fresh} cards in this deck are still unseen — they are held back by the daily new-card limit.`
           : "Every card in this deck has been introduced."}
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -554,14 +647,14 @@ function Done({
           onClick={onCheckAgain}
           className="btn-cyber btn-ghost px-4 py-2 text-sm"
         >
-          check again
+          Check again
         </button>
         {canAddNew && (
           <button
             onClick={onMoreNew}
             className="btn-cyber btn-neon px-4 py-2 text-sm"
           >
-            + 10 new cards
+            Add 10 new cards
           </button>
         )}
       </div>

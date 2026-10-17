@@ -12,42 +12,43 @@ const courseCount = new Set(cardsRaw.map((c) => c.course)).size;
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 pb-10 pt-8 sm:pt-14">
-      <header className="mb-8">
-        <div className="flex items-center gap-2">
-          <span aria-hidden className="neon-glyph animate-float">◈</span>
-          <h1 className="neon-title font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Study Console
-          </h1>
-        </div>
-        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.2em] text-mist">choose a question source</p>
+    <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-10 sm:px-6 sm:pt-20">
+      <header className="mb-10 sm:mb-14">
+        <h1 className="neon-title text-balance font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl">
+          Study Console
+        </h1>
+        <p className="mt-4 max-w-xl font-sans text-lg leading-relaxed text-paperdim">
+          Two question banks, one console. Pick what you are revising today.
+        </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <Tile
           href="/pmle"
           glyph="◇"
-          kicker="PMLE · google cloud"
           title="Professional ML Engineer"
+          subtitle="Google Cloud certification"
           blurb="Exam-style multiple choice for the Google Professional Machine Learning Engineer certification, scored by exam-guide section."
           stats={[
             { label: "questions", value: pmleCount },
-            { label: "sections", value: 6 },
+            { label: "exam sections", value: 6 },
           ]}
+          action="Start the exam bank"
         />
         <Tile
           href="/dsai"
           glyph="◆"
-          kicker="DSAI · msc"
           title="Data Science & AI"
-          blurb="MSc coursework: spaced-repetition flashcards and multiple-choice questions, filterable by course and lecture."
+          subtitle="MSc coursework"
+          blurb="Spaced-repetition flashcards and multiple-choice questions, filterable by course and lecture."
           stats={[
             { label: "flashcards", value: cardCount },
-            { label: "mc questions", value: mcqCount },
+            { label: "questions", value: mcqCount },
             { label: "courses", value: courseCount },
           ]}
+          action="Open the MSc decks"
         />
       </div>
-    </div>
+    </main>
   );
 }

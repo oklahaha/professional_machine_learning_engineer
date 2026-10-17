@@ -145,3 +145,42 @@ export function parseReferences(raw: string | undefined): string[] {
   }
   return urls;
 }
+
+export type Explanation = {
+  paragraphs: string[];
+  furtherReading: string[]; // titles from a trailing "References:" run; one entry if unsplittable
+};
+
+/**
+ * An explanation as the card shows it. The dumps run a whole explanation together, discussing
+ * each option in turn, so a new paragraph starts at every sentence that opens "Option X" or
+ * "Options X and Y" (case-sensitive: "option A" mid-sentence is not a break).
+ *
+ * Most end in a "References:" run of document titles. Bracketed titles ("[Vertex AI | Docs]
+ * [TFX]") split into a list. The rest are titles welded together with nothing between them
+ * ("Collaborative filtering Word2vec Cosine similarity"), which no rule can split honestly, so
+ * they stay one line rather than being guessed apart.
+ */
+export function splitExplanation(text: string): Explanation {
+  let body = text;
+  let tail = "";
+  const ref = [...text.matchAll(/\bReferences?:/g)].pop();
+  if (ref) {
+    body = text.slice(0, ref.index).trimEnd();
+    tail = text.slice(ref.index + ref[0].length).trim();
+  }
+
+  const furtherReading = !tail
+    ? []
+    : /^(\[[^\]]*\]\s*)+$/.test(tail)
+      ? [...tail.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1].trim())
+      : [tail];
+
+  const paragraphs = body
+    .split(/\n+/)
+    .flatMap((p) => p.split(/(?<=[.!?)"”])\s+(?=Options? [A-F]\b)/))
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  return { paragraphs, furtherReading };
+}

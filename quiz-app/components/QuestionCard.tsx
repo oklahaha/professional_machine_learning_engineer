@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useId, useRef } from "react";
 import type { Question } from "@/lib/questions";
-import { parseNumberedSteps, parseReferences, splitCodeBlocks } from "@/lib/format";
+import { parseNumberedSteps, parseReferences, splitCodeBlocks, splitExplanation } from "@/lib/format";
 import { getDomain } from "@/lib/domains";
 
 type Props = {
@@ -14,6 +15,29 @@ type Props = {
   onCheck: () => void;
   onClear: () => void;
 };
+
+const ARROW_STEP: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+/**
+ * Arrow keys inside the options, as a radio group expects: they move focus to the next option
+ * (wrapping), and for a single answer the selection follows the focus. The quiz's own ←/→
+ * question navigation skips key presses from inside `[data-options]`.
+ */
+function moveWithinOptions(
+  e: React.KeyboardEvent<HTMLUListElement>,
+  isMulti: boolean,
+  onSelect: (label: string) => void,
+) {
+  const step = ARROW_STEP[e.key];
+  if (!step) return;
+  const items = [...e.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)")];
+  const at = items.indexOf(document.activeElement as HTMLButtonElement);
+  if (at < 0) return;
+  e.preventDefault();
+  const next = items[(at + step + items.length) % items.length];
+  next.focus();
+  if (!isMulti) onSelect(next.dataset.label!);
+}
 
 function sameSet(a: string[], b: string[]) {
   return a.length === b.length && a.every((x) => b.includes(x));
@@ -33,7 +57,7 @@ function OptionBody({ text }: { text: string }) {
       {list.lead && <span className="mb-1.5 block">{list.lead}</span>}
       {list.steps.map((step, i) => (
         <span key={i} className="mt-1 flex gap-2 first:mt-0">
-          <span className="shrink-0 font-mono text-xs text-mist">{i + 1}.</span>
+          <span className="shrink-0 font-display text-sm tabular-nums text-mist">{i + 1}.</span>
           <span>{step}</span>
         </span>
       ))}
@@ -46,29 +70,34 @@ function OptionBody({ text }: { text: string }) {
  * <pre> so its indentation survives; the prose around it keeps the heading styling, with
  * the first run as the <h2> so the card still has exactly one heading.
  */
-function Stem({ text }: { text: string }) {
+function Stem({ text, id }: { text: string; id: string }) {
   const segments = splitCodeBlocks(text);
   const headingAt = segments.findIndex((seg) => seg.kind === "text");
   const prose =
-    "whitespace-pre-line font-sans text-[15px] leading-relaxed text-paper sm:text-base";
+    "whitespace-pre-line font-sans text-[17px] leading-relaxed text-paper sm:text-lg";
 
   return (
     <div className="space-y-3">
       {segments.map((seg, i) => {
         if (seg.kind === "code") {
           return (
+            // Focusable and named: a listing wider than the card scrolls sideways, and keyboard
+            // users can only scroll what they can focus.
             <pre
               key={i}
-              className="overflow-x-auto rounded-md border border-signal/20 bg-ink/80 p-3 shadow-[inset_0_0_24px_-12px_rgba(46,230,255,0.35)] sm:p-4"
+              tabIndex={0}
+              role="region"
+              aria-label="Code listing"
+              className="overflow-x-auto rounded-md border border-signal/20 bg-ink/80 p-3 sm:p-4"
             >
-              <code className="block font-mono text-[12px] leading-relaxed text-paperdim sm:text-[13px]">
+              <code className="block font-mono text-[13px] leading-relaxed text-paperdim sm:text-sm">
                 {seg.content}
               </code>
             </pre>
           );
         }
         return i === headingAt ? (
-          <h2 key={i} className={prose}>
+          <h2 key={i} id={id} className={prose}>
             {seg.content}
           </h2>
         ) : (
@@ -97,6 +126,27 @@ export default function QuestionCard({
   const isCommunity = (question.source ?? "").startsWith("ExamTopics");
   const domain = getDomain(question.domain);
   const references = parseReferences(question.reference);
+  const explanation = splitExplanation(question.explanation ?? "");
+  const stemId = useId();
+  const firstChosen = question.options.findIndex((o) => selected.includes(o.label));
+  const rovingIndex = firstChosen >= 0 ? firstChosen : 0;
+  // A "choose two" is checked only once two are picked: checking with one would score it wrong
+  // for a slip of the hand, not for a wrong answer.
+  const ready = selected.length === correct.length;
+  const remaining = correct.length - selected.length;
+
+  // Check answer and Try again each remove the button you pressed, which would drop keyboard
+  // focus to <body> and send the next Tab back to the top of the page. Hand it on instead: to the
+  // verdict once checked, to the options once cleared. Only after a press — never on load.
+  const handOff = useRef(false);
+  const verdictRef = useRef<HTMLSpanElement>(null);
+  const optionsRef = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    if (!handOff.current) return;
+    handOff.current = false;
+    if (revealed) verdictRef.current?.focus();
+    else optionsRef.current?.querySelector<HTMLButtonElement>("button")?.focus(); // cleared: the first is the tab stop
+  }, [revealed]);
 
   return (
     <section
@@ -104,12 +154,12 @@ export default function QuestionCard({
       className="holo-card animate-cell-in overflow-hidden rounded-lg"
     >
       {/* cell header — reads like a notebook cell label */}
-      <div className="hud-strip flex items-center gap-2.5 px-4 py-2.5 sm:px-5">
-        <span className="font-mono text-xs font-medium tracking-tight text-signal [text-shadow:0_0_8px_rgba(46,230,255,0.6)]">
-          Q{String(question.id).padStart(3, "0")}
+      <div className="hud-strip flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3 sm:px-6">
+        <span className="font-display text-sm font-semibold tabular-nums text-signal">
+          <span translate="no">Q{String(question.id).padStart(3, "0")}</span>
         </span>
-        <span className="font-mono text-[11px] text-mist">
-          {index}/{total}
+        <span className="hud-label tabular-nums">
+          {index} of {total}
         </span>
         <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
           {/* One neutral accent for every section: green and red mean right/wrong in this
@@ -117,7 +167,7 @@ export default function QuestionCard({
           {domain && (
             <span
               title={`Exam guide section ${domain.id}: ${domain.title} (~${domain.weight}% of the exam) — ${domain.blurb}`}
-              className="rounded-[3px] border border-linestrong bg-panel2/60 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-paperdim"
+              className="rounded-[3px] border border-linestrong bg-panel2/60 px-2 py-0.5 text-[13px] text-paperdim"
             >
               §{domain.id} {domain.name}
             </span>
@@ -125,42 +175,48 @@ export default function QuestionCard({
           {isCommunity && (
             <span
               title="Correct answer sourced from the ExamTopics community vote"
-              className="rounded-[3px] border border-iris/30 bg-iris/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-iris"
+              className="rounded-[3px] border border-iris/30 bg-iris/10 px-2 py-0.5 text-[13px] text-iris"
             >
-              community-voted
+              Community-voted
             </span>
           )}
           {question.needsReview ? (
             <span
               title={question.reviewNote ?? `Auto-extracted with possible defects: ${question.flags.join(", ")}`}
-              className="flex items-center gap-1 rounded-[3px] border border-amber/30 bg-amber/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-amber"
+              className="flex items-center gap-1 rounded-[3px] border border-amber/30 bg-amber/10 px-2 py-0.5 text-[13px] text-amber"
             >
-              ⚠ review
+              ⚠ Needs review
             </span>
           ) : (
-            <span className="font-mono text-[10px] uppercase tracking-widest text-mist/60">
-              {isMulti ? `select ${correct.length}` : "single choice"}
+            <span className="hud-label">
+              {isMulti ? `Select ${correct.length}` : "Single choice"}
             </span>
           )}
         </div>
       </div>
 
-      <div className="p-4 sm:p-6">
-        <Stem text={question.question} />
+      <div className="p-5 sm:p-8">
+        <Stem text={question.question} id={stemId} />
 
         {isMulti && (
-          <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-iris/80">
-            select all that apply
-          </p>
+          <p className="mt-3 font-display text-sm font-medium text-iris">Select all that apply</p>
         )}
 
-        <ul className="mt-5 space-y-2">
-          {question.options.map((opt) => {
+        {/* A radio group for a single answer, checkboxes for a "choose two". */}
+        <ul
+          role={isMulti ? "group" : "radiogroup"}
+          aria-labelledby={stemId}
+          data-options
+          ref={optionsRef}
+          onKeyDown={(e) => moveWithinOptions(e, isMulti, onSelect)}
+          className="mt-5 space-y-2"
+        >
+          {question.options.map((opt, i) => {
             const chosen = selected.includes(opt.label);
             const isAnswer = correct.includes(opt.label);
 
             let row =
-              "border-line bg-panel2/40 hover:border-signal/60 hover:bg-panel2/70 hover:shadow-[0_0_18px_-6px_rgba(46,230,255,0.55)]";
+              "border-line bg-panel2/40 hover:border-signal/60 hover:bg-panel2/70";
             let chip = "border-linestrong text-mist";
             if (revealed) {
               if (isAnswer) {
@@ -170,7 +226,7 @@ export default function QuestionCard({
                 row = "border-wrong/70 bg-wrong/[0.08]";
                 chip = "border-wrong bg-wrong text-ink";
               } else {
-                row = "border-line bg-panel2/20 opacity-55";
+                row = "border-line bg-panel2/20";
                 chip = "border-linestrong text-mist";
               }
             } else if (chosen) {
@@ -179,20 +235,29 @@ export default function QuestionCard({
             }
 
             return (
-              <li key={opt.label}>
+              <li key={opt.label} role="none">
                 <button
                   type="button"
                   disabled={revealed}
-                  aria-pressed={chosen}
+                  role={isMulti ? "checkbox" : "radio"}
+                  aria-checked={chosen}
+                  data-label={opt.label}
+                  // A radio group is one Tab stop (the chosen option, else the first); arrows move
+                  // within it. Checkboxes stay one stop each.
+                  tabIndex={isMulti ? undefined : i === rovingIndex ? 0 : -1}
                   onClick={() => onSelect(opt.label)}
                   className={`flex w-full items-start gap-3 rounded-md border px-3 py-3 text-left transition-colors duration-150 disabled:cursor-default ${row}`}
                 >
                   <span
-                    className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-[3px] border font-mono text-xs font-semibold transition-colors ${chip}`}
+                    className={`mt-px flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px] border font-display text-sm font-semibold transition-colors ${chip}`}
                   >
                     {opt.label}
                   </span>
-                  <span className="pt-0.5 font-sans text-sm leading-relaxed text-paperdim">
+                  <span
+                    className={`pt-0.5 font-sans text-[15px] leading-relaxed sm:text-base ${
+                      revealed && !isAnswer && !chosen ? "text-mist" : "text-paperdim"
+                    }`}
+                  >
                     {opt.text ? (
                       <OptionBody text={opt.text} />
                     ) : (
@@ -200,13 +265,15 @@ export default function QuestionCard({
                     )}
                   </span>
                   {revealed && isAnswer && (
-                    <span className="ml-auto pl-2 pt-0.5 font-mono text-sm text-correct">
-                      ✓
+                    <span className="ml-auto pl-2 pt-0.5 font-display text-base text-correct">
+                      <span aria-hidden>✓</span>
+                      <span className="sr-only">Correct answer</span>
                     </span>
                   )}
                   {revealed && chosen && !isAnswer && (
-                    <span className="ml-auto pl-2 pt-0.5 font-mono text-sm text-wrong">
-                      ✗
+                    <span className="ml-auto pl-2 pt-0.5 font-display text-base text-wrong">
+                      <span aria-hidden>✗</span>
+                      <span className="sr-only">Your answer, incorrect</span>
                     </span>
                   )}
                 </button>
@@ -216,46 +283,93 @@ export default function QuestionCard({
         </ul>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          {!revealed ? (
+          {!revealed && (
             <button
               type="button"
-              disabled={selected.length === 0}
-              onClick={onCheck}
-              className="btn-cyber btn-primary px-5 py-2.5 text-sm"
+              disabled={!ready}
+              onClick={() => {
+                handOff.current = true;
+                onCheck();
+              }}
+              className="btn-cyber btn-primary px-6 py-3 text-base"
             >
-              <span aria-hidden className="text-[11px]">▶</span>
+              <span aria-hidden className="text-[13px]">▶</span>
               Check answer
             </button>
-          ) : (
-            <span
-              className={`animate-verdict-in inline-flex items-center gap-2 rounded-md border px-3.5 py-2 font-mono text-sm font-semibold ${
-                isCorrect
-                  ? "border-correct/50 bg-correct/10 text-correct shadow-[0_0_18px_-6px_rgba(52,227,168,0.7)] [text-shadow:0_0_8px_rgba(52,227,168,0.6)]"
-                  : "border-wrong/50 bg-wrong/10 text-wrong shadow-[0_0_18px_-6px_rgba(255,107,129,0.7)] [text-shadow:0_0_8px_rgba(255,107,129,0.6)]"
-              }`}
-            >
-              {isCorrect ? "✓ Correct" : `✗ Incorrect · answer ${correct.join(", ")}`}
+          )}
+          {/* Says why the button is not ready yet, rather than leaving a dead control. */}
+          {!revealed && !ready && (
+            <span className="hud-label">
+              {!isMulti
+                ? "Pick an answer to check it"
+                : remaining > 0
+                  ? `Pick ${remaining} more to check`
+                  : `Pick only ${correct.length} to check`}
             </span>
           )}
+          {/* A live region that exists before the verdict does, so a screen reader announces
+              the verdict the moment it appears. */}
+          <span role="status">
+            {revealed && (
+              <span
+                ref={verdictRef}
+                tabIndex={-1}
+                className={`animate-verdict-in inline-flex items-center gap-2 rounded-md border px-4 py-2 font-display text-base font-semibold ${
+                  isCorrect
+                    ? "border-correct/50 bg-correct/10 text-correct"
+                    : "border-wrong/50 bg-wrong/10 text-wrong"
+                }`}
+              >
+                <span aria-hidden>{isCorrect ? "✓" : "✗"}</span>
+                {isCorrect ? "Correct" : `Incorrect. The answer is ${correct.join(", ")}`}
+              </span>
+            )}
+          </span>
           {revealed && (
             <button
               type="button"
-              onClick={onClear}
-              className="font-mono text-xs text-mist underline-offset-4 transition hover:text-paper hover:underline"
+              onClick={() => {
+                handOff.current = true;
+                onClear();
+              }}
+              className="hud-label underline-offset-4 transition hover:text-paper hover:underline"
             >
-              try again
+              Try again
             </button>
           )}
         </div>
 
         {revealed && (
-          <div className="animate-verdict-in holo mt-5 rounded-md border-l-2 border-l-signal/70 p-4">
-            <div className="mb-2 font-mono text-[11px] uppercase tracking-widest text-signal/80">
-              // explanation
+          <div className="animate-verdict-in holo mt-6 rounded-md border-l-2 border-l-signal/70 p-5">
+            <h3 className="mb-2 font-display text-base font-semibold text-signal">Explanation</h3>
+            {/* One paragraph per option discussed (lib/format.ts), not one wall of text. */}
+            <div className="space-y-3 font-sans text-[15px] leading-relaxed text-paperdim sm:text-base">
+              {explanation.paragraphs.length > 0 ? (
+                explanation.paragraphs.map((p, i) => <p key={i}>{p}</p>)
+              ) : (
+                <p>No explanation available for this question.</p>
+              )}
             </div>
-            <p className="whitespace-pre-line font-sans text-sm leading-relaxed text-paperdim">
-              {question.explanation || "No explanation available for this question."}
-            </p>
+            {explanation.furtherReading.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-display text-sm font-semibold text-paperdim">Further reading</h4>
+                {explanation.furtherReading.length > 1 ? (
+                  <ul className="hud-label mt-1 list-disc space-y-0.5 pl-5">
+                    {explanation.furtherReading.map((title, i) => (
+                      <li key={i}>{title}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="hud-label mt-1 break-words">{explanation.furtherReading[0]}</p>
+                )}
+              </div>
+            )}
+            {domain && (
+              <p className="hud-label mt-3">
+                Exam guide §{domain.id}, {domain.title} (about {domain.weight}% of the exam):{" "}
+                {domain.blurb}
+              </p>
+            )}
             {references.length > 0 && (
               <ul className="mt-3 space-y-1 border-t border-line pt-3">
                 {references.map((url) => (
@@ -264,7 +378,7 @@ export default function QuestionCard({
                       href={url}
                       target="_blank"
                       rel="noreferrer"
-                      className="break-all font-mono text-[11px] text-mist underline-offset-4 transition hover:text-signal hover:underline"
+                      className="hud-label break-all underline-offset-4 transition hover:text-signal hover:underline"
                     >
                       {url}
                     </a>
@@ -276,11 +390,9 @@ export default function QuestionCard({
         )}
 
         {revealed && question.reviewNote && (
-          <div className="animate-verdict-in mt-3 rounded-md border border-amber/30 border-l-2 border-l-amber/80 bg-amber/5 p-4">
-            <div className="mb-2 font-mono text-[11px] uppercase tracking-widest text-amber/90">
-              ⚠ verify this answer yourself
-            </div>
-            <p className="font-sans text-sm leading-relaxed text-paperdim">{question.reviewNote}</p>
+          <div className="animate-verdict-in mt-3 rounded-md border border-amber/30 border-l-2 border-l-amber/80 bg-amber/5 p-5">
+            <h3 className="mb-2 font-display text-base font-semibold text-amber">⚠ Verify this answer yourself</h3>
+            <p className="font-sans text-[15px] leading-relaxed text-paperdim sm:text-base">{question.reviewNote}</p>
           </div>
         )}
       </div>

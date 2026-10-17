@@ -38,6 +38,10 @@ elevated access — use `sudo docker ...` and disable the Bash sandbox for docke
 
 There is no linter configured yet. Tests are `node --test` over `lib/*.test.ts`.
 
+## UI work
+
+For any UI/visual work, load the `taste-skill:design-taste-frontend` skill first.
+
 ## Architecture
 
 **The data pipeline is the non-obvious part.** The question bank is *extracted from an obfuscated PDF*,
@@ -129,6 +133,13 @@ not authored by hand:
   quantity like "with 2 n1-highcpu-64 machines") renders verbatim rather than risk a wrong split. If a
   hand-edited option should render as a list, number it contiguously from 1; `npm test` guards this —
   and the guard asserts an **exact count**, so adding questions means updating it in `lib/format.test.ts`.
+- **Explanations render as paragraphs.** `splitExplanation` (`lib/format.ts`) starts a paragraph at
+  each sentence opening "Option X" / "Options X and Y" and splits off the trailing `References:` run:
+  bracketed titles (`[A | B] [C]`) become a list, welded ones ("Collaborative filtering Word2vec…")
+  stay one line, because nothing separates them. `npm test` asserts **exact counts** (165 split
+  explanations, 13 reference lists) and that no text is lost. The dumps' glued footnote digits
+  ("target user1.") were stripped from the 36 explanations that had a 1…n run of them; a lone digit
+  was left alone, since it cannot be told from a real number.
 - **A stem may carry a code listing in ``` fences.** The extractor drops the source PDF's code blocks,
   so stems like q39's ("...with Keras APIs using this code:") were left dangling; the listing is restored
   by hand into the `question` string inside a fence, and `splitCodeBlocks` (`lib/format.ts`) splits the
@@ -164,8 +175,8 @@ and the `ModeSwitch` pill.
 
 - **Data.** `scripts/build-cards.mjs` (zero-dep) reads every `*.csv` in `DSAI/` — two columns,
   Front,Back, **no header and no tags** (both still accepted if present; a `COURSE::UNIT::topic` tag
-  overrides the file name) — and writes `quiz-app/data/cards.json` — **778 cards**, 4 courses,
-  22 units. `topic` is `""` and `tag` is `COURSE::UNIT` for tagless rows. Unlike `npm run extract`, it is **safe to re-run**: the CSVs are the source of truth and
+  overrides the file name) — and writes `quiz-app/data/cards.json` — **862 cards**, 4 courses,
+  23 units. `topic` is `""` and `tag` is `COURSE::UNIT` for tagless rows. Unlike `npm run extract`, it is **safe to re-run**: the CSVs are the source of truth and
   nothing in `cards.json` is hand-edited. Courses and units in `lib/cards.ts` are derived from the data,
   never hardcoded, which is the whole reason a new CSV needs no code change.
 - **Card ids are content hashes, not row numbers** — this is the load-bearing decision. SRS state lives
@@ -200,16 +211,16 @@ and the `ModeSwitch` pill.
   cursor; `FlashcardApp` holds a due queue and rebuilds it when it empties. A card still in learning is
   re-inserted a few cards later (`requeue`), never immediately. Do not copy the `order`/`pos` mechanic
   here.
-- **Shuffle** (`⤨ shuffle`) is `QueueOptions.shuffleSeed` in `buildQueue`: new cards are drawn in
+- **Shuffle** (the `Shuffle` toggle) is `QueueOptions.shuffleSeed` in `buildQueue`: new cards are drawn in
   an order keyed by `seedFrom(id, seed)` (so the same seed introduces the same cards day to day),
   today's reviews are dealt in seeded order *after* the cap takes the most overdue, and learning
   steps are never shuffled. 0 = deck order; the seed persists in `msc-cards-srs-v1`.
+- **Undo is one step and in memory only** (`Z`, or the button under the card): it restores the
+  `states`/`log`/`queue` captured just before the last grade. Anything else that rebuilds the queue
+  (filter, limits, shuffle, reset) drops it, since the snapshot would no longer match the deck.
 - **Storage key `msc-cards-srs-v1`** (the quiz's `pmle-practice-v3` is untouched). `load()` prunes
   orphaned ids and coerces every numeric field into range — stored state can be months old or
   hand-edited, and a NaN interval would wedge the queue.
-- **Colour.** Again/Good take the app's red/green because they genuinely mean wrong/right. Everything
-  else avoids them: Hard is amber, Easy is iris, course identity is a neutral chip, and the maturity bar
-  in `DeckPanel` is iris — maturity is progress, not a verdict. See the rule in `lib/domains.ts`.
 - `lib/srs.test.ts` is deliberately free of deck-size assertions, unlike the exact-count tests in
   `lib/format.test.ts` — adding cards must not break the scheduler tests.
 - The sources carry no course titles, so none were invented. `COURSE_TITLES` in `lib/dsai.ts` is empty
@@ -218,7 +229,7 @@ and the `ModeSwitch` pill.
 ## DSAI quiz (`/dsai/quiz`)
 
 - **Data.** `scripts/build-mcq.mjs` reads `DSAI/*.json` (arrays of `{question, options:[{label, text,
-  Explanation}], answers, hints, course, week}`) and writes `data/dsai-questions.json` — **408
+  Explanation}], answers, hints, course, week}`) and writes `data/dsai-questions.json` — **448
   questions**, all single-answer. It renames `Explanation`→`explanation` and `hints`→`hint`, ignores
   the record's `course`/`week` in favour of the file name, and **hard-fails without writing** on an
   answer letter that matches no option, a duplicate question, or < 2 options. Ids are the same content
@@ -226,12 +237,17 @@ and the `ModeSwitch` pill.
 - `components/DsaiQuizApp.tsx` mirrors `PracticeApp`'s order/pos model (persisted full-bank `order`
   of **ids**, filter as a presentation cut, restart at 0 on filter change) under storage key
   `dsai-mcq-v1`. `load()` keeps stored order for ids that still exist, appends new ones, drops orphans.
-- **Option shuffle** (`⤨ options` toggle) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
+- **Option shuffle** (the `Shuffle options` toggle) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
   presenter, not a shared one. Answers/pending stay in original-label space; only `McqCard` sees
   display labels. Each option's explanation travels with it, and no DSAI text cites an option by
   letter, so nothing in the prose is remapped. `shuffleOpts`/`optSeed` persist in `dsai-mcq-v1`.
 - `McqCard` shows a hint before answering and **each option's own explanation under it** after
   checking — that per-option feedback is the reason it is not a reuse of the PMLE `QuestionCard`.
+- **Code in options is marked in the source.** Options that are expressions (`df.head()`,
+  `(lambda x, y: x - y)(10, 4)`) are wrapped whole in backticks, and code tokens inside prose options
+  and option explanations (`inplace=True`, `pd.merge()`) inline, in `DSAI/*.json` itself. Question
+  text was deliberately left alone: it is hashed into the id, so editing it would reset that
+  question's history. Mark code the same way when adding a deck.
 - **Text markup.** DSAI text uses inline `` `code` `` and `$LaTeX$` heavily (~1,050 formulas;
   `\frac`, `\bar`, `\sqrt`…). `lib/rich.ts` splits runs (unclosed delimiter → literal text, `\$` →
   dollar); `components/RichText.tsx` renders math with KaTeX (`throwOnError: false`, `trust` off).
@@ -255,17 +271,24 @@ and the `ModeSwitch` pill.
   right/wrong on the options, the verdict chip and the minimap — so spending them on section identity
   made a §4 badge read as a wrong answer. Colour tracks *score* (`PASS_MARK` in `lib/domains.ts`); the
   §N badge is neutral.
+- **Both quizzes deep-link.** The URL mirrors the current question and filter via `replaceState`
+  (PMLE `?q=<id>&s=<sections>`, DSAI quiz `?q=<id>&c=<courses>&u=<COURSE::UNIT,…>`) and **wins over
+  `localStorage` on load**; a linked question the linked filter would hide clears the filter. The
+  flashcards are queue-based and do not deep-link. The footer's background-motion switch persists
+  under its own key, `ui-motion-v1`, and pauses `.cosmos` via `html[data-motion="off"]`.
+- **The rail's panels (`DomainPanel`, `DeckPanel`, `QuizDeckPanel`) default open on desktop and shut on
+  a phone by CSS, not by an effect**: `userOpen` stays `null` until the first toggle, and the body
+  renders `hidden lg:block`. Opening it from a `useEffect` after mount shoved the rail down on every
+  desktop load (layout shift 0.03–0.05); don't reintroduce that. On a phone the card comes *before*
+  the rail in the markup (`.study-main` / `.study-rail` in `globals.css` place them on desktop), and
+  each app's loading placeholder holds roughly a card's height so the rail doesn't jump when it lands.
+- **Answer options are an ARIA radio group** (`role="checkbox"` for a "choose two"): one Tab stop,
+  arrows move between options and, for a single answer, select. Both cards mark the list
+  `data-options`, and each quiz's global ←/→ question navigation skips key presses from inside it
+  (and from inside a `<pre>`, which arrows scroll) — keep that guard if you add another shortcut.
 - **The 答案评论 (comments) PDF has no text layer** — it is image-rendered, so community comments cannot
   be extracted without OCR (not available here). Only the 解密 PDF is used as the data source.
 - Answers/explanations are community exam-dump content and may be wrong; treat the official Google Cloud
   docs as ground truth when correcting.
 - If regenerating data, `npm run extract` expects the source PDF in `PMLE/` (`../PMLE/` from
   `quiz-app/`). It fails loudly if it parses fewer than 250 questions.
-- **Visual theme (space/cyberpunk) lives in `app/globals.css` + the tokens in `tailwind.config.ts`.**
-  The space backdrop is one fixed `.cosmos` div in `app/layout.tsx`, pure CSS, animating only
-  `transform`/`opacity`. Components use a small class vocabulary instead of repeating utility
-  strings: `holo` (glass panel), `holo-card` (main card, HUD corners), `holo-solid` (required on
-  flip-card faces — `backdrop-filter` breaks `preserve-3d`), `hud-strip`, `seg`/`seg-item` and
-  `chip-toggle` (active state is driven by `aria-current`/`aria-pressed`, so keep those attributes),
-  `btn-cyber` + `btn-primary`/`btn-neon`/`btn-ghost`, `neon-title`, `readout`, `field`, `lift`.
-  `plasma` (magenta) is decorative only — never a verdict colour, same rule as sections.

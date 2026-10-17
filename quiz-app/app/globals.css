@@ -12,6 +12,15 @@
 html {
   -webkit-text-size-adjust: 100%;
   background: theme("colors.ink");
+  /* no grey flash on tap: every control has its own pressed and focus states */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The phone layouts pin a nav bar to the bottom; keep a focused or scrolled-to element clear of it. */
+@media (max-width: 639px) {
+  html {
+    scroll-padding-bottom: 6rem;
+  }
 }
 
 /* The cosmos backdrop sits at z-index -1 and paints the scene; body stays transparent so it
@@ -19,6 +28,32 @@ html {
 body {
   @apply font-sans text-paper antialiased;
   background: transparent;
+  /* viewport-fit=cover (app/layout.tsx): keep content out of a landscape notch */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* No double-tap-zoom delay on anything you tap: flipping a card and grading must feel instant. */
+a,
+button,
+input,
+label,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Visually hidden until focused: the first Tab on any page lands here. */
+.skip-link {
+  @apply sr-only;
+}
+.skip-link:focus-visible {
+  @apply not-sr-only fixed left-4 top-4 z-50 rounded-md bg-signal px-4 py-2 font-display text-sm font-semibold text-ink;
+}
+
+/* The motion switch in the footer (components/MotionToggle.tsx) freezes the backdrop in place. */
+html[data-motion="off"] .cosmos,
+html[data-motion="off"] .cosmos * {
+  animation-play-state: paused !important;
 }
 
 ::selection {
@@ -26,10 +61,11 @@ body {
   color: #eef3ff;
 }
 
+/* The outline follows each element's own corners; forcing a radius here reshaped square
+   controls and round chips alike the moment they took focus. */
 *:focus-visible {
   outline: 2px solid theme("colors.signal");
   outline-offset: 2px;
-  border-radius: 5px;
 }
 
 /* thin console-style scrollbar */
@@ -274,36 +310,37 @@ body {
   }
 
   /* Big readout number (accuracy / queue) */
+  /* No glow: the score is a reference, and the question card is what should lead the screen. */
   .readout {
     color: theme("colors.signal");
-    @apply animate-glow-pulse;
   }
 
   /* ── Segmented controls (seq/shuffle, mode switch) ─────────────────────── */
   .seg {
-    @apply flex items-center gap-0.5 rounded-[6px] p-0.5 font-mono text-[11px];
+    @apply flex items-center gap-0.5 rounded-[6px] p-0.5 font-display text-[13px] font-medium;
     border: 1px solid rgba(var(--glow-cyan), 0.2);
     background: rgba(8, 12, 28, 0.6);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
   }
   .seg-item {
-    @apply relative rounded-[4px] px-2.5 py-1.5 text-mist transition;
+    @apply relative rounded-[4px] px-3 py-1.5 text-mist transition;
   }
   .seg-item:hover {
     @apply text-paper;
-    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.5);
   }
   .seg-item[aria-current="page"],
   .seg-item[aria-pressed="true"] {
     color: theme("colors.signal");
-    background: rgba(var(--glow-cyan), 0.12);
     text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.7);
+  }
+  /* "On" and "here" must not look alike: a pressed toggle gets the fill, the current page only
+     the glowing underline. Sharing the fill made "Quiz" read as one more switched-on option. */
+  .seg-item[aria-pressed="true"] {
+    background: rgba(var(--glow-cyan), 0.12);
     box-shadow: inset 0 0 12px -4px rgba(var(--glow-cyan), 0.6);
   }
-  /* glowing underline on the active item */
-  .seg-item[aria-current="page"]::after,
-  .seg-item[aria-pressed="true"]::after {
+  .seg-item[aria-current="page"]::after {
     content: "";
     position: absolute;
     left: 25%;
@@ -314,29 +351,11 @@ body {
     box-shadow: 0 0 6px 1px rgba(var(--glow-cyan), 0.8);
   }
 
-  /* A standalone toggle chip (⤨ options, ⚙ limits). Pressed state via aria-pressed. */
-  .chip-toggle {
-    @apply rounded-[6px] px-2.5 py-1.5 font-mono text-[11px] text-mist transition;
-    border: 1px solid rgba(var(--glow-cyan), 0.2);
-    background: rgba(8, 12, 28, 0.6);
-  }
-  .chip-toggle:hover {
-    @apply text-paper;
-    border-color: rgba(var(--glow-cyan), 0.45);
-  }
-  .chip-toggle[aria-pressed="true"] {
-    color: theme("colors.signal");
-    border-color: rgba(var(--glow-cyan), 0.6);
-    background: rgba(var(--glow-cyan), 0.12);
-    text-shadow: 0 0 8px rgba(var(--glow-cyan), 0.7);
-    box-shadow: 0 0 14px -4px rgba(var(--glow-cyan), 0.7);
-  }
-
   /* ── Buttons ──────────────────────────────────────────────────────────── */
   /* Chamfered via clip-path. clip-path also clips an outline, so these buttons draw their
      focus ring inset instead. */
   .btn-cyber {
-    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden font-mono transition;
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden font-display font-medium transition;
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
     border-radius: 0;
   }
@@ -392,12 +411,14 @@ body {
     outline-offset: 3px;
     box-shadow: none;
   }
+  /* Disabled reads as "not yet": an empty outline, never a solid fill that looks pressable. */
   .btn-primary:disabled {
     color: theme("colors.mist");
     filter: none;
   }
   .btn-primary:disabled::before {
-    background: theme("colors.linestrong");
+    background: transparent;
+    box-shadow: inset 0 0 0 1px theme("colors.linestrong");
   }
 
   /* outlined neon: next / secondary positive actions */
@@ -426,7 +447,43 @@ body {
   }
 
   .btn-cyber:disabled:is(.btn-neon, .btn-ghost) {
-    opacity: 0.3;
+    opacity: 0.45;
+  }
+
+  /* ── Labels ───────────────────────────────────────────────────────────── */
+  /* Every small caption (stat names, panel headers, card meta) is this: sentence case, 13px, in
+     the text face. Never mono, never tracked caps, never under 13px. */
+  .hud-label {
+    @apply font-sans text-[13px] leading-snug text-mist;
+  }
+
+  /* Big numbers (accuracy, queue, tile stats): the display face with tabular figures. */
+  .hud-figure {
+    @apply font-display font-semibold tabular-nums tracking-tight;
+  }
+
+  /* ── Study layout ─────────────────────────────────────────────────────── */
+  /* The three study screens (PMLE quiz, DSAI quiz, flashcards) share this shell: one column on a
+     phone (card first, rail under it — the order the markup is in, so the question is above the
+     fold and Tab reaches it first); on a desktop the grid places the rail of readouts and filters
+     on the left, sticky, and the card takes the rest of the width. */
+  .study-shell {
+    @apply mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-4 pt-5 sm:px-6 sm:pt-8 lg:px-8;
+  }
+  .study-grid {
+    @apply mt-5 grid grid-cols-1 gap-4 lg:mt-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start lg:gap-8;
+  }
+  .study-main {
+    @apply min-w-0 lg:col-start-2 lg:row-start-1;
+  }
+  /* On a tablet the rail is two columns (readout beside the coverage map, the filter panel
+     full width under them) instead of one stretched phone column. */
+  .study-rail {
+    @apply flex min-w-0 flex-col gap-3 md:grid md:grid-cols-2 lg:col-start-1 lg:row-start-1 lg:sticky lg:top-6 lg:flex lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto;
+  }
+  /* A thin divider between groups inside one toolbar (.seg). */
+  .seg-sep {
+    @apply mx-1 h-4 w-px shrink-0 bg-signal/20;
   }
 
   /* ── Hover lift for pickable tiles ────────────────────────────────────── */
@@ -442,14 +499,13 @@ body {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.08),
       0 0 0 1px rgba(var(--glow-cyan), 0.25),
-      0 0 40px -8px rgba(var(--glow-cyan), 0.5),
-      0 0 90px -30px rgba(var(--glow-plasma), 0.7),
+      0 0 40px -10px rgba(var(--glow-cyan), 0.45),
       0 30px 60px -30px rgba(0, 0, 0, 0.9);
   }
 
   /* fields (jump / limit inputs) */
   .field {
-    @apply rounded-[4px] font-mono text-paper;
+    @apply rounded-[4px] font-sans tabular-nums text-paper;
     border: 1px solid rgba(var(--glow-cyan), 0.25);
     background: rgba(4, 5, 13, 0.7);
   }

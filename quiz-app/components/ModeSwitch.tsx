@@ -9,30 +9,24 @@ type Mode = { href: string; label: string; title: string };
 const MODES: Record<"pmle" | "dsai", Mode[]> = {
   pmle: [],
   dsai: [
-    { href: "/dsai/flashcards", label: "cards", title: "DSAI flashcards with spaced repetition" },
-    { href: "/dsai/quiz", label: "quiz", title: "DSAI multiple-choice questions" },
+    { href: "/dsai/flashcards", label: "Cards", title: "DSAI flashcards with spaced repetition" },
+    { href: "/dsai/quiz", label: "Quiz", title: "DSAI multiple-choice questions" },
   ],
 };
 
 /**
- * Back to the source picker, plus the switch between a source's study modes. Same
- * segmented-pill vocabulary as the seq/shuffle toggle, so it reads as a control rather than
- * navigation chrome.
+ * The switch between a source's study modes, as `seg-item`s with no container of its own: each
+ * page wraps it in a `.seg` of its own, apart from its toggles — it says where you are, which is
+ * not a setting. A source with a single mode renders nothing.
  */
 export default function ModeSwitch({ source }: { source: "pmle" | "dsai" }) {
   const pathname = usePathname();
+  const modes = MODES[source];
+  if (modes.length === 0) return null;
 
   return (
-    <nav aria-label="Study modes" className="seg">
-      <Link
-        href="/"
-        title="Choose a question source"
-        aria-label="Home"
-        className="seg-item"
-      >
-        ⌂
-      </Link>
-      {MODES[source].map((m) => {
+    <nav aria-label="Study modes" className="flex items-center gap-0.5">
+      {modes.map((m) => {
         const active = pathname.startsWith(m.href);
         return (
           <Link
@@ -47,5 +41,14 @@ export default function ModeSwitch({ source }: { source: "pmle" | "dsai" }) {
         );
       })}
     </nav>
+  );
+}
+
+/** The way back to the source picker: a plain text link above each page title. */
+export function HomeLink() {
+  return (
+    <Link href="/" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper">
+      <span aria-hidden>←</span> Study Console
+    </Link>
   );
 }

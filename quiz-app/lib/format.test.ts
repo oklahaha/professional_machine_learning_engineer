@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import questions from "../data/questions.json" with { type: "json" };
-import { parseNumberedSteps, parseReferences, splitCodeBlocks } from "./format.ts";
+import { parseNumberedSteps, parseReferences, splitCodeBlocks, splitExplanation } from "./format.ts";
 
 test("splits a numbered procedure onto one step per line", () => {
   const r = parseNumberedSteps(
@@ -184,4 +184,55 @@ test("every reference in the question bank is a safe absolute URL", () => {
   // Guards against a data edit that quietly drops the doc links.
   assert.equal(withRefs, 10, "expected 10 questions carrying reference URLs");
   assert.equal(urls, 23, "expected 23 reference URLs in the bank");
+});
+
+test("starts a paragraph at each sentence that opens with an option", () => {
+  const { paragraphs } = splitExplanation(
+    "Option A is incorrect because it is slow. Option B is correct (it scales). Options C and D are both too costly.",
+  );
+  assert.deepEqual(paragraphs, [
+    "Option A is incorrect because it is slow.",
+    "Option B is correct (it scales).",
+    "Options C and D are both too costly.",
+  ]);
+});
+
+test("does not break on an option named mid-sentence", () => {
+  const { paragraphs } = splitExplanation("Unlike option A, this works. It beats Option B in cost.");
+  assert.equal(paragraphs.length, 1);
+});
+
+test("splits bracketed reference titles into a list and keeps welded ones whole", () => {
+  assert.deepEqual(
+    splitExplanation("Use Vertex AI. References: [Vertex AI | Google Cloud] [TFX guide]").furtherReading,
+    ["Vertex AI | Google Cloud", "TFX guide"],
+  );
+  // No separator between the titles: guessing where one ends would invent titles.
+  assert.deepEqual(
+    splitExplanation("Use word2vec. References: Collaborative filtering Word2vec Cosine similarity")
+      .furtherReading,
+    ["Collaborative filtering Word2vec Cosine similarity"],
+  );
+  assert.deepEqual(splitExplanation("No references here.").furtherReading, []);
+});
+
+test("every explanation in the question bank splits without losing text", () => {
+  let multi = 0;
+  let lists = 0;
+  for (const q of questions) {
+    const text = q.explanation ?? "";
+    const { paragraphs, furtherReading } = splitExplanation(text);
+    const ref = [...text.matchAll(/\bReferences?:/g)].pop();
+    const body = ref ? text.slice(0, ref.index) : text;
+    assert.equal(
+      paragraphs.join("").replace(/\s/g, ""),
+      body.replace(/\s/g, ""),
+      `Q${q.id}: explanation text lost or reordered`,
+    );
+    if (paragraphs.length > 1) multi += 1;
+    if (furtherReading.length > 1) lists += 1;
+  }
+  // Exact counts, like the other bank-wide guards: a data edit that changes them is noticed.
+  assert.equal(multi, 165, "expected 165 explanations to break into paragraphs");
+  assert.equal(lists, 13, "expected 13 explanations with a bracketed reference list");
 });

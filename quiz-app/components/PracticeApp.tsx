@@ -5,7 +5,7 @@ import { questions } from "@/lib/questions";
 import { presentQuestion } from "@/lib/present";
 import { DOMAINS, filterByDomain } from "@/lib/domains";
 import DomainPanel, { type DomainStat } from "./DomainPanel";
-import ModeSwitch from "./ModeSwitch";
+import { HomeLink } from "./ModeSwitch";
 import QuestionCard from "./QuestionCard";
 
 const STORAGE_KEY = "pmle-practice-v3"; // v3: answers are label arrays (multi-answer)
@@ -42,6 +42,9 @@ function shuffledOrder(): number[] {
   }
   return a;
 }
+
+// Locale-aware, one decimal: "87.5" here, "87,5" in a comma-decimal locale.
+const PERCENT = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 function load(): Persisted | null {
   if (typeof window === "undefined") return null;
@@ -81,15 +84,35 @@ export default function PracticeApp() {
 
   useEffect(() => {
     const p = load();
+    const ord = p?.order ?? sequentialOrder();
+    let domains = p?.domains ?? [];
+    let start = p ? Math.min(p.pos, ord.length - 1) : 0;
+
+    // The URL wins over storage, so a shared link (?q=120&s=3,4) opens that question in that cut.
+    // A linked question the linked sections would hide clears the filter rather than going missing.
+    const url = new URLSearchParams(window.location.search);
+    const s = url.get("s");
+    if (s !== null) domains = s.split(",").map(Number).filter((d) => DOMAINS.some((x) => x.id === d));
+    const qid = Number(url.get("q"));
+    const at = url.has("q") ? ord.findIndex((i) => questions[i].id === qid) : -1;
+    if (at >= 0) {
+      let run = filterByDomain(ord, domains, (i) => questions[i].domain);
+      if (!run.includes(ord[at])) {
+        domains = [];
+        run = ord;
+      }
+      start = run.indexOf(ord[at]);
+    }
+
     if (p) {
       setOrderMode(p.orderMode);
       setBaseOrder(p.order);
-      setPos(Math.min(p.pos, p.order.length - 1));
       setAnswers(p.answers ?? {});
       setShuffleOpts(p.shuffleOpts ?? false);
       setOptSeed(p.optSeed ?? 1);
-      setDomainFilter(p.domains ?? []);
     }
+    setPos(start);
+    setDomainFilter(domains);
     setHydrated(true);
   }, []);
 
@@ -124,6 +147,16 @@ export default function PracticeApp() {
   const pos = Math.min(Math.max(rawPos, 0), order.length - 1);
 
   const q = questions[order[pos]];
+
+  // Mirror the current question and section cut into the URL, so the address bar is a link to
+  // exactly this. replaceState, not push: stepping through questions must not flood history.
+  useEffect(() => {
+    if (!hydrated) return;
+    const params = new URLSearchParams({ q: String(q.id) });
+    if (domainFilter.length > 0) params.set("s", domainFilter.join(","));
+    window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
+  }, [hydrated, q.id, domainFilter]);
+
   const committed = answers[q.id] ?? null;
   const revealed = committed != null;
   // Option shuffle is a pure presentation transform: state/scoring below stay
@@ -189,25 +222,28 @@ export default function PracticeApp() {
     [order.length],
   );
 
-  function check() {
-    if (pending.length === 0) return;
+  const check = useCallback(() => {
+    if (pending.length !== q.answers.length) return; // a "choose two" needs both picks
     setAnswers((a) => ({ ...a, [q.id]: pending }));
-  }
+  }, [pending, q]);
 
   // QuestionCard works in display-letter space; translate the click back to the
   // original option label before storing. Toggle for multi-answer, else replace.
-  function select(displayLabel: string) {
-    if (revealed) return;
-    const label = view.displayToOrig[displayLabel] ?? displayLabel;
-    const multi = q.answers.length > 1;
-    setPending((prev) =>
-      multi
-        ? prev.includes(label)
-          ? prev.filter((l) => l !== label)
-          : [...prev, label]
-        : [label],
-    );
-  }
+  const select = useCallback(
+    (displayLabel: string) => {
+      if (revealed) return;
+      const label = view.displayToOrig[displayLabel] ?? displayLabel;
+      const multi = q.answers.length > 1;
+      setPending((prev) =>
+        multi
+          ? prev.includes(label)
+            ? prev.filter((l) => l !== label)
+            : [...prev, label]
+          : [label],
+      );
+    },
+    [revealed, view, q],
+  );
 
   function toggleShuffleOpts() {
     const next = !shuffleOpts;
@@ -255,111 +291,148 @@ export default function PracticeApp() {
     setPending([]);
   }
 
+  // Keys, as in the DSAI quiz: A–E or 1–5 pick, Enter checks, ←/→ move. Enter on a focused
+  // button is that button's own click, so the shortcut leaves it alone.
+  useEffect(() => {
+    if (!hydrated) return;
+    function onKey(e: KeyboardEvent) {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      const labels = view.question.options.map((o) => o.label);
+      const byLetter = labels.find((l) => l.toLowerCase() === k);
+      const byNumber = /^[1-9]$/.test(k) ? labels[Number(k) - 1] : undefined;
+      if (!revealed && (byLetter || byNumber)) {
+        e.preventDefault();
+        select((byLetter ?? byNumber)!);
+      } else if (k === "enter" && !revealed && pending.length === q.answers.length && !el?.closest("button, a")) {
+        e.preventDefault();
+        check();
+      } else if ((k === "arrowright" || k === "arrowleft") && el?.closest("[data-options], pre")) {
+        // inside the answer options ←/→ move between options, inside a code listing they scroll it
+      } else if (k === "arrowright") goto(pos + 1);
+      else if (k === "arrowleft") goto(pos - 1);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hydrated, view, revealed, pending, pos, select, check, goto]);
+
   return (
-    <div className="mx-auto flex min-h-dvh max-w-2xl flex-col px-4 pb-28 pt-5 sm:pb-10 sm:pt-8">
+    <div className="study-shell pb-6 sm:pb-12">
       {/* ── eval console header ─────────────────────────────── */}
-      <header className="mb-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span aria-hidden className="neon-glyph animate-float">◇</span>
-              <h1 className="neon-title font-display text-lg font-semibold tracking-tight sm:text-xl">
-                PMLE Eval Console
-              </h1>
-            </div>
-            <p className="mt-0.5 font-mono text-[11px] text-mist">
-              google · professional machine learning engineer
-            </p>
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+        <div>
+          <HomeLink />
+          <div className="mt-1.5 flex items-center gap-2.5">
+            <span aria-hidden className="neon-glyph text-lg">◇</span>
+            <h1 className="neon-title text-balance font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+              <span translate="no">PMLE</span> Eval Console
+            </h1>
           </div>
+          <p className="hud-label mt-1">Google Professional Machine Learning Engineer</p>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <ModeSwitch source="pmle" />
-            {/* order mode toggle */}
-            <div className="seg">
-              {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMode(m)}
-                  aria-pressed={orderMode === m}
-                  className="seg-item"
-                >
-                  {m === "sequential" ? "seq" : "shuffle"}
-                </button>
-              ))}
-            </div>
-            {/* shuffle answer options toggle */}
+        {/* One toolbar: question order, then the option shuffle. */}
+        <div className="seg flex-wrap self-center">
+          {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
             <button
-              onClick={toggleShuffleOpts}
-              aria-pressed={shuffleOpts}
-              title="Shuffle the answer options within each question"
-              className="chip-toggle"
+              key={m}
+              onClick={() => setMode(m)}
+              aria-pressed={orderMode === m}
+              className="seg-item"
             >
-              ⤨ options
+              {m === "sequential" ? "In order" : "Shuffled"}
             </button>
-          </div>
+          ))}
+          <span aria-hidden className="seg-sep" />
+          <button
+            onClick={toggleShuffleOpts}
+            aria-pressed={shuffleOpts}
+            title="Shuffle the answer options within each question"
+            className="seg-item"
+          >
+            Shuffle options
+          </button>
         </div>
-
-        {/* accuracy readout — the metric this whole app computes */}
-        <div className="holo mt-4 flex items-end gap-5 rounded-lg px-4 py-3">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-mist">
-              accuracy
-            </div>
-            <div className="readout font-mono text-3xl font-semibold leading-none tracking-tight tabular-nums">
-              {accuracy === null ? (
-                <span className="text-mist">n/a</span>
-              ) : (
-                <>
-                  {accuracy.toFixed(1)}
-                  <span className="ml-0.5 text-lg text-signal/60">%</span>
-                </>
-              )}
-            </div>
-          </div>
-          <dl className="mb-0.5 grid grid-cols-3 gap-x-5 font-mono text-xs">
-            <Stat label="correct" value={correctCount} tone="text-correct" />
-            <Stat label="wrong" value={answeredCount - correctCount} tone="text-wrong" />
-            <Stat label="seen" value={`${answeredCount}/${order.length}`} tone="text-paper" />
-          </dl>
-        </div>
-
-        {/* per-domain scorecard — doubles as the section filter */}
-        <DomainPanel
-          stats={domainStats}
-          selected={domainFilter}
-          onToggle={toggleDomain}
-          onClear={clearDomains}
-        />
-
-        {/* coverage minimap — signature: the question bank as an eval set */}
-        <Minimap
-          order={order}
-          pos={pos}
-          answers={answers}
-          onJump={goto}
-        />
       </header>
 
-      <QuestionCard
-        question={view.question}
-        index={pos + 1}
-        total={order.length}
-        selected={selectedDisplay}
-        revealed={revealed}
-        onSelect={select}
-        onCheck={check}
-        onClear={clearCurrent}
-      />
+      <div className="study-grid">
 
-      {/* desktop controls */}
-      <nav className="mt-5 hidden items-center justify-between gap-3 font-mono text-sm sm:flex">
-        <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} />
-        <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} />
-        <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} />
-      </nav>
+        <main id="main" className="study-main">
+          {/* Until storage is read, the question on screen would be Q1, not where you left off. */}
+          {!hydrated ? (
+            // About a card's height, so the rail under it on a phone is not shoved down when the card lands.
+            <div className="holo hud-label flex min-h-[75dvh] items-center justify-center rounded-lg p-10 text-center lg:min-h-[40rem]">
+              Loading questions…
+            </div>
+          ) : (
+            <QuestionCard
+              question={view.question}
+              index={pos + 1}
+              total={order.length}
+              selected={selectedDisplay}
+              revealed={revealed}
+              onSelect={select}
+              onCheck={check}
+              onClear={clearCurrent}
+            />
+          )}
+
+          {/* desktop controls */}
+          <nav className="mt-5 hidden items-center justify-between gap-3 text-sm sm:flex">
+            <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} />
+            <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} />
+            <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} />
+          </nav>
+        </main>
+
+        <aside className="study-rail" aria-label="Progress and filters">
+          {/* accuracy readout — the metric this whole app computes */}
+          <div className="holo flex flex-wrap content-center items-end gap-x-5 gap-y-2 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
+            <div className="flex flex-col-reverse">
+              <div className="hud-label">accuracy</div>
+              <div className="readout hud-figure text-[32px] leading-none">
+                {accuracy === null ? (
+                  <span className="text-2xl text-mist">n/a</span>
+                ) : (
+                  <>
+                    {PERCENT.format(accuracy)}
+                    <span className="ml-0.5 text-lg text-signal/60">%</span>
+                  </>
+                )}
+              </div>
+            </div>
+            <dl className="mb-0.5 grid grid-cols-3 gap-x-5">
+              <Stat label="correct" value={correctCount} tone="text-correct" />
+              <Stat label="wrong" value={answeredCount - correctCount} tone="text-wrong" />
+              <Stat label="seen" value={`${answeredCount}/${order.length}`} tone="text-paper" />
+            </dl>
+          </div>
+
+          {/* per-domain scorecard — doubles as the section filter */}
+          <div className="md:col-span-2">
+            <DomainPanel
+              stats={domainStats}
+              selected={domainFilter}
+              onToggle={toggleDomain}
+              onClear={clearDomains}
+            />
+          </div>
+
+          {/* coverage minimap — signature: the question bank as an eval set */}
+          <Minimap
+            className="md:col-start-2 md:row-start-1"
+            order={order}
+            pos={pos}
+            answers={answers}
+            onJump={goto}
+          />
+        </aside>
+      </div>
 
       {/* mobile sticky controls */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-4 py-3 font-mono shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
         <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
@@ -378,28 +451,30 @@ function Stat({
   tone: string;
 }) {
   return (
-    <div>
-      <dt className="text-[10px] uppercase tracking-widest text-mist">{label}</dt>
-      <dd className={`text-base font-semibold tabular-nums ${tone}`}>{value}</dd>
+    <div className="flex flex-col-reverse">
+      <dt className="hud-label">{label}</dt>
+      <dd className={`hud-figure text-xl ${tone}`}>{value}</dd>
     </div>
   );
 }
 
 const Minimap = memo(function Minimap({
+  className = "",
   order,
   pos,
   answers,
   onJump,
 }: {
+  className?: string;
   order: number[];
   pos: number;
   answers: Answers;
   onJump: (n: number) => void;
 }) {
   return (
-    <div className="mt-3">
-      <div className="mb-1.5 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-mist">
-        <span>coverage · {order.length} items</span>
+    <div className={`holo rounded-lg px-4 py-3 ${className}`}>
+      <div className="hud-label mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <span>Coverage of {order.length} questions</span>
         <span className="flex items-center gap-2.5">
           <Legend color="bg-correct" text="right" />
           <Legend color="bg-wrong" text="wrong" />
@@ -408,8 +483,13 @@ const Minimap = memo(function Minimap({
       </div>
       {/* Pointer shortcut to any question. Kept out of the tab sequence (the
           full bank of cells would bury the answer options) — the Jump input is
-          the keyboard-accessible path to any question. */}
-      <div className="flex flex-wrap gap-[3px]" role="group" aria-label="Question coverage map">
+          the keyboard-accessible path to any question. Cells grow on a touch
+          screen, where 8px is no target. */}
+      <div
+        className="flex flex-wrap gap-[3px] [@media(pointer:coarse)]:gap-1 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]"
+        role="group"
+        aria-label="Question coverage map"
+      >
         {order.map((qi, i) => {
           const item = questions[qi];
           const labels = answers[item.id];
@@ -426,7 +506,7 @@ const Minimap = memo(function Minimap({
               onClick={() => onJump(i)}
               title={`Q${item.id}${answered ? (right ? " · correct" : " · wrong") : ""}`}
               aria-label={`Go to question ${i + 1}`}
-              className={`h-2 w-2 rounded-[2px] transition-transform hover:scale-150 ${tone} ${
+              className={`h-2 w-2 rounded-[2px] [@media(pointer:coarse)]:h-3 [@media(pointer:coarse)]:w-3 transition-transform hover:scale-150 ${tone} ${
                 isCurrent ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(46,230,255,0.7)]" : ""
               }`}
             />
@@ -439,7 +519,7 @@ const Minimap = memo(function Minimap({
 
 function Legend({ color, text }: { color: string; text: string }) {
   return (
-    <span className="flex items-center gap-1 normal-case tracking-normal">
+    <span className="flex items-center gap-1.5">
       <span className={`h-2 w-2 rounded-[2px] ${color}`} />
       {text}
     </span>
@@ -462,8 +542,13 @@ function NavButton({
   const style = isNext ? "btn-neon" : "btn-ghost";
   const size = compact ? "px-4 py-2.5" : "px-4 py-2";
   return (
-    <button onClick={onClick} disabled={disabled} className={`${base} ${style} ${size}`}>
-      {compact ? (isNext ? "→" : "←") : isNext ? "next →" : "← prev"}
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={compact ? (isNext ? "Next question" : "Previous question") : undefined}
+      className={`${base} ${style} ${size}`}
+    >
+      {compact ? (isNext ? "→" : "←") : isNext ? "Next →" : "← Previous"}
     </button>
   );
 }
@@ -481,29 +566,47 @@ function JumpControl({
   onReset: () => void;
   compact?: boolean;
 }) {
+  // What is being typed, until Enter or leaving the field commits it. Jumping on every keystroke
+  // would visit Q1 and Q12 on the way to Q120 (dropping a half-made selection at each), and a
+  // controlled field that only ever shows `pos` cannot even be cleared to type a new number.
+  const [draft, setDraft] = useState<string | null>(null);
+
+  function commit() {
+    if (draft === null) return;
+    const n = parseInt(draft, 10);
+    if (!Number.isNaN(n)) onJump(n - 1);
+    setDraft(null);
+  }
+
   return (
-    <div className="flex items-center gap-2 text-[11px] text-mist">
-      {!compact && <span className="uppercase tracking-widest">jump</span>}
+    <div className="hud-label flex items-center gap-2">
+      {!compact && <span>Jump to</span>}
       <input
         type="number"
+        name="jump"
+        inputMode="numeric"
+        autoComplete="off"
         min={1}
         max={total}
-        value={pos + 1}
-        onChange={(e) => {
-          const n = parseInt(e.target.value, 10);
-          if (!Number.isNaN(n)) onJump(n - 1);
+        enterKeyHint="go"
+        value={draft ?? pos + 1}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") commit();
+          else if (e.key === "Escape") setDraft(null);
         }}
-        className="field w-14 px-2 py-1.5 text-center text-sm tabular-nums"
+        className="field w-[4.5rem] px-2 py-1.5 text-center text-sm tabular-nums"
         aria-label="Jump to question number"
       />
-      {!compact && <span className="text-mist/50">/ {total}</span>}
+      {!compact && <span className="text-mist">/ {total}</span>}
       <button
         onClick={onReset}
-        className={`rounded-lg px-2 py-1.5 uppercase tracking-widest text-mist/70 transition hover:text-wrong ${
+        className={`rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong ${
           compact ? "" : "ml-1"
         }`}
       >
-        reset
+        {compact ? "Reset" : "Reset progress"}
       </button>
     </div>
   );

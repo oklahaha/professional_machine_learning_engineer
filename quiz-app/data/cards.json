@@ -4420,6 +4420,456 @@
     "deck": "COM6002_Lecture_04"
   },
   {
+    "id": "2ccd6d4d8bd5",
+    "front": "What does a BI dashboard provide?",
+    "back": "An at-a-glance view of key performance indicators (KPIs).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "861e2730ed2c",
+    "front": "Name the three key features of Power BI listed in the lecture.",
+    "back": "Dashboards, reporting, and online analytical processing (OLAP).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "9a4393488010",
+    "front": "Which tool do both Excel and Power BI use to extract, transform and load (ETL) data?",
+    "back": "The Power Query Editor.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "dc3be7190809",
+    "front": "What engine do Excel's Power Pivot and Power BI's core share?",
+    "back": "VertiPaq, an in-memory, column-based analytical engine.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "fc16201c8cf6",
+    "front": "What expression language do Excel and Power BI both use for calculated columns and measures?",
+    "back": "DAX (Data Analysis Expressions).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "933ad0dd9be2",
+    "front": "How does the purpose of Excel differ from that of Power BI?",
+    "back": "Excel is for spreadsheets and calculation; Power BI is for business intelligence: interactive reports and dashboards.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "58421e4bd62d",
+    "front": "How do Excel and Power BI differ in data capacity?",
+    "back": "Excel is limited (performance degrades around 1 million rows); Power BI is built for big data.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "c4e95f1e0e8a",
+    "front": "How does the data model differ between Excel and Power BI?",
+    "back": "In Excel a data model (Power Pivot) is optional; in Power BI tables and their relationships are mandatory.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "a522bbed6f24",
+    "front": "How do Excel and Power BI differ in data refresh and sharing?",
+    "back": "Excel refreshes manually and shares files; Power BI refreshes automatically on schedules and shares via the cloud.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "147949120048",
+    "front": "What is Business Intelligence (BI)?",
+    "back": "A technology-driven process for analysing data and presenting actionable information.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "1c435d14c2f7",
+    "front": "List the five steps of the Power BI workflow in order.",
+    "back": "Connect, Transform, Model, Calculate, Visualize & Publish.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "f5fbe39f9f36",
+    "front": "Which Power BI component handles the Connect step?",
+    "back": "Power Query: accessing data from sources such as databases, files and web APIs.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "a0970162fbb1",
+    "front": "Which component and language handle the Transform step in Power BI?",
+    "back": "The Power Query Editor, using the M language: cleaning, shaping, merging and preparing data (the ETL stage).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "5327a06031a3",
+    "front": "What is done in the Data Model View (the Model step)?",
+    "back": "Defining relationships, setting data types, and creating hierarchies.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "ec950a517231",
+    "front": "What is DAX used for in the Power BI workflow (the Calculate step)?",
+    "back": "Creating measures (KPIs) and calculated columns for analysis.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "41986abc4535",
+    "front": "Which components handle the Visualize & Publish step?",
+    "back": "Report View and the Power BI Service: building interactive reports and sharing them with end-users.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "5881a1b7051a",
+    "front": "Why is a transactional (OLTP) schema a poor basis for BI analysis?",
+    "back": "It is optimized for data entry, not analysis, with many tables and complex joins.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "db45f704d496",
+    "front": "What is the function of OLTP (Online Transactional Processing)?",
+    "back": "To process database transactions and record them.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "9de02b72109a",
+    "front": "What are the requirements of an OLTP system?",
+    "back": "Real-time, low-latency response; ACID compliance; and high throughput of concurrent transactions.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "42501e585425",
+    "front": "What is the purpose of OLAP (Online Analytical Processing)?",
+    "back": "Interactive data analytics: exploring data to discover interesting findings, with fast responses to each action.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "f0fb823fbe19",
+    "front": "In a star schema, what is the central table called and what does it record?",
+    "back": "The fact table; it records what happened (e.g. Enrollment).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "22d470430d24",
+    "front": "What do dimension tables in a star schema provide?",
+    "back": "Additional context to the facts: who, what, when, where (e.g. Student, Course, Location).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "44b8c7422864",
+    "front": "How does a snowflake schema differ structurally from a star schema?",
+    "back": "Its dimension tables are normalized into child dimension tables.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "02fe26550480",
+    "front": "What is normalization and what are its two aims?",
+    "back": "The systematic organization of columns and tables to minimize data redundancy and improve data integrity.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "deeb1000a7be",
+    "front": "Which schema is preferred for OLAP, and why?",
+    "back": "The star schema: fewer joins give faster query performance.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "c3231d058c16",
+    "front": "What is the disk-space trade-off between star and snowflake schemas?",
+    "back": "Star uses more space (redundancy in dimensions); snowflake is more space-efficient.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "4ee05ac2a5ce",
+    "front": "Contrast OLTP and OLAP workloads in terms of users and queries.",
+    "back": "OLTP: many concurrent users running simple queries that modify a few records; OLAP: few users running complex, usually read-only aggregate queries.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "b657d92abfc8",
+    "front": "Is strong (ACID) consistency necessary for OLAP?",
+    "back": "No; OLAP reads from a data warehouse or lake, whereas ACID is very important for OLTP.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "219963bdb74b",
+    "front": "What is roll-up (drill-up) in OLAP?",
+    "back": "Aggregating data to a higher level, e.g. grades A and B combined into Pass; the reverse of drill-down.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "ef5f6aa24572",
+    "front": "What is drill-down in OLAP?",
+    "back": "Breaking data into more detail, e.g. adding a dimension such as sex to a grade count.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "fbf34d093adb",
+    "front": "What is drill-through in OLAP?",
+    "back": "Navigating from a summary view to a detailed report page filtered to a specific context.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "0ea3bdc160ba",
+    "front": "What is slicing in OLAP?",
+    "back": "Adding filters to focus on particular value(s) of some attribute(s), e.g. only grade A records.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "525f3a9d350f",
+    "front": "What is the difference between drill-down and slicing?",
+    "back": "Drill-down keeps the same data source at finer detail; slicing filters out part of the data.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "6bce0bb2045b",
+    "front": "Name the techniques that make VertiPaq fast.",
+    "back": "In-memory columnar storage, compression, multi-threading, and caching.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "35843f0bcdcf",
+    "front": "What is the idea behind an OLAP data cube?",
+    "back": "Pre-compute common intermediate results (aggregates over a known feature set $F$) so OLAP actions are answered from the cube.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "bae405fcb6c3",
+    "front": "What assumptions must hold for building a data cube?",
+    "back": "The feature set $F$ is known and small, and its value combinations are far fewer than the database records.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "cba3b69071ca",
+    "front": "What are the limitations of data cubes?",
+    "back": "A new feature requires recomputing the cube, and new data needs maintenance to update it.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "bafd791e918f",
+    "front": "In SQL terms, what is generating a data cube equivalent to?",
+    "back": "A group-by query over the chosen features, with a count per group.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "1de2a018c55a",
+    "front": "Compare VertiPaq and a data cube on flexibility and speed.",
+    "back": "VertiPaq handles any query with good general speed; a cube is near-instant but only for anticipated queries.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "3fc15e1935de",
+    "front": "How can a data cube be integrated with Power BI simply?",
+    "back": "Load the cube's cell data instead of the raw data, so Power BI manages far fewer records.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "9d7db8f9b969",
+    "front": "Where do you import data in Power BI, and what sources were shown?",
+    "back": "Home > Get data; databases (e.g. Microsoft SQL) and files (CSV, Excel).",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "2e80ba3f9a46",
+    "front": "When an imported CSV's column headers are not recognized, how do you fix it?",
+    "back": "In the Power Query Editor, use the first row as column names.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "34d0cfe0f991",
+    "front": "Which Power Query feature joins tables, and where is it?",
+    "back": "Merge Queries, under Home > Combine > Merge Queries.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "d756640ea60f",
+    "front": "What does a Left Anti Join return?",
+    "back": "Records in A that have no match in B.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "8bef2535b5ee",
+    "front": "What does a Left Outer Join return?",
+    "back": "All records of A, with matching B values or nulls where there is no match.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "topic": "",
+    "tag": "COM6002::Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
     "id": "770efabd252e",
     "front": "Concept: Classification",
     "back": "Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.",
@@ -8320,8 +8770,8 @@
     "deck": "COM6005_Module_3"
   },
   {
-    "id": "0324ba955f10",
-    "front": "What formula is used to calculate the degrees of freedom ($ u$) in a one-sample t-test with sample size $n$?",
+    "id": "24ed0205df65",
+    "front": "What formula is used to calculate the degrees of freedom ($\\nu$) in a one-sample t-test with sample size $n$?",
     "back": "$\\nu = n - 1$",
     "course": "COM6005",
     "unit": "Module_3A",
@@ -8618,5 +9068,905 @@
     "topic": "",
     "tag": "COM6005::Module_3A",
     "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "4ae6d8d9009f",
+    "front": "What is a one-way table?",
+    "back": "A table of the frequency (count) of each category in one column of categorical data.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "05419d9d4810",
+    "front": "What is a two-way (contingency) table?",
+    "back": "A table of the joint frequency of each combination of categories from two columns of categorical data.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "72b15cf97370",
+    "front": "Which pandas call builds a one-way frequency table from a list `x`?",
+    "back": "`pd.Series(x).value_counts()`",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "678ebb5e88b9",
+    "front": "Which pandas call builds a two-way (joint frequency) table from lists `x` and `y`?",
+    "back": "`pd.crosstab(pd.Series(x), pd.Series(y))`",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "27a3e8c6ac70",
+    "front": "In the lecture's rating data `x = [G,B,G,A,A,B,A,G,A,B]`, what are the category counts?",
+    "back": "Average 4, Good 3, Bad 3.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "5627b0924f95",
+    "front": "In the lecture's rating (x) vs number-of-customers (y) crosstab, what are the Average row counts for Few and Many?",
+    "back": "Few 1, Many 3.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "75a20e7fea05",
+    "front": "Which pandas function converts numerical data into labelled categories such as young/middle/senior?",
+    "back": "`pd.cut()`, given `bins` and `labels`.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "1877790105a1",
+    "front": "With `pd.cut(x, bins=[0, 35, 55, float('inf')], labels=age_labels)`, which ages fall in the middle group?",
+    "back": "Ages in $(35, 55]$; the bins are right-closed, so 35 itself is young.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "2eb40e6ef6a3",
+    "front": "In the plotting code, why is the crosstab transposed (`ft.T.plot(...)`)?",
+    "back": "So the y categories (Few/Many) become the bar groups and the ratings become the coloured segments/bars.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "5748927c2005",
+    "front": "Which `plot()` arguments switch between stacked and side-by-side bars, and vertical vs horizontal?",
+    "back": "`stacked=True/False`; `kind='bar'` (vertical) vs `kind='barh'` (horizontal).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "d60d4c8b0917",
+    "front": "Which chi-square test asks whether a one-way table follows a given distribution pattern?",
+    "back": "The chi-square goodness-of-fit test.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "41f9e4a36b79",
+    "front": "Which chi-square test asks whether the two variables of a two-way table are related?",
+    "back": "The chi-square test for independence.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0553e0b14814",
+    "front": "What are $H_0$ and $H_1$ in the chi-square test for independence?",
+    "back": "$H_0$: the two variables are independent; $H_1$: they are related (dependent).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "8a88c0018e19",
+    "front": "In the student example, what are the two categorical variables?",
+    "back": "X = origin (Local/Foreign) and Y = first subject choice (Math/Computer/Literature).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "dfc45d960c0b",
+    "front": "What are the observed counts in the student example (Local, Foreign)?",
+    "back": "Math 250, 50; Computer 400, 50; Literature 350, 150.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "756eb28c508a",
+    "front": "What are the row, column and grand totals in the student example?",
+    "back": "Rows: Math 300, Computer 450, Literature 500; columns: Local 1000, Foreign 250; grand total 1250.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "a1eb67d1b35b",
+    "front": "What is the formula for the expected count $E_{ij}$ in the independence test?",
+    "back": "$E_{ij} = \\frac{n_{i\\cdot}\\, n_{\\cdot j}}{n_{\\cdot\\cdot}}$ (row total × column total / grand total).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0b7ce9287678",
+    "front": "What is the intuition behind the expected count under independence?",
+    "back": "If there is no dependence, each row's total is split between columns in the overall column proportion (here Local:Foreign = 1000:250).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "49d0e2771253",
+    "front": "What is the expected count for Local Math in the student example?",
+    "back": "$300 \\times 1000/1250 = 240$",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "ada2a512ca8f",
+    "front": "What are all six expected counts in the student example (Local, Foreign)?",
+    "back": "Math 240, 60; Computer 360, 90; Literature 400, 100.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "12368ee93ad8",
+    "front": "What is the chi-square statistic for the independence test?",
+    "back": "$\\chi^2 = \\sum_{i=1}^{r}\\sum_{j=1}^{c} \\frac{(n_{ij}-E_{ij})^2}{E_{ij}}$",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "93f5ab136935",
+    "front": "What is the idea behind the size of $\\chi^2$ in the independence test?",
+    "back": "If the variables are independent, each $n_{ij}$ is close to $E_{ij}$, so $\\chi^2$ is small; a large $\\chi^2$ is evidence of dependence.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "782290261060",
+    "front": "What is the critical-value decision rule for a chi-square test?",
+    "back": "Reject $H_0$ if $\\chi^2$ is greater than the critical value from the chi-square table.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0d7f31ad606e",
+    "front": "What is the p-value decision rule for a chi-square test?",
+    "back": "Reject $H_0$ if the p-value is smaller than $\\alpha$.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "6e3fbdb31add",
+    "front": "What are the degrees of freedom $\\nu$ for the chi-square test for independence?",
+    "back": "$\\nu = (r-1)(c-1)$, where r and c are the numbers of rows and columns.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "cbae9b619e80",
+    "front": "What are the common choices of significance level $\\alpha$ and what do they mean?",
+    "back": "5% for a lower standard to reject $H_0$; 1% for a higher standard.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "c04f0044f982",
+    "front": "What is the critical value for $\\nu = 2$ at $\\alpha = 5\\%$?",
+    "back": "5.991",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f765bf95c9b1",
+    "front": "Which Python call returns the critical value 5.991?",
+    "back": "`scipy.stats.chi2.ppf(0.95, 2)` — the 95% quantile of the chi-square distribution with $\\nu = 2$.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "7dea1771ed87",
+    "front": "What does `stats.chi2_contingency()` accept as input?",
+    "back": "A joint frequency (contingency) table: either `pd.crosstab` of the two columns or an array such as `np.array([[250, 50], [400, 50], [350, 150]])`.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "2fdc7cdd1dfa",
+    "front": "What four values does `stats.chi2_contingency()` return?",
+    "back": "`chi2, p, dof, expected` — statistic, p-value, degrees of freedom and expected frequencies.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f808ab86fb99",
+    "front": "What does `stats.chi2_contingency(Ft)` report for the student example?",
+    "back": "statistic ≈ 55.56, p-value ≈ $8.6 \\times 10^{-13}$, dof = 2, expected = [[240, 60], [360, 90], [400, 100]].",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "10c89a5e058e",
+    "front": "What is the conclusion of the student example's independence test at $\\alpha = 0.05$?",
+    "back": "Reject $H_0$: origin and subject choice are dependent ($55.56 > 5.991$, p-value far below 0.05).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f492809d772d",
+    "front": "Which three statements are equivalent decision rules for a $\\nu = 2$ chi-square test at 5%?",
+    "back": "`chi2 > chi2.ppf(0.95, 2)`, `chi2.cdf(chi2, 2) > 0.95`, and `1-chi2.cdf(chi2, 2) < 0.05`.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "2142c31aed1f",
+    "front": "Which quantity in the decision rules is the p-value?",
+    "back": "`1-chi2.cdf(chi2, df)` — the upper-tail probability beyond the observed statistic.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "07839b61103b",
+    "front": "What data situation calls for the chi-square goodness-of-fit test?",
+    "back": "One column of categorical data, tested against a hypothesised distribution.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "40de9e71fb14",
+    "front": "What are $H_0$ and $H_1$ in the chocolate-colour goodness-of-fit example?",
+    "back": "$H_0$: the six colours are evenly distributed (each 1/6); $H_1$: the distribution is not even.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "edb40bc3ea48",
+    "front": "What are the observed colour counts in the chocolate example?",
+    "back": "Yellow 20, Red 13, Orange 12, Brown 12, Blue 18, Green 25 (total 100).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0455dcc9bcff",
+    "front": "What is the expected count per colour in the chocolate example under uniformity?",
+    "back": "$E_i = 100/6 = 16.67$",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "5caa581f8e00",
+    "front": "What is the goodness-of-fit test statistic?",
+    "back": "$\\chi^2 = \\sum_{i=1}^{K} \\frac{(n_i - E_i)^2}{E_i}$",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "b6ba5308d107",
+    "front": "What are the degrees of freedom for a goodness-of-fit test for a uniform distribution over K categories?",
+    "back": "$K - 1$ (5 for the six chocolate colours).",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "2cdd729ca97d",
+    "front": "What is the critical value for $\\nu = 5$ at $\\alpha = 0.05$?",
+    "back": "11.071",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0dc97cd19b86",
+    "front": "Which Python call runs the goodness-of-fit test on observed counts `Ft`?",
+    "back": "`stats.chisquare(Ft)`",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f6b05978507e",
+    "front": "What are the chocolate example's test statistic and p-value?",
+    "back": "$\\chi^2 = 8.36$, p-value = 0.1374.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "57e9daa72a68",
+    "front": "What is the conclusion of the chocolate example at $\\alpha = 0.05$?",
+    "back": "$H_0$ is not rejected ($0.1374 > 0.05$; $8.36 < 11.071$): we cannot reject that the colours are uniform.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "d48526c11ebf",
+    "front": "Why does the lecture say p-values need a modern computer?",
+    "back": "Computing `1-chi2.cdf(chi2, df)` requires the chi-square CDF; by hand you can only compare with a tabulated critical value.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "topic": "",
+    "tag": "COM6005::Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "0de9d9605339",
+    "front": "In simple linear regression $Y = \\beta_0 + \\beta_1 X_1 + \\text{error}$, how many predictors are there?",
+    "back": "Exactly one ($p = 1$).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "f3488bcdc3a6",
+    "front": "What conditions make a problem suitable for simple linear regression?",
+    "back": "One predictor, both $X$ and $Y$ numerical and continuous, and a scatter plot of $X$ vs $Y$ that (ideally) looks like a straight line.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "3f03544d0612",
+    "front": "In regression, what are the names for $Y$ and $X$?",
+    "back": "$Y$ is the dependent variable / response / predicted target; $X$ is the independent variable / predictor.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "af11f9b0ca77",
+    "front": "Once $\\hat{a}$ and $\\hat{b}$ are estimated, how is $Y$ predicted for new data where only $X$ is known?",
+    "back": "$\\hat{Y} = \\hat{a} + \\hat{b} X$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "fd9e4c956944",
+    "front": "What quantity does Ordinary Least Squares (OLS) minimise in simple linear regression?",
+    "back": "The sum of squared errors $SS(a, b) = \\sum_{t=1}^{n} (Y_t - a - b X_t)^2$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "e0cf1c021eeb",
+    "front": "Which statsmodels call fits the fuel-vs-driving-licence regression using a formula?",
+    "back": "`model = smf.ols('fuel~dlic', data=fueldata).fit()`",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "0ca1537842a8",
+    "front": "Which model attribute holds the fitted coefficients $\\hat{a}$ and $\\hat{b}$?",
+    "back": "`model.params` (they also appear in the `coef` column of `model.summary()`).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "4fea721cf28e",
+    "front": "What fitted line did the fuel consumption example produce?",
+    "back": "$\\hat{Y} = -227.3091 + 14.0984 X$, with $X$ = `dlic`.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "b9af0a0babc5",
+    "front": "How do you predict fuel consumption for `dlic` = 50 with a fitted statsmodels model?",
+    "back": "`model.predict(pd.DataFrame({'dlic': [50]}))` — the new data's column name must match the formula.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "4b9b66b59f34",
+    "front": "In matrix form, what is the OLS estimator $\\hat{\\beta}$?",
+    "back": "$\\hat{\\beta} = (X^T X)^{-1} X^T y$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "af39d4375d12",
+    "front": "Why does the design matrix $X$ have a first column of ones?",
+    "back": "That column carries the intercept $\\beta_0$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "dd240ea733d1",
+    "front": "What are the Normal Equations of OLS?",
+    "back": "$X^T X \\hat{\\beta} = X^T y$, obtained by setting the gradient of the sum of squared residuals to zero.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "1d4f0e28faa1",
+    "front": "What condition on the design matrix makes $X^T X$ invertible?",
+    "back": "$X$ has full column rank, i.e. no perfect multicollinearity among the independent variables.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "18536dc7d0eb",
+    "front": "For the points (1, 2), (2, 3), (3, 5), what are $X^T X$ and $X^T Y$?",
+    "back": "$X^T X = \\begin{bmatrix} 3 & 6 \\\\ 6 & 14 \\end{bmatrix}$ and $X^T Y = \\begin{bmatrix} 10 \\\\ 23 \\end{bmatrix}$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "2309554eb0db",
+    "front": "What OLS line fits the points (1, 2), (2, 3), (3, 5)?",
+    "back": "Intercept $\\hat{\\beta}_0 = 1/3 \\approx 0.333$, slope $\\hat{\\beta}_1 = 3/2 = 1.5$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "6409de913833",
+    "front": "In `sm.OLS(endog=Y, exog=X)`, what do endog and exog mean?",
+    "back": "Endogenous = dependent variable ($Y$); exogenous = independent variable(s) ($X$).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "0264b653dc99",
+    "front": "What does $R^2$ describe?",
+    "back": "A number between 0 and 1 giving the proportion of the variation in $Y$ explained by the model.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "2e5a78cb5807",
+    "front": "How is the Total SS decomposed in regression?",
+    "back": "Total SS = Explained (Regression) SS + Residual SS.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "59f9a2638813",
+    "front": "What is the formula for $R^2$ in terms of sums of squares?",
+    "back": "$R^2 = 1 - \\frac{RSS}{TSS}$ (Residual SS over Total SS).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "6f0506479843",
+    "front": "What does $R^2 = 1$ mean?",
+    "back": "A perfect fit: every point lies on the fitted line, so the residual SS is zero.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "b69124bb8ac6",
+    "front": "Name the two broad ways a linear regression can fail.",
+    "back": "The relationship does not look linear, or the residuals are not i.i.d. normal.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "4aeb67a1eda0",
+    "front": "What does the \"identically distributed\" assumption require of the errors?",
+    "back": "$\\text{Var}(\\text{error})$ is constant, depending on neither the fitted values nor the time/index; otherwise there is heteroskedasticity.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "8421d06cbae4",
+    "front": "Which visual check and which rigorous test are named for residual normality?",
+    "back": "The QQ-plot (intuitive) and the Anderson-Darling test (rigorous, not covered).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "0c0087b6212f",
+    "front": "What does the residuals-vs-fitted plot check, and what is the ideal pattern?",
+    "back": "Linearity and constant variance; ideally a random, uniform cloud centred on zero.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "754585545e28",
+    "front": "In a residuals-vs-fitted plot, what do a U-shape and a funnel shape indicate?",
+    "back": "A U-shape indicates non-linearity; a funnel/cone indicates heteroscedasticity.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "dde06f79fb32",
+    "front": "What does plotting residuals against observation order (index) check?",
+    "back": "Independence: trends, cycles or clusters mean observation order is influencing the errors.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "93aa97580440",
+    "front": "What does the lag plot of $e_i$ vs $e_{i-1}$ check?",
+    "back": "First-order (lag-1) autocorrelation; a positive slope means positive autocorrelation, a negative slope negative autocorrelation.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "9073111239e7",
+    "front": "In a Q-Q plot of residuals, what is the ideal pattern?",
+    "back": "Points close to a straight diagonal line; deviation at the ends (heavy tails, S-curves) suggests skewness or outliers.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "ff311dd937b8",
+    "front": "What is the multiple linear regression model?",
+    "back": "$Y = \\beta_0 + \\beta_1 X_1 + \\beta_2 X_2 + \\cdots + \\beta_p X_p + \\text{error}$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "270af5d87e5b",
+    "front": "When is multiple linear regression applicable, according to the lecture?",
+    "back": "All $X$ and $Y$ are numerical and continuous, and $p$ is small relative to $n$ ($p > 10$ can be very problematic).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "57333e3a62ad",
+    "front": "How do you write a multiple regression formula with several predictors in `smf.ols`?",
+    "back": "Join them with `+`, e.g. `smf.ols('sr~pop75+dpi', data=savings).fit()`.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "69f784a6a4c4",
+    "front": "How does the lecture measure prediction ability?",
+    "back": "Split data into training and test sets (e.g. 70/30), fit on training, predict the test $Y$, and compare with bias and (root) mean squared error.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "af29cd48b8e0",
+    "front": "What is the difference between in-sample and out-of-sample prediction?",
+    "back": "In-sample predicts the training data the model has seen; out-of-sample predicts the unseen test data, which is the model's real purpose.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "31fa24dc8758",
+    "front": "How is bias computed in the savings test-set code, and what does its sign mean?",
+    "back": "`np.mean(pre_val - act_val)`; it shows whether the model systematically over- (positive) or under-estimates (negative).",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "3318422584a3",
+    "front": "How is the test RMSE computed in the lecture code?",
+    "back": "`np.sqrt(mean_squared_error(act_val, pre_val))`, using `sklearn.metrics`.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "1eb75698537e",
+    "front": "Is a bigger model always better than a smaller one?",
+    "back": "On in-sample RMSE yes (but that is useless); on out-of-sample RMSE no.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "0a05eb8fbbb8",
+    "front": "Which criteria does the lecture use to choose between models, and which direction is better?",
+    "back": "AIC and BIC — lower is better.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "6cbb77d95bff",
+    "front": "Which statsmodels calls give interval predictions for new data, and what intervals do they report?",
+    "back": "`model.get_prediction(newdata).summary_frame(alpha=0.05)` — a CI for the population mean and a wider interval for a new data point.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "704200a81c0a",
+    "front": "What is the null hypothesis of the regression ANOVA F-test?",
+    "back": "All regression coefficients except the intercept are zero, i.e. the model explains no more than an intercept-only mean model.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "43d73ccf3b84",
+    "front": "What is the null hypothesis of the t-test on a single coefficient?",
+    "back": "$H_0: \\beta_j = 0$ — the $j$-th predictor has no effect on $Y$ given the other variables.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "15b28dac0b73",
+    "front": "In the simple-regression ANOVA table, what are the degrees of freedom for Regression, Error and Total?",
+    "back": "1, $n - 2$ and $n - 1$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "9fc3e5d05969",
+    "front": "How is the F-ratio formed in simple regression, and what is it compared with?",
+    "back": "$F = MSR/MSE$ with $MSR = SSR/1$ and $MSE = SSE/(n-2)$, compared with $F_{1, n-2, 95\\%}$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "a268bfdc7670",
+    "front": "How is the standard error of the model error $\\hat{\\sigma}$ estimated in simple regression?",
+    "back": "$\\hat{\\sigma} = \\sqrt{\\frac{1}{n-2} SS(\\hat{a}, \\hat{b})}$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "8fe1c54d2f50",
+    "front": "What is the standard error of the slope $\\hat{b}$?",
+    "back": "$\\hat{\\sigma} \\sqrt{\\frac{1}{S_{XX}}}$, where $S_{XX} = \\sum_{t=1}^{n} (X_t - \\bar{X})^2$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "c3243a0234eb",
+    "front": "How is the t-test for the slope carried out?",
+    "back": "Compare $\\hat{b} / \\text{S.E.}(\\hat{b})$ with $t_{n-2, 97.5\\%}$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "topic": "",
+    "tag": "COM6005::Module_4",
+    "deck": "COM6005_Module_4"
   }
 ]

@@ -1,0 +1,746 @@
+[
+  {
+    "question": "Which engine do Excel's Power Pivot and Power BI's core share?",
+    "options": [
+      {
+        "label": "A",
+        "text": "VertiPaq",
+        "Explanation": "VertiPaq is the in-memory, column-based analytical engine behind both."
+      },
+      {
+        "label": "B",
+        "text": "Power Query",
+        "Explanation": "Power Query is the ETL tool for extracting and transforming data, not the analytical engine."
+      },
+      {
+        "label": "C",
+        "text": "DAX",
+        "Explanation": "DAX is the expression language for measures and calculated columns, not the storage engine."
+      },
+      {
+        "label": "D",
+        "text": "M language",
+        "Explanation": "M is the language of the Power Query Editor used for transformations."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think of the in-memory, column-based component that does the analysis.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which statement about the data model correctly contrasts Excel with Power BI?",
+    "options": [
+      {
+        "label": "A",
+        "text": "In Excel, tables and relationships are mandatory; in Power BI, a model is optional.",
+        "Explanation": "This reverses the two tools; it is Power BI that requires the model."
+      },
+      {
+        "label": "B",
+        "text": "In Power BI, tables and their relationships are mandatory; in Excel, Power Pivot is optional.",
+        "Explanation": "This matches the comparison: Power BI always works on a model of related tables."
+      },
+      {
+        "label": "C",
+        "text": "Neither tool supports defining relationships between tables.",
+        "Explanation": "Both can model relationships: Excel via Power Pivot and Power BI natively."
+      },
+      {
+        "label": "D",
+        "text": "Both tools require a data model before any chart can be drawn.",
+        "Explanation": "Excel can chart a plain range; its Power Pivot data model is optional."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall which tool treats the model as optional.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "A team wants a sales report that refreshes automatically every night and is shared through the cloud. Which tool fits best according to the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Excel",
+        "Explanation": "Excel refreshes manually and is shared as files."
+      },
+      {
+        "label": "B",
+        "text": "An OLTP database",
+        "Explanation": "OLTP systems record transactions; they are not reporting tools."
+      },
+      {
+        "label": "C",
+        "text": "Power BI",
+        "Explanation": "Power BI supports scheduled automatic refresh and cloud-enabled sharing."
+      },
+      {
+        "label": "D",
+        "text": "The Power Query Editor alone",
+        "Explanation": "Power Query prepares data but does not publish or schedule shared reports by itself."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the data refresh and sharing rows of the comparison table.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "In the Power BI workflow, which step uses the Power Query Editor with the M language?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Model",
+        "Explanation": "Modelling is done in the Data Model View: relationships, data types, hierarchies."
+      },
+      {
+        "label": "B",
+        "text": "Calculate",
+        "Explanation": "Calculation uses DAX to create measures and calculated columns."
+      },
+      {
+        "label": "C",
+        "text": "Visualize & Publish",
+        "Explanation": "This step uses Report View and the Power BI Service."
+      },
+      {
+        "label": "D",
+        "text": "Transform",
+        "Explanation": "Cleaning, shaping, merging and preparing data happens in the Power Query Editor with M."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "This step is the ETL stage of the workflow.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "An analyst needs to create a KPI measure such as total pass rate. Which Power BI component should be used?",
+    "options": [
+      {
+        "label": "A",
+        "text": "DAX",
+        "Explanation": "DAX creates measures (KPIs) and calculated columns."
+      },
+      {
+        "label": "B",
+        "text": "Data Model View",
+        "Explanation": "The model view defines relationships, data types and hierarchies, not measures."
+      },
+      {
+        "label": "C",
+        "text": "Power Query",
+        "Explanation": "Power Query connects to and prepares data rather than defining KPIs."
+      },
+      {
+        "label": "D",
+        "text": "Power BI Service",
+        "Explanation": "The Service publishes and shares reports; it is not where measures are defined."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Which step of the workflow is called Calculate?",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Where in Power BI are relationships between tables, data types and hierarchies defined?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Report View",
+        "Explanation": "Report View is for building visuals and interactive reports."
+      },
+      {
+        "label": "B",
+        "text": "Data Model View",
+        "Explanation": "The Model step defines relationships, sets data types and creates hierarchies."
+      },
+      {
+        "label": "C",
+        "text": "Power Query Editor",
+        "Explanation": "The editor transforms and merges data but the model view defines relationships."
+      },
+      {
+        "label": "D",
+        "text": "Power BI Service",
+        "Explanation": "The Service shares reports with end-users."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think of the step between Transform and Calculate.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Why are OLTP schemas a poor starting point for BI analysis?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They store too little data to be worth analysing.",
+        "Explanation": "OLTP systems hold large volumes; the issue is their structure, not their size."
+      },
+      {
+        "label": "B",
+        "text": "They lack ACID compliance, so the data cannot be trusted.",
+        "Explanation": "OLTP systems are ACID compliant; that is one of their requirements."
+      },
+      {
+        "label": "C",
+        "text": "They are optimized for data entry, with many tables and complex joins.",
+        "Explanation": "This is why a dimensional model is used to simplify querying and summarization."
+      },
+      {
+        "label": "D",
+        "text": "They can only be read through Excel files.",
+        "Explanation": "OLTP data lives in databases and can be read by many tools."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Consider what transactional systems are designed to do well.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Thousands of students register for modules at the same moment. Which kind of system handles this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "OLAP",
+        "Explanation": "OLAP is for interactive exploration and aggregation, usually read-only."
+      },
+      {
+        "label": "B",
+        "text": "A data cube",
+        "Explanation": "A data cube pre-aggregates data for analysis; it does not record transactions."
+      },
+      {
+        "label": "C",
+        "text": "A Power BI dashboard",
+        "Explanation": "A dashboard presents KPIs; it does not process registrations."
+      },
+      {
+        "label": "D",
+        "text": "OLTP",
+        "Explanation": "Online transaction processing records many concurrent transactions with low latency and ACID guarantees."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The workload modifies a few records per user with many users at once.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which property is characteristic of OLAP rather than OLTP?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Usually read-only, complex aggregate queries",
+        "Explanation": "OLAP generates statistics through aggregate queries over warehouse or lake data."
+      },
+      {
+        "label": "B",
+        "text": "Strong ACID consistency is essential",
+        "Explanation": "ACID is very important for OLTP, not necessary for OLAP."
+      },
+      {
+        "label": "C",
+        "text": "A large number of concurrent users",
+        "Explanation": "OLTP serves many concurrent users; OLAP typically few."
+      },
+      {
+        "label": "D",
+        "text": "Simple queries modifying a few records",
+        "Explanation": "That describes OLTP transactions."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about analysts exploring statistics rather than clerks entering records.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "In a star schema for student enrollment, which table is the fact table?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Student",
+        "Explanation": "Student is a dimension table giving 'who' context."
+      },
+      {
+        "label": "B",
+        "text": "Enrollment",
+        "Explanation": "The fact table records what happened: a student enrolling in a course."
+      },
+      {
+        "label": "C",
+        "text": "Course",
+        "Explanation": "Course is a dimension table giving 'what' context."
+      },
+      {
+        "label": "D",
+        "text": "Location",
+        "Explanation": "Location is a dimension table giving 'where' context."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The fact table answers 'what happened?'.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "What distinguishes a snowflake schema from a star schema?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It has several fact tables but no dimension tables.",
+        "Explanation": "Both schemas have dimension tables around facts."
+      },
+      {
+        "label": "B",
+        "text": "It stores all data in a single denormalized table.",
+        "Explanation": "That is the opposite: snowflake is more normalized than star."
+      },
+      {
+        "label": "C",
+        "text": "Its dimension tables are normalized into child dimension tables.",
+        "Explanation": "For example Student(StudentID, Major) links on to Programme and Unit tables."
+      },
+      {
+        "label": "D",
+        "text": "It needs fewer joins, so queries run faster.",
+        "Explanation": "Snowflake needs more joins and is slower; that describes the star schema."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about what normalization does to the dimensions.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Why is the star schema preferred for OLAP?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It uses less disk space than a snowflake schema.",
+        "Explanation": "Star uses more space because dimensions carry some redundancy."
+      },
+      {
+        "label": "B",
+        "text": "It guarantees ACID consistency for updates.",
+        "Explanation": "ACID is an OLTP concern, not the reason for choosing a schema for OLAP."
+      },
+      {
+        "label": "C",
+        "text": "It removes all redundancy from dimension tables.",
+        "Explanation": "Removing redundancy is what normalization in the snowflake schema does."
+      },
+      {
+        "label": "D",
+        "text": "Fewer joins give faster query performance.",
+        "Explanation": "Speed of exploration matters most in OLAP, and star needs fewer joins."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "OLAP users want quick responses to each exploration step.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "What are the two goals of normalization?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Minimize data redundancy and improve data integrity",
+        "Explanation": "Normalization systematically organizes columns and tables for these two aims."
+      },
+      {
+        "label": "B",
+        "text": "Reduce joins and speed up queries",
+        "Explanation": "Normalization usually adds joins, slowing queries."
+      },
+      {
+        "label": "C",
+        "text": "Pre-compute aggregates and cache results",
+        "Explanation": "That describes data cubes and caching, not normalization."
+      },
+      {
+        "label": "D",
+        "text": "Enable scheduled refresh and cloud sharing",
+        "Explanation": "These are Power BI service features unrelated to normalization."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about duplicated values and keeping data consistent.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "A table shows counts for grades A, B and F. A user combines A and B into a single 'Pass' row. Which OLAP action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down",
+        "Explanation": "Drill-down breaks data into more detail, the reverse of this action."
+      },
+      {
+        "label": "B",
+        "text": "Roll-up",
+        "Explanation": "Aggregating to a higher level in the concept structure is a roll-up."
+      },
+      {
+        "label": "C",
+        "text": "Slicing",
+        "Explanation": "Slicing filters records; here nothing is removed, only aggregated."
+      },
+      {
+        "label": "D",
+        "text": "Drill-through",
+        "Explanation": "Drill-through opens a separate detail page for a context."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Is the data becoming more or less detailed?",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "A grade-count table by major gains an extra breakdown by sex. Which OLAP action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Roll-up",
+        "Explanation": "Roll-up removes detail by aggregating, the reverse."
+      },
+      {
+        "label": "B",
+        "text": "Slicing",
+        "Explanation": "Slicing restricts to particular values instead of adding a breakdown."
+      },
+      {
+        "label": "C",
+        "text": "Drill-down",
+        "Explanation": "Adding a dimension breaks the same data into more detail."
+      },
+      {
+        "label": "D",
+        "text": "Normalization",
+        "Explanation": "Normalization is a schema-design process, not an exploration action."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The data source is unchanged but the detail increases.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "From a summary of grade counts, a user clicks DSAI grade A and opens another page listing those students' IDs and names. Which action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down",
+        "Explanation": "Drill-down adds detail within the same view rather than opening another page."
+      },
+      {
+        "label": "B",
+        "text": "Roll-up",
+        "Explanation": "Roll-up aggregates to less detail."
+      },
+      {
+        "label": "C",
+        "text": "Slicing",
+        "Explanation": "Slicing filters the current view instead of navigating to a new page."
+      },
+      {
+        "label": "D",
+        "text": "Drill-through",
+        "Explanation": "Navigating to a detailed report page filtered to a context is drill-through; that page may use different attributes."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Note that a different page with different attributes opens.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "What is the key difference between drill-down and slicing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down keeps the same data at finer detail; slicing filters out part of the data.",
+        "Explanation": "This is the distinction drawn in the lecture."
+      },
+      {
+        "label": "B",
+        "text": "Drill-down filters out data; slicing adds a new dimension.",
+        "Explanation": "This swaps the two definitions."
+      },
+      {
+        "label": "C",
+        "text": "Both filter the data, but slicing opens a new page.",
+        "Explanation": "Opening a new page describes drill-through."
+      },
+      {
+        "label": "D",
+        "text": "Drill-down needs a data cube; slicing does not.",
+        "Explanation": "Both actions can be computed with or without a cube."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask whether any records are excluded.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which technique is NOT listed as part of what makes VertiPaq fast?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Columnar in-memory storage",
+        "Explanation": "VertiPaq is an in-memory columnar database."
+      },
+      {
+        "label": "B",
+        "text": "Pre-built data cubes",
+        "Explanation": "Data cubes are external pre-computation; VertiPaq needs no preparation or extra storage."
+      },
+      {
+        "label": "C",
+        "text": "Compression",
+        "Explanation": "Compression is listed as one of VertiPaq's techniques."
+      },
+      {
+        "label": "D",
+        "text": "Multi-threading and caching",
+        "Explanation": "Both are listed as VertiPaq techniques."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One of these belongs to a different approach compared against VertiPaq.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which assumption is required for building an OLAP data cube?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The database must be stored in a snowflake schema.",
+        "Explanation": "Schema choice is not one of the cube assumptions."
+      },
+      {
+        "label": "B",
+        "text": "Every query the user might ask must be unanticipated.",
+        "Explanation": "Cubes only serve anticipated queries; this is the opposite."
+      },
+      {
+        "label": "C",
+        "text": "The feature set to explore is known and small, with far fewer value combinations than records.",
+        "Explanation": "Only then is the cube much smaller than the database and worth pre-computing."
+      },
+      {
+        "label": "D",
+        "text": "The data must never be filtered.",
+        "Explanation": "Slicing works on a cube; filtering is not ruled out."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about why the cube ends up so much smaller than the database.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "An analyst adds a new feature, 'year', to an analysis built on a data cube of Grade, Major and Sex. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The existing cube answers it instantly.",
+        "Explanation": "The cube has no 'year' dimension, so it cannot answer this."
+      },
+      {
+        "label": "B",
+        "text": "VertiPaq automatically adds the feature to the cube.",
+        "Explanation": "VertiPaq does not maintain external data cubes."
+      },
+      {
+        "label": "C",
+        "text": "Power Query converts the cube into a star schema.",
+        "Explanation": "Power Query transforms data; it does not extend cube dimensions."
+      },
+      {
+        "label": "D",
+        "text": "A new data cube must be recalculated.",
+        "Explanation": "A cube only covers its feature set, so a new feature requires rebuilding it."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Recall the limitations listed for data cubes.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which statement correctly compares VertiPaq with a data cube?",
+    "options": [
+      {
+        "label": "A",
+        "text": "VertiPaq handles any query; a data cube is near-instant only for anticipated queries.",
+        "Explanation": "This is the flexibility and speed trade-off in the comparison table."
+      },
+      {
+        "label": "B",
+        "text": "VertiPaq needs extra storage; a data cube needs none.",
+        "Explanation": "It is the cube that needs (small) additional storage."
+      },
+      {
+        "label": "C",
+        "text": "A data cube is Power BI's native engine.",
+        "Explanation": "VertiPaq is native; cubes must be built externally."
+      },
+      {
+        "label": "D",
+        "text": "VertiPaq needs a long preparation time to build.",
+        "Explanation": "VertiPaq needs no preparation; building a cube can be slow on large data."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about which approach is general-purpose.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "Which query is generating a data cube over Grade, Major and Sex equivalent to?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT * FROM Results WHERE Grade = 'A'`",
+        "Explanation": "This is a slice that filters records rather than aggregating."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT Grade, Major, Sex, COUNT(*) FROM Results GROUP BY Grade, Major, Sex`",
+        "Explanation": "A cube's cells are counts per combination of the chosen features: a group-by query."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT Grade, Major, Sex FROM Results ORDER BY Grade`",
+        "Explanation": "Ordering does not aggregate counts per combination."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT DISTINCT Grade FROM Results`",
+        "Explanation": "This lists grades only, with no counts or other features."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "A cube cell holds a count for each combination of feature values.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "You join the Module table (A) to the Result table (B) and want only modules with no results at all. Which join type in Merge Queries should you choose?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Inner Join",
+        "Explanation": "Inner returns only matching records, the opposite of what is needed."
+      },
+      {
+        "label": "B",
+        "text": "Left Outer Join",
+        "Explanation": "This returns all of A, including matched ones, with nulls for missing B values."
+      },
+      {
+        "label": "C",
+        "text": "Left Anti Join",
+        "Explanation": "It returns the records in A that have no match in B."
+      },
+      {
+        "label": "D",
+        "text": "Full Outer Join",
+        "Explanation": "This returns all records from both tables."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "You want rows from the first table that are absent from the second.",
+    "course": "COM6002",
+    "week": "5"
+  },
+  {
+    "question": "After importing Module.csv, the column headers appear as an ordinary data row. What should you do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Create a DAX calculated column for each header.",
+        "Explanation": "DAX adds calculations; it does not repair headers on import."
+      },
+      {
+        "label": "B",
+        "text": "Define relationships in the Data Model View.",
+        "Explanation": "Relationships link tables; they do not rename columns."
+      },
+      {
+        "label": "C",
+        "text": "Drill through to a detail page.",
+        "Explanation": "Drill-through is an exploration action, not a data-cleaning step."
+      },
+      {
+        "label": "D",
+        "text": "Use the first row as column names in the Power Query Editor.",
+        "Explanation": "Power Query can promote the first row to headers to fix the data."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The fix belongs to the data-preparation (Transform) stage.",
+    "course": "COM6002",
+    "week": "5"
+  }
+]

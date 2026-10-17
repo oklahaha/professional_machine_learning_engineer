@@ -1,0 +1,45 @@
+What is a one-way table?,A table of the frequency (count) of each category in one column of categorical data.
+What is a two-way (contingency) table?,A table of the joint frequency of each combination of categories from two columns of categorical data.
+Which pandas call builds a one-way frequency table from a list `x`?,`pd.Series(x).value_counts()`
+Which pandas call builds a two-way (joint frequency) table from lists `x` and `y`?,"`pd.crosstab(pd.Series(x), pd.Series(y))`"
+"In the lecture's rating data `x = [G,B,G,A,A,B,A,G,A,B]`, what are the category counts?","Average 4, Good 3, Bad 3."
+"In the lecture's rating (x) vs number-of-customers (y) crosstab, what are the Average row counts for Few and Many?","Few 1, Many 3."
+Which pandas function converts numerical data into labelled categories such as young/middle/senior?,"`pd.cut()`, given `bins` and `labels`."
+"With `pd.cut(x, bins=[0, 35, 55, float('inf')], labels=age_labels)`, which ages fall in the middle group?","Ages in $(35, 55]$; the bins are right-closed, so 35 itself is young."
+"In the plotting code, why is the crosstab transposed (`ft.T.plot(...)`)?",So the y categories (Few/Many) become the bar groups and the ratings become the coloured segments/bars.
+"Which `plot()` arguments switch between stacked and side-by-side bars, and vertical vs horizontal?",`stacked=True/False`; `kind='bar'` (vertical) vs `kind='barh'` (horizontal).
+Which chi-square test asks whether a one-way table follows a given distribution pattern?,The chi-square goodness-of-fit test.
+Which chi-square test asks whether the two variables of a two-way table are related?,The chi-square test for independence.
+What are $H_0$ and $H_1$ in the chi-square test for independence?,$H_0$: the two variables are independent; $H_1$: they are related (dependent).
+"In the student example, what are the two categorical variables?",X = origin (Local/Foreign) and Y = first subject choice (Math/Computer/Literature).
+"What are the observed counts in the student example (Local, Foreign)?","Math 250, 50; Computer 400, 50; Literature 350, 150."
+"What are the row, column and grand totals in the student example?","Rows: Math 300, Computer 450, Literature 500; columns: Local 1000, Foreign 250; grand total 1250."
+What is the formula for the expected count $E_{ij}$ in the independence test?,"$E_{ij} = \frac{n_{i\cdot}\, n_{\cdot j}}{n_{\cdot\cdot}}$ (row total × column total / grand total)."
+What is the intuition behind the expected count under independence?,"If there is no dependence, each row's total is split between columns in the overall column proportion (here Local:Foreign = 1000:250)."
+What is the expected count for Local Math in the student example?,$300 \times 1000/1250 = 240$
+"What are all six expected counts in the student example (Local, Foreign)?","Math 240, 60; Computer 360, 90; Literature 400, 100."
+What is the chi-square statistic for the independence test?,$\chi^2 = \sum_{i=1}^{r}\sum_{j=1}^{c} \frac{(n_{ij}-E_{ij})^2}{E_{ij}}$
+What is the idea behind the size of $\chi^2$ in the independence test?,"If the variables are independent, each $n_{ij}$ is close to $E_{ij}$, so $\chi^2$ is small; a large $\chi^2$ is evidence of dependence."
+What is the critical-value decision rule for a chi-square test?,Reject $H_0$ if $\chi^2$ is greater than the critical value from the chi-square table.
+What is the p-value decision rule for a chi-square test?,Reject $H_0$ if the p-value is smaller than $\alpha$.
+What are the degrees of freedom $\nu$ for the chi-square test for independence?,"$\nu = (r-1)(c-1)$, where r and c are the numbers of rows and columns."
+What are the common choices of significance level $\alpha$ and what do they mean?,5% for a lower standard to reject $H_0$; 1% for a higher standard.
+What is the critical value for $\nu = 2$ at $\alpha = 5\%$?,5.991
+Which Python call returns the critical value 5.991?,"`scipy.stats.chi2.ppf(0.95, 2)` — the 95% quantile of the chi-square distribution with $\nu = 2$."
+What does `stats.chi2_contingency()` accept as input?,"A joint frequency (contingency) table: either `pd.crosstab` of the two columns or an array such as `np.array([[250, 50], [400, 50], [350, 150]])`."
+What four values does `stats.chi2_contingency()` return?,"`chi2, p, dof, expected` — statistic, p-value, degrees of freedom and expected frequencies."
+What does `stats.chi2_contingency(Ft)` report for the student example?,"statistic ≈ 55.56, p-value ≈ $8.6 \times 10^{-13}$, dof = 2, expected = [[240, 60], [360, 90], [400, 100]]."
+What is the conclusion of the student example's independence test at $\alpha = 0.05$?,"Reject $H_0$: origin and subject choice are dependent ($55.56 > 5.991$, p-value far below 0.05)."
+Which three statements are equivalent decision rules for a $\nu = 2$ chi-square test at 5%?,"`chi2 > chi2.ppf(0.95, 2)`, `chi2.cdf(chi2, 2) > 0.95`, and `1-chi2.cdf(chi2, 2) < 0.05`."
+Which quantity in the decision rules is the p-value?,"`1-chi2.cdf(chi2, df)` — the upper-tail probability beyond the observed statistic."
+What data situation calls for the chi-square goodness-of-fit test?,"One column of categorical data, tested against a hypothesised distribution."
+What are $H_0$ and $H_1$ in the chocolate-colour goodness-of-fit example?,$H_0$: the six colours are evenly distributed (each 1/6); $H_1$: the distribution is not even.
+What are the observed colour counts in the chocolate example?,"Yellow 20, Red 13, Orange 12, Brown 12, Blue 18, Green 25 (total 100)."
+What is the expected count per colour in the chocolate example under uniformity?,$E_i = 100/6 = 16.67$
+What is the goodness-of-fit test statistic?,$\chi^2 = \sum_{i=1}^{K} \frac{(n_i - E_i)^2}{E_i}$
+What are the degrees of freedom for a goodness-of-fit test for a uniform distribution over K categories?,$K - 1$ (5 for the six chocolate colours).
+What is the critical value for $\nu = 5$ at $\alpha = 0.05$?,11.071
+Which Python call runs the goodness-of-fit test on observed counts `Ft`?,`stats.chisquare(Ft)`
+What are the chocolate example's test statistic and p-value?,"$\chi^2 = 8.36$, p-value = 0.1374."
+What is the conclusion of the chocolate example at $\alpha = 0.05$?,$H_0$ is not rejected ($0.1374 > 0.05$; $8.36 < 11.071$): we cannot reject that the colours are uniform.
+Why does the lecture say p-values need a modern computer?,"Computing `1-chi2.cdf(chi2, df)` requires the chi-square CDF; by hand you can only compare with a tabulated critical value."

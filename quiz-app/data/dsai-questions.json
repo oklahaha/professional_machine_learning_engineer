@@ -6996,6 +6996,798 @@
     "deck": "COM6002_Lecture_04"
   },
   {
+    "id": "aefc0c389048",
+    "question": "Which engine do Excel's Power Pivot and Power BI's core share?",
+    "options": [
+      {
+        "label": "A",
+        "text": "VertiPaq",
+        "explanation": "VertiPaq is the in-memory, column-based analytical engine behind both."
+      },
+      {
+        "label": "B",
+        "text": "Power Query",
+        "explanation": "Power Query is the ETL tool for extracting and transforming data, not the analytical engine."
+      },
+      {
+        "label": "C",
+        "text": "DAX",
+        "explanation": "DAX is the expression language for measures and calculated columns, not the storage engine."
+      },
+      {
+        "label": "D",
+        "text": "M language",
+        "explanation": "M is the language of the Power Query Editor used for transformations."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think of the in-memory, column-based component that does the analysis.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "e1cb6b2d4f34",
+    "question": "Which statement about the data model correctly contrasts Excel with Power BI?",
+    "options": [
+      {
+        "label": "A",
+        "text": "In Excel, tables and relationships are mandatory; in Power BI, a model is optional.",
+        "explanation": "This reverses the two tools; it is Power BI that requires the model."
+      },
+      {
+        "label": "B",
+        "text": "In Power BI, tables and their relationships are mandatory; in Excel, Power Pivot is optional.",
+        "explanation": "This matches the comparison: Power BI always works on a model of related tables."
+      },
+      {
+        "label": "C",
+        "text": "Neither tool supports defining relationships between tables.",
+        "explanation": "Both can model relationships: Excel via Power Pivot and Power BI natively."
+      },
+      {
+        "label": "D",
+        "text": "Both tools require a data model before any chart can be drawn.",
+        "explanation": "Excel can chart a plain range; its Power Pivot data model is optional."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Recall which tool treats the model as optional.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "7672ce17484a",
+    "question": "A team wants a sales report that refreshes automatically every night and is shared through the cloud. Which tool fits best according to the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Excel",
+        "explanation": "Excel refreshes manually and is shared as files."
+      },
+      {
+        "label": "B",
+        "text": "An OLTP database",
+        "explanation": "OLTP systems record transactions; they are not reporting tools."
+      },
+      {
+        "label": "C",
+        "text": "Power BI",
+        "explanation": "Power BI supports scheduled automatic refresh and cloud-enabled sharing."
+      },
+      {
+        "label": "D",
+        "text": "The Power Query Editor alone",
+        "explanation": "Power Query prepares data but does not publish or schedule shared reports by itself."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Compare the data refresh and sharing rows of the comparison table.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "886c79cc38f3",
+    "question": "In the Power BI workflow, which step uses the Power Query Editor with the M language?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Model",
+        "explanation": "Modelling is done in the Data Model View: relationships, data types, hierarchies."
+      },
+      {
+        "label": "B",
+        "text": "Calculate",
+        "explanation": "Calculation uses DAX to create measures and calculated columns."
+      },
+      {
+        "label": "C",
+        "text": "Visualize & Publish",
+        "explanation": "This step uses Report View and the Power BI Service."
+      },
+      {
+        "label": "D",
+        "text": "Transform",
+        "explanation": "Cleaning, shaping, merging and preparing data happens in the Power Query Editor with M."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "This step is the ETL stage of the workflow.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "871bec665727",
+    "question": "An analyst needs to create a KPI measure such as total pass rate. Which Power BI component should be used?",
+    "options": [
+      {
+        "label": "A",
+        "text": "DAX",
+        "explanation": "DAX creates measures (KPIs) and calculated columns."
+      },
+      {
+        "label": "B",
+        "text": "Data Model View",
+        "explanation": "The model view defines relationships, data types and hierarchies, not measures."
+      },
+      {
+        "label": "C",
+        "text": "Power Query",
+        "explanation": "Power Query connects to and prepares data rather than defining KPIs."
+      },
+      {
+        "label": "D",
+        "text": "Power BI Service",
+        "explanation": "The Service publishes and shares reports; it is not where measures are defined."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Which step of the workflow is called Calculate?",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "afaf8a0d2aff",
+    "question": "Where in Power BI are relationships between tables, data types and hierarchies defined?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Report View",
+        "explanation": "Report View is for building visuals and interactive reports."
+      },
+      {
+        "label": "B",
+        "text": "Data Model View",
+        "explanation": "The Model step defines relationships, sets data types and creates hierarchies."
+      },
+      {
+        "label": "C",
+        "text": "Power Query Editor",
+        "explanation": "The editor transforms and merges data but the model view defines relationships."
+      },
+      {
+        "label": "D",
+        "text": "Power BI Service",
+        "explanation": "The Service shares reports with end-users."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Think of the step between Transform and Calculate.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "6f4666ad67e3",
+    "question": "Why are OLTP schemas a poor starting point for BI analysis?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They store too little data to be worth analysing.",
+        "explanation": "OLTP systems hold large volumes; the issue is their structure, not their size."
+      },
+      {
+        "label": "B",
+        "text": "They lack ACID compliance, so the data cannot be trusted.",
+        "explanation": "OLTP systems are ACID compliant; that is one of their requirements."
+      },
+      {
+        "label": "C",
+        "text": "They are optimized for data entry, with many tables and complex joins.",
+        "explanation": "This is why a dimensional model is used to simplify querying and summarization."
+      },
+      {
+        "label": "D",
+        "text": "They can only be read through Excel files.",
+        "explanation": "OLTP data lives in databases and can be read by many tools."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Consider what transactional systems are designed to do well.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "d4143636ee1f",
+    "question": "Thousands of students register for modules at the same moment. Which kind of system handles this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "OLAP",
+        "explanation": "OLAP is for interactive exploration and aggregation, usually read-only."
+      },
+      {
+        "label": "B",
+        "text": "A data cube",
+        "explanation": "A data cube pre-aggregates data for analysis; it does not record transactions."
+      },
+      {
+        "label": "C",
+        "text": "A Power BI dashboard",
+        "explanation": "A dashboard presents KPIs; it does not process registrations."
+      },
+      {
+        "label": "D",
+        "text": "OLTP",
+        "explanation": "Online transaction processing records many concurrent transactions with low latency and ACID guarantees."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The workload modifies a few records per user with many users at once.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "38436f3bed8e",
+    "question": "Which property is characteristic of OLAP rather than OLTP?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Usually read-only, complex aggregate queries",
+        "explanation": "OLAP generates statistics through aggregate queries over warehouse or lake data."
+      },
+      {
+        "label": "B",
+        "text": "Strong ACID consistency is essential",
+        "explanation": "ACID is very important for OLTP, not necessary for OLAP."
+      },
+      {
+        "label": "C",
+        "text": "A large number of concurrent users",
+        "explanation": "OLTP serves many concurrent users; OLAP typically few."
+      },
+      {
+        "label": "D",
+        "text": "Simple queries modifying a few records",
+        "explanation": "That describes OLTP transactions."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about analysts exploring statistics rather than clerks entering records.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "9a13712abb9e",
+    "question": "In a star schema for student enrollment, which table is the fact table?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Student",
+        "explanation": "Student is a dimension table giving 'who' context."
+      },
+      {
+        "label": "B",
+        "text": "Enrollment",
+        "explanation": "The fact table records what happened: a student enrolling in a course."
+      },
+      {
+        "label": "C",
+        "text": "Course",
+        "explanation": "Course is a dimension table giving 'what' context."
+      },
+      {
+        "label": "D",
+        "text": "Location",
+        "explanation": "Location is a dimension table giving 'where' context."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The fact table answers 'what happened?'.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "d50c23cab690",
+    "question": "What distinguishes a snowflake schema from a star schema?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It has several fact tables but no dimension tables.",
+        "explanation": "Both schemas have dimension tables around facts."
+      },
+      {
+        "label": "B",
+        "text": "It stores all data in a single denormalized table.",
+        "explanation": "That is the opposite: snowflake is more normalized than star."
+      },
+      {
+        "label": "C",
+        "text": "Its dimension tables are normalized into child dimension tables.",
+        "explanation": "For example Student(StudentID, Major) links on to Programme and Unit tables."
+      },
+      {
+        "label": "D",
+        "text": "It needs fewer joins, so queries run faster.",
+        "explanation": "Snowflake needs more joins and is slower; that describes the star schema."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about what normalization does to the dimensions.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "4f2df49b9b53",
+    "question": "Why is the star schema preferred for OLAP?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It uses less disk space than a snowflake schema.",
+        "explanation": "Star uses more space because dimensions carry some redundancy."
+      },
+      {
+        "label": "B",
+        "text": "It guarantees ACID consistency for updates.",
+        "explanation": "ACID is an OLTP concern, not the reason for choosing a schema for OLAP."
+      },
+      {
+        "label": "C",
+        "text": "It removes all redundancy from dimension tables.",
+        "explanation": "Removing redundancy is what normalization in the snowflake schema does."
+      },
+      {
+        "label": "D",
+        "text": "Fewer joins give faster query performance.",
+        "explanation": "Speed of exploration matters most in OLAP, and star needs fewer joins."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "OLAP users want quick responses to each exploration step.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "ea7ee084c4eb",
+    "question": "What are the two goals of normalization?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Minimize data redundancy and improve data integrity",
+        "explanation": "Normalization systematically organizes columns and tables for these two aims."
+      },
+      {
+        "label": "B",
+        "text": "Reduce joins and speed up queries",
+        "explanation": "Normalization usually adds joins, slowing queries."
+      },
+      {
+        "label": "C",
+        "text": "Pre-compute aggregates and cache results",
+        "explanation": "That describes data cubes and caching, not normalization."
+      },
+      {
+        "label": "D",
+        "text": "Enable scheduled refresh and cloud sharing",
+        "explanation": "These are Power BI service features unrelated to normalization."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about duplicated values and keeping data consistent.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "6aea7e429934",
+    "question": "A table shows counts for grades A, B and F. A user combines A and B into a single 'Pass' row. Which OLAP action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down",
+        "explanation": "Drill-down breaks data into more detail, the reverse of this action."
+      },
+      {
+        "label": "B",
+        "text": "Roll-up",
+        "explanation": "Aggregating to a higher level in the concept structure is a roll-up."
+      },
+      {
+        "label": "C",
+        "text": "Slicing",
+        "explanation": "Slicing filters records; here nothing is removed, only aggregated."
+      },
+      {
+        "label": "D",
+        "text": "Drill-through",
+        "explanation": "Drill-through opens a separate detail page for a context."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Is the data becoming more or less detailed?",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "94da5c85efdb",
+    "question": "A grade-count table by major gains an extra breakdown by sex. Which OLAP action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Roll-up",
+        "explanation": "Roll-up removes detail by aggregating, the reverse."
+      },
+      {
+        "label": "B",
+        "text": "Slicing",
+        "explanation": "Slicing restricts to particular values instead of adding a breakdown."
+      },
+      {
+        "label": "C",
+        "text": "Drill-down",
+        "explanation": "Adding a dimension breaks the same data into more detail."
+      },
+      {
+        "label": "D",
+        "text": "Normalization",
+        "explanation": "Normalization is a schema-design process, not an exploration action."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The data source is unchanged but the detail increases.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "20ea95d85a7a",
+    "question": "From a summary of grade counts, a user clicks DSAI grade A and opens another page listing those students' IDs and names. Which action is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down",
+        "explanation": "Drill-down adds detail within the same view rather than opening another page."
+      },
+      {
+        "label": "B",
+        "text": "Roll-up",
+        "explanation": "Roll-up aggregates to less detail."
+      },
+      {
+        "label": "C",
+        "text": "Slicing",
+        "explanation": "Slicing filters the current view instead of navigating to a new page."
+      },
+      {
+        "label": "D",
+        "text": "Drill-through",
+        "explanation": "Navigating to a detailed report page filtered to a context is drill-through; that page may use different attributes."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Note that a different page with different attributes opens.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "d757f76c79f0",
+    "question": "What is the key difference between drill-down and slicing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Drill-down keeps the same data at finer detail; slicing filters out part of the data.",
+        "explanation": "This is the distinction drawn in the lecture."
+      },
+      {
+        "label": "B",
+        "text": "Drill-down filters out data; slicing adds a new dimension.",
+        "explanation": "This swaps the two definitions."
+      },
+      {
+        "label": "C",
+        "text": "Both filter the data, but slicing opens a new page.",
+        "explanation": "Opening a new page describes drill-through."
+      },
+      {
+        "label": "D",
+        "text": "Drill-down needs a data cube; slicing does not.",
+        "explanation": "Both actions can be computed with or without a cube."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Ask whether any records are excluded.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "3b412ef59468",
+    "question": "Which technique is NOT listed as part of what makes VertiPaq fast?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Columnar in-memory storage",
+        "explanation": "VertiPaq is an in-memory columnar database."
+      },
+      {
+        "label": "B",
+        "text": "Pre-built data cubes",
+        "explanation": "Data cubes are external pre-computation; VertiPaq needs no preparation or extra storage."
+      },
+      {
+        "label": "C",
+        "text": "Compression",
+        "explanation": "Compression is listed as one of VertiPaq's techniques."
+      },
+      {
+        "label": "D",
+        "text": "Multi-threading and caching",
+        "explanation": "Both are listed as VertiPaq techniques."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "One of these belongs to a different approach compared against VertiPaq.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "6dcdd281394e",
+    "question": "Which assumption is required for building an OLAP data cube?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The database must be stored in a snowflake schema.",
+        "explanation": "Schema choice is not one of the cube assumptions."
+      },
+      {
+        "label": "B",
+        "text": "Every query the user might ask must be unanticipated.",
+        "explanation": "Cubes only serve anticipated queries; this is the opposite."
+      },
+      {
+        "label": "C",
+        "text": "The feature set to explore is known and small, with far fewer value combinations than records.",
+        "explanation": "Only then is the cube much smaller than the database and worth pre-computing."
+      },
+      {
+        "label": "D",
+        "text": "The data must never be filtered.",
+        "explanation": "Slicing works on a cube; filtering is not ruled out."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about why the cube ends up so much smaller than the database.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "723b849eddc1",
+    "question": "An analyst adds a new feature, 'year', to an analysis built on a data cube of Grade, Major and Sex. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The existing cube answers it instantly.",
+        "explanation": "The cube has no 'year' dimension, so it cannot answer this."
+      },
+      {
+        "label": "B",
+        "text": "VertiPaq automatically adds the feature to the cube.",
+        "explanation": "VertiPaq does not maintain external data cubes."
+      },
+      {
+        "label": "C",
+        "text": "Power Query converts the cube into a star schema.",
+        "explanation": "Power Query transforms data; it does not extend cube dimensions."
+      },
+      {
+        "label": "D",
+        "text": "A new data cube must be recalculated.",
+        "explanation": "A cube only covers its feature set, so a new feature requires rebuilding it."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Recall the limitations listed for data cubes.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "e87c83b6342c",
+    "question": "Which statement correctly compares VertiPaq with a data cube?",
+    "options": [
+      {
+        "label": "A",
+        "text": "VertiPaq handles any query; a data cube is near-instant only for anticipated queries.",
+        "explanation": "This is the flexibility and speed trade-off in the comparison table."
+      },
+      {
+        "label": "B",
+        "text": "VertiPaq needs extra storage; a data cube needs none.",
+        "explanation": "It is the cube that needs (small) additional storage."
+      },
+      {
+        "label": "C",
+        "text": "A data cube is Power BI's native engine.",
+        "explanation": "VertiPaq is native; cubes must be built externally."
+      },
+      {
+        "label": "D",
+        "text": "VertiPaq needs a long preparation time to build.",
+        "explanation": "VertiPaq needs no preparation; building a cube can be slow on large data."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about which approach is general-purpose.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "2691e45a47c6",
+    "question": "Which query is generating a data cube over Grade, Major and Sex equivalent to?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT * FROM Results WHERE Grade = 'A'`",
+        "explanation": "This is a slice that filters records rather than aggregating."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT Grade, Major, Sex, COUNT(*) FROM Results GROUP BY Grade, Major, Sex`",
+        "explanation": "A cube's cells are counts per combination of the chosen features: a group-by query."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT Grade, Major, Sex FROM Results ORDER BY Grade`",
+        "explanation": "Ordering does not aggregate counts per combination."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT DISTINCT Grade FROM Results`",
+        "explanation": "This lists grades only, with no counts or other features."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "A cube cell holds a count for each combination of feature values.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "ffd1b701dcd4",
+    "question": "You join the Module table (A) to the Result table (B) and want only modules with no results at all. Which join type in Merge Queries should you choose?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Inner Join",
+        "explanation": "Inner returns only matching records, the opposite of what is needed."
+      },
+      {
+        "label": "B",
+        "text": "Left Outer Join",
+        "explanation": "This returns all of A, including matched ones, with nulls for missing B values."
+      },
+      {
+        "label": "C",
+        "text": "Left Anti Join",
+        "explanation": "It returns the records in A that have no match in B."
+      },
+      {
+        "label": "D",
+        "text": "Full Outer Join",
+        "explanation": "This returns all records from both tables."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "You want rows from the first table that are absent from the second.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
+    "id": "392aafbe3278",
+    "question": "After importing Module.csv, the column headers appear as an ordinary data row. What should you do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Create a DAX calculated column for each header.",
+        "explanation": "DAX adds calculations; it does not repair headers on import."
+      },
+      {
+        "label": "B",
+        "text": "Define relationships in the Data Model View.",
+        "explanation": "Relationships link tables; they do not rename columns."
+      },
+      {
+        "label": "C",
+        "text": "Drill through to a detail page.",
+        "explanation": "Drill-through is an exploration action, not a data-cleaning step."
+      },
+      {
+        "label": "D",
+        "text": "Use the first row as column names in the Power Query Editor.",
+        "explanation": "Power Query can promote the first row to headers to fix the data."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The fix belongs to the data-preparation (Transform) stage.",
+    "course": "COM6002",
+    "unit": "Lecture_5",
+    "deck": "COM6002_Lecture_5"
+  },
+  {
     "id": "6cc82ee6420a",
     "question": "Data mining is an interdisciplinary field drawing from multiple domains. Which of the following is NOT explicitly identified in the source text as one of its foundational disciplines?",
     "options": [
@@ -14782,5 +15574,1622 @@
     "course": "COM6005",
     "unit": "Module_3A",
     "deck": "COM6005_Module_3A"
+  },
+  {
+    "id": "e830ad1f3551",
+    "question": "What does a two-way (contingency) table record?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The mean of a numerical column within each category of a second column",
+        "explanation": "A contingency table holds counts, not means of a numerical variable."
+      },
+      {
+        "label": "B",
+        "text": "The correlation coefficient between two numerical columns",
+        "explanation": "Correlation summarises numerical data; contingency tables count categorical combinations."
+      },
+      {
+        "label": "C",
+        "text": "The joint frequency of each combination of categories from two categorical columns",
+        "explanation": "Correct: crossing two categorical columns and counting each combination gives the two-way table."
+      },
+      {
+        "label": "D",
+        "text": "The frequency of each category in a single categorical column",
+        "explanation": "That is a one-way table, built from one column only."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about what 'joint' frequency means when there are two columns.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f8a4661dd79a",
+    "question": "Which chi-square test should be used to check whether a single categorical column follows a specified distribution, such as all categories equally likely?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Chi-square goodness-of-fit test",
+        "explanation": "Correct: goodness-of-fit compares one-way counts against a hypothesised distribution."
+      },
+      {
+        "label": "B",
+        "text": "Chi-square test for independence",
+        "explanation": "The independence test needs two categorical columns in a two-way table."
+      },
+      {
+        "label": "C",
+        "text": "Paired t-test",
+        "explanation": "A paired t-test compares two related numerical samples, not category counts."
+      },
+      {
+        "label": "D",
+        "text": "One-sample t-test",
+        "explanation": "A t-test compares a numerical mean, not category frequencies."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Count how many categorical columns are involved.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "8073e23a2fcc",
+    "question": "In a chi-square test for independence, which pair of hypotheses is tested?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$: the two means are equal; $H_1$: the two means differ",
+        "explanation": "The chi-square test works on category counts, not on means."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$: the two variables are dependent; $H_1$: they are independent",
+        "explanation": "This reverses the hypotheses; the claim needing evidence (dependence) belongs in $H_1$."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$: the categories are equally likely; $H_1$: they are not",
+        "explanation": "That is the uniform goodness-of-fit hypothesis for one column."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$: the two variables are independent; $H_1$: they are dependent",
+        "explanation": "Correct: the null states no relationship, and the alternative is the relationship we seek evidence for."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The null hypothesis states that there is no relationship.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "9db8bad397ed",
+    "question": "Under the independence hypothesis, how is the expected count $E_{ij}$ of a cell computed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$E_{ij} = n_{i\\cdot} + n_{\\cdot j} - n_{\\cdot\\cdot}$",
+        "explanation": "Expected counts come from multiplying margins, not adding them."
+      },
+      {
+        "label": "B",
+        "text": "$E_{ij} = \\frac{n_{i\\cdot}\\, n_{\\cdot j}}{n_{\\cdot\\cdot}}$",
+        "explanation": "Correct: row total times column total divided by the grand total."
+      },
+      {
+        "label": "C",
+        "text": "$E_{ij} = \\frac{n_{\\cdot\\cdot}}{r \\times c}$",
+        "explanation": "Splitting the grand total equally ignores the row and column totals."
+      },
+      {
+        "label": "D",
+        "text": "$E_{ij} = \\frac{n_{ij}\\, n_{\\cdot\\cdot}}{n_{i\\cdot}}$",
+        "explanation": "This uses the observed cell count, which the expected count must not depend on."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Distribute each row total across columns in the overall column proportions.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "1f0720fcc9a2",
+    "question": "What are the degrees of freedom for a chi-square test for independence on a table with r rows and c columns?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$rc - 1$",
+        "explanation": "Subtracting one from the cell count is not the independence-test rule."
+      },
+      {
+        "label": "B",
+        "text": "$(r-1)(c-1)$",
+        "explanation": "Correct: this is the lecture's formula, e.g. $(3-1)(2-1)=2$."
+      },
+      {
+        "label": "C",
+        "text": "$K - 1$",
+        "explanation": "$K-1$ is the goodness-of-fit rule for K categories in one column."
+      },
+      {
+        "label": "D",
+        "text": "$r + c - 2$",
+        "explanation": "The row and column reductions are multiplied, not added."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Reduce the rows and columns by one each, then combine them.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "b6ba5308d107",
+    "question": "What are the degrees of freedom for a goodness-of-fit test for a uniform distribution over K categories?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(K-1)(2-1)$ with two outcome columns",
+        "explanation": "There is only one categorical column, so the independence formula does not apply."
+      },
+      {
+        "label": "B",
+        "text": "$K$",
+        "explanation": "One degree of freedom is lost because the counts must sum to the total."
+      },
+      {
+        "label": "C",
+        "text": "$K - 1$",
+        "explanation": "Correct: with K categories the lecture uses $K-1$, i.e. 5 for six colours."
+      },
+      {
+        "label": "D",
+        "text": "$n - 1$, where n is the total count",
+        "explanation": "The degrees of freedom depend on the number of categories, not the sample size."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "It depends on the number of categories, not the number of observations.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "71eea009a0db",
+    "question": "Which statement about a large chi-square statistic in an independence test is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It means the p-value is large, so $H_0$ is retained",
+        "explanation": "A larger $\\chi^2$ gives a smaller upper-tail probability, not a larger one."
+      },
+      {
+        "label": "B",
+        "text": "It means observed counts are far from the expected counts, which is evidence of dependence",
+        "explanation": "Correct: under independence each $n_{ij}$ is close to $E_{ij}$, so a large $\\chi^2$ points to dependence."
+      },
+      {
+        "label": "C",
+        "text": "It means the sample is too small and the test cannot be used",
+        "explanation": "The size of $\\chi^2$ measures the discrepancy, not the sample adequacy."
+      },
+      {
+        "label": "D",
+        "text": "It means observed counts match the expected counts, supporting independence",
+        "explanation": "A close match gives a small $\\chi^2$, not a large one."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Look at how $(n_{ij} - E_{ij})^2$ behaves when observed and expected differ.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "34f50bbd4976",
+    "question": "What does the lecture say about choosing a significance level $\\alpha$ of 5% versus 1%?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5% is a higher standard to reject $H_0$; 1% is a lower standard",
+        "explanation": "This is reversed; a 1% level makes rejection harder."
+      },
+      {
+        "label": "B",
+        "text": "Both levels give the same critical value for a chi-square test",
+        "explanation": "A smaller $\\alpha$ moves the critical value further into the right tail."
+      },
+      {
+        "label": "C",
+        "text": "5% is a lower standard to reject $H_0$; 1% is a higher standard",
+        "explanation": "Correct: a smaller $\\alpha$ demands stronger evidence before rejecting $H_0$."
+      },
+      {
+        "label": "D",
+        "text": "The level is chosen after seeing the p-value",
+        "explanation": "The level must be fixed in advance and the p-value compared against it."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Which level makes it harder to reject the null hypothesis?",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "85d5f1111b5a",
+    "question": "In the decision rules shown in the lecture, which quantity is the p-value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`1-chi2.cdf(chi2, df)`",
+        "explanation": "Correct: the upper-tail probability beyond the observed statistic is the p-value."
+      },
+      {
+        "label": "B",
+        "text": "`chi2.ppf(chi2, df)`",
+        "explanation": "`ppf` takes a probability and returns a quantile, so this is not the p-value."
+      },
+      {
+        "label": "C",
+        "text": "`chi2.cdf(chi2, df)`",
+        "explanation": "This is the lower-tail probability; its complement is the p-value."
+      },
+      {
+        "label": "D",
+        "text": "`chi2.ppf(0.95, df)`",
+        "explanation": "This is the 5% critical value, not a probability."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The p-value is the probability of the tail to the right of the statistic.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "aeae4f700dbd",
+    "question": "What do the observed counts in the chocolate goodness-of-fit example represent?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The expected counts under a uniform distribution",
+        "explanation": "The expected count is 16.67 for every colour; the data are the observed counts."
+      },
+      {
+        "label": "B",
+        "text": "The percentage of each colour reported by the manufacturer",
+        "explanation": "The experiment counts sweets in a pack rather than using published proportions."
+      },
+      {
+        "label": "C",
+        "text": "The number of sweets of each of six colours counted in one pack of 100",
+        "explanation": "Correct: one pack was bought and the colours counted (20, 13, 12, 12, 18, 25)."
+      },
+      {
+        "label": "D",
+        "text": "The joint counts of colour by pack across several packs",
+        "explanation": "Only one categorical column (colour) is counted, so it is a one-way table."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The lecture's experiment is: buy a pack and do counting.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "2c4ef1ce4adf",
+    "question": "In the student survey, Math has 300 students, Local has 1000 and the grand total is 1250. What is the expected count for Local Math under independence?",
+    "options": [
+      {
+        "label": "A",
+        "text": "250",
+        "explanation": "250 is the observed Local Math count, not the expected count."
+      },
+      {
+        "label": "B",
+        "text": "60",
+        "explanation": "60 is the expected Foreign Math count, $300 \\times 250/1250$."
+      },
+      {
+        "label": "C",
+        "text": "300",
+        "explanation": "300 is the Math row total before it is split by the Local proportion."
+      },
+      {
+        "label": "D",
+        "text": "240",
+        "explanation": "Correct: $300 \\times 1000/1250 = 240$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Multiply the row total by the Local share of all students.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "276039feb3de",
+    "question": "In the student survey (Computer row total 450, Foreign column total 250, grand total 1250), what is the expected Foreign Computer count?",
+    "options": [
+      {
+        "label": "A",
+        "text": "360",
+        "explanation": "360 is the expected Local Computer count, using the 1000 Local total."
+      },
+      {
+        "label": "B",
+        "text": "50",
+        "explanation": "50 is the observed Foreign Computer count."
+      },
+      {
+        "label": "C",
+        "text": "112.5",
+        "explanation": "This splits 450 in a 1:3 ratio instead of the 250:1250 share."
+      },
+      {
+        "label": "D",
+        "text": "90",
+        "explanation": "Correct: $450 \\times 250/1250 = 90$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Foreign students make up 250 of the 1250 students.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "20ab3b86acc6",
+    "question": "In the student survey, the Foreign Literature cell has observed 150 and expected 100. What is its contribution to $\\chi^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "25",
+        "explanation": "Correct: $(150-100)^2/100 = 2500/100 = 25$."
+      },
+      {
+        "label": "B",
+        "text": "16.67",
+        "explanation": "This divides by the observed count 150 instead of the expected count 100."
+      },
+      {
+        "label": "C",
+        "text": "50",
+        "explanation": "This is the raw difference, before squaring and dividing by the expected count."
+      },
+      {
+        "label": "D",
+        "text": "0.5",
+        "explanation": "This divides the difference by the expected count without squaring it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Square the difference, then divide by the expected count.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "becd660e3201",
+    "question": "For the student survey, which result matches `stats.chi2_contingency(Ft)` with `Ft = np.array([[250, 50], [400, 50], [350, 150]])`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "statistic ≈ 5.991, p-value = 0.05, dof = 2",
+        "explanation": "5.991 is the critical value at 5%, not the observed statistic."
+      },
+      {
+        "label": "B",
+        "text": "statistic ≈ 8.36, p-value ≈ 0.1374, dof = 2",
+        "explanation": "These are the chocolate goodness-of-fit numbers, not the student survey's."
+      },
+      {
+        "label": "C",
+        "text": "statistic ≈ 55.56, p-value ≈ $8.6 \\times 10^{-13}$, dof = 5",
+        "explanation": "With 3 rows and 2 columns the degrees of freedom are $(3-1)(2-1)=2$."
+      },
+      {
+        "label": "D",
+        "text": "statistic ≈ 55.56, p-value ≈ $8.6 \\times 10^{-13}$, dof = 2",
+        "explanation": "Correct: this is the output shown on the slide, with expected counts [[240, 60], [360, 90], [400, 100]]."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "A 3×2 table gives the degrees of freedom; the statistic is far beyond 5.991.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "896fc31d26ca",
+    "question": "The student survey gives $\\chi^2 \\approx 55.56$ with 2 degrees of freedom. At $\\alpha = 0.05$ (critical value 5.991), what is the conclusion?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The test is inconclusive because the statistic exceeds the critical value",
+        "explanation": "Exceeding the critical value is exactly the condition for rejecting $H_0$."
+      },
+      {
+        "label": "B",
+        "text": "Do not reject $H_0$: origin and subject choice are independent",
+        "explanation": "The statistic exceeds the critical value, so $H_0$ is rejected."
+      },
+      {
+        "label": "C",
+        "text": "Reject $H_0$: the subject choices are equally likely",
+        "explanation": "That would be a goodness-of-fit conclusion; this test is about independence."
+      },
+      {
+        "label": "D",
+        "text": "Reject $H_0$: origin and subject choice are related",
+        "explanation": "Correct: $55.56 > 5.991$, so the evidence of dependence is strong."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Compare the statistic with the critical value.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f6724bc45673",
+    "question": "A table has 3 rows and 2 columns. Using the chi-square table with $\\alpha = 5\\%$, what is the critical value for the independence test?",
+    "options": [
+      {
+        "label": "A",
+        "text": "11.071",
+        "explanation": "11.071 is the 5% critical value for $\\nu = 5$."
+      },
+      {
+        "label": "B",
+        "text": "3.841",
+        "explanation": "3.841 is the 5% critical value for $\\nu = 1$."
+      },
+      {
+        "label": "C",
+        "text": "5.991",
+        "explanation": "Correct: $\\nu = (3-1)(2-1) = 2$, and the 5% critical value for $\\nu = 2$ is 5.991."
+      },
+      {
+        "label": "D",
+        "text": "9.210",
+        "explanation": "9.210 is the critical value for $\\nu = 2$ at the 1% level."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "First work out the degrees of freedom.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "d080b9216f18",
+    "question": "In the chocolate example, 100 sweets are split over 6 colours. What is the expected count per colour under $H_0$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "20",
+        "explanation": "20 is the observed yellow count, not the uniform expectation."
+      },
+      {
+        "label": "B",
+        "text": "16.67",
+        "explanation": "Correct: $100/6 = 16.67$ for each colour."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "explanation": "6 is the number of colours, not the expected count."
+      },
+      {
+        "label": "D",
+        "text": "100",
+        "explanation": "100 is the total; it must be divided evenly across the colours."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Under a uniform distribution each colour gets the same share of the total.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "b45c9f3f9fb7",
+    "question": "The chocolate example yields `statistic=8.36, pvalue=0.1374`. At $\\alpha = 0.05$, what is the correct conclusion?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$ is not rejected; we cannot reject that the colours are uniform",
+        "explanation": "Correct: $0.1374 > 0.05$ (and $8.36 < 11.071$), so the evidence against uniformity is insufficient."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$ is rejected; the colours are not uniformly distributed",
+        "explanation": "The p-value is larger than $\\alpha$, so $H_0$ is not rejected."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$ is accepted; the colours are proven to be uniform",
+        "explanation": "Not rejecting $H_0$ does not prove it; we only lack evidence against it."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$ is rejected because 8.36 is larger than 5",
+        "explanation": "The statistic must be compared with the critical value 11.071, not an arbitrary number."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare the p-value with $\\alpha$, and be careful about what 'not rejected' means.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "4e0599c517ef",
+    "question": "In the chocolate example (counts 20, 13, 12, 12, 18, 25; $E_i = 16.67$), which colour contributes most to $\\chi^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Green, about 4.17",
+        "explanation": "Correct: $(25-16.67)^2/16.67 \\approx 4.17$, the largest deviation from 16.67."
+      },
+      {
+        "label": "B",
+        "text": "Yellow, about 0.67",
+        "explanation": "Yellow's count 20 is only 3.33 above the expected value."
+      },
+      {
+        "label": "C",
+        "text": "Blue, about 0.11",
+        "explanation": "Blue's 18 is close to 16.67, so it contributes very little."
+      },
+      {
+        "label": "D",
+        "text": "Orange, about 1.31",
+        "explanation": "Orange's deviation of 4.67 is smaller than Green's 8.33."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The largest squared deviation from 16.67 dominates.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "45b78fd8e030",
+    "question": "With `pd.cut(x, bins=[0, 35, 55, float(\"inf\")], labels=[\"young\", \"middle\", \"senior\"])`, how is the age 35 labelled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`NaN`, because 35 is a bin edge",
+        "explanation": "An edge value is still assigned to the bin whose right edge it is."
+      },
+      {
+        "label": "B",
+        "text": "young",
+        "explanation": "Correct: the bins are right-closed, so $(0, 35]$ includes 35."
+      },
+      {
+        "label": "C",
+        "text": "senior",
+        "explanation": "Senior covers ages above 55."
+      },
+      {
+        "label": "D",
+        "text": "middle",
+        "explanation": "The middle bin is $(35, 55]$, which excludes 35."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "By default `pd.cut` includes the right edge of each bin.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "a8f9da9b52a0",
+    "question": "Which Python call gives the 5% critical value of the chi-square distribution with 2 degrees of freedom (5.991)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`scipy.stats.chi2.ppf(0.95, 2)`",
+        "explanation": "Correct: `ppf` returns the 95% quantile, which is the 5% upper-tail critical value."
+      },
+      {
+        "label": "B",
+        "text": "`scipy.stats.chi2.cdf(0.95, 2)`",
+        "explanation": "`cdf` takes a statistic value and returns a probability, not a quantile."
+      },
+      {
+        "label": "C",
+        "text": "`scipy.stats.chi2.cdf(5.991, 2)`",
+        "explanation": "This returns the probability 0.95, not the critical value itself."
+      },
+      {
+        "label": "D",
+        "text": "`scipy.stats.chi2.ppf(0.05, 2)`",
+        "explanation": "This is the 5% quantile, in the left tail, not the critical value."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "You need a quantile, so use the inverse of the CDF.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "c31999f7541a",
+    "question": "Which call runs the chi-square goodness-of-fit test on the chocolate counts `Ft = np.array([20, 13, 12, 12, 18, 25])`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.chisquare(Ft)`",
+        "explanation": "Correct: `stats.chisquare` tests one-way counts, by default against equal expected frequencies."
+      },
+      {
+        "label": "B",
+        "text": "`pd.crosstab(Ft)`",
+        "explanation": "`crosstab` builds a frequency table from raw columns; it does not run a test."
+      },
+      {
+        "label": "C",
+        "text": "`stats.chi2.ppf(0.95, 5)`",
+        "explanation": "This only gives the critical value 11.071, not a test on the data."
+      },
+      {
+        "label": "D",
+        "text": "`stats.chi2_contingency(Ft)`",
+        "explanation": "`chi2_contingency` is for two-way contingency tables in the independence test."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The data are a single column of counts.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "a0cc4256998c",
+    "question": "Which statement is NOT equivalent to rejecting $H_0$ at the 5% level in a chi-square test with 2 degrees of freedom?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`1-chi2.cdf(chi2, 2) < 0.05`",
+        "explanation": "This is equivalent: the p-value is below 0.05."
+      },
+      {
+        "label": "B",
+        "text": "`chi2.cdf(chi2, 2) > 0.95`",
+        "explanation": "This is equivalent: the statistic lies beyond the 95% quantile."
+      },
+      {
+        "label": "C",
+        "text": "`chi2 > chi2.ppf(0.95, 2)`",
+        "explanation": "This is equivalent: the statistic exceeds the critical value."
+      },
+      {
+        "label": "D",
+        "text": "`chi2.cdf(chi2, 2) < 0.05`",
+        "explanation": "Correct: this tests the lower tail; rejection requires the CDF to exceed 0.95."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Chi-square tests reject in the right tail.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "f5121c62b5ce",
+    "question": "Researchers survey students and record origin (Local/Foreign) and first subject choice (Math/Computer/Literature). Which call tests whether the two are related?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.chisquare(pd.Series(y).value_counts())`",
+        "explanation": "This tests whether subject choices are uniform and ignores origin."
+      },
+      {
+        "label": "B",
+        "text": "`stats.chi2.ppf(0.95, 2)`",
+        "explanation": "This only returns a critical value; it does not use the data."
+      },
+      {
+        "label": "C",
+        "text": "`stats.chi2_contingency(pd.crosstab(pd.Series(x), pd.Series(y)))`",
+        "explanation": "Correct: two categorical columns are cross-tabulated and passed to the independence test."
+      },
+      {
+        "label": "D",
+        "text": "`pd.Series(x).value_counts()`",
+        "explanation": "This builds a one-way frequency table and performs no test."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Two categorical columns call for a contingency-table test.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "c14682f50b1d",
+    "question": "Which call produces the frequency of each rating in `x = [\"G\", \"B\", \"G\", \"A\", \"A\", \"B\", \"A\", \"G\", \"A\", \"B\"]`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pd.crosstab(pd.Series(x), pd.Series(y))`",
+        "explanation": "`crosstab` gives joint frequencies of two columns, not counts of one."
+      },
+      {
+        "label": "B",
+        "text": "`pd.Series(x).value_counts()`",
+        "explanation": "Correct: `value_counts` counts each category, giving A 4, G 3, B 3."
+      },
+      {
+        "label": "C",
+        "text": "`pd.cut(x, bins=3)`",
+        "explanation": "`pd.cut` bins numerical values; the ratings are already categorical."
+      },
+      {
+        "label": "D",
+        "text": "`stats.chisquare(x)`",
+        "explanation": "`chisquare` runs a test on counts; it does not tabulate raw labels."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "You only need a one-way table.",
+    "course": "COM6005",
+    "unit": "Module_3B",
+    "deck": "COM6005_Module_3B"
+  },
+  {
+    "id": "69b39b53303d",
+    "question": "Which condition is listed in the lecture as making a problem suitable for simple linear regression?",
+    "options": [
+      {
+        "label": "A",
+        "text": "There are several predictors and $Y$ is categorical",
+        "explanation": "A categorical response and several predictors fall outside simple linear regression."
+      },
+      {
+        "label": "B",
+        "text": "$X$ is categorical and $Y$ is continuous with no visible trend",
+        "explanation": "Both variables must be numerical and continuous, and the scatter should look linear."
+      },
+      {
+        "label": "C",
+        "text": "The scatter plot of $X$ and $Y$ shows a clear U-shaped curve",
+        "explanation": "A curved pattern means the relationship is not linear, which is when regression fails."
+      },
+      {
+        "label": "D",
+        "text": "There is only one predictor and both $X$ and $Y$ are numerical and continuous",
+        "explanation": "Correct: the lecture requires $p = 1$, continuous numerical $X$ and $Y$, and ideally a straight-line scatter plot."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Think about the number of predictors and the type of variables.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "46d1cd0feb7b",
+    "question": "What does OLS choose $\\hat{a}$ and $\\hat{b}$ to minimise?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The sum of absolute errors $\\sum_{t=1}^{n} |Y_t - a - b X_t|$",
+        "explanation": "Absolute errors give least-absolute-deviation regression, not OLS."
+      },
+      {
+        "label": "B",
+        "text": "The sum of the raw errors $\\sum_{t=1}^{n} (Y_t - a - b X_t)$",
+        "explanation": "Raw errors cancel out, so their sum cannot be a sensible objective to minimise."
+      },
+      {
+        "label": "C",
+        "text": "The sum of squared errors $\\sum_{t=1}^{n} (Y_t - a - b X_t)^2$",
+        "explanation": "Correct: Ordinary Least Squares minimises the sum of squared vertical errors."
+      },
+      {
+        "label": "D",
+        "text": "The largest single error $\\max_t |Y_t - a - b X_t|$",
+        "explanation": "Minimising the worst error is a minimax criterion, not least squares."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The method's name tells you what kind of error is used.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "3aaac5730543",
+    "question": "In the formula `smf.ols('fuel~dlic', data=fueldata)`, which statement is true?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`fuel` is the dependent variable and `dlic` is the predictor",
+        "explanation": "Correct: the variable left of `~` is $Y$ and the right side lists the predictors."
+      },
+      {
+        "label": "B",
+        "text": "`dlic` is the dependent variable and `fuel` is the predictor",
+        "explanation": "This reverses the roles; the response always sits on the left of `~`."
+      },
+      {
+        "label": "C",
+        "text": "Both `fuel` and `dlic` are predictors of an unnamed response",
+        "explanation": "The formula has exactly one response, written before `~`."
+      },
+      {
+        "label": "D",
+        "text": "`fuel~dlic` means `fuel` minus `dlic`",
+        "explanation": "The tilde separates the response from the predictors; it is not subtraction."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Look at which side of the tilde each name is on.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "f4cded1b796f",
+    "question": "The fuel model is $\\hat{Y} = -227.3091 + 14.0984 X$ with $X$ = `dlic`. What is the predicted fuel consumption when `dlic` = 50?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 704.92",
+        "explanation": "This is only $14.0984 \\times 50$; the negative intercept has been left out."
+      },
+      {
+        "label": "B",
+        "text": "About 932.23",
+        "explanation": "This adds $227.3091$ instead of subtracting it."
+      },
+      {
+        "label": "C",
+        "text": "About 477.61",
+        "explanation": "Correct: $-227.3091 + 14.0984 \\times 50 = -227.3091 + 704.92 = 477.61$."
+      },
+      {
+        "label": "D",
+        "text": "About 618.59",
+        "explanation": "This is the prediction for `dlic` = 60, not 50."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Substitute into the fitted line and keep the sign of the intercept.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "da71c6d9c465",
+    "question": "In the fuel model $\\hat{Y} = -227.3091 + 14.0984 X$, what is the correct reading of the slope?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fuel consumption is 14.10 when `dlic` is zero",
+        "explanation": "The value of $\\hat{Y}$ at $X = 0$ is the intercept, $-227.31$, not the slope."
+      },
+      {
+        "label": "B",
+        "text": "Each one-unit increase in fuel raises `dlic` by about 14.10",
+        "explanation": "The slope describes $Y$ responding to $X$, not the reverse."
+      },
+      {
+        "label": "C",
+        "text": "`dlic` explains 14.10% of the variation in fuel consumption",
+        "explanation": "The share of variation explained is $R^2$ (0.489 here), not the slope."
+      },
+      {
+        "label": "D",
+        "text": "Each one-unit increase in `dlic` raises predicted fuel consumption by about 14.10",
+        "explanation": "Correct: the slope is the change in the predicted $Y$ per one-unit change in $X$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "A slope is a rate of change of the response.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "7546639faaf3",
+    "question": "The fuel model summary shows $R^2 = 0.489$. What does this mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The predictions are correct for 48.9% of the states",
+        "explanation": "$R^2$ measures explained variation, not the fraction of exactly correct predictions."
+      },
+      {
+        "label": "B",
+        "text": "About 48.9% of the variation in fuel consumption is explained by `dlic`",
+        "explanation": "Correct: $R^2$ is the proportion of the variation in $Y$ explained by the model."
+      },
+      {
+        "label": "C",
+        "text": "The slope of the fitted line is 0.489",
+        "explanation": "The slope is 14.0984; $R^2$ is a separate goodness-of-fit measure."
+      },
+      {
+        "label": "D",
+        "text": "There is a 48.9% probability that the model is correct",
+        "explanation": "$R^2$ is not a probability statement about the model being true."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Recall that $R^2 = 1 - RSS/TSS$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "3c9f25a735b3",
+    "question": "In the fuel model output, `dlic` has coef 14.0984 and std err 2.127. What is its t statistic?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 6.63",
+        "explanation": "Correct: $t = 14.0984 / 2.127 \\approx 6.63$, matching the summary's 6.629."
+      },
+      {
+        "label": "B",
+        "text": "About 29.99",
+        "explanation": "This multiplies the coefficient by its standard error instead of dividing."
+      },
+      {
+        "label": "C",
+        "text": "About 0.15",
+        "explanation": "This divides the standard error by the coefficient, which inverts the statistic."
+      },
+      {
+        "label": "D",
+        "text": "About 43.94",
+        "explanation": "43.94 is the F-statistic, which equals $t^2$ in simple regression."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "A t statistic is an estimate divided by its standard error.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "1933017ab6ce",
+    "question": "In the fuel model summary, the `dlic` row shows P>|t| = 0.000 and a 95% CI of [9.817, 18.380]. What should you conclude?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fail to reject $H_0: \\beta_1 = 0$ because the interval is wide",
+        "explanation": "Width does not matter here; what matters is that the interval excludes zero."
+      },
+      {
+        "label": "B",
+        "text": "Reject $H_0: \\beta_1 = 0$; `dlic` has a significant linear association with fuel",
+        "explanation": "Correct: the tiny p-value and a CI that excludes zero both reject a zero slope."
+      },
+      {
+        "label": "C",
+        "text": "The slope is exactly 9.817 with 95% probability",
+        "explanation": "The interval gives a range of plausible slopes, not a single value with that probability."
+      },
+      {
+        "label": "D",
+        "text": "The intercept is significant at the 5% level",
+        "explanation": "The intercept's p-value is 0.069, which is above 0.05."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Check whether zero lies inside the confidence interval.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "7b56950bcfbf",
+    "question": "For the three points (1, 2), (2, 3), (3, 5), with a column of ones in $X$, what is $X^T X$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\begin{bmatrix} 3 & 6 \\\\ 6 & 12 \\end{bmatrix}$",
+        "explanation": "The bottom-right entry is $\\sum x^2 = 14$, not $2 \\sum x$."
+      },
+      {
+        "label": "B",
+        "text": "$\\begin{bmatrix} 10 \\\\ 23 \\end{bmatrix}$",
+        "explanation": "This is $X^T Y$, not $X^T X$."
+      },
+      {
+        "label": "C",
+        "text": "$\\begin{bmatrix} 3 & 6 \\\\ 6 & 14 \\end{bmatrix}$",
+        "explanation": "Correct: the entries are $n = 3$, $\\sum x = 6$ and $\\sum x^2 = 1 + 4 + 9 = 14$."
+      },
+      {
+        "label": "D",
+        "text": "$\\begin{bmatrix} 1 & 2 \\\\ 2 & 3 \\end{bmatrix}$",
+        "explanation": "$X^T X$ sums over all three rows; it is not built from a single data point."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Each entry of $X^T X$ is a sum over the three rows of $X$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "754fb0efbeac",
+    "question": "Using the matrix method on the points (1, 2), (2, 3), (3, 5), what is the fitted OLS line?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{Y} = 1.5 + 0.333 X$",
+        "explanation": "The intercept and slope have been swapped."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{Y} = 0.333 + 1.5 X$",
+        "explanation": "Correct: $\\hat{\\beta} = (X^T X)^{-1} X^T Y = (1/3, 3/2)$."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{Y} = 0 + 1.667 X$",
+        "explanation": "Forcing the line through the origin is not what OLS with an intercept column does."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{Y} = 0.5 + 1.5 X$",
+        "explanation": "The slope is right, but the intercept is $\\bar{Y} - 1.5 \\bar{X} = 10/3 - 3 = 1/3$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Invert $\\begin{bmatrix} 3 & 6 \\\\ 6 & 14 \\end{bmatrix}$ and multiply by $X^T Y$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "07262e826b7f",
+    "question": "Which equation gives the OLS estimator for multiple linear regression in matrix form?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{\\beta} = (X X^T)^{-1} X Y$",
+        "explanation": "The transposes are in the wrong places, so the dimensions do not even match."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{\\beta} = (X^T X)^{-1} X^T Y$",
+        "explanation": "Correct: setting the gradient $-2X^T Y + 2X^T X \\beta$ to zero yields this solution."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{\\beta} = X^{-1} Y$",
+        "explanation": "$X$ is usually not square, so it has no ordinary inverse."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{\\beta} = (X^T Y)^{-1} X^T X$",
+        "explanation": "This inverts the wrong matrix; $X^T X$ is the one that must be inverted."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "It comes from the Normal Equations $X^T X \\hat{\\beta} = X^T Y$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "c01b21a6e5e8",
+    "question": "For the points (1, 2), (2, 3), (3, 5) the fitted values are 1.833, 3.333 and 4.833, and $\\bar{Y} = 3.333$. What is $R^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 0.036",
+        "explanation": "This is $RSS/TSS$; $R^2$ is one minus that ratio."
+      },
+      {
+        "label": "B",
+        "text": "About 0.167",
+        "explanation": "0.1667 is the residual SS itself, not $R^2$."
+      },
+      {
+        "label": "C",
+        "text": "About 4.5",
+        "explanation": "4.5 is the explained SS; $R^2$ always lies between 0 and 1."
+      },
+      {
+        "label": "D",
+        "text": "About 0.964",
+        "explanation": "Correct: $RSS = 0.1667$, $TSS = 4.667$, so $R^2 = 1 - 0.1667/4.667 \\approx 0.964$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Compute the residual and total sums of squares first.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "32eaaf73d05e",
+    "question": "Which relationship between the sums of squares holds for a least-squares fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Residual SS = Total SS + Explained SS",
+        "explanation": "The residual SS is the smallest piece, not the sum of the other two."
+      },
+      {
+        "label": "B",
+        "text": "Explained SS = Total SS × Residual SS",
+        "explanation": "The decomposition is additive, not multiplicative."
+      },
+      {
+        "label": "C",
+        "text": "Total SS = Explained SS + Residual SS",
+        "explanation": "Correct: the total variation splits into the part the model explains and the residual part."
+      },
+      {
+        "label": "D",
+        "text": "Total SS = Explained SS − Residual SS",
+        "explanation": "Subtracting the residual SS would make the total smaller than the explained part."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "$R^2 = 1 - RSS/TSS$ relies on this decomposition.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "7e75dfeb7ecd",
+    "question": "The savings model is $\\widehat{sr} = 7.0566 + 1.3050 \\, \\text{pop75} - 0.0003 \\, \\text{dpi}$. What is the predicted `sr` for `pop75` = 3 and `dpi` = 2000?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 10.37",
+        "explanation": "Correct: $7.0566 + 1.305 \\times 3 - 0.0003 \\times 2000 = 7.0566 + 3.915 - 0.6 = 10.37$."
+      },
+      {
+        "label": "B",
+        "text": "About 11.57",
+        "explanation": "This adds the `dpi` term instead of subtracting it."
+      },
+      {
+        "label": "C",
+        "text": "About 10.97",
+        "explanation": "This leaves out the `dpi` term entirely."
+      },
+      {
+        "label": "D",
+        "text": "About 7.76",
+        "explanation": "This multiplies `pop75` by 1 rather than by 3."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Watch the sign of the `dpi` coefficient.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "f8b960fc876c",
+    "question": "In the savings model, `pop75` has coef 1.3050, p-value 0.100 and 95% CI [−0.259, 2.869]. Which conclusion is correct at the 5% level?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pop75` is significant, because its coefficient is larger than 1",
+        "explanation": "Significance depends on the estimate relative to its standard error, not on its size."
+      },
+      {
+        "label": "B",
+        "text": "`pop75` is significant, because the CI's upper limit is positive",
+        "explanation": "An interval that spans zero means a zero coefficient is still plausible."
+      },
+      {
+        "label": "C",
+        "text": "`pop75` is not significant, because the p-value exceeds 0.05 and the CI contains zero",
+        "explanation": "Correct: both the p-value and the interval fail to rule out $\\beta = 0$."
+      },
+      {
+        "label": "D",
+        "text": "`pop75` has no effect at all on `sr`, so its coefficient is exactly zero",
+        "explanation": "Failing to reject $H_0$ is not proof the coefficient is zero; the estimate is 1.305."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Compare the p-value with 0.05 and look for zero in the interval.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "73de8a4ccef0",
+    "question": "Why can a bigger regression model be worse even though its in-sample RMSE is lower?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Its out-of-sample RMSE on unseen test data can be higher",
+        "explanation": "Correct: extra predictors always help on seen data, but can hurt prediction of unseen data."
+      },
+      {
+        "label": "B",
+        "text": "Adding predictors always increases the in-sample RMSE",
+        "explanation": "The lecture states the opposite: the bigger model always wins in-sample."
+      },
+      {
+        "label": "C",
+        "text": "A bigger model always has a lower AIC and BIC",
+        "explanation": "AIC and BIC penalise extra parameters, so a bigger model can score worse."
+      },
+      {
+        "label": "D",
+        "text": "A bigger model cannot be fitted with `smf.ols`",
+        "explanation": "`smf.ols` fits any number of predictors joined with `+`."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about data the model has never seen.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "3f86f1f47eed",
+    "question": "When comparing a small and a big savings model with AIC and BIC, which model should be preferred?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The one with the higher AIC/BIC",
+        "explanation": "Higher values indicate a worse trade-off between fit and complexity."
+      },
+      {
+        "label": "B",
+        "text": "The one with the lower AIC/BIC",
+        "explanation": "Correct: the lecture states that lower AIC/BIC is better."
+      },
+      {
+        "label": "C",
+        "text": "Always the one with more predictors",
+        "explanation": "More predictors do not guarantee better out-of-sample performance."
+      },
+      {
+        "label": "D",
+        "text": "The one with the lower in-sample RMSE",
+        "explanation": "In-sample RMSE always favours the bigger model, so it is not useful for choosing."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "These criteria penalise complexity.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "7fbb94f667f4",
+    "question": "In the test-set code, `bias = np.mean(pre_val - act_val)` comes out clearly positive. What does that indicate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The model systematically under-estimates the response",
+        "explanation": "Under-estimation would make predicted minus actual negative on average."
+      },
+      {
+        "label": "B",
+        "text": "The model's RMSE must be zero",
+        "explanation": "A non-zero bias implies non-zero errors, so the RMSE cannot be zero."
+      },
+      {
+        "label": "C",
+        "text": "The model systematically over-estimates the response",
+        "explanation": "Correct: predicted minus actual is positive on average, so predictions run too high."
+      },
+      {
+        "label": "D",
+        "text": "The residuals are heteroscedastic",
+        "explanation": "Bias measures the average error, not whether the error variance changes."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Check the order of the subtraction.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "09c7f5d76c14",
+    "question": "A residuals-vs-fitted plot shows the spread of residuals widening like a funnel as the fitted values increase. What does this indicate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Heteroscedasticity: the error variance is not constant",
+        "explanation": "Correct: a funnel or cone shape means the variance changes with the fitted values."
+      },
+      {
+        "label": "B",
+        "text": "Positive autocorrelation between consecutive errors",
+        "explanation": "Autocorrelation is checked with the lag plot of $e_i$ against $e_{i-1}$."
+      },
+      {
+        "label": "C",
+        "text": "Residuals that are perfectly normal",
+        "explanation": "Normality is judged from the Q-Q plot or histogram, and a funnel violates an assumption."
+      },
+      {
+        "label": "D",
+        "text": "A model that fits perfectly with $R^2 = 1$",
+        "explanation": "A perfect fit would leave every residual at zero, with no spread at all."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Look at how the vertical spread changes, not its centre.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "9c15b2c650e1",
+    "question": "Which diagnostic plot from the lecture checks for first-order (lag-1) autocorrelation of the residuals?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The Q-Q plot of the residuals",
+        "explanation": "The Q-Q plot checks normality, not dependence between successive errors."
+      },
+      {
+        "label": "B",
+        "text": "The residual histogram with 20 bins",
+        "explanation": "The histogram shows the shape of the residual distribution, not their ordering."
+      },
+      {
+        "label": "C",
+        "text": "The scatter plot of $Y$ against $X$",
+        "explanation": "This shows whether the relationship looks linear, not whether errors are correlated."
+      },
+      {
+        "label": "D",
+        "text": "The lag plot of $e_i$ against $e_{i-1}$",
+        "explanation": "Correct: a linear pattern in the lag plot reveals lag-1 dependence."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Autocorrelation compares each residual with its predecessor.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "8edc66b89a4c",
+    "question": "Which assumption does the Q-Q plot of residuals check?",
+    "options": [
+      {
+        "label": "A",
+        "text": "That the residuals are normally distributed",
+        "explanation": "Correct: points close to the diagonal support normality; bent tails suggest skewness or outliers."
+      },
+      {
+        "label": "B",
+        "text": "That the error variance is constant",
+        "explanation": "Constant variance is checked with the residuals-vs-fitted plot."
+      },
+      {
+        "label": "C",
+        "text": "That the residuals are independent over time",
+        "explanation": "Independence is checked with residuals vs index or the lag plot."
+      },
+      {
+        "label": "D",
+        "text": "That the predictors are not multicollinear",
+        "explanation": "Multicollinearity concerns the predictors, and no residual plot targets it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Q-Q compares sample quantiles with theoretical ones.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "22e87c9e7501",
+    "question": "Which call returns both a confidence interval for the mean response and an interval for a new observation at `dlic` = 50?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`model.predict(newdata)`",
+        "explanation": "`predict` returns only point predictions, without intervals."
+      },
+      {
+        "label": "B",
+        "text": "`model.params(newdata)`",
+        "explanation": "`params` is an attribute holding the coefficients; it does not take new data."
+      },
+      {
+        "label": "C",
+        "text": "`model.resid(newdata)`",
+        "explanation": "`resid` holds the training residuals; it does not produce intervals."
+      },
+      {
+        "label": "D",
+        "text": "`model.get_prediction(newdata).summary_frame(alpha=0.05)`",
+        "explanation": "Correct: `summary_frame` lists the mean CI and the wider new-observation interval."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "You need a prediction object that can be summarised.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "01e5840a75f6",
+    "question": "In a simple linear regression with $n = 48$, what degrees of freedom does the F-ratio in the ANOVA table use?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1 and 47",
+        "explanation": "47 is the Total df, $n - 1$; the denominator uses the Error df."
+      },
+      {
+        "label": "B",
+        "text": "1 and 46",
+        "explanation": "Correct: Regression has 1 df and Error has $n - 2 = 46$ df, giving $F_{1, 46}$."
+      },
+      {
+        "label": "C",
+        "text": "2 and 46",
+        "explanation": "Simple regression has only one slope, so the numerator df is 1."
+      },
+      {
+        "label": "D",
+        "text": "48 and 1",
+        "explanation": "The numerator is the Regression df and the denominator the Error df, not $n$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Regression df is the number of slopes; Error df is $n - 2$.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "46ea35b94b4a",
+    "question": "In simple linear regression, how is the standard error of the slope $\\hat{b}$ computed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{\\sigma} \\sqrt{1/n + \\bar{X}^2 / S_{XX}}$",
+        "explanation": "This is the standard error of the intercept $\\hat{a}$."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{\\sigma} / n$",
+        "explanation": "The slope's precision depends on the spread of $X$ through $S_{XX}$, not on $n$ alone."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{b} / \\hat{\\sigma}$",
+        "explanation": "This ratio is not a standard error; the t statistic divides $\\hat{b}$ by its standard error."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{\\sigma} \\sqrt{1 / S_{XX}}$",
+        "explanation": "Correct: with $S_{XX} = \\sum (X_t - \\bar{X})^2$ and $\\hat{\\sigma} = \\sqrt{SS(\\hat{a}, \\hat{b})/(n-2)}$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The more spread out $X$ is, the more precise the slope.",
+    "course": "COM6005",
+    "unit": "Module_4",
+    "deck": "COM6005_Module_4"
   }
 ]

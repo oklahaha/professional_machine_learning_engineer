@@ -1,0 +1,45 @@
+What does a BI dashboard provide?,An at-a-glance view of key performance indicators (KPIs).
+Name the three key features of Power BI listed in the lecture.,"Dashboards, reporting, and online analytical processing (OLAP)."
+"Which tool do both Excel and Power BI use to extract, transform and load (ETL) data?",The Power Query Editor.
+What engine do Excel's Power Pivot and Power BI's core share?,"VertiPaq, an in-memory, column-based analytical engine."
+What expression language do Excel and Power BI both use for calculated columns and measures?,DAX (Data Analysis Expressions).
+How does the purpose of Excel differ from that of Power BI?,Excel is for spreadsheets and calculation; Power BI is for business intelligence: interactive reports and dashboards.
+How do Excel and Power BI differ in data capacity?,Excel is limited (performance degrades around 1 million rows); Power BI is built for big data.
+How does the data model differ between Excel and Power BI?,In Excel a data model (Power Pivot) is optional; in Power BI tables and their relationships are mandatory.
+How do Excel and Power BI differ in data refresh and sharing?,Excel refreshes manually and shares files; Power BI refreshes automatically on schedules and shares via the cloud.
+What is Business Intelligence (BI)?,A technology-driven process for analysing data and presenting actionable information.
+List the five steps of the Power BI workflow in order.,"Connect, Transform, Model, Calculate, Visualize & Publish."
+Which Power BI component handles the Connect step?,"Power Query: accessing data from sources such as databases, files and web APIs."
+Which component and language handle the Transform step in Power BI?,"The Power Query Editor, using the M language: cleaning, shaping, merging and preparing data (the ETL stage)."
+What is done in the Data Model View (the Model step)?,"Defining relationships, setting data types, and creating hierarchies."
+What is DAX used for in the Power BI workflow (the Calculate step)?,Creating measures (KPIs) and calculated columns for analysis.
+Which components handle the Visualize & Publish step?,Report View and the Power BI Service: building interactive reports and sharing them with end-users.
+Why is a transactional (OLTP) schema a poor basis for BI analysis?,"It is optimized for data entry, not analysis, with many tables and complex joins."
+What is the function of OLTP (Online Transactional Processing)?,To process database transactions and record them.
+What are the requirements of an OLTP system?,"Real-time, low-latency response; ACID compliance; and high throughput of concurrent transactions."
+What is the purpose of OLAP (Online Analytical Processing)?,"Interactive data analytics: exploring data to discover interesting findings, with fast responses to each action."
+"In a star schema, what is the central table called and what does it record?",The fact table; it records what happened (e.g. Enrollment).
+What do dimension tables in a star schema provide?,"Additional context to the facts: who, what, when, where (e.g. Student, Course, Location)."
+How does a snowflake schema differ structurally from a star schema?,Its dimension tables are normalized into child dimension tables.
+What is normalization and what are its two aims?,The systematic organization of columns and tables to minimize data redundancy and improve data integrity.
+"Which schema is preferred for OLAP, and why?",The star schema: fewer joins give faster query performance.
+What is the disk-space trade-off between star and snowflake schemas?,Star uses more space (redundancy in dimensions); snowflake is more space-efficient.
+Contrast OLTP and OLAP workloads in terms of users and queries.,"OLTP: many concurrent users running simple queries that modify a few records; OLAP: few users running complex, usually read-only aggregate queries."
+Is strong (ACID) consistency necessary for OLAP?,"No; OLAP reads from a data warehouse or lake, whereas ACID is very important for OLTP."
+What is roll-up (drill-up) in OLAP?,"Aggregating data to a higher level, e.g. grades A and B combined into Pass; the reverse of drill-down."
+What is drill-down in OLAP?,"Breaking data into more detail, e.g. adding a dimension such as sex to a grade count."
+What is drill-through in OLAP?,Navigating from a summary view to a detailed report page filtered to a specific context.
+What is slicing in OLAP?,"Adding filters to focus on particular value(s) of some attribute(s), e.g. only grade A records."
+What is the difference between drill-down and slicing?,Drill-down keeps the same data source at finer detail; slicing filters out part of the data.
+Name the techniques that make VertiPaq fast.,"In-memory columnar storage, compression, multi-threading, and caching."
+What is the idea behind an OLAP data cube?,Pre-compute common intermediate results (aggregates over a known feature set $F$) so OLAP actions are answered from the cube.
+What assumptions must hold for building a data cube?,"The feature set $F$ is known and small, and its value combinations are far fewer than the database records."
+What are the limitations of data cubes?,"A new feature requires recomputing the cube, and new data needs maintenance to update it."
+"In SQL terms, what is generating a data cube equivalent to?","A group-by query over the chosen features, with a count per group."
+Compare VertiPaq and a data cube on flexibility and speed.,VertiPaq handles any query with good general speed; a cube is near-instant but only for anticipated queries.
+How can a data cube be integrated with Power BI simply?,"Load the cube's cell data instead of the raw data, so Power BI manages far fewer records."
+"Where do you import data in Power BI, and what sources were shown?","Home > Get data; databases (e.g. Microsoft SQL) and files (CSV, Excel)."
+"When an imported CSV's column headers are not recognized, how do you fix it?","In the Power Query Editor, use the first row as column names."
+"Which Power Query feature joins tables, and where is it?","Merge Queries, under Home > Combine > Merge Queries."
+What does a Left Anti Join return?,Records in A that have no match in B.
+What does a Left Outer Join return?,"All records of A, with matching B values or nulls where there is no match."

@@ -1,0 +1,45 @@
+"In simple linear regression $Y = \beta_0 + \beta_1 X_1 + \text{error}$, how many predictors are there?",Exactly one ($p = 1$).
+What conditions make a problem suitable for simple linear regression?,"One predictor, both $X$ and $Y$ numerical and continuous, and a scatter plot of $X$ vs $Y$ that (ideally) looks like a straight line."
+"In regression, what are the names for $Y$ and $X$?",$Y$ is the dependent variable / response / predicted target; $X$ is the independent variable / predictor.
+"Once $\hat{a}$ and $\hat{b}$ are estimated, how is $Y$ predicted for new data where only $X$ is known?",$\hat{Y} = \hat{a} + \hat{b} X$.
+What quantity does Ordinary Least Squares (OLS) minimise in simple linear regression?,"The sum of squared errors $SS(a, b) = \sum_{t=1}^{n} (Y_t - a - b X_t)^2$."
+Which statsmodels call fits the fuel-vs-driving-licence regression using a formula?,"`model = smf.ols('fuel~dlic', data=fueldata).fit()`"
+Which model attribute holds the fitted coefficients $\hat{a}$ and $\hat{b}$?,`model.params` (they also appear in the `coef` column of `model.summary()`).
+What fitted line did the fuel consumption example produce?,"$\hat{Y} = -227.3091 + 14.0984 X$, with $X$ = `dlic`."
+How do you predict fuel consumption for `dlic` = 50 with a fitted statsmodels model?,`model.predict(pd.DataFrame({'dlic': [50]}))` — the new data's column name must match the formula.
+"In matrix form, what is the OLS estimator $\hat{\beta}$?",$\hat{\beta} = (X^T X)^{-1} X^T y$.
+Why does the design matrix $X$ have a first column of ones?,That column carries the intercept $\beta_0$.
+What are the Normal Equations of OLS?,"$X^T X \hat{\beta} = X^T y$, obtained by setting the gradient of the sum of squared residuals to zero."
+What condition on the design matrix makes $X^T X$ invertible?,"$X$ has full column rank, i.e. no perfect multicollinearity among the independent variables."
+"For the points (1, 2), (2, 3), (3, 5), what are $X^T X$ and $X^T Y$?",$X^T X = \begin{bmatrix} 3 & 6 \\ 6 & 14 \end{bmatrix}$ and $X^T Y = \begin{bmatrix} 10 \\ 23 \end{bmatrix}$.
+"What OLS line fits the points (1, 2), (2, 3), (3, 5)?","Intercept $\hat{\beta}_0 = 1/3 \approx 0.333$, slope $\hat{\beta}_1 = 3/2 = 1.5$."
+"In `sm.OLS(endog=Y, exog=X)`, what do endog and exog mean?",Endogenous = dependent variable ($Y$); exogenous = independent variable(s) ($X$).
+What does $R^2$ describe?,A number between 0 and 1 giving the proportion of the variation in $Y$ explained by the model.
+How is the Total SS decomposed in regression?,Total SS = Explained (Regression) SS + Residual SS.
+What is the formula for $R^2$ in terms of sums of squares?,$R^2 = 1 - \frac{RSS}{TSS}$ (Residual SS over Total SS).
+What does $R^2 = 1$ mean?,"A perfect fit: every point lies on the fitted line, so the residual SS is zero."
+Name the two broad ways a linear regression can fail.,"The relationship does not look linear, or the residuals are not i.i.d. normal."
+"What does the ""identically distributed"" assumption require of the errors?","$\text{Var}(\text{error})$ is constant, depending on neither the fitted values nor the time/index; otherwise there is heteroskedasticity."
+Which visual check and which rigorous test are named for residual normality?,"The QQ-plot (intuitive) and the Anderson-Darling test (rigorous, not covered)."
+"What does the residuals-vs-fitted plot check, and what is the ideal pattern?","Linearity and constant variance; ideally a random, uniform cloud centred on zero."
+"In a residuals-vs-fitted plot, what do a U-shape and a funnel shape indicate?",A U-shape indicates non-linearity; a funnel/cone indicates heteroscedasticity.
+What does plotting residuals against observation order (index) check?,"Independence: trends, cycles or clusters mean observation order is influencing the errors."
+What does the lag plot of $e_i$ vs $e_{i-1}$ check?,"First-order (lag-1) autocorrelation; a positive slope means positive autocorrelation, a negative slope negative autocorrelation."
+"In a Q-Q plot of residuals, what is the ideal pattern?","Points close to a straight diagonal line; deviation at the ends (heavy tails, S-curves) suggests skewness or outliers."
+What is the multiple linear regression model?,$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \text{error}$.
+"When is multiple linear regression applicable, according to the lecture?","All $X$ and $Y$ are numerical and continuous, and $p$ is small relative to $n$ ($p > 10$ can be very problematic)."
+How do you write a multiple regression formula with several predictors in `smf.ols`?,"Join them with `+`, e.g. `smf.ols('sr~pop75+dpi', data=savings).fit()`."
+How does the lecture measure prediction ability?,"Split data into training and test sets (e.g. 70/30), fit on training, predict the test $Y$, and compare with bias and (root) mean squared error."
+What is the difference between in-sample and out-of-sample prediction?,"In-sample predicts the training data the model has seen; out-of-sample predicts the unseen test data, which is the model's real purpose."
+"How is bias computed in the savings test-set code, and what does its sign mean?",`np.mean(pre_val - act_val)`; it shows whether the model systematically over- (positive) or under-estimates (negative).
+How is the test RMSE computed in the lecture code?,"`np.sqrt(mean_squared_error(act_val, pre_val))`, using `sklearn.metrics`."
+Is a bigger model always better than a smaller one?,On in-sample RMSE yes (but that is useless); on out-of-sample RMSE no.
+"Which criteria does the lecture use to choose between models, and which direction is better?",AIC and BIC — lower is better.
+"Which statsmodels calls give interval predictions for new data, and what intervals do they report?",`model.get_prediction(newdata).summary_frame(alpha=0.05)` — a CI for the population mean and a wider interval for a new data point.
+What is the null hypothesis of the regression ANOVA F-test?,"All regression coefficients except the intercept are zero, i.e. the model explains no more than an intercept-only mean model."
+What is the null hypothesis of the t-test on a single coefficient?,$H_0: \beta_j = 0$ — the $j$-th predictor has no effect on $Y$ given the other variables.
+"In the simple-regression ANOVA table, what are the degrees of freedom for Regression, Error and Total?","1, $n - 2$ and $n - 1$."
+"How is the F-ratio formed in simple regression, and what is it compared with?","$F = MSR/MSE$ with $MSR = SSR/1$ and $MSE = SSE/(n-2)$, compared with $F_{1, n-2, 95\%}$."
+How is the standard error of the model error $\hat{\sigma}$ estimated in simple regression?,"$\hat{\sigma} = \sqrt{\frac{1}{n-2} SS(\hat{a}, \hat{b})}$."
+What is the standard error of the slope $\hat{b}$?,"$\hat{\sigma} \sqrt{\frac{1}{S_{XX}}}$, where $S_{XX} = \sum_{t=1}^{n} (X_t - \bar{X})^2$."
+How is the t-test for the slope carried out?,"Compare $\hat{b} / \text{S.E.}(\hat{b})$ with $t_{n-2, 97.5\%}$."

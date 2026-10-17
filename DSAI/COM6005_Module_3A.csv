@@ -1,5 +1,4 @@
-"What formula is used to calculate the degrees of freedom ($
-u$) in a one-sample t-test with sample size $n$?",$\nu = n - 1$
+"What formula is used to calculate the degrees of freedom ($\nu$) in a one-sample t-test with sample size $n$?",$\nu = n - 1$
 What formula is used to calculate the test statistic $T$ in a one-sample t-test comparing sample mean $\bar{y}$ against target mean $\mu_0$?,$T = \frac{\bar{y} - \mu_0}{s / \sqrt{n}}$
 "In statistical hypothesis testing, what is the definition of a p-value?","It is the probability of obtaining a test statistic at least as extreme as the observed value, assuming the null hypothesis $H_0$ is true."
 Under what condition regarding the p-value and significance level $\alpha$ is the null hypothesis $H_0$ rejected?,$H_0$ is rejected when the p-value is strictly smaller than $\alpha$.

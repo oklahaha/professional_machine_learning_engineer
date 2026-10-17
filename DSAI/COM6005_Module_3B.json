@@ -1,0 +1,777 @@
+[
+  {
+    "question": "What does a two-way (contingency) table record?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The mean of a numerical column within each category of a second column",
+        "Explanation": "A contingency table holds counts, not means of a numerical variable."
+      },
+      {
+        "label": "B",
+        "text": "The correlation coefficient between two numerical columns",
+        "Explanation": "Correlation summarises numerical data; contingency tables count categorical combinations."
+      },
+      {
+        "label": "C",
+        "text": "The joint frequency of each combination of categories from two categorical columns",
+        "Explanation": "Correct: crossing two categorical columns and counting each combination gives the two-way table."
+      },
+      {
+        "label": "D",
+        "text": "The frequency of each category in a single categorical column",
+        "Explanation": "That is a one-way table, built from one column only."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about what 'joint' frequency means when there are two columns.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which chi-square test should be used to check whether a single categorical column follows a specified distribution, such as all categories equally likely?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Chi-square goodness-of-fit test",
+        "Explanation": "Correct: goodness-of-fit compares one-way counts against a hypothesised distribution."
+      },
+      {
+        "label": "B",
+        "text": "Chi-square test for independence",
+        "Explanation": "The independence test needs two categorical columns in a two-way table."
+      },
+      {
+        "label": "C",
+        "text": "Paired t-test",
+        "Explanation": "A paired t-test compares two related numerical samples, not category counts."
+      },
+      {
+        "label": "D",
+        "text": "One-sample t-test",
+        "Explanation": "A t-test compares a numerical mean, not category frequencies."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Count how many categorical columns are involved.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In a chi-square test for independence, which pair of hypotheses is tested?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$: the two means are equal; $H_1$: the two means differ",
+        "Explanation": "The chi-square test works on category counts, not on means."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$: the two variables are dependent; $H_1$: they are independent",
+        "Explanation": "This reverses the hypotheses; the claim needing evidence (dependence) belongs in $H_1$."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$: the categories are equally likely; $H_1$: they are not",
+        "Explanation": "That is the uniform goodness-of-fit hypothesis for one column."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$: the two variables are independent; $H_1$: they are dependent",
+        "Explanation": "Correct: the null states no relationship, and the alternative is the relationship we seek evidence for."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The null hypothesis states that there is no relationship.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Under the independence hypothesis, how is the expected count $E_{ij}$ of a cell computed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$E_{ij} = n_{i\\cdot} + n_{\\cdot j} - n_{\\cdot\\cdot}$",
+        "Explanation": "Expected counts come from multiplying margins, not adding them."
+      },
+      {
+        "label": "B",
+        "text": "$E_{ij} = \\frac{n_{i\\cdot}\\, n_{\\cdot j}}{n_{\\cdot\\cdot}}$",
+        "Explanation": "Correct: row total times column total divided by the grand total."
+      },
+      {
+        "label": "C",
+        "text": "$E_{ij} = \\frac{n_{\\cdot\\cdot}}{r \\times c}$",
+        "Explanation": "Splitting the grand total equally ignores the row and column totals."
+      },
+      {
+        "label": "D",
+        "text": "$E_{ij} = \\frac{n_{ij}\\, n_{\\cdot\\cdot}}{n_{i\\cdot}}$",
+        "Explanation": "This uses the observed cell count, which the expected count must not depend on."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Distribute each row total across columns in the overall column proportions.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "What are the degrees of freedom for a chi-square test for independence on a table with r rows and c columns?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$rc - 1$",
+        "Explanation": "Subtracting one from the cell count is not the independence-test rule."
+      },
+      {
+        "label": "B",
+        "text": "$(r-1)(c-1)$",
+        "Explanation": "Correct: this is the lecture's formula, e.g. $(3-1)(2-1)=2$."
+      },
+      {
+        "label": "C",
+        "text": "$K - 1$",
+        "Explanation": "$K-1$ is the goodness-of-fit rule for K categories in one column."
+      },
+      {
+        "label": "D",
+        "text": "$r + c - 2$",
+        "Explanation": "The row and column reductions are multiplied, not added."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Reduce the rows and columns by one each, then combine them.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "What are the degrees of freedom for a goodness-of-fit test for a uniform distribution over K categories?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(K-1)(2-1)$ with two outcome columns",
+        "Explanation": "There is only one categorical column, so the independence formula does not apply."
+      },
+      {
+        "label": "B",
+        "text": "$K$",
+        "Explanation": "One degree of freedom is lost because the counts must sum to the total."
+      },
+      {
+        "label": "C",
+        "text": "$K - 1$",
+        "Explanation": "Correct: with K categories the lecture uses $K-1$, i.e. 5 for six colours."
+      },
+      {
+        "label": "D",
+        "text": "$n - 1$, where n is the total count",
+        "Explanation": "The degrees of freedom depend on the number of categories, not the sample size."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "It depends on the number of categories, not the number of observations.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which statement about a large chi-square statistic in an independence test is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It means the p-value is large, so $H_0$ is retained",
+        "Explanation": "A larger $\\chi^2$ gives a smaller upper-tail probability, not a larger one."
+      },
+      {
+        "label": "B",
+        "text": "It means observed counts are far from the expected counts, which is evidence of dependence",
+        "Explanation": "Correct: under independence each $n_{ij}$ is close to $E_{ij}$, so a large $\\chi^2$ points to dependence."
+      },
+      {
+        "label": "C",
+        "text": "It means the sample is too small and the test cannot be used",
+        "Explanation": "The size of $\\chi^2$ measures the discrepancy, not the sample adequacy."
+      },
+      {
+        "label": "D",
+        "text": "It means observed counts match the expected counts, supporting independence",
+        "Explanation": "A close match gives a small $\\chi^2$, not a large one."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at how $(n_{ij} - E_{ij})^2$ behaves when observed and expected differ.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "What does the lecture say about choosing a significance level $\\alpha$ of 5% versus 1%?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5% is a higher standard to reject $H_0$; 1% is a lower standard",
+        "Explanation": "This is reversed; a 1% level makes rejection harder."
+      },
+      {
+        "label": "B",
+        "text": "Both levels give the same critical value for a chi-square test",
+        "Explanation": "A smaller $\\alpha$ moves the critical value further into the right tail."
+      },
+      {
+        "label": "C",
+        "text": "5% is a lower standard to reject $H_0$; 1% is a higher standard",
+        "Explanation": "Correct: a smaller $\\alpha$ demands stronger evidence before rejecting $H_0$."
+      },
+      {
+        "label": "D",
+        "text": "The level is chosen after seeing the p-value",
+        "Explanation": "The level must be fixed in advance and the p-value compared against it."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Which level makes it harder to reject the null hypothesis?",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the decision rules shown in the lecture, which quantity is the p-value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`1-chi2.cdf(chi2, df)`",
+        "Explanation": "Correct: the upper-tail probability beyond the observed statistic is the p-value."
+      },
+      {
+        "label": "B",
+        "text": "`chi2.ppf(chi2, df)`",
+        "Explanation": "`ppf` takes a probability and returns a quantile, so this is not the p-value."
+      },
+      {
+        "label": "C",
+        "text": "`chi2.cdf(chi2, df)`",
+        "Explanation": "This is the lower-tail probability; its complement is the p-value."
+      },
+      {
+        "label": "D",
+        "text": "`chi2.ppf(0.95, df)`",
+        "Explanation": "This is the 5% critical value, not a probability."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The p-value is the probability of the tail to the right of the statistic.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "What do the observed counts in the chocolate goodness-of-fit example represent?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The expected counts under a uniform distribution",
+        "Explanation": "The expected count is 16.67 for every colour; the data are the observed counts."
+      },
+      {
+        "label": "B",
+        "text": "The percentage of each colour reported by the manufacturer",
+        "Explanation": "The experiment counts sweets in a pack rather than using published proportions."
+      },
+      {
+        "label": "C",
+        "text": "The number of sweets of each of six colours counted in one pack of 100",
+        "Explanation": "Correct: one pack was bought and the colours counted (20, 13, 12, 12, 18, 25)."
+      },
+      {
+        "label": "D",
+        "text": "The joint counts of colour by pack across several packs",
+        "Explanation": "Only one categorical column (colour) is counted, so it is a one-way table."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The lecture's experiment is: buy a pack and do counting.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the student survey, Math has 300 students, Local has 1000 and the grand total is 1250. What is the expected count for Local Math under independence?",
+    "options": [
+      {
+        "label": "A",
+        "text": "250",
+        "Explanation": "250 is the observed Local Math count, not the expected count."
+      },
+      {
+        "label": "B",
+        "text": "60",
+        "Explanation": "60 is the expected Foreign Math count, $300 \\times 250/1250$."
+      },
+      {
+        "label": "C",
+        "text": "300",
+        "Explanation": "300 is the Math row total before it is split by the Local proportion."
+      },
+      {
+        "label": "D",
+        "text": "240",
+        "Explanation": "Correct: $300 \\times 1000/1250 = 240$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Multiply the row total by the Local share of all students.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the student survey (Computer row total 450, Foreign column total 250, grand total 1250), what is the expected Foreign Computer count?",
+    "options": [
+      {
+        "label": "A",
+        "text": "360",
+        "Explanation": "360 is the expected Local Computer count, using the 1000 Local total."
+      },
+      {
+        "label": "B",
+        "text": "50",
+        "Explanation": "50 is the observed Foreign Computer count."
+      },
+      {
+        "label": "C",
+        "text": "112.5",
+        "Explanation": "This splits 450 in a 1:3 ratio instead of the 250:1250 share."
+      },
+      {
+        "label": "D",
+        "text": "90",
+        "Explanation": "Correct: $450 \\times 250/1250 = 90$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Foreign students make up 250 of the 1250 students.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the student survey, the Foreign Literature cell has observed 150 and expected 100. What is its contribution to $\\chi^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "25",
+        "Explanation": "Correct: $(150-100)^2/100 = 2500/100 = 25$."
+      },
+      {
+        "label": "B",
+        "text": "16.67",
+        "Explanation": "This divides by the observed count 150 instead of the expected count 100."
+      },
+      {
+        "label": "C",
+        "text": "50",
+        "Explanation": "This is the raw difference, before squaring and dividing by the expected count."
+      },
+      {
+        "label": "D",
+        "text": "0.5",
+        "Explanation": "This divides the difference by the expected count without squaring it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Square the difference, then divide by the expected count.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "For the student survey, which result matches `stats.chi2_contingency(Ft)` with `Ft = np.array([[250, 50], [400, 50], [350, 150]])`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "statistic ≈ 5.991, p-value = 0.05, dof = 2",
+        "Explanation": "5.991 is the critical value at 5%, not the observed statistic."
+      },
+      {
+        "label": "B",
+        "text": "statistic ≈ 8.36, p-value ≈ 0.1374, dof = 2",
+        "Explanation": "These are the chocolate goodness-of-fit numbers, not the student survey's."
+      },
+      {
+        "label": "C",
+        "text": "statistic ≈ 55.56, p-value ≈ $8.6 \\times 10^{-13}$, dof = 5",
+        "Explanation": "With 3 rows and 2 columns the degrees of freedom are $(3-1)(2-1)=2$."
+      },
+      {
+        "label": "D",
+        "text": "statistic ≈ 55.56, p-value ≈ $8.6 \\times 10^{-13}$, dof = 2",
+        "Explanation": "Correct: this is the output shown on the slide, with expected counts [[240, 60], [360, 90], [400, 100]]."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "A 3×2 table gives the degrees of freedom; the statistic is far beyond 5.991.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "The student survey gives $\\chi^2 \\approx 55.56$ with 2 degrees of freedom. At $\\alpha = 0.05$ (critical value 5.991), what is the conclusion?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The test is inconclusive because the statistic exceeds the critical value",
+        "Explanation": "Exceeding the critical value is exactly the condition for rejecting $H_0$."
+      },
+      {
+        "label": "B",
+        "text": "Do not reject $H_0$: origin and subject choice are independent",
+        "Explanation": "The statistic exceeds the critical value, so $H_0$ is rejected."
+      },
+      {
+        "label": "C",
+        "text": "Reject $H_0$: the subject choices are equally likely",
+        "Explanation": "That would be a goodness-of-fit conclusion; this test is about independence."
+      },
+      {
+        "label": "D",
+        "text": "Reject $H_0$: origin and subject choice are related",
+        "Explanation": "Correct: $55.56 > 5.991$, so the evidence of dependence is strong."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare the statistic with the critical value.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "A table has 3 rows and 2 columns. Using the chi-square table with $\\alpha = 5\\%$, what is the critical value for the independence test?",
+    "options": [
+      {
+        "label": "A",
+        "text": "11.071",
+        "Explanation": "11.071 is the 5% critical value for $\\nu = 5$."
+      },
+      {
+        "label": "B",
+        "text": "3.841",
+        "Explanation": "3.841 is the 5% critical value for $\\nu = 1$."
+      },
+      {
+        "label": "C",
+        "text": "5.991",
+        "Explanation": "Correct: $\\nu = (3-1)(2-1) = 2$, and the 5% critical value for $\\nu = 2$ is 5.991."
+      },
+      {
+        "label": "D",
+        "text": "9.210",
+        "Explanation": "9.210 is the critical value for $\\nu = 2$ at the 1% level."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "First work out the degrees of freedom.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the chocolate example, 100 sweets are split over 6 colours. What is the expected count per colour under $H_0$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "20",
+        "Explanation": "20 is the observed yellow count, not the uniform expectation."
+      },
+      {
+        "label": "B",
+        "text": "16.67",
+        "Explanation": "Correct: $100/6 = 16.67$ for each colour."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "Explanation": "6 is the number of colours, not the expected count."
+      },
+      {
+        "label": "D",
+        "text": "100",
+        "Explanation": "100 is the total; it must be divided evenly across the colours."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Under a uniform distribution each colour gets the same share of the total.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "The chocolate example yields `statistic=8.36, pvalue=0.1374`. At $\\alpha = 0.05$, what is the correct conclusion?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$H_0$ is not rejected; we cannot reject that the colours are uniform",
+        "Explanation": "Correct: $0.1374 > 0.05$ (and $8.36 < 11.071$), so the evidence against uniformity is insufficient."
+      },
+      {
+        "label": "B",
+        "text": "$H_0$ is rejected; the colours are not uniformly distributed",
+        "Explanation": "The p-value is larger than $\\alpha$, so $H_0$ is not rejected."
+      },
+      {
+        "label": "C",
+        "text": "$H_0$ is accepted; the colours are proven to be uniform",
+        "Explanation": "Not rejecting $H_0$ does not prove it; we only lack evidence against it."
+      },
+      {
+        "label": "D",
+        "text": "$H_0$ is rejected because 8.36 is larger than 5",
+        "Explanation": "The statistic must be compared with the critical value 11.071, not an arbitrary number."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compare the p-value with $\\alpha$, and be careful about what 'not rejected' means.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "In the chocolate example (counts 20, 13, 12, 12, 18, 25; $E_i = 16.67$), which colour contributes most to $\\chi^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Green, about 4.17",
+        "Explanation": "Correct: $(25-16.67)^2/16.67 \\approx 4.17$, the largest deviation from 16.67."
+      },
+      {
+        "label": "B",
+        "text": "Yellow, about 0.67",
+        "Explanation": "Yellow's count 20 is only 3.33 above the expected value."
+      },
+      {
+        "label": "C",
+        "text": "Blue, about 0.11",
+        "Explanation": "Blue's 18 is close to 16.67, so it contributes very little."
+      },
+      {
+        "label": "D",
+        "text": "Orange, about 1.31",
+        "Explanation": "Orange's deviation of 4.67 is smaller than Green's 8.33."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The largest squared deviation from 16.67 dominates.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "With `pd.cut(x, bins=[0, 35, 55, float(\"inf\")], labels=[\"young\", \"middle\", \"senior\"])`, how is the age 35 labelled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`NaN`, because 35 is a bin edge",
+        "Explanation": "An edge value is still assigned to the bin whose right edge it is."
+      },
+      {
+        "label": "B",
+        "text": "young",
+        "Explanation": "Correct: the bins are right-closed, so $(0, 35]$ includes 35."
+      },
+      {
+        "label": "C",
+        "text": "senior",
+        "Explanation": "Senior covers ages above 55."
+      },
+      {
+        "label": "D",
+        "text": "middle",
+        "Explanation": "The middle bin is $(35, 55]$, which excludes 35."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "By default `pd.cut` includes the right edge of each bin.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which Python call gives the 5% critical value of the chi-square distribution with 2 degrees of freedom (5.991)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`scipy.stats.chi2.ppf(0.95, 2)`",
+        "Explanation": "Correct: `ppf` returns the 95% quantile, which is the 5% upper-tail critical value."
+      },
+      {
+        "label": "B",
+        "text": "`scipy.stats.chi2.cdf(0.95, 2)`",
+        "Explanation": "`cdf` takes a statistic value and returns a probability, not a quantile."
+      },
+      {
+        "label": "C",
+        "text": "`scipy.stats.chi2.cdf(5.991, 2)`",
+        "Explanation": "This returns the probability 0.95, not the critical value itself."
+      },
+      {
+        "label": "D",
+        "text": "`scipy.stats.chi2.ppf(0.05, 2)`",
+        "Explanation": "This is the 5% quantile, in the left tail, not the critical value."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "You need a quantile, so use the inverse of the CDF.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which call runs the chi-square goodness-of-fit test on the chocolate counts `Ft = np.array([20, 13, 12, 12, 18, 25])`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.chisquare(Ft)`",
+        "Explanation": "Correct: `stats.chisquare` tests one-way counts, by default against equal expected frequencies."
+      },
+      {
+        "label": "B",
+        "text": "`pd.crosstab(Ft)`",
+        "Explanation": "`crosstab` builds a frequency table from raw columns; it does not run a test."
+      },
+      {
+        "label": "C",
+        "text": "`stats.chi2.ppf(0.95, 5)`",
+        "Explanation": "This only gives the critical value 11.071, not a test on the data."
+      },
+      {
+        "label": "D",
+        "text": "`stats.chi2_contingency(Ft)`",
+        "Explanation": "`chi2_contingency` is for two-way contingency tables in the independence test."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The data are a single column of counts.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which statement is NOT equivalent to rejecting $H_0$ at the 5% level in a chi-square test with 2 degrees of freedom?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`1-chi2.cdf(chi2, 2) < 0.05`",
+        "Explanation": "This is equivalent: the p-value is below 0.05."
+      },
+      {
+        "label": "B",
+        "text": "`chi2.cdf(chi2, 2) > 0.95`",
+        "Explanation": "This is equivalent: the statistic lies beyond the 95% quantile."
+      },
+      {
+        "label": "C",
+        "text": "`chi2 > chi2.ppf(0.95, 2)`",
+        "Explanation": "This is equivalent: the statistic exceeds the critical value."
+      },
+      {
+        "label": "D",
+        "text": "`chi2.cdf(chi2, 2) < 0.05`",
+        "Explanation": "Correct: this tests the lower tail; rejection requires the CDF to exceed 0.95."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Chi-square tests reject in the right tail.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Researchers survey students and record origin (Local/Foreign) and first subject choice (Math/Computer/Literature). Which call tests whether the two are related?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`stats.chisquare(pd.Series(y).value_counts())`",
+        "Explanation": "This tests whether subject choices are uniform and ignores origin."
+      },
+      {
+        "label": "B",
+        "text": "`stats.chi2.ppf(0.95, 2)`",
+        "Explanation": "This only returns a critical value; it does not use the data."
+      },
+      {
+        "label": "C",
+        "text": "`stats.chi2_contingency(pd.crosstab(pd.Series(x), pd.Series(y)))`",
+        "Explanation": "Correct: two categorical columns are cross-tabulated and passed to the independence test."
+      },
+      {
+        "label": "D",
+        "text": "`pd.Series(x).value_counts()`",
+        "Explanation": "This builds a one-way frequency table and performs no test."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Two categorical columns call for a contingency-table test.",
+    "course": "COM6005",
+    "week": "3B"
+  },
+  {
+    "question": "Which call produces the frequency of each rating in `x = [\"G\", \"B\", \"G\", \"A\", \"A\", \"B\", \"A\", \"G\", \"A\", \"B\"]`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pd.crosstab(pd.Series(x), pd.Series(y))`",
+        "Explanation": "`crosstab` gives joint frequencies of two columns, not counts of one."
+      },
+      {
+        "label": "B",
+        "text": "`pd.Series(x).value_counts()`",
+        "Explanation": "Correct: `value_counts` counts each category, giving A 4, G 3, B 3."
+      },
+      {
+        "label": "C",
+        "text": "`pd.cut(x, bins=3)`",
+        "Explanation": "`pd.cut` bins numerical values; the ratings are already categorical."
+      },
+      {
+        "label": "D",
+        "text": "`stats.chisquare(x)`",
+        "Explanation": "`chisquare` runs a test on counts; it does not tabulate raw labels."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "You only need a one-way table.",
+    "course": "COM6005",
+    "week": "3B"
+  }
+]

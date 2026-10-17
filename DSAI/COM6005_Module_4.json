@@ -1,0 +1,746 @@
+[
+  {
+    "question": "Which condition is listed in the lecture as making a problem suitable for simple linear regression?",
+    "options": [
+      {
+        "label": "A",
+        "text": "There are several predictors and $Y$ is categorical",
+        "Explanation": "A categorical response and several predictors fall outside simple linear regression."
+      },
+      {
+        "label": "B",
+        "text": "$X$ is categorical and $Y$ is continuous with no visible trend",
+        "Explanation": "Both variables must be numerical and continuous, and the scatter should look linear."
+      },
+      {
+        "label": "C",
+        "text": "The scatter plot of $X$ and $Y$ shows a clear U-shaped curve",
+        "Explanation": "A curved pattern means the relationship is not linear, which is when regression fails."
+      },
+      {
+        "label": "D",
+        "text": "There is only one predictor and both $X$ and $Y$ are numerical and continuous",
+        "Explanation": "Correct: the lecture requires $p = 1$, continuous numerical $X$ and $Y$, and ideally a straight-line scatter plot."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about the number of predictors and the type of variables.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "What does OLS choose $\\hat{a}$ and $\\hat{b}$ to minimise?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The sum of absolute errors $\\sum_{t=1}^{n} |Y_t - a - b X_t|$",
+        "Explanation": "Absolute errors give least-absolute-deviation regression, not OLS."
+      },
+      {
+        "label": "B",
+        "text": "The sum of the raw errors $\\sum_{t=1}^{n} (Y_t - a - b X_t)$",
+        "Explanation": "Raw errors cancel out, so their sum cannot be a sensible objective to minimise."
+      },
+      {
+        "label": "C",
+        "text": "The sum of squared errors $\\sum_{t=1}^{n} (Y_t - a - b X_t)^2$",
+        "Explanation": "Correct: Ordinary Least Squares minimises the sum of squared vertical errors."
+      },
+      {
+        "label": "D",
+        "text": "The largest single error $\\max_t |Y_t - a - b X_t|$",
+        "Explanation": "Minimising the worst error is a minimax criterion, not least squares."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The method's name tells you what kind of error is used.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the formula `smf.ols('fuel~dlic', data=fueldata)`, which statement is true?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`fuel` is the dependent variable and `dlic` is the predictor",
+        "Explanation": "Correct: the variable left of `~` is $Y$ and the right side lists the predictors."
+      },
+      {
+        "label": "B",
+        "text": "`dlic` is the dependent variable and `fuel` is the predictor",
+        "Explanation": "This reverses the roles; the response always sits on the left of `~`."
+      },
+      {
+        "label": "C",
+        "text": "Both `fuel` and `dlic` are predictors of an unnamed response",
+        "Explanation": "The formula has exactly one response, written before `~`."
+      },
+      {
+        "label": "D",
+        "text": "`fuel~dlic` means `fuel` minus `dlic`",
+        "Explanation": "The tilde separates the response from the predictors; it is not subtraction."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Look at which side of the tilde each name is on.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "The fuel model is $\\hat{Y} = -227.3091 + 14.0984 X$ with $X$ = `dlic`. What is the predicted fuel consumption when `dlic` = 50?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 704.92",
+        "Explanation": "This is only $14.0984 \\times 50$; the negative intercept has been left out."
+      },
+      {
+        "label": "B",
+        "text": "About 932.23",
+        "Explanation": "This adds $227.3091$ instead of subtracting it."
+      },
+      {
+        "label": "C",
+        "text": "About 477.61",
+        "Explanation": "Correct: $-227.3091 + 14.0984 \\times 50 = -227.3091 + 704.92 = 477.61$."
+      },
+      {
+        "label": "D",
+        "text": "About 618.59",
+        "Explanation": "This is the prediction for `dlic` = 60, not 50."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Substitute into the fitted line and keep the sign of the intercept.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the fuel model $\\hat{Y} = -227.3091 + 14.0984 X$, what is the correct reading of the slope?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fuel consumption is 14.10 when `dlic` is zero",
+        "Explanation": "The value of $\\hat{Y}$ at $X = 0$ is the intercept, $-227.31$, not the slope."
+      },
+      {
+        "label": "B",
+        "text": "Each one-unit increase in fuel raises `dlic` by about 14.10",
+        "Explanation": "The slope describes $Y$ responding to $X$, not the reverse."
+      },
+      {
+        "label": "C",
+        "text": "`dlic` explains 14.10% of the variation in fuel consumption",
+        "Explanation": "The share of variation explained is $R^2$ (0.489 here), not the slope."
+      },
+      {
+        "label": "D",
+        "text": "Each one-unit increase in `dlic` raises predicted fuel consumption by about 14.10",
+        "Explanation": "Correct: the slope is the change in the predicted $Y$ per one-unit change in $X$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "A slope is a rate of change of the response.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "The fuel model summary shows $R^2 = 0.489$. What does this mean?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The predictions are correct for 48.9% of the states",
+        "Explanation": "$R^2$ measures explained variation, not the fraction of exactly correct predictions."
+      },
+      {
+        "label": "B",
+        "text": "About 48.9% of the variation in fuel consumption is explained by `dlic`",
+        "Explanation": "Correct: $R^2$ is the proportion of the variation in $Y$ explained by the model."
+      },
+      {
+        "label": "C",
+        "text": "The slope of the fitted line is 0.489",
+        "Explanation": "The slope is 14.0984; $R^2$ is a separate goodness-of-fit measure."
+      },
+      {
+        "label": "D",
+        "text": "There is a 48.9% probability that the model is correct",
+        "Explanation": "$R^2$ is not a probability statement about the model being true."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall that $R^2 = 1 - RSS/TSS$.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the fuel model output, `dlic` has coef 14.0984 and std err 2.127. What is its t statistic?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 6.63",
+        "Explanation": "Correct: $t = 14.0984 / 2.127 \\approx 6.63$, matching the summary's 6.629."
+      },
+      {
+        "label": "B",
+        "text": "About 29.99",
+        "Explanation": "This multiplies the coefficient by its standard error instead of dividing."
+      },
+      {
+        "label": "C",
+        "text": "About 0.15",
+        "Explanation": "This divides the standard error by the coefficient, which inverts the statistic."
+      },
+      {
+        "label": "D",
+        "text": "About 43.94",
+        "Explanation": "43.94 is the F-statistic, which equals $t^2$ in simple regression."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "A t statistic is an estimate divided by its standard error.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the fuel model summary, the `dlic` row shows P>|t| = 0.000 and a 95% CI of [9.817, 18.380]. What should you conclude?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fail to reject $H_0: \\beta_1 = 0$ because the interval is wide",
+        "Explanation": "Width does not matter here; what matters is that the interval excludes zero."
+      },
+      {
+        "label": "B",
+        "text": "Reject $H_0: \\beta_1 = 0$; `dlic` has a significant linear association with fuel",
+        "Explanation": "Correct: the tiny p-value and a CI that excludes zero both reject a zero slope."
+      },
+      {
+        "label": "C",
+        "text": "The slope is exactly 9.817 with 95% probability",
+        "Explanation": "The interval gives a range of plausible slopes, not a single value with that probability."
+      },
+      {
+        "label": "D",
+        "text": "The intercept is significant at the 5% level",
+        "Explanation": "The intercept's p-value is 0.069, which is above 0.05."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Check whether zero lies inside the confidence interval.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "For the three points (1, 2), (2, 3), (3, 5), with a column of ones in $X$, what is $X^T X$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\begin{bmatrix} 3 & 6 \\\\ 6 & 12 \\end{bmatrix}$",
+        "Explanation": "The bottom-right entry is $\\sum x^2 = 14$, not $2 \\sum x$."
+      },
+      {
+        "label": "B",
+        "text": "$\\begin{bmatrix} 10 \\\\ 23 \\end{bmatrix}$",
+        "Explanation": "This is $X^T Y$, not $X^T X$."
+      },
+      {
+        "label": "C",
+        "text": "$\\begin{bmatrix} 3 & 6 \\\\ 6 & 14 \\end{bmatrix}$",
+        "Explanation": "Correct: the entries are $n = 3$, $\\sum x = 6$ and $\\sum x^2 = 1 + 4 + 9 = 14$."
+      },
+      {
+        "label": "D",
+        "text": "$\\begin{bmatrix} 1 & 2 \\\\ 2 & 3 \\end{bmatrix}$",
+        "Explanation": "$X^T X$ sums over all three rows; it is not built from a single data point."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Each entry of $X^T X$ is a sum over the three rows of $X$.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Using the matrix method on the points (1, 2), (2, 3), (3, 5), what is the fitted OLS line?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{Y} = 1.5 + 0.333 X$",
+        "Explanation": "The intercept and slope have been swapped."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{Y} = 0.333 + 1.5 X$",
+        "Explanation": "Correct: $\\hat{\\beta} = (X^T X)^{-1} X^T Y = (1/3, 3/2)$."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{Y} = 0 + 1.667 X$",
+        "Explanation": "Forcing the line through the origin is not what OLS with an intercept column does."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{Y} = 0.5 + 1.5 X$",
+        "Explanation": "The slope is right, but the intercept is $\\bar{Y} - 1.5 \\bar{X} = 10/3 - 3 = 1/3$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Invert $\\begin{bmatrix} 3 & 6 \\\\ 6 & 14 \\end{bmatrix}$ and multiply by $X^T Y$.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Which equation gives the OLS estimator for multiple linear regression in matrix form?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{\\beta} = (X X^T)^{-1} X Y$",
+        "Explanation": "The transposes are in the wrong places, so the dimensions do not even match."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{\\beta} = (X^T X)^{-1} X^T Y$",
+        "Explanation": "Correct: setting the gradient $-2X^T Y + 2X^T X \\beta$ to zero yields this solution."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{\\beta} = X^{-1} Y$",
+        "Explanation": "$X$ is usually not square, so it has no ordinary inverse."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{\\beta} = (X^T Y)^{-1} X^T X$",
+        "Explanation": "This inverts the wrong matrix; $X^T X$ is the one that must be inverted."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "It comes from the Normal Equations $X^T X \\hat{\\beta} = X^T Y$.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "For the points (1, 2), (2, 3), (3, 5) the fitted values are 1.833, 3.333 and 4.833, and $\\bar{Y} = 3.333$. What is $R^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 0.036",
+        "Explanation": "This is $RSS/TSS$; $R^2$ is one minus that ratio."
+      },
+      {
+        "label": "B",
+        "text": "About 0.167",
+        "Explanation": "0.1667 is the residual SS itself, not $R^2$."
+      },
+      {
+        "label": "C",
+        "text": "About 4.5",
+        "Explanation": "4.5 is the explained SS; $R^2$ always lies between 0 and 1."
+      },
+      {
+        "label": "D",
+        "text": "About 0.964",
+        "Explanation": "Correct: $RSS = 0.1667$, $TSS = 4.667$, so $R^2 = 1 - 0.1667/4.667 \\approx 0.964$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compute the residual and total sums of squares first.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Which relationship between the sums of squares holds for a least-squares fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Residual SS = Total SS + Explained SS",
+        "Explanation": "The residual SS is the smallest piece, not the sum of the other two."
+      },
+      {
+        "label": "B",
+        "text": "Explained SS = Total SS × Residual SS",
+        "Explanation": "The decomposition is additive, not multiplicative."
+      },
+      {
+        "label": "C",
+        "text": "Total SS = Explained SS + Residual SS",
+        "Explanation": "Correct: the total variation splits into the part the model explains and the residual part."
+      },
+      {
+        "label": "D",
+        "text": "Total SS = Explained SS − Residual SS",
+        "Explanation": "Subtracting the residual SS would make the total smaller than the explained part."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "$R^2 = 1 - RSS/TSS$ relies on this decomposition.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "The savings model is $\\widehat{sr} = 7.0566 + 1.3050 \\, \\text{pop75} - 0.0003 \\, \\text{dpi}$. What is the predicted `sr` for `pop75` = 3 and `dpi` = 2000?",
+    "options": [
+      {
+        "label": "A",
+        "text": "About 10.37",
+        "Explanation": "Correct: $7.0566 + 1.305 \\times 3 - 0.0003 \\times 2000 = 7.0566 + 3.915 - 0.6 = 10.37$."
+      },
+      {
+        "label": "B",
+        "text": "About 11.57",
+        "Explanation": "This adds the `dpi` term instead of subtracting it."
+      },
+      {
+        "label": "C",
+        "text": "About 10.97",
+        "Explanation": "This leaves out the `dpi` term entirely."
+      },
+      {
+        "label": "D",
+        "text": "About 7.76",
+        "Explanation": "This multiplies `pop75` by 1 rather than by 3."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Watch the sign of the `dpi` coefficient.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the savings model, `pop75` has coef 1.3050, p-value 0.100 and 95% CI [−0.259, 2.869]. Which conclusion is correct at the 5% level?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pop75` is significant, because its coefficient is larger than 1",
+        "Explanation": "Significance depends on the estimate relative to its standard error, not on its size."
+      },
+      {
+        "label": "B",
+        "text": "`pop75` is significant, because the CI's upper limit is positive",
+        "Explanation": "An interval that spans zero means a zero coefficient is still plausible."
+      },
+      {
+        "label": "C",
+        "text": "`pop75` is not significant, because the p-value exceeds 0.05 and the CI contains zero",
+        "Explanation": "Correct: both the p-value and the interval fail to rule out $\\beta = 0$."
+      },
+      {
+        "label": "D",
+        "text": "`pop75` has no effect at all on `sr`, so its coefficient is exactly zero",
+        "Explanation": "Failing to reject $H_0$ is not proof the coefficient is zero; the estimate is 1.305."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the p-value with 0.05 and look for zero in the interval.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Why can a bigger regression model be worse even though its in-sample RMSE is lower?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Its out-of-sample RMSE on unseen test data can be higher",
+        "Explanation": "Correct: extra predictors always help on seen data, but can hurt prediction of unseen data."
+      },
+      {
+        "label": "B",
+        "text": "Adding predictors always increases the in-sample RMSE",
+        "Explanation": "The lecture states the opposite: the bigger model always wins in-sample."
+      },
+      {
+        "label": "C",
+        "text": "A bigger model always has a lower AIC and BIC",
+        "Explanation": "AIC and BIC penalise extra parameters, so a bigger model can score worse."
+      },
+      {
+        "label": "D",
+        "text": "A bigger model cannot be fitted with `smf.ols`",
+        "Explanation": "`smf.ols` fits any number of predictors joined with `+`."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about data the model has never seen.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "When comparing a small and a big savings model with AIC and BIC, which model should be preferred?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The one with the higher AIC/BIC",
+        "Explanation": "Higher values indicate a worse trade-off between fit and complexity."
+      },
+      {
+        "label": "B",
+        "text": "The one with the lower AIC/BIC",
+        "Explanation": "Correct: the lecture states that lower AIC/BIC is better."
+      },
+      {
+        "label": "C",
+        "text": "Always the one with more predictors",
+        "Explanation": "More predictors do not guarantee better out-of-sample performance."
+      },
+      {
+        "label": "D",
+        "text": "The one with the lower in-sample RMSE",
+        "Explanation": "In-sample RMSE always favours the bigger model, so it is not useful for choosing."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "These criteria penalise complexity.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In the test-set code, `bias = np.mean(pre_val - act_val)` comes out clearly positive. What does that indicate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The model systematically under-estimates the response",
+        "Explanation": "Under-estimation would make predicted minus actual negative on average."
+      },
+      {
+        "label": "B",
+        "text": "The model's RMSE must be zero",
+        "Explanation": "A non-zero bias implies non-zero errors, so the RMSE cannot be zero."
+      },
+      {
+        "label": "C",
+        "text": "The model systematically over-estimates the response",
+        "Explanation": "Correct: predicted minus actual is positive on average, so predictions run too high."
+      },
+      {
+        "label": "D",
+        "text": "The residuals are heteroscedastic",
+        "Explanation": "Bias measures the average error, not whether the error variance changes."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Check the order of the subtraction.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "A residuals-vs-fitted plot shows the spread of residuals widening like a funnel as the fitted values increase. What does this indicate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Heteroscedasticity: the error variance is not constant",
+        "Explanation": "Correct: a funnel or cone shape means the variance changes with the fitted values."
+      },
+      {
+        "label": "B",
+        "text": "Positive autocorrelation between consecutive errors",
+        "Explanation": "Autocorrelation is checked with the lag plot of $e_i$ against $e_{i-1}$."
+      },
+      {
+        "label": "C",
+        "text": "Residuals that are perfectly normal",
+        "Explanation": "Normality is judged from the Q-Q plot or histogram, and a funnel violates an assumption."
+      },
+      {
+        "label": "D",
+        "text": "A model that fits perfectly with $R^2 = 1$",
+        "Explanation": "A perfect fit would leave every residual at zero, with no spread at all."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Look at how the vertical spread changes, not its centre.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Which diagnostic plot from the lecture checks for first-order (lag-1) autocorrelation of the residuals?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The Q-Q plot of the residuals",
+        "Explanation": "The Q-Q plot checks normality, not dependence between successive errors."
+      },
+      {
+        "label": "B",
+        "text": "The residual histogram with 20 bins",
+        "Explanation": "The histogram shows the shape of the residual distribution, not their ordering."
+      },
+      {
+        "label": "C",
+        "text": "The scatter plot of $Y$ against $X$",
+        "Explanation": "This shows whether the relationship looks linear, not whether errors are correlated."
+      },
+      {
+        "label": "D",
+        "text": "The lag plot of $e_i$ against $e_{i-1}$",
+        "Explanation": "Correct: a linear pattern in the lag plot reveals lag-1 dependence."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Autocorrelation compares each residual with its predecessor.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Which assumption does the Q-Q plot of residuals check?",
+    "options": [
+      {
+        "label": "A",
+        "text": "That the residuals are normally distributed",
+        "Explanation": "Correct: points close to the diagonal support normality; bent tails suggest skewness or outliers."
+      },
+      {
+        "label": "B",
+        "text": "That the error variance is constant",
+        "Explanation": "Constant variance is checked with the residuals-vs-fitted plot."
+      },
+      {
+        "label": "C",
+        "text": "That the residuals are independent over time",
+        "Explanation": "Independence is checked with residuals vs index or the lag plot."
+      },
+      {
+        "label": "D",
+        "text": "That the predictors are not multicollinear",
+        "Explanation": "Multicollinearity concerns the predictors, and no residual plot targets it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Q-Q compares sample quantiles with theoretical ones.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "Which call returns both a confidence interval for the mean response and an interval for a new observation at `dlic` = 50?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`model.predict(newdata)`",
+        "Explanation": "`predict` returns only point predictions, without intervals."
+      },
+      {
+        "label": "B",
+        "text": "`model.params(newdata)`",
+        "Explanation": "`params` is an attribute holding the coefficients; it does not take new data."
+      },
+      {
+        "label": "C",
+        "text": "`model.resid(newdata)`",
+        "Explanation": "`resid` holds the training residuals; it does not produce intervals."
+      },
+      {
+        "label": "D",
+        "text": "`model.get_prediction(newdata).summary_frame(alpha=0.05)`",
+        "Explanation": "Correct: `summary_frame` lists the mean CI and the wider new-observation interval."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "You need a prediction object that can be summarised.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In a simple linear regression with $n = 48$, what degrees of freedom does the F-ratio in the ANOVA table use?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1 and 47",
+        "Explanation": "47 is the Total df, $n - 1$; the denominator uses the Error df."
+      },
+      {
+        "label": "B",
+        "text": "1 and 46",
+        "Explanation": "Correct: Regression has 1 df and Error has $n - 2 = 46$ df, giving $F_{1, 46}$."
+      },
+      {
+        "label": "C",
+        "text": "2 and 46",
+        "Explanation": "Simple regression has only one slope, so the numerator df is 1."
+      },
+      {
+        "label": "D",
+        "text": "48 and 1",
+        "Explanation": "The numerator is the Regression df and the denominator the Error df, not $n$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Regression df is the number of slopes; Error df is $n - 2$.",
+    "course": "COM6005",
+    "week": "4"
+  },
+  {
+    "question": "In simple linear regression, how is the standard error of the slope $\\hat{b}$ computed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\hat{\\sigma} \\sqrt{1/n + \\bar{X}^2 / S_{XX}}$",
+        "Explanation": "This is the standard error of the intercept $\\hat{a}$."
+      },
+      {
+        "label": "B",
+        "text": "$\\hat{\\sigma} / n$",
+        "Explanation": "The slope's precision depends on the spread of $X$ through $S_{XX}$, not on $n$ alone."
+      },
+      {
+        "label": "C",
+        "text": "$\\hat{b} / \\hat{\\sigma}$",
+        "Explanation": "This ratio is not a standard error; the t statistic divides $\\hat{b}$ by its standard error."
+      },
+      {
+        "label": "D",
+        "text": "$\\hat{\\sigma} \\sqrt{1 / S_{XX}}$",
+        "Explanation": "Correct: with $S_{XX} = \\sum (X_t - \\bar{X})^2$ and $\\hat{\\sigma} = \\sqrt{SS(\\hat{a}, \\hat{b})/(n-2)}$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The more spread out $X$ is, the more precise the slope.",
+    "course": "COM6005",
+    "week": "4"
+  }
+]

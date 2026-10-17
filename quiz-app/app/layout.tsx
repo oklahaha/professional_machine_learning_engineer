@@ -1,26 +1,33 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import MotionToggle from "@/components/MotionToggle";
 import "./globals.css";
 
-const display = Space_Grotesk({
-  subsets: ["latin"],
+// Self-hosted (app/fonts/, the Google Fonts latin subset, OFL) rather than next/font/google: that
+// one downloads the files during `next build`, and on Vercel and in Docker the download failed
+// with "next/font/google queries have exactly one entry", failing the whole build. Space Grotesk
+// and IBM Plex Sans are variable files; IBM Plex Mono ships one static file per weight.
+const display = localFont({
+  src: "./fonts/space-grotesk-latin.woff2",
   variable: "--font-display",
-  weight: ["500", "600", "700"],
+  weight: "500 700",
   display: "swap",
 });
 
-const sans = IBM_Plex_Sans({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "./fonts/ibm-plex-sans-latin.woff2",
   variable: "--font-sans",
-  weight: ["400", "500", "600"],
+  weight: "400 600",
   display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
+const mono = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono-400-latin.woff2", weight: "400" },
+    { path: "./fonts/ibm-plex-mono-500-latin.woff2", weight: "500" },
+    { path: "./fonts/ibm-plex-mono-600-latin.woff2", weight: "600" },
+  ],
   variable: "--font-mono",
-  weight: ["400", "500", "600"],
   display: "swap",
 });
 

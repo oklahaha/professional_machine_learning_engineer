@@ -41,6 +41,10 @@ elevated access — use `sudo docker ...` and disable the Bash sandbox for docke
 
 There is no linter configured yet. Tests are `node --test` over `lib/*.test.ts`.
 
+**Fonts are self-hosted** (`app/fonts/*.woff2` via `next/font/local` in `app/layout.tsx`), so the build
+needs no network. Do not switch back to `next/font/google`: it downloads the files during `next build`,
+and on Vercel and in Docker that failed with "next/font/google queries have exactly one entry".
+
 ## UI work
 
 For any UI/visual work, load the `taste-skill:design-taste-frontend` skill first.

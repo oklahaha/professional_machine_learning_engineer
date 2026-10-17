@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6004 · Chapter 3 Data Visualization</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6004-ch3">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6004 Data Mining › Chapter 3</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6004 · Chapter 3 · Source: COM6004_Chapter_3_Data_Visualization.pptx (26 slides) · Data Exploration, Summary Statistics, Data Visualization</p>
+<h1>Data Exploration &amp; Visualization</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>講出 Data Exploration 嘅定義同兩大動機。</li>
+    <li>計算同解讀 Summary Statistics：frequency、mode、percentile、mean、median、trimmed mean、range、variance / standard deviation（以及 robust 替代如 IQR）。</li>
+    <li>理解 visualization 嘅定義、data representation 同 attribute selection 概念。</li>
+    <li>識用同解讀 Histogram、Box Plot、Scatter Plot (array)、Matrix Plot（data matrix / correlation matrix）、Parallel Coordinates Plot，並知道各自適用情況（以 Iris data set 為例）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>Mean 對 outliers 敏感 → 用 median 或 trimmed mean；variance / sd 亦對 outliers 敏感 → 用 IQR、AAD、MAD 等。</li>
+    <li>Percentile 定義：p-th percentile \(x_p\) 令 p% 嘅 observed values 細過 \(x_p\)；median = 50th percentile。</li>
+    <li>Box plot 嘅組成：median、25th / 75th percentiles（box）、whiskers、outliers；用嚟比較 attributes。</li>
+    <li>Histogram 形狀受 bins 數目影響；scatter plot array 總結多對 attributes 關係。</li>
+    <li>Parallel coordinates：每個 object 係一條線；attributes 排序影響能否睇到 groupings；matrix plot 要先 standardize。</li>
+  </ol>
+</div>
+
+<h2>1. Data Exploration</h2>
+<p>Slide 4 定義：<b>A preliminary exploration of the data to better understand its characteristics.</b></p>
+<p><span class="tag exam">Exam</span>主要動機 (key motivations)：</p>
+<ul>
+  <li><b>Helping to select the right tool for preprocessing or analysis</b>（例如見到 data 好 skewed 就考慮 log transform；見到 clusters 形狀唔係圓就唔用 K-means）。</li>
+  <li><b>Making use of humans' abilities to recognize patterns</b>：人可以認出 data analysis tools 捕捉唔到嘅 patterns。</li>
+</ul>
+<p>本 chapter 集中講兩樣：<b>summary statistics</b> 同 <b>data visualization</b>。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6005 Module 1 Descriptive Statistics 同本 chapter 嘅 summary statistics 基本一樣（mean、median、variance、percentile、box plot）；COM6001 pandas 嘅 <code>df.describe()</code>、<code>value_counts()</code>、<code>df.hist()</code>、<code>df.boxplot()</code> 就係實際操作。</p></div>
+
+<h2>2. Summary Statistics</h2>
+<p>Slide 6：<b>Summary statistics are numbers that summarize properties of the data.</b> 總結嘅 properties 包括 <b>frequency、location、spread</b>。例如 location → mean；spread → standard deviation。大部分 summary statistics 可以 <b>single pass through the data</b>（掃一次 data）就計到。</p>
+
+<h3>2.1 Frequency and Mode (Slide 7)</h3>
+<ul>
+  <li>一個 attribute value 嘅 <b>frequency</b> = 該值喺 data set 出現嘅百分比。例：attribute 'gender'，喺有代表性嘅人口中 'female' 大約出現 50%。</li>
+  <li><b>Mode</b> = 最常出現嘅 attribute value。</li>
+  <li>Frequency 同 mode 通常用於 <b>categorical data</b>。</li>
+</ul>
+<div class="box link"><span class="label">🔗 Chapter 內連繫</span><p>對應 Chapter 2 NOIR：Nominal attribute 只有 distinctness，所以只可以用 mode / frequency（計 mean 冇意義）。</p></div>
+
+<h3>2.2 Percentiles (Slide 8)</h3>
+<p>對 continuous data，<b>percentile</b> 更有用。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Percentile 定義</span>
+<p>Given an ordinal or continuous attribute \(x\) and a number \(p\) between 0 and 100, the <b>p-th percentile</b> is a value \(x_p\) of \(x\) such that <b>p% of the observed values of \(x\) are less than \(x_p\)</b>.</p>
+<p>例如 50th percentile 係 \(x_{50\%}\)，令 50% 嘅值細過佢 → 即 <b>median</b>。25th / 75th percentiles 叫 first / third quartile (Q1 / Q3)。</p></div>
+<p>注意：percentile 只需要 <b>order</b>，所以 ordinal attribute 都可以計（但 nominal 唔得）。</p>
+
+<h3>2.3 Measures of Location: Mean and Median (Slide 9)</h3>
+<div class="formula">$$ \text{mean}(x) = \bar{x} = \frac{1}{m}\sum_{i=1}^{m} x_i $$</div>
+<div class="formula">$$ \text{median}(x) = \begin{cases} x_{(r+1)} &amp; \text{if } m = 2r+1 \text{ (odd)} \\ \tfrac{1}{2}\left(x_{(r)} + x_{(r+1)}\right) &amp; \text{if } m = 2r \text{ (even)} \end{cases} $$</div>
+<p>其中 \(x_{(i)}\) 係排序後第 i 個值。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 嘅 mean / median 公式係圖片；上面係教科書標準公式，請對照原 slide 第 9 頁。</p></div>
+<p><span class="tag exam">Exam</span><b>The mean is very sensitive to outliers.</b> 所以亦常用 <b>median</b> 或 <b>trimmed mean</b>（先去掉頭尾各 p/2 % 嘅極端值再計 mean）。</p>
+<div class="box tip"><span class="label">💡 Worked example</span>
+<p>Data（月薪，千元）：12, 14, 15, 15, 16, 18, 20, 22, 25, 200（m = 10）</p>
+<ul>
+<li>Mean = (12+14+15+15+16+18+20+22+25+200)/10 = 357/10 = <b>35.7</b>（被 200 嚴重拉高）</li>
+<li>Median（m 偶數）= (16 + 18)/2 = <b>17</b></li>
+<li>20% trimmed mean：去掉最細 10%（12）同最大 10%（200）→ (14+15+15+16+18+20+22+25)/8 = 145/8 = <b>18.125</b></li>
+<li>Mode = <b>15</b></li>
+</ul>
+<p>結論：有 outlier 時，median 同 trimmed mean 更能代表「典型」值。</p></div>
+
+<h3>2.4 Measures of Spread: Range and Variance (Slide 10)</h3>
+<ul>
+<li><b>Range</b> = max − min。</li>
+<li><b>Variance</b> \(s_x^2\) 或 <b>standard deviation</b> \(s_x\) 係最常用嘅 spread 量度：</li>
+</ul>
+<div class="formula">$$ \text{variance}(x) = s_x^2 = \frac{1}{m-1}\sum_{i=1}^{m}(x_i - \bar{x})^2 $$</div>
+<p>不過 variance 都<b>對 outliers 敏感</b>，所以常用其他量度（教科書列出）：</p>
+<div class="formula">$$ \text{AAD}(x) = \frac{1}{m}\sum_{i=1}^{m}|x_i-\bar{x}|, \quad \text{MAD}(x) = \text{median}\big(\{|x_1-\bar{x}|,\dots,|x_m-\bar{x}|\}\big), \quad \text{IQR}(x) = x_{75\%} - x_{25\%} $$</div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10 嘅 variance 公式同「other measures」公式係圖片 / 嵌入物件；上面 AAD (absolute average deviation)、MAD (median absolute deviation)、IQR (interquartile range) 係教科書標準內容，請對照原 slide 第 10 頁確認 slide 實際列出邊幾個。</p></div>
+<div class="box tip"><span class="label">💡 Worked example（延續）</span>
+<p>Data：2, 4, 4, 5, 7, 8（m = 6）。Mean = 30/6 = 5。</p>
+<p>Deviations：−3, −1, −1, 0, 2, 3 → squares 9, 1, 1, 0, 4, 9 → sum = 24。</p>
+<p>Variance = 24/(6 − 1) = <b>4.8</b>；sd = \(\sqrt{4.8}\) = <b>2.191</b>；Range = 8 − 2 = <b>6</b>；AAD = (3+1+1+0+2+3)/6 = <b>1.667</b>。</p>
+<p>如果將 8 改做 80：range 變 78，variance 大增，但 IQR 幾乎唔變 → IQR 係 robust measure。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Sample variance 分母係 <b>m − 1</b>（唔係 m）。pandas <code>Series.var()</code> 預設 ddof=1（m − 1），numpy <code>np.var()</code> 預設 ddof=0（m）——兩者答案會唔同！</p></div>
+<pre><code>import pandas as pd
+x = pd.Series([12, 14, 15, 15, 16, 18, 20, 22, 25, 200])
+x.mean(), x.median(), x.mode()[0]
+from scipy import stats
+stats.trim_mean(x, 0.1)              # 每邊去 10% → 18.125
+x.max() - x.min(), x.var(), x.std()  # range, variance (m-1), sd
+x.quantile(0.75) - x.quantile(0.25)  # IQR
+x.describe()                         # count/mean/std/min/25%/50%/75%/max</code></pre>
+
+<h2>3. Data Visualization: 概念</h2>
+<p>Slide 12 定義：<b>Visualization is the conversion of data into a visual or tabular format so that the characteristics of the data and the relationships among data items or attributes can be analyzed or reported.</b></p>
+<p>Visualization 係 data exploration 最強大、最吸引嘅技術之一，因為人類有高度發展嘅能力去分析以視覺呈現嘅大量資訊：</p>
+<ul>
+<li>Can detect general <b>patterns and trends</b></li>
+<li>Can detect <b>outliers and unusual patterns</b></li>
+</ul>
+
+<h3>3.1 Data Representation (Slide 13)</h3>
+<p><b>The mapping of information to a visual format.</b> Data objects、attributes 同 objects 之間嘅 relationships 被轉譯成 graphical elements：<b>points、lines、shapes、colors</b>。</p>
+<ul>
+<li>Objects 通常表示為 <b>points</b>。</li>
+<li>Attribute values 可以用點嘅 <b>position</b> 或點嘅特徵（<b>color、size、shape</b>）表示。</li>
+<li>如果用 position，點之間嘅關係（例如形成 groups，或者某點係 outlier）就好易察覺。</li>
+</ul>
+
+<h3>3.2 Attribute Selection (Slide 14)</h3>
+<p><b>The elimination or the de-emphasis of certain objects and attributes.</b></p>
+<ul>
+<li><b>揀 attributes 嘅 subset</b>：常用 dimensionality reduction 將維度減到 2 或 3；或者逐對 (pairs) attributes 考慮。</li>
+<li><b>揀 objects 嘅 subset</b>：螢幕一個區域只能顯示咁多點；可以 sample，但要<b>保留 sparse 區域嘅點</b>（否則 outliers / 細 clusters 會消失）。</li>
+</ul>
+<div class="box link"><span class="label">🔗 Chapter 內連繫</span><p>呢度嘅 dimensionality reduction（例如 PCA 投影到 2D）同 sampling 都係 Chapter 2 Data Preprocessing 嘅技術。</p></div>
+
+<h3>3.3 Iris Sample Data Set (Slide 15)</h3>
+<p>好多 exploratory techniques 用 <b>Iris Plant data set</b> 示範（R: <code>data(iris)</code>）：</p>
+<ul>
+<li>三個 flower types（classes）：Setosa、Virginica、Versicolour</li>
+<li>四個 non-class attributes：Sepal width and length、Petal width and length</li>
+</ul>
+<p>Slide 提到會用 <b>R</b> 將 visualization techniques 應用喺 Iris data set。以下同時提供 Python 版本方便對照。</p>
+
+<h2>4. Histograms</h2>
+<p>Slide 16：</p>
+<ul>
+<li>通常顯示<b>單一 variable</b> 嘅值嘅 distribution。</li>
+<li>將值分成 <b>bins</b>，再畫 bar plot 顯示每個 bin 嘅 objects 數目。</li>
+<li>每條 bar 嘅高度 = 該 bin 嘅 objects 數目。</li>
+<li><span class="tag exam">Exam</span><b>Shape of histogram depends on the number of bins.</b></li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 有兩幅 Iris petal width 嘅 histograms（例如 10 bins vs 20 bins），係圖片；請對照原 slide 第 16 頁。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Bins 太少：所有細節被抹平（例如 Iris petal length 嘅兩個峰合成一個）；bins 太多：好多鋸齒，noise 被放大。所以試幾個 bin 數再判斷 distribution 形狀。</p></div>
+<pre><code>import seaborn as sns, matplotlib.pyplot as plt
+iris = sns.load_dataset("iris")
+iris["petal_width"].plot.hist(bins=10); plt.show()
+iris["petal_width"].plot.hist(bins=20); plt.show()   # 形狀會唔同
+# R: hist(iris$Petal.Width, breaks = 10)</code></pre>
+
+<h2>5. Box Plots</h2>
+<p>Slide 17：另一種顯示 data distribution 嘅方法。Box plot 嘅基本組成（教科書標準）：</p>
+<table>
+<tr><th>部分</th><th>代表</th></tr>
+<tr><td>Box 底線</td><td>25th percentile (Q1)</td></tr>
+<tr><td>Box 入面條線</td><td>50th percentile (median)</td></tr>
+<tr><td>Box 頂線</td><td>75th percentile (Q3)；box 高度 = IQR</td></tr>
+<tr><td>Whiskers</td><td>延伸到 10th / 90th percentile（教科書版本），或常見軟件版本：Q1 − 1.5·IQR 至 Q3 + 1.5·IQR 範圍內嘅最遠值</td></tr>
+<tr><td>獨立點</td><td>Outliers（whiskers 以外嘅值）</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 17 嘅 box plot 結構圖同 slide 18 嘅 Iris box plots 係圖片；上表係教科書標準結構，whisker 定義請以 slide 第 17 頁圖為準。</p></div>
+<p>Slide 18：<b>Box plots can be used to compare attributes</b>——將 Iris 四個 attributes 並排畫，即刻見到邊個 attribute 範圍大、中位數高、有冇 outliers。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Box plot 計算題型</span>
+<p>Data：1, 3, 4, 5, 6, 7, 8, 9, 30。Median = 6；Q1 = 4、Q3 = 8（用 pandas 預設 linear interpolation；如用「上下半數 data 嘅 median」方法會得 3.5 / 8.5，結論一樣）；IQR = 4。</p>
+<p>用 1.5·IQR 規則：lower fence = 4 − 6 = −2，upper fence = 8 + 6 = 14 → <b>30 係 outlier</b>，上 whisker 延伸到 9，下 whisker 到 1。</p></div>
+<pre><code>iris.boxplot(column=["sepal_length", "sepal_width", "petal_length", "petal_width"])
+iris.boxplot(column="petal_length", by="species")   # 按 class 比較
+# R: boxplot(iris[, 1:4])</code></pre>
+
+<h2>6. Scatter Plots</h2>
+<p>Slide 19：</p>
+<ul>
+<li><b>Attribute values determine the position</b>（x 軸一個 attribute，y 軸另一個）。</li>
+<li>2D scatter plot 最常見，亦可以有 3D。</li>
+<li>可以用 marker 嘅 <b>size、shape、color</b> 顯示額外 attributes（例如用顏色代表 class）。</li>
+<li><b>Arrays of scatter plots</b>（scatter plot matrix）可以精簡地總結<b>幾對 attributes 之間嘅關係</b>。</li>
+</ul>
+<p>Slide 20：Iris 嘅 scatter plot array——4 個 attributes 形成 4 × 4 格，每格係一對 attributes，以顏色分 class。從中可見 Setosa 喺 petal length / width 上同其他兩類明顯分開。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 20 嘅 scatter plot array 係圖片，請對照原 slide 第 20 頁。</p></div>
+<pre><code>sns.pairplot(iris, hue="species")      # scatter plot array，顏色 = class
+# R: pairs(iris[, 1:4], col = iris$Species)</code></pre>
+
+<h2>7. Matrix Plots</h2>
+<p>Slide 21：</p>
+<ul>
+<li>將 data matrix 以圖像（每格顏色代表數值）顯示。</li>
+<li><b>當 objects 按 class 排序時特別有用</b>（同 class 嘅行排埋一齊，可以見到 class 之間 attribute 值嘅分別）。</li>
+<li><span class="tag exam">Exam</span>通常會先 <b>normalize attributes（standardize 成 mean 0、standard deviation 1）</b>，防止某個 attribute 主導個 plot。</li>
+<li><b>Similarity 或 distance matrices</b> 嘅 plot 亦有用，可視覺化 objects 之間嘅關係。</li>
+<li>典型例子：<b>data matrix plots</b> 同 <b>correlation matrix plots</b>。</li>
+</ul>
+<p>Slide 22：Iris Data Matrix（顏色 bar 以 "standard deviation" 為單位，即 standardized 後嘅值）。Slide 23：Iris Correlation Matrix（4 × 4 attributes 之間嘅 correlation）。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–23 嘅 matrix plots 係圖片，請對照原 slide。</p></div>
+<div class="box link"><span class="label">🔗 Chapter 內連繫</span><p>Chapter 5 Cluster Validity 會再用「按 cluster labels 排序嘅 similarity matrix」去視覺檢查 clustering 好唔好（slide 74–76）——同呢度「按 class 排序嘅 matrix plot」係同一個 idea。</p></div>
+<pre><code>from sklearn.preprocessing import StandardScaler
+X = StandardScaler().fit_transform(iris.iloc[:, :4])        # 先 standardize
+plt.imshow(X, aspect="auto", cmap="coolwarm"); plt.colorbar(); plt.show()   # data matrix plot
+sns.heatmap(iris.iloc[:, :4].corr(), annot=True)            # correlation matrix plot</code></pre>
+
+<h2>8. Parallel Coordinates Plots</h2>
+<p>Slide 24：</p>
+<ul>
+<li>用嚟畫 <b>high-dimensional data</b> 嘅 attribute values。</li>
+<li>唔用互相垂直嘅軸，而係用<b>一組平行嘅軸 (parallel axes)</b>。</li>
+<li>每個 object 喺每條對應軸上畫一個點，再將啲點連成一條線 → <b>each object is represented as a line</b>。</li>
+<li>代表同一 class 嘅線通常會聚埋一齊（至少喺某啲 attributes 上）。</li>
+<li><span class="tag exam">Exam</span><b>Ordering of attributes is important in seeing such groupings.</b></li>
+</ul>
+<p>Slide 25：Iris 嘅 parallel coordinates plot——可見 Setosa 嘅線喺 petal length / width 軸上集中喺低位，同另外兩類分開。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 25 有兩幅 parallel coordinates plots（可能係唔同 attribute 次序），係圖片；請對照原 slide 第 25 頁。</p></div>
+<pre><code>from pandas.plotting import parallel_coordinates
+parallel_coordinates(iris, "species"); plt.show()
+# R: library(MASS); parcoord(iris[, 1:4], col = as.numeric(iris$Species))</code></pre>
+
+<div class="box exam"><span class="label">⭐ 考試重點：揀邊種圖？</span>
+<table>
+<tr><th>圖</th><th>顯示</th><th>適合問題</th><th>注意</th></tr>
+<tr><td>Histogram</td><td>單一 variable distribution</td><td>「呢個 attribute 分佈係點？有冇幾個峰？」</td><td>形狀受 bins 數影響</td></tr>
+<tr><td>Box plot</td><td>Distribution 摘要（median、quartiles、outliers）</td><td>「比較幾個 attributes / classes 嘅分佈」</td><td>見唔到多峰</td></tr>
+<tr><td>Scatter plot (array)</td><td>兩個 attributes 之間關係</td><td>「兩者有冇 correlation？有冇 clusters？」</td><td>可用 color / shape 加 class</td></tr>
+<tr><td>Matrix plot</td><td>成個 data / similarity / correlation matrix</td><td>「objects 按 class 排序後有冇明顯 pattern？」</td><td>先 standardize</td></tr>
+<tr><td>Parallel coordinates</td><td>High-dimensional objects（每個一條線）</td><td>「多個 attributes 一齊睇，classes 點分開？」</td><td>Attributes 次序好重要</td></tr>
+</table></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Data exploration 嘅定義同兩個主要動機係咩？</summary>
+<p>定義：A preliminary exploration of the data to better understand its characteristics。動機：(1) 幫助揀適合嘅 preprocessing / analysis 工具；(2) 利用人類認 pattern 嘅能力（人可以認出 analysis tools 捕捉唔到嘅 patterns）。</p></details>
+<details class="q"><summary>Q2. Data：3, 5, 7, 8, 9, 11, 13, 100。計 mean、median、range，並講點解 median 較好。</summary>
+<p>Mean = 156/8 = <b>19.5</b>；Median = (8 + 9)/2 = <b>8.5</b>；Range = 100 − 3 = <b>97</b>。100 係 outlier，mean 被大幅拉高，而 median 唔受影響，更能代表典型值（slide 9：mean is very sensitive to outliers）。</p></details>
+<details class="q"><summary>Q3. Data：4, 6, 8, 10, 12。計 sample variance 同 standard deviation。</summary>
+<p>Mean = 8；deviations² = 16, 4, 0, 4, 16 → 40；variance = 40/4 = <b>10</b>；sd = √10 = <b>3.162</b>。</p></details>
+<details class="q"><summary>Q4. 解釋「the 80th percentile 係 65 分」嘅意思。對 nominal attribute 可以計 percentile 嗎？</summary>
+<p>代表 80% 嘅 observed values 細過 65 分。Nominal attribute 冇 order，所以唔可以計 percentile（只可以用 frequency / mode）。</p></details>
+<details class="q"><summary>Q5. 點解 histogram 嘅結論可能誤導？</summary>
+<p>因為 histogram 形狀取決於 bins 數目：bins 太少會抹平細節（例如雙峰變單峰），太多會出現 noise 鋸齒。應試幾種 bin 數。</p></details>
+<details class="q"><summary>Q6. 畫 data matrix plot 之前點解要 standardize？</summary>
+<p>因為 attributes 嘅 scale 唔同（例如一個 0–1、一個 0–1000），唔 standardize 嘅話顏色會被大 scale 嘅 attribute 主導，其他 attributes 嘅變化睇唔到。Standardize 成 mean 0、sd 1 後每個 attribute 公平比較。</p></details>
+<details class="q"><summary>Q7. Parallel coordinates plot 點樣表示一個 object？有咩要注意？</summary>
+<p>每個 attribute 一條平行軸，object 喺每條軸上有一點，連起嚟成一條線。同 class 嘅線傾向聚埋；attributes 嘅排列次序會影響能否睇到 groupings。</p></details>
+<details class="q"><summary>Q8. 想比較 Iris 三個 species 嘅 petal length 分佈，同時睇有冇 outliers，用咩圖最好？寫出 Python 一行。</summary>
+<p>Box plot（按 species 分組）：<code>iris.boxplot(column="petal_length", by="species")</code>。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>Data exploration</b>：preliminary exploration to understand characteristics；動機：揀啱工具 + 利用人類 pattern recognition。</li>
+<li><b>Summary statistics</b>：frequency、location、spread；多數 single pass 計到。</li>
+<li><b>Frequency / mode</b>：categorical data 用。</li>
+<li><b>p-th percentile</b> \(x_p\)：p% 嘅值細過 \(x_p\)；median = 50th；IQR = Q3 − Q1。</li>
+<li><b>Mean</b> 對 outliers 敏感 → median / trimmed mean。</li>
+<li><b>Range</b> = max − min；<b>variance</b> \(s^2 = \frac{1}{m-1}\sum(x-\bar x)^2\)，亦對 outliers 敏感 → AAD、MAD、IQR。</li>
+<li><b>Visualization</b>：轉成 visual / tabular format 以分析或報告；detect patterns、trends、outliers。</li>
+<li><b>Representation</b>：objects → points；attributes → position / color / size / shape。</li>
+<li><b>Selection</b>：減 attributes（dim. reduction 到 2–3 維或逐對）同 objects（sample 但保留 sparse 區）。</li>
+<li><b>Iris</b>：3 classes（Setosa、Versicolour、Virginica），4 attributes（sepal / petal × length / width）。</li>
+<li><b>Histogram</b>：單一 variable；shape depends on #bins。</li>
+<li><b>Box plot</b>：median、quartiles、whiskers、outliers；比較 attributes。</li>
+<li><b>Scatter plot</b>：position = attribute values；size / shape / color 加 attributes；scatter plot array 總結多對關係。</li>
+<li><b>Matrix plot</b>：按 class 排序有用；先 standardize（mean 0、sd 1）；data matrix / correlation matrix。</li>
+<li><b>Parallel coordinates</b>：平行軸，每 object 一條線；同 class 線聚埋；attribute ordering 好重要。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6004-ch2.html">← Chapter 2 Data</a>
+  <a href="COM6004-ch4a.html">Chapter 4A Classification (I) →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

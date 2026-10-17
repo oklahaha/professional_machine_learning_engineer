@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 2c Normal &amp; Approximation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m2c">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 2c</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 2c · Source: Module_2c_NormalDist_Approximation_L02_Complete.pdf (16 slides)</p>
+<h1>Normal Distribution, QQ-plot &amp; Approximation</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>用 boxplot、histogram、empirical CDF 睇數據分佈（<code>plt.hist(..., cumulative=True, histtype='step')</code>）。</li>
+    <li>理解 residual（\( e = y - \hat y \)）同點解 normal residual 代表 model 已經冇得再改善 mean prediction。</li>
+    <li>分清 <code>norm.pdf</code>（density）、<code>norm.cdf</code>（probability）、<code>norm.ppf</code>（quantile）、<code>norm.rvs</code>（random）。</li>
+    <li>用 simulation + histogram、QQ-plot、<code>stats.normaltest</code> 檢查數據係咪 normal。</li>
+    <li>Normal approximation to Binomial（np ≥ 10、n(1−p) ≥ 10；μ = np、σ² = np(1−p)）同 Poisson approximation to Binomial（n ≥ 50、p ≤ 0.1；λ = np）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>pdf → density；cdf → probability；ppf → quantile；rvs → random numbers（slide 6）。</li>
+    <li>QQ-plot：如果數據 normal，點會貼近一條直線；亦用嚟檢查 regression residuals。</li>
+    <li><code>normaltest</code>：H0 = data comes from a normal distribution；p-value &gt; 0.05 → do not reject H0。</li>
+    <li>Normal approximation 條件同 parameters：np ≥ 10、n(1−p) ≥ 10；μ = np、σ² = np(1−p)。</li>
+    <li>Poisson approximation 條件同 parameter：n large、p small（n ≥ 50、p ≤ 0.1 或 np ≤ 10）；λ = np。</li>
+  </ol>
+</div>
+
+<h2>1. Revision：Boxplot、Histogram、Empirical CDF</h2>
+<p>Slide 2：如果數據冇 missing values (NA)，<code>plt.hist</code> 加 <code>histtype='step'</code>（同 <code>cumulative=True</code>）就可以畫出 <mark class="k">empirical cumulative distribution function</mark>。</p>
+<pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+d = pd.read_csv("bee_wax.txt", sep='\t')       # 蜂蠟熔點數據（tab 分隔）
+y = d['Melting']
+fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+axs[0].boxplot(y);                         axs[0].set_title('Boxplot')
+axs[1].hist(y, bins='auto');               axs[1].set_title('Histogram')
+axs[2].hist(y, bins=50, cumulative=True, histtype='step')   # Empirical CDF
+axs[2].set_title('Cumulative Distribution')
+plt.tight_layout(); plt.show()</code></pre>
+<div class="box tip"><span class="label">💡 三幅圖各自睇咩</span>
+<ul>
+<li><b>Boxplot</b>：median、Q1、Q3（IQR）、outliers——快速睇 location 同 spread。</li>
+<li><b>Histogram</b>：分佈形狀（bell-shape？skewed？bimodal？）。</li>
+<li><b>Empirical CDF</b>：由 0 升到 n（或 1）嘅樓梯線；可以直接讀「有幾多比例 ≤ 某值」。</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ 注意</span><p>有 NaN 嘅話 <code>plt.hist</code> 會出錯或者結果唔啱，先 <code>y.dropna()</code>（連返 COM6001 data cleaning）。</p></div>
+
+<h2>2. Normal distribution 同 residual 嘅關係</h2>
+<p>Slide 5 預告之後 regression 會研究 <b>residual</b> 嘅 histogram：</p>
+<ul>
+<li>True height (target) = \( y \)；Predicted height = \( \hat y \) (y_hat)</li>
+<li><mark class="k">Residual</mark> (prediction error) = \( e = y - \hat y \)</li>
+<li>如果 residual is <b>normally distributed with zero mean</b>，即係佢純粹 random，model cannot be further optimized/improved for the mean prediction。</li>
+<li>好多量度數據嘅 histogram 都係 bell-shape：中間高、兩邊 tails 薄；residuals 嘅 histogram 好多時都似鐘形。</li>
+<li>Linear regression 嘅統計方法正正建基於 error (residual) terms 係 bell-shape（normal）呢個理論。</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>如果 residual 仲有 pattern（例如全部偏正、或者跟 X 有曲線關係），代表 model 仲有「可以學」嘅嘢未學到；如果 residual 就好似 random noise（normal、mean 0），model 已經榨乾咗數據入面嘅系統性資訊。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 4 Linear regression 嘅 diagnostic plots（residual vs fitted、QQ-plot of residuals、residual histogram）就係用呢度嘅概念。</p></div>
+
+<h2>3. scipy.stats.norm：pdf、cdf、ppf、rvs</h2>
+<div class="box exam"><span class="label">⭐ 四個 function（slide 6）</span>
+<table>
+<tr><th>Function</th><th>用途</th><th>例子（身高 N(170, 7²)）</th></tr>
+<tr><td><code>norm.pdf</code></td><td><b>density</b>（唔係直接嘅 probability，要積分先得 prob）</td><td><code>pdf(175)</code>：數值約喺 175 附近嘅 proportion（密度）</td></tr>
+<tr><td><code>norm.cdf</code></td><td><b>probability</b>（cumulative）</td><td><code>cdf(175)</code>：proportion of data ≤ 175</td></tr>
+<tr><td><code>norm.ppf</code></td><td><b>quantile</b>（cdf 嘅反函數）</td><td><code>ppf(0.95)</code>：95% 嘅人矮過呢個高度</td></tr>
+<tr><td><code>norm.rvs</code></td><td><b>random</b> numbers（simulation）</td><td><code>rvs(170, 7, 1000)</code>：1000 個模擬身高</td></tr>
+</table></div>
+
+<h3>3.1 Standardization 同查表（補充，Module 3 會大量用）</h3>
+<div class="formula">$$ Z = \frac{X-\mu}{\sigma} \sim N(0,1), \qquad P(X\le x) = \Phi\!\left(\frac{x-\mu}{\sigma}\right) $$</div>
+<div class="box exam"><span class="label">⭐ Worked example</span>
+<p>身高 X ~ N(μ = 170, σ = 7)。求 P(X ≤ 177)、P(X &gt; 177)、P(166.5 ≤ X ≤ 173.5)。</p>
+<ol>
+<li>Standardize：\( z = (177-170)/7 = 1 \)</li>
+<li>查 standard normal table：\( \Phi(1) = 0.8413 \) → P(X ≤ 177) = 0.8413（<code>norm.cdf(177, 170, 7)</code>）</li>
+<li>P(X &gt; 177) = 1 − 0.8413 = 0.1587</li>
+<li>\( z_1 = (166.5-170)/7 = -0.5,\ z_2 = (173.5-170)/7 = 0.5 \) → \( \Phi(0.5)-\Phi(-0.5) = 0.6915 - 0.3085 = 0.3829 \)</li>
+</ol>
+<p>反方向（quantile）：<code>norm.ppf(0.975)</code> = 1.96 → 97.5% 嘅 Z 值 ≤ 1.96，Module 3 嘅 95% CI 就用佢。</p></div>
+
+<h2>4. Simulation of normal distribution</h2>
+<p>Slide 7：<b>Simulation</b> = 用電腦整一啲睇落似真實 normally-distributed data 嘅 random numbers。</p>
+<ul>
+<li><code>scipy.stats.norm.rvs(5, 2, 1000)</code>：1000 個數，似 mean = 5、sd = 2 嘅 normal。</li>
+<li>可以 <code>x = scipy.stats.norm.rvs(5, 2, 1000); plt.hist(x)</code> 睇吓係咪鐘形。</li>
+<li>如果冇指定第一、二個 argument，預設 loc = 0、scale = 1（standard normal）。</li>
+</ul>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+np.random.seed(12345)                        # set random seed
+ns = 1000                                    # simulation size
+z = norm.rvs(loc=0, scale=1, size=ns)        # generate N(0,1) random numbers
+plt.hist(z, bins='auto', density=True)       # histogram with density（面積 = 1）
+x = np.arange(-3, 4, 0.1)                    # x-coordinates
+plt.plot(x, norm.pdf(x, loc=0, scale=1))     # 疊上理論 normal density curve
+plt.show()</code></pre>
+<p>Slide 8 結論：simulated data 嘅 histogram 同 normal density function curve（bell）配合得好好。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>要將 histogram 同 pdf 曲線比較，<code>plt.hist</code> 一定要加 <code>density=True</code>；否則 y 軸係 frequency（幾十至幾百），而 pdf 最高只有 0.3989，兩者 scale 對唔上。另外 <code>scale</code> 係 <b>standard deviation</b>，唔係 variance。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 4 係分節標題頁（“Simulation of normal distribution”），只有圖片，冇額外文字。</p></div>
+
+<h2>5. Quantile-quantile plot (QQ-plot)</h2>
+<p>Slide 9 嘅問題：Does IQ data look normal? Does error look normal?</p>
+<ul>
+<li>可以將 histogram 同 normal density curve 疊埋比較（上一節）。</li>
+<li>更精確嘅做法：用比較抽象但更好嘅工具 <b>QQ-plot</b>。</li>
+<li><b>If the data is normally distributed, QQ-plot should be close to a straight line.</b></li>
+<li>同一個 idea 適用於 regression 嘅 residuals：用 QQ-plot 檢查 error terms 嘅 normal assumption。</li>
+</ul>
+<pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+d = pd.read_csv("bee_wax.txt", delimiter='\t')
+sm.qqplot(d['Melting'], fit=True, line="45")   # fit=True：先 standardize；line="45"：畫 45° 參考線
+plt.show()</code></pre>
+<p>Slide 12 嘅 QQ-plot（bee wax melting point）：x 軸 Theoretical Quantiles（約 −2 至 2），y 軸 Sample Quantiles（約 62.8 至 64.4），啲點大致沿住紅色直線排列，只係右上尾端有少少偏離 → 數據大致符合 normal。</p>
+<div class="box tip"><span class="label">💡 點讀 QQ-plot</span>
+<ul>
+<li>X 軸 = 如果數據真係 normal，第 i 細嘅值「應該」喺邊（theoretical quantile）；Y 軸 = 實際第 i 細嘅值（sample quantile）。</li>
+<li>點貼住直線 → normal。</li>
+<li>兩端向外彎（S 形）→ heavy tails / outliers；一邊彎 → skewed。</li>
+</ul></div>
+
+<h2>6. Statistical test for normality</h2>
+<p>Slide 13：用 hypothesis test 正式檢驗：</p>
+<pre><code>from scipy import stats
+# Null hypothesis: a sample comes from a normal distribution
+res = stats.normaltest(d['Melting'])
+print(res.statistic)
+print(res.pvalue)</code></pre>
+<div class="box exam"><span class="label">⭐ 點寫結論（slide 13）</span>
+<ul>
+<li>H0：sample comes from a normal distribution；H1：not normal。</li>
+<li>p-value &gt; 0.05 → the null hypothesis is <b>not rejected</b>。</li>
+<li>“We do not find enough evidence to claim that the data is not from Normal distribution.”</li>
+<li>Weakly say：“The data can be considered to follow normal distribution.”</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Not rejecting H0 ≠ proving H0。所以 slide 用「weakly say」：只能話「冇證據話佢唔係 normal」，唔可以話「證明咗係 normal」。呢個邏輯喺 Module 3 Hypothesis testing 會再出現。</p></div>
+
+<h2>7. Approximation</h2>
+<h3>7.1 Normal Approximation to the Binomial（slide 15）</h3>
+<p>當 trials 夠多而且 success rate 平衡，可以用 normal distribution approximate binomial。</p>
+<div class="box exam"><span class="label">⭐ 條件同 parameters</span>
+<ul>
+<li><b>Condition</b>：n is large and p is near 0.5 (not too close to 0 or 1)。</li>
+<li><b>Rule of Thumb</b>：Both \( np \ge 10 \) and \( n(1-p) \ge 10 \)（some sources use 5 instead of 10）。</li>
+<li><b>Parameters</b>：\( \mu = np \)，\( \sigma^2 = np(1-p) \)。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 Worked example（補充）</span>
+<p>擲 100 次公平硬幣，求 head ≤ 55 次嘅 probability。</p>
+<ol>
+<li>檢查條件：np = 50 ≥ 10，n(1−p) = 50 ≥ 10 ✔</li>
+<li>μ = np = 50，σ² = 100 × 0.5 × 0.5 = 25 → σ = 5</li>
+<li>\( z = (55-50)/5 = 1 \) → \( \Phi(1) = 0.8413 \)</li>
+<li>（進階：continuity correction 用 55.5 → z = 1.1 → 0.8643；真正 binomial 答案 = 0.8644，可見 correction 令 approximation 更準。）</li>
+</ol>
+<pre><code>from scipy import stats
+print(stats.binom.cdf(55, 100, 0.5))       # exact: 0.8644
+print(stats.norm.cdf(55, 50, 5))           # approx: 0.8413
+print(stats.norm.cdf(55.5, 50, 5))         # with continuity correction: 0.8643</code></pre></div>
+
+<h3>7.2 Poisson Approximation to the Binomial（slide 16）</h3>
+<p>當事件罕見（rare events），可以用 Poisson approximate binomial。</p>
+<div class="box exam"><span class="label">⭐ 條件同 parameter</span>
+<ul>
+<li><b>Condition</b>：n is large and p is small。</li>
+<li><b>Rule of Thumb</b>：\( n \ge 50 \) and \( p \le 0.1 \)，or when the expected value \( np \le 10 \)。</li>
+<li><b>Parameter</b>：\( \lambda = np \)。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 Worked example（補充）</span>
+<p>一批 200 件產品，每件次貨率 1%。求冇次貨嘅 probability，同最多 2 件次貨嘅 probability。</p>
+<ol>
+<li>檢查：n = 200 ≥ 50，p = 0.01 ≤ 0.1 ✔ → λ = np = 2</li>
+<li>\( P(X=0) \approx e^{-2} = 0.1353 \)（exact binomial：\( 0.99^{200} = 0.1340 \)）</li>
+<li>\( P(X\le 2) \approx e^{-2}(1 + 2 + 2^2/2) = 5e^{-2} = 0.6767 \)（exact：0.6767）</li>
+</ol></div>
+<table>
+<tr><th></th><th>Normal approx.</th><th>Poisson approx.</th></tr>
+<tr><td>幾時用</td><td>n 大、p 接近 0.5</td><td>n 大、p 細（rare events）</td></tr>
+<tr><td>Rule of thumb</td><td>np ≥ 10 且 n(1−p) ≥ 10</td><td>n ≥ 50 且 p ≤ 0.1（或 np ≤ 10）</td></tr>
+<tr><td>Parameters</td><td>μ = np，σ² = np(1−p)</td><td>λ = np</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Normal approximation 用嘅係 σ²（variance）= np(1−p)，代入 <code>norm.cdf</code> 時要開方做 σ。例如 n = 100, p = 0.5 → σ = 5，唔係 25。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 9、14 係標題／示意圖頁（Quantile-quantile plot 問題頁、“Approximation”），只有圖片。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 寫出 <code>norm.pdf</code>、<code>norm.cdf</code>、<code>norm.ppf</code>、<code>norm.rvs</code> 各自代表咩。</summary><p>pdf = density；cdf = probability P(X ≤ x)；ppf = quantile（cdf 嘅反函數）；rvs = random numbers（simulation）。</p></details>
+<details class="q"><summary>Q2. X ~ N(60, 8²)。求 P(X &gt; 72) 同第 97.5 百分位數。</summary><p>z = (72 − 60)/8 = 1.5，Φ(1.5) = 0.9332 → P(X &gt; 72) = 0.0668。97.5th percentile = 60 + 1.96 × 8 = 75.68（<code>norm.ppf(0.975, 60, 8)</code>）。</p></details>
+<details class="q"><summary>Q3. <code>stats.normaltest</code> 得到 p-value = 0.32。點寫結論？</summary><p>p-value 0.32 &gt; α = 0.05 → do not reject H0。冇足夠證據話數據唔係 normal；可以 weakly say 數據可以視為 normal。</p></details>
+<details class="q"><summary>Q4. QQ-plot 啲點喺兩端明顯偏離直線（左下向下、右上向上）代表咩？</summary><p>兩邊 tails 比 normal 厚（heavy tails / outliers 多），數據唔太符合 normal。</p></details>
+<details class="q"><summary>Q5. Binomial(n = 40, p = 0.2)：可唔可以用 normal approximation？</summary><p>np = 8 &lt; 10 → 按 slide 嘅 rule of thumb（10）唔適合；如果用寬鬆標準（5），np = 8、n(1−p) = 32 都 ≥ 5 → 勉強可以。考試跟 slide：答唔適合（或說明兩種標準）。</p></details>
+<details class="q"><summary>Q6. n = 500、p = 0.004，求 P(X = 3) 嘅 Poisson approximation。</summary><p>λ = np = 2：\( P(X=3) \approx 2^3 e^{-2}/3! = 8 \times 0.1353/6 \approx 0.1804 \)。</p></details>
+<details class="q"><summary>Q7. 點解 residual 係 normal 而且 mean 0 代表 model 冇得再改善 mean prediction？</summary><p>因為 residual 只係純 random noise，冇系統性 pattern 可以再被 X 解釋；如果仲有 pattern（例如 mean ≠ 0 或跟 X 有關），代表 model 漏咗資訊。</p></details>
+<details class="q"><summary>Q8. 寫 code：模擬 1000 個 N(5, 2²)，畫 density histogram 並疊上理論曲線。</summary><p><code>x = norm.rvs(5, 2, 1000); plt.hist(x, bins='auto', density=True); g = np.linspace(-2, 12, 200); plt.plot(g, norm.pdf(g, 5, 2)); plt.show()</code></p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>ECDF：<code>plt.hist(y, bins=50, cumulative=True, histtype='step')</code>（數據要冇 NA）。</li>
+<li>Residual \( e = y-\hat y \)；normal + mean 0 → random → model 冇得再改善 mean prediction；regression 理論建基於 normal error。</li>
+<li>pdf = density｜cdf = probability｜ppf = quantile｜rvs = random。預設 loc = 0、scale = 1（scale = SD）。</li>
+<li>\( Z=(X-\mu)/\sigma \)；Φ(1) = 0.8413、Φ(1.96) = 0.975、Φ(0) = 0.5。</li>
+<li>Histogram vs pdf：<code>density=True</code>。</li>
+<li>QQ-plot（<code>sm.qqplot(x, fit=True, line="45")</code>）：normal → 近直線；亦用嚟查 residuals。</li>
+<li><code>stats.normaltest</code>：H0 = normal；p &gt; 0.05 → not rejected → “weakly” normal。</li>
+<li>Normal approx. to Binomial：np ≥ 10、n(1−p) ≥ 10（或 5）；μ = np，σ² = np(1−p)。</li>
+<li>Poisson approx. to Binomial：n ≥ 50、p ≤ 0.1（或 np ≤ 10）；λ = np。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m2b.html">← Module 2b Binomial / Geometric / Poisson</a>
+  <a href="COM6005-m3.html">Module 3 CI &amp; Hypothesis testing →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

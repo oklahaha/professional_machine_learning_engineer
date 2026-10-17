@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 5 Power BI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w5">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 5</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 5 · Source: 5-Power BI.pptx (53 slides)</p>
+<h1>Data Visualization and Applications: Power BI (Practical)</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>The background of Power BI：dashboard、BI、Excel vs Power BI</li>
+    <li>The mechanisms of Power BI：Connect → Transform (Power Query / M) → Model → Calculate (DAX) → Visualize &amp; Publish；VertiPaq engine</li>
+    <li>OLTP vs OLAP；Dimensional model：Star schema vs Snowflake schema、Fact vs Dimension tables、Normalization</li>
+    <li>OLAP actions：Roll-up、Drill-down、Drill-through、Slicing</li>
+    <li>Data cube：假設、優點、限制；VertiPaq vs Data cube</li>
+    <li>Use Power BI (practical)：Get data、Power Query Editor、Merge Queries（join types）、Group by</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>OLTP vs OLAP 比較表（concurrent users、read/write、ACID、response time、query complexity）</li>
+    <li>Star vs Snowflake schema 比較（structure、joins、performance、disk space）+ Fact / Dimension table + Normalization 定義</li>
+    <li>OLAP actions：roll-up / drill-down（concept hierarchy 或加減 dimension）、drill-through、slicing；drill-down vs slicing 的分別</li>
+    <li>Data cube：assumptions、= GROUP BY query、advantage &amp; limitations；VertiPaq vs Data cube 表</li>
+    <li>Excel vs Power BI 異同（Power Query、VertiPaq、DAX）及 Power BI 五個步驟</li>
+  </ol>
+</div>
+
+<h2>1. Power BI 與 Business Intelligence</h2>
+<p><b>Dashboard</b>：At-a-glance view of key performance indicators (<b>KPIs</b>)。</p>
+<p><b>Power BI</b>：Product of Microsoft；easy to build dashboard for BI；cloud-based service and offline version。Key features：<b>Dashboard</b>、<b>Reporting</b>、<b>Online analytical processing (OLAP)</b>。Other similar products：<b>Tableau</b>。</p>
+<p><b>Business Intelligence (BI)</b>：Technology-driven process 去 analyse data 同 presenting <b>actionable information</b>（Moodle 有 interactive dashboard 例子）。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3、4、7 的 dashboard / Excel 截圖係圖片，文字擷取不到。</p></div>
+
+<h2>2. Excel vs Power BI</h2>
+<p>好多人覺得「Power BI is just an advanced Excel」。佢哋確實有好多共通點：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Similarities</span>
+<ul>
+<li>Both are Microsoft products</li>
+<li>Both use the <b>Power Query Editor</b> for extracting, transforming, and loading (<b>ETL</b>) data</li>
+<li>Excel's Power Pivot 同 Power BI 的 core 用同一個 engine：<b>VertiPaq</b> — in-memory, column-based analytical engine</li>
+<li>Both use <b>DAX (Data Analysis Expressions)</b> for creating <b>calculated columns</b> and <b>measures</b></li>
+<li>Both allow creating visualizations (charts, graphs, tables)</li>
+</ul>
+<table>
+<tr><th></th><th>Excel</th><th>Power BI</th></tr>
+<tr><td>Purpose</td><td>Spreadsheet and calculation</td><td>Business Intelligence — interactive reports, dashboards</td></tr>
+<tr><td>Capacity</td><td>Limited（Excel file 有 1 million rows → performance degrades）</td><td>For Big Data</td></tr>
+<tr><td>Data Model</td><td>Power Pivot (Optional)</td><td>Tables (and their relationships) (Mandatory)</td></tr>
+<tr><td>Data Refresh</td><td>Manual</td><td>Automated by schedules</td></tr>
+<tr><td>Sharing</td><td>File-based</td><td>Cloud-enabled</td></tr>
+</table>
+</div>
+
+<h2>3. Power BI tools：五個步驟</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：Power BI workflow</span>
+<table>
+<tr><th>Step</th><th>Component</th><th>Description</th></tr>
+<tr><td>1. Connect</td><td>Power Query</td><td>Accessing data from various sources (Databases, Files, Web APIs)</td></tr>
+<tr><td>2. Transform</td><td>Power Query Editor (<b>M Language</b>)</td><td>Cleaning, shaping, merging, and preparing data (<b>ETL stage</b>)</td></tr>
+<tr><td>3. Model</td><td>Data Model View</td><td>Defining relationships, setting data types, and creating hierarchies</td></tr>
+<tr><td>4. Calculate</td><td><b>DAX</b></td><td>Creating <b>measures (KPIs)</b> and <b>calculated columns</b> for analysis</td></tr>
+<tr><td>5. Visualize &amp; Publish</td><td>Report View &amp; Power BI Service</td><td>Creating interactive reports and sharing them with end-users</td></tr>
+</table>
+</div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Step 1–2 就係 Week 1 的 ETL / data pipeline（Ingestion + Processing）；Step 1 的 Web APIs 就係 Week 2；Step 1 由 database 讀數就係 Week 4 slide 70 講的「SQL beyond coding」。</p></div>
+
+<h3>3.1 DAX：calculated column vs measure（概念）</h3>
+<p>Slides 只提到 DAX 用嚟整 measures (KPIs) 同 calculated columns，詳細語法列為 <b>self-study</b>（slide 53 附 Microsoft 的 DAX basics 教學）。以下係幫你理解概念的簡單例子（非 slide 內容，用課堂 Student / Module / Results 例子的欄位示意）：</p>
+<table>
+<tr><th></th><th>Calculated column</th><th>Measure</th></tr>
+<tr><td>計算時間</td><td>Load / refresh data 時逐 row 計好，存喺 table</td><td>Query 時先計，按當時 filter context（例如 slicer 揀咗邊個 major）動態計</td></tr>
+<tr><td>結果</td><td>每 row 一個值（新增一欄）</td><td>一個 aggregate 值（KPI）</td></tr>
+<tr><td>類比 SQL</td><td><code>SELECT …, CASE WHEN … END AS Pass</code></td><td><code>SELECT COUNT(*) … GROUP BY …</code>（group 由 visual 決定）</td></tr>
+</table>
+<pre><code>-- Calculated column：每一行標記 pass / fail
+Pass = IF(Results[Grade] = "F", "Fail", "Pass")
+
+-- Measure：A grade 數目 / 比率（會跟住 slicer、drill-down 自動重算）
+Num A   = CALCULATE(COUNTROWS(Results), Results[Grade] = "A")
+A Rate  = DIVIDE([Num A], COUNTROWS(Results))</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Measure 好似一條「未填 GROUP BY 的 SQL」：你喺 dashboard 擺一個 bar chart 按 Major 分，Power BI 就自動用 Major 做 group 去計 <code>[A Rate]</code>；再加 Sex slicer，又會自動加 filter 重算。所以同一條 measure 可以用喺唔同 visual。</p></div>
+
+<h2>4. Data Model：OLTP vs OLAP</h2>
+<p><b>A robust data model is the foundation of performant BI</b>。Transactional systems (OLTP) are optimized for data entry, not data analysis——佢哋有好多 tables 同 complex joins。Solution：<b>A Dimensional Model</b> simplifies the data structure for fast querying and easy summarization。</p>
+<h3>4.1 OLTP（Online Transactional Processing）</h3>
+<p>Function：to process (database) transactions and record them。Requirements：<b>Online</b>（real-time, extremely fast, low latency）、<b>ACID compliance</b>、<b>High throughput</b>（concurrently process 大量 transactions）。例子：Student enrollment system（HSU 幾千個學生同時揀科）、e-shop sales processing、bank transaction processing。</p>
+<h3>4.2 OLAP（Online Analytical Processing）</h3>
+<p>Perform <b>interactive data analytics</b>：explore and discover interesting findings from the data (statistics)。Online：user 可以做各種 actions 去睇唔同 statistics，response 要快；<b>Data visualization is a key component</b>。</p>
+<p>例子（slides 12–13）：一科的 basic statistics → Anything interesting? 睇 breakdown 搵 insights：例如 interaction — check the pass rate according to sex；其他可以 explore：Breakdown by age? Major? Year?</p>
+<div class="box exam"><span class="label">⭐ 考試重點：OLTP vs OLAP</span>
+<table>
+<tr><th>OLTP</th><th>OLAP</th></tr>
+<tr><td><b>Large</b> number of concurrent users</td><td><b>Small</b> number of concurrent users</td></tr>
+<tr><td>Modify a small part (typically a few records) of the database</td><td>Usually <b>read-only</b>；aggregate queries to generate statistics</td></tr>
+<tr><td><b>Strong consistency (ACID) is very important</b></td><td>Data from a data warehouse / lake；strong consistency (ACID) is not necessary</td></tr>
+<tr><td>Response time must be very small（may handle a large number of transactions at the same time）</td><td>Response time (during exploration) longer than OLTP but still real-time level；don't mind a longer initial setup time</td></tr>
+<tr><td>Simpler queries</td><td>More complex queries</td></tr>
+</table>
+</div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>OLTP 需要的 ACID、concurrency control、recovery 就係 Week 3 的內容；OLAP 的 aggregate queries 就係 Week 4 的 GROUP BY。OLAP 數據來自 Week 1 的 data warehouse / lake。</p></div>
+
+<h2>5. Star Schema vs Snowflake Schema</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 14 的 star / snowflake 結構圖係圖片，文字擷取不到；slide 文字結論係 "We prefer star schema for OLAP"。</p></div>
+<p><b>Star Schema</b>：中央係 <mark class="k">Fact table</mark>，周圍係 <mark class="k">Dimension tables</mark>（provide additional context to the facts）。Design principles：</p>
+<ul>
+<li><b>Fact table — What happened?</b> Example：Enrollment</li>
+<li><b>Dimension tables — Who, What, When, Where?</b> Example：Student / Teacher / Course / Location information</li>
+</ul>
+<h3>5.1 Example（slides 16–17）</h3>
+<table>
+<tr><th>Star Schema</th><th>Snowflake Schema</th></tr>
+<tr><td>Enrollment (StudentID, Course, Year, Sem) — Fact table<br>Student (StudentID, Major, Department, School)</td>
+<td>Enrollment (StudentID, Course, Year, Sem)<br>Student (StudentID, Major)<br>Programme (Major, Department)<br>Unit (Department, School)</td></tr>
+</table>
+<p>Star 版本的 Student dimension：</p>
+<table>
+<tr><th>StudentID</th><th>Major</th><th>Department</th><th>School</th></tr>
+<tr><td>1</td><td>CS</td><td>CS</td><td>DS</td></tr><tr><td>2</td><td>CS</td><td>CS</td><td>DS</td></tr>
+<tr><td>3</td><td>DSAI</td><td>CS</td><td>DS</td></tr><tr><td>4</td><td>DSAI</td><td>CS</td><td>DS</td></tr>
+<tr><td>5</td><td>Math</td><td>Math</td><td>DS</td></tr>
+</table>
+<p>Snowflake 版本拆成三個 tables：Student (1 CS, 2 CS, 3 DSAI, 4 DSAI, 5 Math)；Programme (CS→CS, DSAI→CS, Math→Math)；Unit (CS→DS, Math→DS)。</p>
+<p>觀察：Star 版本 "CS, DS" 重複好多次（redundancy）；Snowflake 每個事實只記一次，但要搵某學生的 School 要 join 三個 tables。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Normalization &amp; Star vs Snowflake</span>
+<p><b>Normalization</b>：The systematic process of organizing the columns and tables to (1) <b>Minimize data redundancy</b>；(2) <b>Improve data integrity</b>。</p>
+<table>
+<tr><th>Feature</th><th>Star Schema</th><th>Snowflake Schema</th></tr>
+<tr><td>Structure</td><td>A central Fact Table surrounded by Dimension Tables</td><td>Dimension Tables are <b>normalized</b> (have child Dimension Tables)</td></tr>
+<tr><td>Joins</td><td><b>Fewer</b> joins required</td><td>More complex joins required</td></tr>
+<tr><td>Performance</td><td><b>Faster</b> query performance (fewer joins)</td><td>Slower query performance (more joins)</td></tr>
+<tr><td>Disk Space</td><td>Uses more disk space (some redundancy in dimensions)</td><td>More space-efficient (less redundancy)</td></tr>
+</table>
+<p><b>We prefer star schema for OLAP</b>——OLAP 主要係 read-only 分析，速度比慳位重要。</p>
+</div>
+<pre><code>-- 「每個 School 有幾多 enrollment？」
+-- Star：1 個 join
+SELECT s.School, COUNT(*) FROM Enrollment e JOIN Student s ON e.StudentID = s.StudentID
+GROUP BY s.School;
+-- Snowflake：3 個 joins
+SELECT u.School, COUNT(*) FROM Enrollment e
+JOIN Student s   ON e.StudentID = s.StudentID
+JOIN Programme p ON s.Major = p.Major
+JOIN Unit u      ON p.Department = u.Department
+GROUP BY u.School;</code></pre>
+
+<h2>6. OLAP Actions (exploration)</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：四個 OLAP actions</span>
+<table>
+<tr><th>Action</th><th>Definition</th></tr>
+<tr><td><b>Roll-up (drill-up)</b></td><td>Aggregating data</td></tr>
+<tr><td><b>Drill-down (roll-down)</b></td><td>Breaking data into more details；roll-up is the reverse of drill-down</td></tr>
+<tr><td><b>Drill-through</b></td><td>Navigate from a summary view to a detailed report page filtered to a specific context</td></tr>
+<tr><td><b>Slicing</b></td><td>Add filters to focus on particular value(s) for some attribute(s)</td></tr>
+</table>
+<p><b>Drill-down vs slicing</b>：Drill-down — the data source is the same（只係睇得更細）；Slicing — part of the data is filtered（有啲資料唔再睇）。</p>
+</div>
+<h3>6.1 Roll-up / drill-down example 1：Moving up/down in a concept structure</h3>
+<p>Grades of A and B are "pass"：</p>
+<table>
+<tr><th colspan="3">Detailed (drill-down)</th><th></th><th colspan="3">Summarised (roll-up)</th></tr>
+<tr><th>Major</th><th>Grade</th><th>Count</th><td></td><th>Major</th><th>Grade</th><th>Count</th></tr>
+<tr><td>DSAI</td><td>A</td><td>10</td><td></td><td>DSAI</td><td>Pass</td><td>25</td></tr>
+<tr><td>DSAI</td><td>B</td><td>15</td><td></td><td>DSAI</td><td>F</td><td>3</td></tr>
+<tr><td>DSAI</td><td>F</td><td>3</td><td></td><td>CS</td><td>Pass</td><td>28</td></tr>
+<tr><td>CS</td><td>A</td><td>7</td><td></td><td>CS</td><td>F</td><td>6</td></tr>
+<tr><td>CS</td><td>B</td><td>21</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>CS</td><td>F</td><td>6</td><td></td><td></td><td></td><td></td></tr>
+</table>
+<p>Roll-up：DSAI Pass = 10 + 15 = 25；CS Pass = 7 + 21 = 28。由此可計 pass rate：DSAI 25/28 ≈ 89%，CS 28/34 ≈ 82%。</p>
+<h3>6.2 Roll-up / drill-down example 2：Adding / removing a dimension</h3>
+<p>加入 dimension "sex" = drill-down；拎走 = roll-up：</p>
+<table>
+<tr><th>Major</th><th>Grade</th><th>Sex</th><th>Count</th></tr>
+<tr><td>DSAI</td><td>A</td><td>M</td><td>2</td></tr><tr><td>DSAI</td><td>A</td><td>F</td><td>8</td></tr>
+<tr><td>DSAI</td><td>B</td><td>M</td><td>8</td></tr><tr><td>DSAI</td><td>B</td><td>F</td><td>7</td></tr>
+<tr><td>DSAI</td><td>F</td><td>M</td><td>2</td></tr><tr><td>DSAI</td><td>F</td><td>F</td><td>1</td></tr>
+<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+</table>
+<p>檢查：DSAI A = 2 + 8 = 10 ✓；DSAI B = 8 + 7 = 15 ✓。</p>
+<h3>6.3 Drill-through example</h3>
+<p>由 summary（DSAI, A, 10）<b>open another page</b>，列出該 context 的詳細記錄：StudentID / Name / Major / Grade（1 Alice DSAI A；5 Amy DSAI A；11 Bob DSAI A；…）。The other page may use a <b>different set of attributes / metrics</b>（例如 Name 喺 summary 頁冇出現）。</p>
+<h3>6.4 Slicing example</h3>
+<p>Select only records of grade A → 剩 (DSAI, A, 10)、(CS, A, 7)。</p>
+<pre><code>-- OLAP actions 用 SQL 理解（Enrol(Major, Grade, Sex, StudentID, Name)）
+-- Drill-down（加 Sex dimension）
+SELECT Major, Grade, Sex, COUNT(*) FROM Enrol GROUP BY Major, Grade, Sex;
+-- Roll-up（concept hierarchy：A/B → Pass）
+SELECT Major, CASE WHEN Grade IN ('A','B') THEN 'Pass' ELSE 'F' END AS G, COUNT(*)
+FROM Enrol GROUP BY Major, G;
+-- Slicing（filter）
+SELECT Major, Grade, COUNT(*) FROM Enrol WHERE Grade = 'A' GROUP BY Major, Grade;
+-- Drill-through（去明細頁）
+SELECT StudentID, Name, Major, Grade FROM Enrol WHERE Major = 'DSAI' AND Grade = 'A';</code></pre>
+
+<h2>7. VertiPaq：Power BI's core engine</h2>
+<ul>
+<li><b>In-memory</b></li>
+<li><b>Columnar database</b>（NoSQL chapter 會再講）</li>
+<li>With <b>compression</b> technique</li>
+<li><b>Multi-threading</b></li>
+<li><b>Caching</b></li>
+</ul>
+<p>High computational speed for usual workload on modern hardware（<b>although the computation complexity is still O(n)</b>）。</p>
+<div class="box tip"><span class="label">💡 點解 columnar 快？</span><p>OLAP query 例如「計 Grade = A 的數目」只需要 Grade 一欄。Row-based 儲存要讀晒每行所有欄；columnar 只讀 Grade 欄，而一欄入面重複值多（A、B、F…）好易壓縮。但始終要掃晒 n 個值，所以仍然係 O(n)——只係常數細好多。</p></div>
+
+<h2>8. Data cube in OLAP</h2>
+<p><b>Efficiency challenge</b>：如果有 billions of records，一個 query 可能要幾分鐘 / 幾粒鐘；user 每次有 follow-up query 都要等。<b>Idea</b>：Pre-compute the common intermediate components for answering all potential queries the user may ask。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Data cube 的 assumptions &amp; idea</span>
+<p>Assumptions：</p>
+<ul>
+<li>We know the set of features <b>F</b> that the user may explore</li>
+<li>F is small enough</li>
+<li>The number of combinations of the values in F is <b>significantly smaller than the size of the database</b></li>
+</ul>
+<p>Idea：<b>Pre-build data cube(s)</b> from the database based on F；all OLAP actions are calculated based on the data cube(s)（Database → Data cube(s) → Application）。</p>
+</div>
+<h3>8.1 Example data cube（Features: Grade, Major, Sex）</h3>
+<p>3 個 features，每個 2 個值 → 2 × 2 × 2 = <b>8 cells</b>。Slide 28 的大數據版本（按每面加總核對過的排列）：</p>
+<table>
+<tr><th rowspan="2">Sex</th><th colspan="2">Grade: A</th><th colspan="2">Grade: F</th></tr>
+<tr><th>DSAI</th><th>CS</th><th>DSAI</th><th>CS</th></tr>
+<tr><td>M</td><td>2355</td><td>711</td><td>211</td><td>595</td></tr>
+<tr><td>F</td><td>8712</td><td>15</td><td>103</td><td>16</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 28、30–32 的 cube 係立體圖形，文字擷取出來的數字次序已打亂；上表及下表的 cell 位置係按 slide 30–31 drill-down 結果（A-DSAI 10、A-CS 7、F-DSAI 3、F-CS 6）及 slide 22 的數字反推，請對照原 slide 確認。</p></div>
+<h3>8.2 Analysis of data cubes</h3>
+<ul>
+<li>Size of data cube is much smaller than the database：例子中 cube 只有 8 cells，但 database 可以有 10,000+ records（上表 8 個數加埋 = 12,718）</li>
+<li><b>Advantage</b>：The system can react to OLAP actions much faster</li>
+<li><b>Limitations</b>：(1) 分析涉及 <b>new feature</b> → 要 recalculate a new data cube；(2) <b>New data</b> added → 要 maintenance 去 update cube，否則分析唔包括新資料</li>
+</ul>
+<h3>8.3 用 cube 做 drill-down / roll-up（slides 30–31）</h3>
+<p>細數據版本 cube（Grade × Major × Sex）：</p>
+<table>
+<tr><th rowspan="2">Sex</th><th colspan="2">Grade: A</th><th colspan="2">Grade: F</th></tr>
+<tr><th>DSAI</th><th>CS</th><th>DSAI</th><th>CS</th></tr>
+<tr><td>M</td><td>2</td><td>7</td><td>2</td><td>5</td></tr>
+<tr><td>F</td><td>8</td><td>0</td><td>1</td><td>1</td></tr>
+</table>
+<p><b>Summarizing the data along some dimension(s)</b>（加總 Sex）→ (A, DSAI, 10)、(A, CS, 7)、(F, DSAI, 3)、(F, CS, 6)；再加總 Major → (A, 17)、(F, 9)。反方向 <b>break down the cube</b> 就係 drill-down：Grade → Grade × Major。全部只需要加 8 個 cells，完全唔使掂原始 database。</p>
+<h3>8.4 Generating the data cube：It is just a GROUP BY query</h3>
+<pre><code>SELECT Grade, Major, Sex, COUNT(*) AS Count
+FROM Enrol
+GROUP BY Grade, Major, Sex;
+-- (A, DSAI, M, 2), (A, DSAI, F, 8), (F, DSAI, M, 2), (F, DSAI, F, 1), …
+
+-- 之後所有 OLAP action 都喺 cube 上做，例如 roll-up 到 Grade：
+SELECT Grade, SUM(Count) FROM Cube GROUP BY Grade;   -- A 17, F 9</code></pre>
+<div class="box warn"><span class="label">⚠️ 易錯</span><p>喺 cube 上 roll-up 要用 <code>SUM(Count)</code>，唔係 <code>COUNT(*)</code>——cube 每行已經係一個計數，<code>COUNT(*)</code> 只會數到有幾多個 cells。</p></div>
+<h3>8.5 VertiPaq vs Data cube</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+<tr><th></th><th>VertiPaq</th><th>Data cube</th></tr>
+<tr><td>Support in Power BI</td><td>Native engine</td><td>Need external data cubes</td></tr>
+<tr><td>Query speed</td><td>Good for general workload</td><td>Near-instant for anticipated queries</td></tr>
+<tr><td>Storage</td><td>No additional storage</td><td>Require additional storage; small</td></tr>
+<tr><td>Flexibility</td><td>Handle any query</td><td>Only for anticipated queries</td></tr>
+<tr><td>Preparation time</td><td>No preparation is required</td><td>The query time to build the cube; slow when the database is very large</td></tr>
+</table>
+<p><b>Simple Integration</b>：Load the data cube cell data instead of raw data in Power BI → Power BI 要管理的 records 少好多 → much faster!</p>
+</div>
+
+<h2>9. Power BI practical walkthrough</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 35–50 主要係 Power BI 介面截圖（新 file 介面、Get data 選單、Power Query Editor、Merge Queries 對話框、Group by 對話框、結果、visuals 面板），圖片內容擷取不到；以下根據 slide 文字整理步驟，操作細節請對照原 slide。</p></div>
+<ol>
+<li><b>Getting data</b>：Home &gt; Get data。Data sources：Databases（Microsoft SQL (MSSQL)、other databases）、Files（CSV、Excel）</li>
+<li>In-class example：Moodle 上 3 個 CSV files（exam results database）：<b>Student</b>、<b>Module</b>、<b>Results</b></li>
+<li><b>Import Module.csv</b>：Check the data values. Are they what we want? <b>Remember data quality is very important!</b> 問題：<b>The column headers are not recognized!</b> → 用 Power Query interface 轉換</li>
+<li><b>Power Query Editor</b>：<b>Make the first row as column name</b>（Use First Row as Headers）。Self-study：explore 其他 Power Query operations</li>
+<li>Exercise：Home &gt; New Source，加埋另外兩個 CSV</li>
+<li><b>Joining the tables</b>：Home &gt; Combine &gt; <b>Merge Queries</b>。Options：select the table to join、select the columns to join、select the join type</li>
+<li>Exercise：用 Merge Queries 將 Student 同 Module 合併入 Results table</li>
+<li><b>Preparing the column for aggregation</b>（for preparing the underlying data cube）：Home &gt; <b>Group by</b>——count the number of records; group by student, module and grade</li>
+<li>Result：<b>Every record has a count of 1</b>。Don't worry：之後可以做更高層次 grouping；呢個 data cube 係用嚟 support further aggregation</li>
+<li>Close Power Query Editor → add visual components [self-study] → Done!</li>
+</ol>
+<div class="box tip"><span class="label">💡 點解每個 count 都係 1？</span><p>每個學生每科只有一個成績，所以 (student, module, grade) 組合本身就係 unique，group 完每組只有 1 行。呢個 "cube" 冇壓縮到資料量，但佢提供咗一個 <code>Count</code> 欄，之後 visual 可以用 SUM(Count) 按 module、grade 等任意 roll-up。</p></div>
+<h3>9.1 Merge Queries 的 join types</h3>
+<p>A = Module (COM6001 Computing, COM6002 Database)；B = Result (123456 COM6001, 234567 COM6003)。</p>
+<table>
+<tr><th>Join type</th><th>結果</th></tr>
+<tr><td>A INNER JOIN B</td><td>(COM6001, Computing, 123456, COM6001)</td></tr>
+<tr><td>A Left Outer Join B</td><td>(COM6001, Computing, 123456, COM6001)；(COM6002, Database, Null, Null)</td></tr>
+<tr><td>A Full Outer Join B</td><td>上面兩行 + (Null, Null, 234567, COM6003)</td></tr>
+<tr><td>A <b>Left Anti Join</b> B</td><td>(COM6002, Database, Null, Null) — 只要 <b>records in A but not B</b></td></tr>
+</table>
+<pre><code>-- Left Anti Join 用 SQL 表達：
+SELECT m.* FROM Module m LEFT JOIN Result r ON m.ModuleCode = r.Module
+WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Merge Queries = Week 4 的 JOIN = pandas <code>merge(how="inner"/"left"/"outer")</code>；Power Query 的 Group by = SQL GROUP BY = pandas <code>groupby().size()</code>。Left anti join 喺 pandas 可以用 <code>merge(..., how="left", indicator=True)</code> 再揀 <code>_merge == "left_only"</code>。</p></div>
+
+<h2>10. Exercises &amp; self-study</h2>
+<p>Exercise（Moodle 上的 Power BI demo）：</p>
+<ul>
+<li>Who received the most A grades? → <b>101101 Amy</b>（lecturer notes）</li>
+<li>Which module(s) is/are easier to get A? → <b>COM6002 and COM6003</b></li>
+<li>Which module(s) is/are not easy to get a pass? → <b>COM6102</b></li>
+<li>What else interesting can you find from the dashboard?</li>
+</ul>
+<p>In-class participation：download Microsoft 官方 Power BI financial sample（或 Moodle 的 xlsx），design a dashboard（hint：研究 columns，例如 COGS = Cost of goods sold），提交 Power BI file（2 marks）。</p>
+<p>Self-study area：<b>DAX (Data Analysis Expressions)</b>、Publishing reports and dashboards、Scheduling Data Refresh for datasets。</p>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 列出 Excel 同 Power BI 的三個共通點同三個分別。</summary><p>共通：都係 Microsoft 產品；都用 Power Query Editor 做 ETL；Power Pivot / Power BI 都用 VertiPaq engine；都用 DAX 做 calculated columns 同 measures；都可做 visualization。分別：Purpose（spreadsheet vs BI dashboard）、Capacity（~1M rows 變慢 vs big data）、Data model（optional vs mandatory）、Refresh（manual vs scheduled）、Sharing（file vs cloud）。</p></details>
+<details class="q"><summary>Q2. 大學選科系統同 BI dashboard 分別屬於 OLTP 定 OLAP？各自的要求係乜？</summary><p>選科系統 = OLTP：大量 concurrent users、每次改少量 records、ACID 非常重要、response time 要極短、query 簡單。Dashboard = OLAP：少量 users、read-only aggregate queries、數據來自 warehouse/lake、唔需要 strong consistency、response 可以稍長但仍 real-time、query 複雜、可接受較長 initial setup。</p></details>
+<details class="q"><summary>Q3. 比較 star schema 同 snowflake schema，並解釋點解 OLAP 偏好 star schema。</summary><p>Star：central fact table + 非 normalized 的 dimension tables；joins 少、query 快、用多啲 disk（redundancy）。Snowflake：dimension tables normalized（有 child dimension tables）；joins 多而複雜、query 慢、慳空間。OLAP 主要讀取分析，速度重要過空間，所以偏好 star。</p></details>
+<details class="q"><summary>Q4. Normalization 的兩個目的係乜？</summary><p>(1) Minimize data redundancy；(2) Improve data integrity。</p></details>
+<details class="q"><summary>Q5. 由 (Major, Grade, Count) 表：DSAI A 10、B 15、F 3；CS A 7、B 21、F 6。將 A/B roll-up 成 Pass，並計各 major 的 pass rate。</summary><p>DSAI Pass = 25、F = 3 → 25/28 ≈ 89.3%。CS Pass = 28、F = 6 → 28/34 ≈ 82.4%。</p></details>
+<details class="q"><summary>Q6. 以下屬於邊種 OLAP action？(a) 加入 Year dimension 睇每年分佈 (b) 只睇 2025 年數據 (c) 由 "CS, F, 6" 跳去另一頁列出 6 個學生名 (d) 將 Major 合併成 School 層次</summary><p>(a) Drill-down（加 dimension）；(b) Slicing（filter）；(c) Drill-through；(d) Roll-up（concept hierarchy 向上）。</p></details>
+<details class="q"><summary>Q7. Data cube 的三個 assumptions 同兩個 limitations 係乜？Features Grade (A, B, F)、Major (DSAI, CS, Math)、Sex (M, F) 的 cube 最多有幾多 cells？</summary><p>Assumptions：知道 user 會 explore 的 features F；F 夠細；F 值組合數遠少於 database size。Limitations：新 feature 要重新建 cube；新數據要 maintenance 更新 cube，否則分析唔包括新數據。Cells = 3 × 3 × 2 = 18。</p></details>
+<details class="q"><summary>Q8. 寫 SQL 由 Enrol(StudentID, Grade, Major, Sex) 生成 data cube，再由 cube roll-up 到每個 Major 的總人數。</summary><p><code>CREATE TABLE Cube AS SELECT Grade, Major, Sex, COUNT(*) AS Count FROM Enrol GROUP BY Grade, Major, Sex;</code> 然後 <code>SELECT Major, SUM(Count) FROM Cube GROUP BY Major;</code>（要用 SUM(Count) 唔係 COUNT(*)。）</p></details>
+<details class="q"><summary>Q9. VertiPaq 有咩特點？佢同 data cube 比較有咩取捨？</summary><p>VertiPaq：in-memory、columnar、compression、multi-threading、caching；快但 complexity 仍 O(n)。對比 data cube：VertiPaq 係 native、可處理任何 query、唔使額外 storage 或準備時間，適合 general workload；data cube 對 anticipated queries 近乎即時，但要額外（少量）storage、只支援預計的 queries、建 cube 喺大 database 好慢、而且 Power BI 要外部 cube。</p></details>
+<details class="q"><summary>Q10. Power Query Merge Queries 中，A Left Anti Join B 會回傳乜？用 slide 例子答。</summary><p>只回傳喺 A 但唔喺 B 的 records：A = Module、B = Result，結果係 (COM6002, Database)——冇學生修的 module。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Dashboard = at-a-glance KPIs；BI = analyse data → actionable information；Power BI vs Tableau</li>
+<li>Excel &amp; Power BI 共用：Power Query (ETL)、VertiPaq、DAX、visualizations；Power BI：big data、data model mandatory、scheduled refresh、cloud sharing</li>
+<li>Workflow：Connect (Power Query) → Transform (Power Query Editor, M) → Model (relationships, types, hierarchies) → Calculate (DAX measures &amp; calculated columns) → Visualize &amp; Publish</li>
+<li>OLTP：many users、few-record updates、ACID、tiny latency、simple queries</li>
+<li>OLAP：few users、read-only aggregates、warehouse/lake、no strict ACID、complex queries、setup time OK</li>
+<li>Fact table = what happened；Dimension = who / what / when / where</li>
+<li>Star：fewer joins、faster、more space；Snowflake：normalized dimensions、more joins、slower、less space；OLAP prefers star</li>
+<li>Normalization：minimize redundancy + improve integrity</li>
+<li>Roll-up（aggregate / 上 concept hierarchy / 減 dimension）↔ Drill-down；Drill-through（去明細頁）；Slicing（filter）；drill-down 同一 data，slicing 過濾 data</li>
+<li>VertiPaq：in-memory、columnar、compression、multi-threading、caching、仍 O(n)</li>
+<li>Data cube：已知細 feature set F → 預先 GROUP BY；快；新 feature / 新 data 要重建；roll-up 用 SUM(Count)</li>
+<li>VertiPaq vs cube：native / any query / no prep vs external / anticipated only / extra small storage / build time</li>
+<li>Practical：Get data → Use first row as headers → New Source → Merge Queries（inner / left outer / full outer / left anti）→ Group by → visuals</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w4.html">← Week 4 SQL</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

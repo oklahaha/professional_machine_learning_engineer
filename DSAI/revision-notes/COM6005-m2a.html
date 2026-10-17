@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 2a Probability Functions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m2a">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 2a</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 2a · Source: Module_2a_ProbFunction_L02_complete.pdf (27 slides)</p>
+<h1>Simulation, Variable Types &amp; Probability Functions</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>用 <code>np.random.choice</code> 做 simulation：<code>replace=True/False</code>、指定 probability <code>p=</code>、<code>np.random.seed()</code>。</li>
+    <li>分辨四種 variable type：Nominal、Ordinal（categorical）同 Interval、Ratio（numerical）。</li>
+    <li>知道常見情境對應嘅 distribution：Poisson、Geometric、Normal、Exponential、Weibull、Pareto。</li>
+    <li>由 frequency table / histogram 理解 distribution、density（面積 = 1）同 cumulative frequency。</li>
+    <li>分清 <b>PMF / CMF</b>（discrete）同 <b>PDF / CDF</b>（continuous），並識用 <code>scipy.stats</code> 計。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>PMF / CMF / PDF / CDF 對照表（slide 23）：邊個 discrete、邊個 continuous、輸出係咩、總和／面積 = 1。</li>
+    <li>Continuous variable：P(X = 某一點) = 0；PDF 嘅值係 density 唔係 probability；probability = 曲線下面積。</li>
+    <li>Nominal / Ordinal / Interval / Ratio 嘅定義同例子（例如 temperature °C = interval；weight = ratio；Likert = ordinal）。</li>
+    <li><code>replace=True</code> vs <code>replace=False</code>；seed 嘅用途；train/test split 70/30 嘅寫法。</li>
+    <li><code>stats.binom.pmf(5,10,0.5) = 0.2461</code>、<code>binom.cdf(5,10,0.5) = 0.6230</code>、<code>norm.pdf(0) = 0.3989</code>、<code>norm.cdf(0) = 0.5</code> 嘅意思。</li>
+  </ol>
+</div>
+
+<h2>1. Simulation：用 random number generator</h2>
+<p>Simulation = 用電腦產生 random numbers 去模擬現實中嘅隨機現象，例如抽樣、擲硬幣、包剪揼。Slides 2–6 全部用 <code>np.random.choice()</code>。</p>
+
+<h3>1.1 replace=True vs replace=False（slide 3）</h3>
+<pre><code>import numpy as np
+np.random.choice(range(1, 11), size=10, replace=True)   # 抽完放返 → 數字可以重複
+np.random.choice(range(1, 11), size=10, replace=False)  # 抽完唔放返 → 數字唔會重複（等於一個 permutation）</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span><p><b>What is the difference?</b> The numbers will <b>not be repeated</b> when <code>replace=False</code>（sampling without replacement）。<code>replace=True</code> = sampling with replacement，同一個數可以出現多次。注意 <code>range(1, 11)</code> 係 1 到 10（Python 唔包尾）。</p></div>
+
+<h3>1.2 實際應用（slide 4）</h3>
+<ul>
+<li>由 40 個學生（編號 1–40）隨機揀 10 個做 interview：<code>np.random.choice(range(1, 41), size=10, replace=False)</code>（唔可以揀同一個人兩次 → 一定要 False）。</li>
+<li>將數據隨機分做 training data (70%) 同 test data (30%)：數據 label 由 0 到 99（<b>Python index always begins with 0</b>）：<code>np.random.choice(range(0, 100), size=70, replace=False)</code> → 得到 training 嘅 index list，其餘 30 個就係 test。</li>
+</ul>
+<pre><code>import numpy as np
+import pandas as pd
+df = pd.DataFrame({"x": np.arange(100)})
+train_idx = np.random.choice(range(0, 100), size=70, replace=False)
+train = df.iloc[train_idx]
+test = df.drop(index=train_idx)          # 剩低嘅 30 行
+print(len(train), len(test))             # 70 30</code></pre>
+
+<h3>1.3 Scissor, Rock, Paper（slide 5）</h3>
+<pre><code>Result = np.random.choice(["S", "R", "P"], size=10000)        # 預設每樣機會均等 (1/3)
+Prob_S = len(Result[Result == 'S']) / 10000                    # 約 0.333
+# 指定真實 underlying probabilities，控制出現率
+Result = np.random.choice(["S", "R", "P"], p=[0.25, 0.5, 0.25], size=10000)
+print((Result == "R").mean())                                  # 約 0.5</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>玩 10,000 次之後，「S」嘅相對頻率會好接近真實 probability（1/3 或 0.25）——呢個就係 Law of Large Numbers：simulation 次數越多，empirical proportion 越接近理論 probability。<code>p=</code> 嘅數加埋一定要等於 1。</p></div>
+
+<h3>1.4 Random seed（slide 6）</h3>
+<p>每次重新執行程式，random numbers 都唔同。如果想每次都得到同一組 random numbers（reproducible），就要 set seed：</p>
+<pre><code>np.random.seed(123)
+sample = np.random.choice(range(1, 10), 5)   # 每次 run 都係同一組 5 個數</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Seed 唔係令結果「更隨機」或者「更準」，只係令結果可以重現（方便 debug、交功課、比較模型）。另外 <code>np.random.choice(range(1, 10), 5)</code> 預設 <code>replace=True</code>。</p></div>
+
+<h2>2. Different types of Variables</h2>
+<p>Slide 7 嘅樹狀圖：<b>Data Types</b> 分做 <b>Categorical</b>（= discrete value）同 <b>Numerical</b>（= continuous value）；Categorical 再分 <b>Ordinal</b> 同 <b>Nominal</b>，Numerical 再分 <b>Interval</b> 同 <b>Ratio</b>。</p>
+<table>
+<tr><th>Type</th><th>大類</th><th>定義（slides 8–10）</th><th>例子</th></tr>
+<tr><td><b>Nominal</b></td><td>Categorical</td><td>Named variables；unordered, categorical and mutually exclusive</td><td>Countries（Afghanistan, Brazil, China）；Yes/No（只有兩個值 → <mark class="k">dichotomous / binary</mark>）</td></tr>
+<tr><td><b>Ordinal</b></td><td>Categorical</td><td>Named variables that have a <b>meaningful order</b>；ordered, categorical and mutually exclusive</td><td>Grade A, A-, B+；BMI: Underweight/Normal/Overweight/Obese；<b>Likert scale</b> 1 = Strongly Disagree … 5 = Strongly Agree</td></tr>
+<tr><td><b>Interval</b></td><td>Numerical</td><td>Meaningful interval between data points but <b>no meaningful zero</b></td><td>Temperature °C（0 °C 唔係「冇溫度」）；Shoe size（EU size 0 不存在）</td></tr>
+<tr><td><b>Ratio</b></td><td>Numerical</td><td>Meaningful interval <b>and a meaningful (true) zero</b></td><td>Length cm（0 cm = 冇長度）；Weight kg</td></tr>
+</table>
+<p>Interval 同 Ratio 喺 SPSS 統稱 <b>‘Scale’</b>。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：點樣分？</span>
+<ol>
+<li>有冇數值意義（可以加減）？冇 → Categorical；有 → Numerical。</li>
+<li>Categorical：有冇次序？有 → Ordinal；冇 → Nominal。</li>
+<li>Numerical：0 係咪代表「冇」？係（true zero）→ Ratio；唔係 → Interval。</li>
+</ol>
+<p>Ratio 嘅「比例」有意義：20 kg 係 10 kg 嘅兩倍；但 20 °C 唔可以話係 10 °C「兩倍熱」→ interval。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Likert scale 用 1–5 編碼，但佢本質仍然係 <b>ordinal</b>：「Agree (4)」同「Neutral (3)」之間嘅距離唔一定等於「Neutral (3)」同「Disagree (2)」。數字 code 唔等於 numerical variable。</p></div>
+
+<h3>2.1 Example data（slides 11–12）</h3>
+<p>Slide 11 係教科書 Table 9.1 “Information for ten sold residential properties”：每一行（Property 1–10）係一個 <b>observation / element</b>，每一欄 x1–x6 係一個 <b>variable</b>。例如 Property 1：x1 = High、x2 = NT、x3 = 13、x4 = 732、x5 = 322、x6 = 4399。</p>
+<table>
+<tr><th>Variable</th><th>意思</th><th>Type</th></tr>
+<tr><td>X1</td><td>Floor level (High, Medium, Low)</td><td>Ordinal / Categorical</td></tr>
+<tr><td>X2</td><td>District (Hong Kong Island, Kowloon, New Territories)</td><td>Nominal / Categorical</td></tr>
+<tr><td>X3</td><td>Age (in years)</td><td>Ratio / quantitative / numerical</td></tr>
+<tr><td>X4</td><td>Size (square feet)</td><td>Ratio</td></tr>
+<tr><td>X5</td><td>Sale price (in ten thousand dollars)</td><td>Ratio</td></tr>
+<tr><td>X6</td><td>Price per square feet</td><td>Ratio</td></tr>
+</table>
+<p><b>Which are categorical and which are quantitative?</b> X1、X2 categorical；X3–X6 quantitative（全部有 true zero → ratio）。</p>
+<pre><code>import pandas as pd
+d = pd.DataFrame({"x1": ["High", "Low", "Low"], "x2": ["NT", "HK", "NT"], "x3": [13, 9.5, 13]})
+# Ordinal：指定次序
+d["x1"] = pd.Categorical(d["x1"], categories=["Low", "Medium", "High"], ordered=True)
+# Nominal：冇次序
+d["x2"] = d["x2"].astype("category")
+print(d.dtypes)</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 2 (Data) 嘅 attribute types（nominal / ordinal / interval / ratio）同呢度一模一樣，而且會講每種 type 容許嘅運算（=, ≠ / &lt;, &gt; / +, − / ×, ÷）。COM6001 pandas 嘅 <code>category</code> dtype 就係用嚟存 categorical data。</p></div>
+
+<h2>3. Distributional properties of Variables</h2>
+<p>Slide 13：唔同情境嘅數據有唔同嘅「形狀」，數學家用唔同 distribution 去描述：</p>
+<table>
+<tr><th>情境</th><th>Distribution</th><th>Type</th></tr>
+<tr><td>Number of occurrence in a time period（每小時收幾多封 email）</td><td><b>Poisson</b></td><td>discrete</td></tr>
+<tr><td>Number of trials until the first success</td><td><b>Geometric</b></td><td>discrete</td></tr>
+<tr><td>Biological measurements（身高、體重）</td><td><b>Normal</b></td><td>continuous</td></tr>
+<tr><td>Time between two consecutive events</td><td><b>Exponential</b></td><td>continuous</td></tr>
+<tr><td>Lifetime of bulb, small insects</td><td><b>Weibull</b></td><td>continuous</td></tr>
+<tr><td>Income</td><td><b>Pareto</b></td><td>continuous（右偏、長尾）</td></tr>
+</table>
+<p><b>Poisson 例子嘅步驟</b>（slide 13）：</p>
+<ol>
+<li>Define a random variable X = number of emails received in an hour</li>
+<li>Give distribution parameter = average number of emails received an hour（λ）</li>
+<li>計 Prob(X = 0)、Prob(X = 3)、Prob(X = 5)…</li>
+</ol>
+<div class="box tip"><span class="label">💡 數字示範（自行假設 λ = 3 封／小時；公式見 Module 2b）</span>
+<p>\( P(X=k) = \dfrac{\lambda^k e^{-\lambda}}{k!} \)，\( e^{-3} \approx 0.0498 \)：</p>
+<ul>
+<li>\( P(X=0) = e^{-3} \approx 0.0498 \)</li>
+<li>\( P(X=3) = \frac{27}{6}e^{-3} \approx 0.2240 \)</li>
+<li>\( P(X=5) = \frac{243}{120}e^{-3} \approx 0.1008 \)</li>
+</ul>
+<p>Python：<code>stats.poisson.pmf([0, 3, 5], 3)</code></p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 14 “Types of distributions” 係一張各種 distribution 形狀嘅 cheat-sheet 圖片（來源 DsciCheatsheet Facebook），文字擷取不到；請對照原 slide 第 14 頁。</p></div>
+
+<h2>4. Concepts of probability distribution：由 histogram 到 density</h2>
+<h3>4.1 Categorical data（slide 15）</h3>
+<p>Distribution 可以用 <b>bar chart</b> 或 <b>pie chart</b> 描述；可以用 frequency（次數）或 proportion（比例）。</p>
+<h3>4.2 Continuous data（slides 16–17）</h3>
+<p>將 range 切成好多 bins / classes，數每個 bin 有幾多個，畫出嚟就係 <b>histogram</b>（bar chart 嘅 continuous 版本）。Slide 16 嘅 frequency table：</p>
+<table>
+<tr><th>Class</th><th>Frequency</th><th>Cumulative Freq</th></tr>
+<tr><td>62.8–63.0</td><td>1</td><td>1</td></tr>
+<tr><td>63.0–63.2</td><td>6</td><td>7</td></tr>
+<tr><td>63.2–63.4</td><td>12</td><td>19</td></tr>
+<tr><td>63.4–63.6</td><td>16</td><td>35</td></tr>
+<tr><td>…</td><td>…</td><td>…</td></tr>
+<tr><td>64.4–64.6</td><td>1</td><td>58</td></tr>
+</table>
+<p><mark class="k">Cumulative frequency</mark> = 由最細 class 加到而家嘅總和（1, 1+6 = 7, 7+12 = 19, 19+16 = 35 …），最後一個 = 總數 n = 58。Slide 17 就係 histogram 同 cumulative frequency histogram 嘅圖。</p>
+
+<h3>4.3 Density（slide 18）</h3>
+<p>通常唔直接用 frequency，而係將 frequency 除以原本 histogram 嘅總面積 → 得到 <b>density</b>。除完之後，<b>所有 bar 嘅面積加埋 = 1</b>。</p>
+<div class="formula">$$ \text{density of a bin} = \frac{\text{frequency}}{n \times \text{bin width}} $$</div>
+<div class="box tip"><span class="label">💡 Worked example</span><p>63.4–63.6 呢個 bin：frequency = 16，n = 58，bin width = 0.2 → density = 16 / (58 × 0.2) ≈ 1.379。呢個 bar 嘅面積 = 1.379 × 0.2 = 16/58 ≈ 0.276 = 落入呢個 bin 嘅比例。所以 <b>面積 = 比例 = probability</b>，所有面積加埋 = 1。注意 density（1.379）可以大過 1！</p></div>
+
+<h3>4.4 Normal density 同 CDF（slides 19–20）</h3>
+<p>Histogram 唔平滑；數學家定義咗平滑曲線去 approximate 佢。Normal distribution 係 bell-shape curve，由兩個 parameter 描述：\( \mu \)（mean，location）同 \( \sigma^2 \)（variance，dispersion / scale）。</p>
+<div class="formula">$$ \text{norm.pdf}(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-(x-\mu)^2/2\sigma^2} $$</div>
+<div class="formula">$$ \text{norm.cdf}(x,\mu,\sigma) = \int_{-\infty}^{x} \text{norm.pdf}(s,\mu,\sigma)\, ds $$</div>
+<p>Histogram 可以有其他形狀，數學家就引入其他 distribution 去描述（細節略）。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 17、20 係 histogram／cumulative histogram 同 probability density / cumulative density 嘅圖，文字擷取不到；請對照原 slide 第 17、20 頁。概念：PDF 係鐘形曲線；CDF 係由 0 升到 1 嘅 S 形曲線。</p></div>
+
+<h2>5. PMF、CMF、PDF、CDF</h2>
+<h3>5.1 Discrete variable（slide 21）</h3>
+<ul>
+<li><b>PMF (Probability Mass Function)</b>：A function that gives the <b>exact probability</b> that a discrete random variable equals a specific value. The sum of all probabilities in a PMF always equals 1.
+<br>例：X = 擲硬幣得到嘅 heads 數目，PMF(3) = P(X = 3)。公平骰子擲到 4 嘅機率 = 1/6。</li>
+<li><b>CMF (Cumulative Mass Function)</b>：adds up all the probabilities from the smallest possible value up to a chosen value x；running total，最終 = 1。
+<div class="formula">$$ \text{CMF}(4) = P(X\le 4) = \text{PMF}(4)+\text{PMF}(3)+\text{PMF}(2)+\text{PMF}(1)+\text{PMF}(0) $$</div>
+例：骰子擲到 ≤ 3：1/6 + 1/6 + 1/6 = 1/2。</li>
+</ul>
+<h3>5.2 Continuous variable（slide 22）</h3>
+<ul>
+<li><b>PDF (Probability Density Function)</b>：describes the likelihood for a continuous random variable. <b>The output is not a probability.</b> Area under the curve across an interval gives the probability. Total area = 1. <b>The probability of one exact single point is zero.</b>
+<br>例：Prob(height = 176 cm) = 0；Prob(176 cm ≤ height ≤ 177 cm) = 0.12。</li>
+<li><b>CDF (Cumulative Distribution Function)</b>：works for <b>both</b> continuous and discrete. Gives P(X ≤ x). Starts at 0 and climbs to 1. For continuous variables, CDF = integral (running total area) of the PDF.
+<br>例：Prob(height ≤ 177 cm)。</li>
+</ul>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Probability functions 對照表（slide 23）</span>
+<table>
+<tr><th>Function</th><th>Variable Type</th><th>What the Output Means</th><th>Total Sum / Area</th></tr>
+<tr><td><b>PMF</b></td><td>Discrete</td><td>Exact probability of a single value</td><td>Sum equals 1</td></tr>
+<tr><td><b>CMF</b></td><td>Discrete</td><td>Cumulative probability up to a value</td><td>Reaches 1</td></tr>
+<tr><td><b>PDF</b></td><td>Continuous</td><td>Probability <i>density</i> (not probability itself)</td><td>Total area under curve equals 1</td></tr>
+<tr><td><b>CDF</b></td><td>Both</td><td>Cumulative probability up to a value (P ≤ x)</td><td>Reaches 1</td></tr>
+</table>
+<p>Slide 上紅色箭咀特別指住 PMF、PDF 同 “density (not probability itself)”——即係考 PMF vs PDF 嘅分別。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+<li>以為 <code>norm.pdf(x)</code> 係 probability：佢只係曲線高度，可以 &gt; 1（例如 σ = 0.1 時 pdf(μ) ≈ 3.99）。</li>
+<li>Continuous 嘅 P(X ≤ a) 同 P(X &lt; a) 一樣（因為單點機率 = 0）；但 discrete 唔一樣：P(X ≤ 5) ≠ P(X &lt; 5) = P(X ≤ 4)。</li>
+<li>計區間 probability 要用 CDF 相減：\( P(a\le X\le b) = F(b) - F(a) \)。</li>
+</ul></div>
+
+<h2>6. 用 scipy.stats 計 probability</h2>
+<h3>6.1 Discrete：Binomial（slides 24–25）</h3>
+<pre><code>import scipy.stats as stats
+n = 10   # Number of trials
+p = 0.5  # Probability of getting heads
+pmf_exact_5 = stats.binom.pmf(5, n, p)   # P(X = 5)  → 0.2461
+cmf_up_to_5 = stats.binom.cdf(5, n, p)   # P(X ≤ 5)  → 0.6230
+print(f"PMF (Exactly 5 heads): {pmf_exact_5:.4f}")
+print(f"CMF/CDF (5 heads or fewer): {cmf_up_to_5:.4f}")</code></pre>
+<div class="box exam"><span class="label">⭐ 手計驗證</span>
+<p>\( P(X=5) = \binom{10}{5}(0.5)^5(0.5)^5 = 252/1024 \approx 0.2461 \)</p>
+<p>\( P(X\le 5) = \frac{1+10+45+120+210+252}{1024} = 638/1024 \approx 0.6230 \)</p>
+<p>延伸：\( P(X\ge 6) = 1 - 0.6230 = 0.3770 \)（= <code>1 - binom.cdf(5, 10, 0.5)</code> 或 <code>binom.sf(5, 10, 0.5)</code>）。</p></div>
+<p>Slide 25 嘅 visualization：左邊用 <code>axes[0].stem()</code> 畫 PMF（每個整數一支棒）；右邊用 <code>axes[1].step(..., where="mid")</code> 畫 CDF（樓梯形，因為 probability 喺整數之間保持不變）。</p>
+<pre><code>import numpy as np, matplotlib.pyplot as plt, scipy.stats as stats
+n, p = 10, 0.5
+x = np.arange(0, n + 1)
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+axes[0].stem(x, stats.binom.pmf(x, n, p), basefmt=" ")      # PMF：棒形
+axes[1].step(x, stats.binom.cdf(x, n, p), where="mid", marker="o")  # CMF/CDF：樓梯形
+plt.tight_layout(); plt.show()</code></pre>
+
+<h3>6.2 Continuous：Standard normal（slides 26–27）</h3>
+<pre><code>pdf_at_zero = stats.norm.pdf(0, loc=0, scale=1)     # 0.3989 —— 係 height，唔係 probability
+cdf_up_to_zero = stats.norm.cdf(0, loc=0, scale=1)  # 0.5000 —— 對稱鐘形曲線左半邊面積</code></pre>
+<p>\( \text{pdf}(0) = 1/\sqrt{2\pi} \approx 0.3989 \)。Slide 27 用 <code>fill_between</code> 將 −3 到 0 嘅面積塗色，標示 “Area = P(−inf ≤ X ≤ 0)”（理論上應由 −∞ 開始，用 −3 只係方便畫圖）；右圖用 <code>plot</code> 畫平滑 S 形 CDF。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Discrete 嘅 PMF 係「一支支棒」，棒嘅高度 = probability；Continuous 嘅 PDF 係「一條曲線」，<b>面積</b>先係 probability。CDF 喺 discrete 係樓梯形，喺 continuous 係平滑 S 形。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 3 Data Visualization 嘅 histogram、cumulative distribution 同呢度一樣；COM6004 Chapter 4/5 嘅 Naïve Bayes 亦會用到 PMF（categorical attributes）同 normal PDF（continuous attributes）。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 要由 0–999 編號嘅數據隨機抽 80% 做 training set，點寫？應該用 replace=True 定 False？</summary><p><code>np.random.choice(range(0, 1000), size=800, replace=False)</code>。一定要 <code>replace=False</code>，否則同一行可能被抽兩次，而有啲行會被遺漏。</p></details>
+<details class="q"><summary>Q2. 將以下歸類：(a) 血型 A/B/AB/O (b) 年份 (c) 收入 (d) 滿意度 1–5 (e) 考試名次 (f) 智商 IQ</summary><p>(a) Nominal；(b) Interval（年份 0 唔代表「冇時間」）；(c) Ratio；(d) Ordinal（Likert）；(e) Ordinal；(f) 一般當 Interval（IQ 0 冇「冇智力」嘅意思）。</p></details>
+<details class="q"><summary>Q3. 一個 histogram bin 寬 5，frequency 12，總數 n = 60。Density 係幾多？呢個 bin 嘅面積代表咩？</summary><p>Density = 12 / (60 × 5) = 0.04。面積 = 0.04 × 5 = 0.2 = 有 20% 數據落入呢個 bin。</p></details>
+<details class="q"><summary>Q4. 點解 Prob(height = 176 cm) = 0，但 norm.pdf(176, 170, 7) 唔係 0？</summary><p>Continuous variable 單一點嘅面積（寬度 0）= 0，所以 probability = 0。PDF 嘅值係曲線高度（density），代表該點附近嘅「密度」，要乘埋一段寬度（積分）先變成 probability。</p></details>
+<details class="q"><summary>Q5. X ~ Binomial(n = 10, p = 0.5)。用 CDF 表達 P(3 ≤ X ≤ 5)，並計數值。</summary><p>P(3 ≤ X ≤ 5) = F(5) − F(2) = 638/1024 − (1 + 10 + 45)/1024 = 638/1024 − 56/1024 = 582/1024 ≈ 0.5684。Python：<code>stats.binom.cdf(5,10,0.5) - stats.binom.cdf(2,10,0.5)</code>。</p></details>
+<details class="q"><summary>Q6. 骰子：CMF(4) 係幾多？PMF(7) 呢？</summary><p>CMF(4) = P(X ≤ 4) = 4/6 = 2/3。PMF(7) = 0（骰子冇 7）。</p></details>
+<details class="q"><summary>Q7. 以下每個情境最適合邊個 distribution：(a) 一個網站每分鐘嘅 visit 數 (b) 燈泡壽命 (c) 擲骰直至第一次出 6 嘅次數 (d) 成年男性身高 (e) 兩架巴士之間嘅等候時間 (f) 個人收入</summary><p>(a) Poisson (b) Weibull (c) Geometric (d) Normal (e) Exponential (f) Pareto。</p></details>
+<details class="q"><summary>Q8. <code>np.random.choice(["S","R","P"], p=[0.25,0.5,0.25], size=10000)</code> 之後，<code>(Result=="R").mean()</code> 大約係幾多？加 <code>np.random.seed(1)</code> 有咩作用？</summary><p>約 0.5（Law of Large Numbers）。Seed 令每次執行得到相同嘅 random numbers，結果可重現；唔會改變 probability。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><code>np.random.choice(a, size, replace, p)</code>：replace=False → 唔重複；p 指定各結果機率；<code>np.random.seed()</code> → 可重現。</li>
+<li>Train/test 70/30：<code>np.random.choice(range(0,100), size=70, replace=False)</code>；Python index 由 0 開始。</li>
+<li>Categorical（discrete）：Nominal（冇次序；binary = dichotomous）、Ordinal（有次序；Likert）。</li>
+<li>Numerical（continuous）：Interval（冇 true zero：°C、鞋碼）、Ratio（有 true zero：cm、kg）；SPSS 叫 Scale。</li>
+<li>Poisson = 時段內次數；Geometric = 第一次成功要幾多次；Normal = 生物量度；Exponential = 事件間隔；Weibull = 壽命；Pareto = 收入。</li>
+<li>Density = freq / (n × bin width)；所有 bar 面積 = 1。</li>
+<li>Normal：\( f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/2\sigma^2} \)；μ = location，σ² = scale。</li>
+<li>PMF（discrete，exact prob，sum = 1）；CMF（discrete，running total → 1）；PDF（continuous，density 唔係 prob，面積 = 1，單點 = 0）；CDF（both，P(X ≤ x)，0 → 1）。</li>
+<li><code>binom.pmf(5,10,.5)=0.2461</code>；<code>binom.cdf(5,10,.5)=0.6230</code>；<code>norm.pdf(0)=0.3989</code>；<code>norm.cdf(0)=0.5</code>。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m1.html">← Module 1 Descriptive &amp; Inferential</a>
+  <a href="COM6005-m2b.html">Module 2b Binomial / Geometric / Poisson →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 1 Introduction to Big Data</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w1">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 1</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 1 · Source: Lecture01-Introduction.pdf (27 slides) · Lecturer: Dr. Aileen Hou</p>
+<h1>Introduction to Big Data</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>了解本科 (COM6001) 的性質、教學進度同評核方式 (Mid-term 涵蓋 Week 1–7)。</li>
+    <li>知道 structured data 點樣用 <b>objects</b> 同 <b>attributes / features</b> 描述。</li>
+    <li>分辨 attribute types：Categorical (Nominal / Ordinal) vs Numerical (Discrete / Continuous)，以及 Binary 呢個特例。</li>
+    <li>解釋 Data Analytics = knowledge discovery from data，以及好 pattern 嘅四個條件 (Valid, Useful, Unexpected, Understandable)。</li>
+    <li>背熟 Big Data 嘅 <b>5 V's</b>：Volume, Velocity, Variety, Veracity, Value。</li>
+    <li>分辨 <b>Descriptive</b> vs <b>Predictive</b> analytic tasks，並識舉例 (John Snow clustering、Google Flu Trends)。</li>
+    <li>列出 <b>CRISP-DM</b> 六個步驟。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>5 V's of Big Data 各自嘅意思同例子 (Velocity → stream / real-time；Variety → graph / text / image / relational)。</li>
+    <li>Attribute types 分類：Nominal vs Ordinal、Discrete vs Continuous、Binary — 俾一個 attribute 要識分類。</li>
+    <li>CRISP-DM 六步 (Business Understanding → Data Understanding → Prepare Data → Modeling → Evaluate → Deploy) 嘅次序。</li>
+    <li>Descriptive vs Predictive methods 嘅定義同例子。</li>
+    <li>Data analytics 要搵嘅 pattern 要 Valid / Useful / Unexpected / Understandable。</li>
+  </ol>
+</div>
+
+<h2>1. 課程資料 Course outline &amp; logistics</h2>
+<p>第一堂前半部分係課程行政資料 (slides 2–13)。雖然唔係「知識」，但 mid-term 範圍、評分比重等資訊對你規劃溫習好重要。</p>
+<ul>
+  <li><b>Instructor</b>：Dr. Aileen Hou (Lecture + Lab)，Department of Computer Science，Office N407。Consultation 可以 email、預約 face-to-face / online meeting，或者 MS Teams PM。</li>
+  <li><b>Module nature</b>：Foundation course — <i>Python basics</i> 同 <i>Python for data processing and analysis</i>。即係話本科假設你由零開始學 Python，之後用 Python (pandas) 做 data processing。</li>
+  <li><b>References</b>：Skiena <i>The Data Science Design Manual</i> (2017)；McKinney <i>Python for Data Analysis</i> 2nd ed. (2017)；EMC <i>Data Science and Big Data Analytics</i> (2015)；MIT OCW Linear Algebra (18.06)。另外 Moodle 有 vocabulary list。</li>
+</ul>
+
+<h3>Teaching schedule (tentative)</h3>
+<table>
+  <tr><th>Week</th><th>Lecture</th><th>Week</th><th>Lecture</th></tr>
+  <tr><td>1</td><td>Introduction</td><td>8</td><td>EDA 1 (+ Test)</td></tr>
+  <tr><td>2</td><td>Python crash course 1</td><td>9</td><td>EDA 2</td></tr>
+  <tr><td>3</td><td>Python crash course 2</td><td>10</td><td>Data visualization</td></tr>
+  <tr><td>4</td><td>Data manipulation</td><td>11</td><td>Big data eco system and ethics</td></tr>
+  <tr><td>5</td><td>Data cleaning 1</td><td>12</td><td>Revision and Q&amp;A</td></tr>
+  <tr><td>6</td><td>Data cleaning 2</td><td>13</td><td>Presentation</td></tr>
+  <tr><td>7</td><td>Feature engineering &amp; project briefing</td><td></td><td></td></tr>
+</table>
+
+<h3>Assessments</h3>
+<table>
+  <tr><th>Component</th><th>Weight</th><th>重點</th></tr>
+  <tr><td>Class Participation</td><td>10%</td><td>Weekly lab exercises + attendance；評分睇你有冇「put effort to do and learn」，答案啱唔啱未必計分。</td></tr>
+  <tr><td>Group Assignment</td><td>30%</td><td>2–3 人一組 (L01 &amp; L02 可混合，最多 24 組)；Python data analysis project；一個 Notebook 入面要有 code、plots、descriptions；要做 oral presentation。</td></tr>
+  <tr><td>Mid-term Test</td><td>20%</td><td>24 Oct 19:00 (L01 &amp; L02 一齊)；Coverage: <b>lectures and labs in weeks 1–7</b>。</td></tr>
+  <tr><td>Final Examination</td><td>40%</td><td>Week 14–16 考試期。</td></tr>
+</table>
+
+<div class="box warn"><span class="label">⚠️ Slides 入面有唔一致</span>
+<p>Slide 6 寫「Test on 24 Oct (Monday)」，slide 7 寫「Oct 24 2025 (Saturday) evening」，slide 8 寫「24 Oct 19:00」；group presentation 喺 slide 7/10 寫 Week 13，slide 8 寫 Week 14。呢啲係由舊年 slide 沿用落嚟嘅日期，<b>以 Moodle / 老師最新公佈為準</b>。唯一肯定嘅係：mid-term 考 <b>Week 1–7 的 lectures 同 labs</b>，而且係 paper-based close-book (Week 2 slide 18 有提)。</p></div>
+
+<p><b>Weekly lab exercises</b> 嘅任務係「given a dataset, use Python to perform: data loading → preparation → cleaning → analysis → visualization」— 呢條 pipeline 其實就係成科嘅主線，亦都對應後面講嘅 CRISP-DM。</p>
+
+<p><b>Class policy / Tips for success</b>：70%+ attendance；請假要上堂前 email；嚴禁 plagiarism (VeriGuide 會查)，用 generative AI 要跟大學同學系指引；同一份功課唔可以喺唔同科交；group work 唔准 free rider；遲交會扣分；盡量唔好靠翻譯軟件。Slide 13 「How to survive in HSU?」只係一個標題頁。</p>
+
+<h2>2. What is Data? Objects &amp; Attributes</h2>
+<p>Slide 15 先定義 <mark class="k">structured data</mark>：一堆 <b>objects</b>，每個 object 用一組 <b>attributes / features</b> 嚟描述。可以想像成一個表格：</p>
+<ul>
+  <li>每一 <b>row</b> = 一個 object (又叫 <i>record, point, case, sample, entity, instance</i>)。</li>
+  <li>每一 <b>column</b> = 一個 attribute / feature。</li>
+</ul>
+<p>Slide 用咗兩個例子：</p>
+<table>
+  <tr><th>Book No.</th><th>Title</th><th>Author</th><th></th><th>Student ID</th><th>Height (cm)</th><th>Weight (kg)</th></tr>
+  <tr><td>001</td><td>Data Mining</td><td>John</td><td></td><td>001</td><td>175</td><td>62</td></tr>
+  <tr><td>002</td><td>Robots</td><td>Edward</td><td></td><td>002</td><td>179</td><td>65</td></tr>
+  <tr><td>003</td><td>Computer</td><td>Dan</td><td></td><td>003</td><td>168</td><td>60</td></tr>
+  <tr><td>004</td><td>Mathematics</td><td>Mary</td><td></td><td>004</td><td>181</td><td>59</td></tr>
+</table>
+<p>左邊每本書係一個 object，attributes 係 Book No. / Title / Author；右邊每個學生係 object，attributes 係 Student ID / Height / Weight。</p>
+
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>之後 Week 4 學 pandas 時，<code>DataFrame</code> 就正正係呢個 object × attribute 嘅表：row = object (由 <code>index</code> 標示)，column = attribute (由 <code>columns</code> 標示)。所以呢個概念係成科嘅基礎。</p></div>
+
+<pre><code>import pandas as pd
+# 用 slide 15 右邊個例子建一個 DataFrame：每 row 係一個 object，每 column 係一個 attribute
+students = pd.DataFrame({
+    "Student ID": ["001", "002", "003", "004"],
+    "Height (cm)": [175, 179, 168, 181],
+    "Weight (kg)": [62, 65, 60, 59],
+})
+print(students.shape)   # (4, 3) → 4 個 objects，3 個 attributes</code></pre>
+
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>COM6004 Data Mining Chapter 1–2 (Tan et al.) 用一模一樣嘅講法：data set = collection of data objects，object 由 attributes 描述。COM6002 嘅 relational model 就叫 tuple / row 同 attribute / column。</p></div>
+
+<h2>3. Types of Attributes</h2>
+<p><span class="tag exam">Exam</span> Slide 16 把 attributes 分成兩大類，每類再細分：</p>
+<table>
+  <tr><th>大類</th><th>細分</th><th>特點</th><th>Slide 例子</th></tr>
+  <tr><td rowspan="2"><b>Categorical</b></td><td><b>Nominal</b></td><td>只係名稱 / 標籤，<b>no order or comparison</b></td><td>eye color, zip codes, words</td></tr>
+  <tr><td><b>Ordinal</b></td><td><b>有次序 (order)</b>，但兩級之間嘅「距離」<b>not comparable</b> (唔可以計差幾多)</td><td>rankings (good, fair, bad)、height in {tall, medium, short}</td></tr>
+  <tr><td rowspan="2"><b>Numerical</b></td><td><b>Discrete</b></td><td>可數嘅值 (counts)</td><td>counts</td></tr>
+  <tr><td><b>Continuous</b></td><td>可以喺一個範圍內取任何實數值</td><td>temperature, length, height in cm, weight in kg</td></tr>
+  <tr><td colspan="2"><b>Special case: Binary</b></td><td>只有兩個值</td><td>yes/no, exists/not exists</td></tr>
+</table>
+
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>典型題目：「Classify the following attributes: eye color, ranking (good/fair/bad), number of children, body temperature, zip code, pass/fail.」</p>
+<ul>
+  <li>eye color → Categorical, Nominal</li>
+  <li>ranking good/fair/bad → Categorical, Ordinal</li>
+  <li>number of children → Numerical, Discrete</li>
+  <li>body temperature → Numerical, Continuous</li>
+  <li>zip code → Categorical, Nominal (雖然係數字，但計平均冇意義！)</li>
+  <li>pass/fail → Binary</li>
+</ul></div>
+
+<div class="box warn"><span class="label">⚠️ 常見錯誤 / 易混淆</span>
+<ul>
+  <li><b>「睇落係數字」唔等於 Numerical。</b> Zip code、Student ID、電話號碼都係 Categorical (Nominal) — 判斷方法：加減乘除或者計平均有冇意義？</li>
+  <li><b>同一樣嘢可以有唔同 type</b>：height in cm 係 Continuous，但 height in {tall, medium, short} 係 Ordinal。type 取決於<b>點樣量度 / 記錄</b>。</li>
+  <li><b>Ordinal 「有次序但唔可以比較距離」</b>：good &gt; fair &gt; bad，但「good − fair」同「fair − bad」係咪一樣？冇意義。</li>
+  <li>Slide 將 <i>dates, time</i> 列為 Numerical 例子。</li>
+</ul></div>
+
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>COM6004 Ch.2 會再細分成 Nominal / Ordinal / Interval / Ratio 四種 (按支援嘅 operations：=, &lt;, +, ×)。COM6005 Module 1 亦會分 qualitative vs quantitative variables。pandas 入面，Categorical 通常用 <code>object</code> / <code>string</code> / <code>category</code> dtype，Numerical 用 <code>int64</code> / <code>float64</code>，Binary 用 <code>bool</code> (見 Week 4)。</p></div>
+
+<pre><code>import pandas as pd
+df = pd.DataFrame({
+    "eye_color": ["blue", "brown", "green"],          # Nominal
+    "rating": ["good", "bad", "fair"],                # Ordinal
+    "n_children": [0, 2, 1],                          # Discrete
+    "temperature": [36.5, 37.2, 36.8],                # Continuous
+    "smoker": [True, False, False],                   # Binary
+})
+# Ordinal 可以用 ordered categorical 表示次序
+df["rating"] = pd.Categorical(df["rating"], categories=["bad", "fair", "good"], ordered=True)
+print(df.dtypes)
+print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
+
+<h2>4. What is Data Analytics?</h2>
+<p>Slide 17：<b>Data Analytics = Knowledge discovery from data!</b> Data 本身蘊含 value 同 knowledge，analytics 就係把佢挖出嚟。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 17 嘅 DIKW pyramid 係圖片，文字擷取不到；請對照原 slide 第 17 頁。</p></div>
+<p>一般嚟講 DIKW 指 <b>Data → Information → Knowledge → Wisdom</b> 由下而上嘅金字塔：raw data (例如一堆 sales 數字) 經整理變成 information (「上個月 A 店賣咗 500 件」)，再歸納成 knowledge (「下雨天 A 店銷量會跌」)，最後變成可以指導行動嘅 wisdom (「天氣預報落雨就減少 A 店入貨」)。</p>
+
+<p><span class="tag exam">Exam</span> Slide 18：Given lots of data，我哋想發現嘅 patterns / models 要符合四個條件：</p>
+<table>
+  <tr><th>條件</th><th>Slide 定義</th><th>解釋</th></tr>
+  <tr><td><b>Valid</b></td><td>hold on new data with some certainty</td><td>唔係只喺手頭 data 成立 (唔係 overfitting / 巧合)，放落新 data 都大致成立。</td></tr>
+  <tr><td><b>Useful</b></td><td>should be possible to act on the item (e.g., making decisions)</td><td>要可以據此採取行動。</td></tr>
+  <tr><td><b>Unexpected</b></td><td>non-obvious to the system</td><td>如果係人人都知嘅嘢 (「買麵包嘅人都會買嘢」) 就冇價值。</td></tr>
+  <tr><td><b>Understandable</b></td><td>humans should be able to interpret the pattern</td><td>人要睇得明、解釋得到。</td></tr>
+</table>
+<p>Slide 用咗經典例子 <b>“Diaper and Beer!”</b>：超市發現買尿片 (diaper) 嘅顧客好多時都會買啤酒 (傳說係爸爸被叫去買尿片，順手買啤酒)。呢個 pattern 係 <i>unexpected</i> (直覺上兩者冇關)、<i>useful</i> (可以將兩樣貨擺近啲 / 一齊做推廣)、<i>understandable</i> (解釋得到)、亦需要 <i>valid</i> (喺新交易都成立)。</p>
+
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>Diaper &amp; Beer 係 association rule mining 嘅經典例子；COM6004 Data Mining 嘅 Ch.1 都會用 knowledge discovery (KDD) 呢個框架。</p></div>
+
+<h2>5. Where does data come from?</h2>
+<p>Slide 19：data 「coming from everywhere」：posts to social media sites、digital pictures and videos、software logs、cameras、microphones、sensing data、scans of government documents、GPS trails、purchase transaction records、cell phone GPS signals、traffic 等等。重點係：data 來源極多樣，有 text、image、video、sensor stream、交易紀錄 — 呢個就引出下一節嘅 Big Data 特徵 (尤其 Variety 同 Velocity)。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 19 有一張示意圖 (data sources)，文字擷取不到；請對照原 slide 第 19 頁。</p></div>
+
+<h2>6. Characteristics of Big Data: the 5 V's</h2>
+<p><span class="tag exam">Exam</span> Slide 20 列出 Big Data 嘅 <mark class="k">5 V's</mark>：</p>
+<table>
+  <tr><th>V</th><th>Slide 細項</th><th>意思 &amp; 例子</th></tr>
+  <tr><td><b>Volume</b></td><td>—</td><td>數據量巨大 (TB、PB 級)，單一部機存唔落 / 處理唔到。例：Facebook 每日上載嘅相。</td></tr>
+  <tr><td><b>Velocity</b></td><td>Incoming Stream；Real-time Analytic</td><td>數據產生同需要處理嘅<b>速度</b>好快，係連續流入嘅 stream，需要 real-time analytics。例：股票報價、信用卡 fraud detection。</td></tr>
+  <tr><td><b>Variety</b></td><td>Social Network (Graph)；Tweet Message (Text, Image, Video)；Click Log (Relational)</td><td>數據<b>格式多樣</b>：graph、text、image、video、relational table 等。</td></tr>
+  <tr><td><b>Veracity</b></td><td>Accuracy</td><td>數據嘅<b>準確性 / 可信度</b>：有 noise、錯誤、missing values、假資料。</td></tr>
+  <tr><td><b>Value</b></td><td>—</td><td>最終要由數據提煉出商業 / 社會<b>價值</b>，否則收集再多都冇用。</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 20 右邊嘅 5V 圖 (Big-Data-5V.gif) 係圖片，文字擷取不到；請對照原 slide 第 20 頁。</p></div>
+
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>要背：Volume, Velocity, Variety, Veracity, Value。常見題型：「Give a scenario and identify which V is the main challenge」，例如：</p>
+<ul>
+  <li>Twitter 每秒幾千條 tweet 要即時分析情緒 → <b>Velocity</b> (stream, real-time)。</li>
+  <li>同時分析 tweet 文字、相片、用戶關係網 → <b>Variety</b> (text / image / graph)。</li>
+  <li>傳感器有時壞咗報錯數 → <b>Veracity</b> (accuracy)。</li>
+</ul></div>
+
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>Week 5–7 嘅 Data cleaning (處理 missing values、duplicates、錯誤數據) 就係針對 <b>Veracity</b>；pandas 處理多種檔案格式 (csv / excel / json / xml，見 Week 4) 就係面對 <b>Variety</b>。</p></div>
+
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>COM6002 Big Data Management 講 <b>4 V's</b> (通常係 Volume, Velocity, Variety, Veracity) 同 structured / semi-structured / unstructured data、scale up vs scale out；COM6001 多咗 <b>Value</b>。考試時跟返該科 slides 嘅版本作答。</p></div>
+
+<h2>7. Data Analytic Tasks: Descriptive vs Predictive</h2>
+<p><span class="tag exam">Exam</span> Slide 21 將 analytic tasks 分兩類：</p>
+<table>
+  <tr><th></th><th>Descriptive methods</th><th>Predictive methods</th></tr>
+  <tr><td>定義 (slide)</td><td>Find <b>human-interpretable patterns</b> that describe the data</td><td>Use some variables to <b>predict unknown or future values</b> of other variables</td></tr>
+  <tr><td>Method 例子</td><td>Clustering, Classification</td><td>Recommendation systems (Amazon, Google Play Store)</td></tr>
+  <tr><td>Application 例子</td><td>Medical diagnose (use Classification)</td><td>Customer relationship management (CRM) systems</td></tr>
+  <tr><td>Case study</td><td>John Snow cholera map (slide 22)；Gapminder (slide 23)</td><td>Google Flu Trends (slide 24)</td></tr>
+</table>
+
+<div class="box warn"><span class="label">⚠️ 易混淆</span>
+<p>本科 slide 把 <b>Classification</b> 放喺 Descriptive 例子。但 COM6004 (Tan et al.) 通常將 Classification 歸為 <b>Predictive</b> task (用 attributes 預測 class label)，Clustering / association rules 先係 Descriptive。COM6001 考試跟本 slide 作答，但可以補充一句「classification models can also be used for prediction」，兩邊都唔錯。</p></div>
+
+<h3>7.1 Clustering example: John Snow &amp; Cholera (slide 22)</h3>
+<p><b>Clustering = Group similar data together.</b> 十九世紀倫敦爆發霍亂 (Cholera)，醫生 John Snow 將每個病例畫喺城市地圖上，發現病例圍繞住某幾個路口<b>聚集 (cluster)</b> — 呢啲路口就係受污染嘅水井位置。住近污染水井嘅人病咗，住近乾淨水井嘅人冇事。「Without the ability to cluster the data, the cause of Cholera would not have been discovered.」</p>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>呢個例子顯示：clustering 唔一定要電腦，核心係「把相似 (位置接近) 嘅 data points 歸成一組，再睇每組有咩共同原因」。而且全程冇用到 label (冇人預先話你邊個井有問題) — 即係 unsupervised。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 22 嘅 John Snow 地圖係圖片，文字擷取不到；請對照原 slide 第 22 頁。</p></div>
+
+<h3>7.2 Descriptive example: Gapminder (slide 23)</h3>
+<p>Slide 23 用 Gapminder tools 嘅 bubble chart 作為 descriptive analytics 例子 — 用視覺化方式描述各國數據 (例如收入、壽命、人口) 嘅關係。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 23 嘅 Gapminder 圖表係圖片，具體顯示咩變數文字擷取不到；請對照原 slide 第 23 頁。</p></div>
+
+<h3>7.3 Predictive example: Google Flu Trends (slide 24)</h3>
+<p>Google 用 search history database 入面 <b>flu-related keywords 嘅搜尋頻率</b>，去 <b>predict 有幾多人患流感</b>。即係用一個 variable (搜尋量) 去預測另一個未知 / 未來嘅 variable (流感人數) — 完全符合 predictive 嘅定義。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24 嘅 Google Flu Trends (South Africa) 時間序列圖係圖片，文字擷取不到；請對照原 slide 第 24 頁。</p></div>
+
+<h2>8. The CRISP-DM Process &amp; Data Science Processes</h2>
+<p><span class="tag exam">Exam</span> Slide 25：<b>CRISP-DM (CRoss Industry Standard Process for Data Mining)</b> 係一個 process model，作為 data science process 嘅基礎。六個步驟：</p>
+<ol>
+  <li><b>Business Understanding</b> — 釐清商業目標同問題 (要解決咩？成功點樣衡量？)。</li>
+  <li><b>Data Understanding</b> — 收集同初步探索 data (有咩 attributes？質素點？)。</li>
+  <li><b>Prepare Data</b> — cleaning、轉換、合併、feature engineering (本科 Week 4–7 重點)。</li>
+  <li><b>Data Modeling</b> — 揀同訓練 model (clustering、classification、regression…)。</li>
+  <li><b>Evaluate the Results</b> — 睇 model 結果係咪達到 business objectives。</li>
+  <li><b>Deploy</b> — 將結果 / model 投入實際使用。</li>
+</ol>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>記住次序同名稱：<b>Business Understanding → Data Understanding → Prepare Data → Modeling → Evaluation → Deployment</b>。CRISP-DM 唔係一條直線：Business ↔ Data Understanding 之間會來回，Evaluation 唔滿意會返去 Business Understanding 重新開始 (iterative)。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 25 嘅 CRISP-DM 循環圖同 slide 26 嘅「Data Science Processes」流程圖 (來源 towardsdatascience) 都係圖片，文字擷取不到；請對照原 slide 第 25–26 頁。上面「iterative / 來回」係 CRISP-DM 嘅一般描述，並非由圖片擷取。</p></div>
+
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>對應本科內容：Week 4 data manipulation (載入、合併) + Week 5–7 data cleaning / feature engineering = <b>Prepare Data</b>；Week 8–9 EDA = <b>Data Understanding</b>；Week 10 visualization 用於 Understanding 同 presenting results。實際做 project 時大部分時間 (常說 60–80%) 都花喺 Data Preparation。</p></div>
+
+<pre><code>import pandas as pd
+# 一個極簡 CRISP-DM 流程示意 (假設有 sales.csv)
+# 1. Business Understanding: 想知邊類產品銷量最好
+# 2. Data Understanding
+df = pd.read_csv("sales.csv")
+print(df.info())
+# 3. Prepare Data
+df = df.dropna(subset=["category", "amount"])
+# 4. Modeling (此處只用簡單 aggregation 代替)
+result = df.groupby("category")["amount"].sum().sort_values(ascending=False)
+# 5. Evaluate: 結果有冇回答到問題？
+print(result.head())
+# 6. Deploy: 例如輸出報告
+result.to_csv("top_categories.csv")</code></pre>
+
+<h2>9. Summary (slide 27)</h2>
+<ul>
+  <li><b>What is data</b> — attributes, data types</li>
+  <li><b>What is big data</b> — 5 V's</li>
+  <li><b>Data analytics</b> — descriptive, predictive</li>
+  <li><b>The data science process</b> — CRISP-DM</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 一個 object 喺 structured data 入面仲有咩其他叫法？Attributes 又叫咩？</summary><p>Object 又叫 record, point, case, sample, entity, instance；attributes 又叫 features。喺表格中 object = row，attribute = column。</p></details>
+<details class="q"><summary>Q2. 將以下 attributes 分類：(a) zip code (b) customer satisfaction {low, medium, high} (c) number of purchases (d) weight in kg (e) has_membership {yes, no}</summary><p>(a) Categorical – Nominal (數字但冇次序 / 計算意義)；(b) Categorical – Ordinal (有次序，但距離不可比較)；(c) Numerical – Discrete (counts)；(d) Numerical – Continuous；(e) Binary (special case)。</p></details>
+<details class="q"><summary>Q3. Nominal 同 Ordinal 有咩分別？各舉一例。</summary><p>Nominal：只係名稱，no order or comparison，例如 eye color。Ordinal：有次序，但各級之間嘅距離 not comparable，例如 rankings (good, fair, bad)。</p></details>
+<details class="q"><summary>Q4. 列出 Big Data 嘅 5 V's，並指出「一間銀行要喺 0.1 秒內判斷每宗信用卡交易是否 fraud」主要係邊個 V？</summary><p>Volume, Velocity, Variety, Veracity, Value。信用卡 fraud detection 要處理不斷流入嘅 transaction stream 並 real-time 分析 → 主要係 <b>Velocity</b>。</p></details>
+<details class="q"><summary>Q5. Data analytics 發現嘅 pattern 要符合邊四個條件？用 “Diaper and Beer” 解釋其中兩個。</summary><p>Valid, Useful, Unexpected, Understandable。Unexpected：尿片同啤酒表面無關，係 non-obvious 嘅發現；Useful：超市可以將兩樣貨擺近 / 做 bundle promotion，即可據此做決策 (act on it)。</p></details>
+<details class="q"><summary>Q6. Descriptive 同 Predictive methods 嘅分別？John Snow 嘅 cholera map 同 Google Flu Trends 各屬邊類？</summary><p>Descriptive：find human-interpretable patterns that describe the data。Predictive：use some variables to predict unknown or future values of other variables。John Snow → Descriptive (clustering 病例位置找出污染水井)；Google Flu Trends → Predictive (用 flu-related 搜尋頻率預測流感人數)。</p></details>
+<details class="q"><summary>Q7. 按次序寫出 CRISP-DM 六個步驟。Data cleaning 屬於邊一步？</summary><p>1 Business Understanding → 2 Data Understanding → 3 Prepare Data → 4 Data Modeling → 5 Evaluate the Results → 6 Deploy。Data cleaning 屬於第 3 步 Prepare Data。</p></details>
+<details class="q"><summary>Q8. Mid-term test 嘅範圍同比重？</summary><p>Lectures and labs in Weeks 1–7，佔總分 20%。(Final exam 40%，group assignment 30%，class participation 10%。)</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><b>Assessment</b>：Participation 10% · Group project 30% · Mid-term 20% (Week 1–7) · Final 40%。</li>
+  <li><b>Structured data</b> = objects (record / point / case / sample / entity / instance) × attributes (features)。</li>
+  <li><b>Categorical</b>：Nominal (無次序：eye color, zip code) / Ordinal (有次序、距離不可比：good/fair/bad)。</li>
+  <li><b>Numerical</b>：Discrete (counts) / Continuous (temperature, height in cm)。<b>Binary</b> = 特例 (yes/no)。</li>
+  <li><b>Data analytics</b> = knowledge discovery from data (DIKW)；pattern 要 <b>Valid, Useful, Unexpected, Understandable</b> (Diaper &amp; Beer)。</li>
+  <li><b>5 V's</b>：Volume · Velocity (stream, real-time) · Variety (graph, text/image/video, relational) · Veracity (accuracy) · Value。</li>
+  <li><b>Descriptive</b>：human-interpretable patterns (Clustering, Classification；medical diagnosis；John Snow；Gapminder)。</li>
+  <li><b>Predictive</b>：用某些 variables 預測未知 / 未來值 (Recommendation systems；CRM；Google Flu Trends)。</li>
+  <li><b>CRISP-DM</b>：Business Understanding → Data Understanding → Prepare Data → Modeling → Evaluate → Deploy。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="../index.html">← 返回目錄</a>
+  <a href="COM6001-w2.html">Week 2 Python review 1 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

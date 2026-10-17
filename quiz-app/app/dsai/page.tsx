@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
+import notesRaw from "@/data/notes.json";
 import ModeSwitch, { HomeLink } from "@/components/ModeSwitch";
 import Tile from "@/components/Tile";
 
 export const metadata: Metadata = {
   title: "DSAI Study",
-  description: "MSc in Data Science and Artificial Intelligence — flashcards and multiple choice.",
+  description: "MSc in Data Science and Artificial Intelligence — flashcards, multiple choice and revision notes.",
 };
 
-// Read at build time on the server; neither bank ships to the browser from this page.
+// Read at build time on the server; no bank ships to the browser from this page.
 const courses = [...new Set(cardsRaw.map((c) => c.course))].sort();
 const cardDecks = new Set(cardsRaw.map((c) => c.deck)).size;
 const mcqDecks = new Set(mcqRaw.map((q) => q.deck)).size;
+const noteCourses = new Set(notesRaw.map((n) => n.course)).size;
 
 export default function Page() {
   return (
@@ -32,7 +34,7 @@ export default function Page() {
         </p>
       </header>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Tile
           href="/dsai/flashcards"
           glyph="▣"
@@ -56,6 +58,18 @@ export default function Page() {
             { label: "decks", value: mcqDecks },
           ]}
           action="Take the quiz"
+        />
+        <Tile
+          href="/dsai/notes"
+          glyph="▤"
+          title="Notes"
+          subtitle="One revision page per lecture"
+          blurb="Every concept explained with worked examples, the exam points marked, a self-test and a cheat sheet."
+          stats={[
+            { label: "lectures", value: notesRaw.length },
+            { label: "courses", value: noteCourses },
+          ]}
+          action="Read the notes"
         />
       </div>
     </main>

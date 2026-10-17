@@ -515,6 +515,148 @@ html[data-motion="off"] .cosmos * {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   DSAI revision notes (app/dsai/notes/[slug]). The lecture body is prerendered HTML from
+   DSAI/revision-notes/, so it is styled by element and by the pages' own classes (.box,
+   .overview, .tag, details.q…) rather than with utilities. Colours keep the app's meaning:
+   green and red stay verdict colours, so the exam marker is amber and a common-mistake box
+   takes the rose of a wrong answer — it is one.
+   ───────────────────────────────────────────────────────────────────────────── */
+.notes-prose {
+  font-family: var(--font-sans), "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.8;
+  color: theme("colors.paper");
+  overflow-wrap: break-word;
+}
+.notes-prose > :first-child { margin-top: 0; }
+.notes-prose :is(h2, h3, h4) {
+  font-family: var(--font-display), "Noto Sans TC", "PingFang TC", sans-serif;
+  color: theme("colors.paper");
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  scroll-margin-top: 1.5rem;
+}
+.notes-prose h2 { font-size: 1.6rem; font-weight: 600; margin: 3.5rem 0 1rem; }
+.notes-prose h3 { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 0.5rem; }
+.notes-prose h4 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.4rem; }
+.notes-prose p { margin: 0.9em 0; }
+.notes-prose :is(ul, ol) { margin: 0.8em 0; padding-left: 1.5em; }
+.notes-prose ul { list-style: disc; }
+.notes-prose ol { list-style: decimal; }
+.notes-prose li { margin: 0.3em 0; }
+.notes-prose li::marker { color: theme("colors.mist"); }
+.notes-prose :is(b, strong) { font-weight: 600; color: #fff; }
+.notes-prose a { color: theme("colors.signal"); text-decoration: underline; text-underline-offset: 3px; }
+.notes-prose a:hover { text-decoration-thickness: 2px; }
+.notes-prose mark.k { background: none; color: theme("colors.amber"); font-weight: 600; }
+.notes-prose code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.86em;
+  background: rgba(4, 5, 13, 0.7);
+  border: 1px solid rgba(var(--glow-cyan), 0.18);
+  border-radius: 3px;
+  padding: 0.05em 0.35em;
+}
+.notes-prose pre {
+  margin: 1.1em 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  background: rgba(4, 5, 13, 0.75);
+  border: 1px solid rgba(var(--glow-cyan), 0.16);
+  border-radius: 6px;
+  line-height: 1.55;
+}
+.notes-prose pre code { background: none; border: 0; padding: 0; font-size: 14px; }
+.notes-prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.notes-prose :is(th, td) {
+  border: 1px solid theme("colors.line");
+  padding: 0.5em 0.75em;
+  text-align: left;
+  vertical-align: top;
+}
+.notes-prose th { background: theme("colors.panel2"); font-weight: 600; }
+.notes-prose .formula,
+.notes-prose .katex-display { overflow-x: auto; overflow-y: hidden; }
+.notes-prose .formula { margin: 0.6em 0; }
+.notes-prose .meta { color: theme("colors.mist"); font-size: 14px; }
+.notes-prose .missing { color: theme("colors.mist"); font-style: italic; }
+
+/* The overview: learning outcomes and the Top-5. */
+.notes-prose .overview {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.4rem;
+  border-radius: 8px;
+  background: rgba(4, 5, 13, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.18);
+}
+.notes-prose .overview h3 { margin-top: 0.4rem; }
+@media (max-width: 639px) {
+  .notes-prose { font-size: 16px; }
+  .notes-prose .overview { padding: 0.9rem 1rem; }
+  .notes-prose :is(ul, ol) { padding-left: 1.25em; }
+}
+
+/* Callouts: a coloured left edge, a faint wash of the same colour, the label in it. */
+.notes-prose .box {
+  --tone: theme("colors.mist");
+  margin: 1.2em 0;
+  padding: 0.8rem 1.1rem;
+  border-left: 3px solid var(--tone);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+}
+.notes-prose .box > :first-child { margin-top: 0; }
+.notes-prose .box > :last-child { margin-bottom: 0; }
+.notes-prose .box .label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-display), "Noto Sans TC", sans-serif;
+  font-weight: 600;
+  color: var(--tone);
+}
+.notes-prose .box.exam { --tone: theme("colors.amber"); }
+.notes-prose .box.tip { --tone: theme("colors.iris"); }
+.notes-prose .box.warn { --tone: theme("colors.wrong"); }
+.notes-prose .box.link { --tone: theme("colors.signal"); }
+.notes-prose .tag {
+  display: inline-block;
+  margin-right: 0.4em;
+  padding: 0 0.55em;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: 0.15em;
+}
+.notes-prose .tag.exam { background: theme("colors.amber"); color: theme("colors.ink"); }
+.notes-prose .tag.core { background: rgba(var(--glow-cyan), 0.14); color: theme("colors.signal"); }
+
+/* Self-test questions. */
+.notes-prose details.q {
+  margin: 0.7rem 0;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  background: rgba(4, 5, 13, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.14);
+}
+.notes-prose details.q summary { cursor: pointer; font-weight: 600; }
+.notes-prose details.q[open] summary { margin-bottom: 0.5rem; color: theme("colors.signal"); }
+
+/* Exam only (NotesBody sets the attribute): the original pages' rule, in CSS — every top-level
+   block stays only if it is a heading, the overview, or is or contains an exam marker. */
+[data-exam-only="true"] .notes-prose > :not(h2, h3, .exam, .overview):not(:has(.exam)) {
+  display: none;
+}
+
 /* Older/low-power browsers without backdrop-filter: make glass opaque enough to read. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .holo,

@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 3 Python basics II</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w3">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 3</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 3 · Source: Lecture03_Python_crash_course.pdf (exported Jupyter notebook, 28 pages) · Lab 3 Q1–Q8</p>
+<h1>Python Basics II: Control Statements, Functions, Lambda &amp; Packages</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>理解 return value (Week 2 Q7 回顧)：<code>pop()</code> vs <code>append()</code>。</li>
+    <li>掌握 indentation 規則同 <code>if / elif / else</code>、<code>=</code> vs <code>==</code>、conditional expression (ternary operator)。</li>
+    <li>用 <code>for</code> loop 遍歷 list / tuple / dict (<code>.items()</code>, <code>.keys()</code>, <code>.values()</code>)、<code>range()</code>；用 <code>while</code> loop。</li>
+    <li>Arithmetic operators (<code>//</code>, <code>%</code>, <code>**</code>) 同 logical operators (<code>and</code>, <code>or</code>, <code>not</code>)；<code>or</code> vs <code>|</code> 嘅 precedence 陷阱。</li>
+    <li>Built-in functions 同 custom functions：positional / keyword / default / <code>*args</code> arguments、return、variable scope。</li>
+    <li>Recursion (binary search) 同 debugging 方法 (print, try-except, logging, debugger)。</li>
+    <li>Lambda functions：語法、作為 <code>sort(key=...)</code> 參數、作為 return value。</li>
+    <li>Modules vs packages；<code>%pip</code> vs <code>!pip</code>；install vs import。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>讀 code 預測 output：<code>if/elif/else</code>、<code>for</code> + <code>range(start, stop, step)</code>、<code>while</code>、dict looping。</li>
+    <li>Function arguments：positional vs keyword vs default vs <code>*args</code> (收集成 tuple)；return 會即刻終止 function。</li>
+    <li>Variable scope：function 入面改 immutable argument 唔影響外面。</li>
+    <li>Lambda：<code>lambda arguments: expression</code>；<code>list.sort(key=lambda x: ...)</code>；<code>my_func(5)(3)</code>。</li>
+    <li>Install (每個 environment 一次) vs Import (每個 session 都要)；<code>%pip</code> 優於 <code>!pip</code>。</li>
+  </ol>
+</div>
+
+<h2>1. Review: return values (Week 2 Q7)</h2>
+<p>本講係一份 Jupyter notebook。開頭先講 Week 3 起嘅交功課方法：用 <b>cell-level copy and paste</b> 將題目相關嘅 cells 抄去新 notebook，以姓名 + student ID 命名，交 PDF 去 Moodle；唔好交成份有晒教學內容嘅原 notebook。</p>
+<p>然後回顧 Week 2 Q7：</p>
+<pre><code>my_list = [1, 2, 3]
+print(my_list.pop(0))      # 1
+print(my_list.append(0))   # None
+
+help(my_list.append)
+# append(object, /) method of builtins.list instance
+#     Append object to the end of the list.
+help(my_list.pop)
+# pop(index=-1, /) method of builtins.list instance
+#     Remove and return item at index (default last).
+#     Raises IndexError if list is empty or index is out of range.
+my_list.pop.__doc__        # 直接攞 docstring 字串</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>睇 docstring：<code>pop</code> 寫 “Remove and <b>return</b> item”，所以 <code>print()</code> 印到被移除嘅值；<code>append</code> 只係 append，冇 return → 印出 <code>None</code>。另外 <code>pop(index=-1, /)</code> 表示 index default 係 -1 (最後一個)；list 空或 index out of range 會 raise <code>IndexError</code>。</p></div>
+
+<h2>2. Control statements: indentation &amp; if</h2>
+<h3>2.0 Groups of statements — indentation matters!</h3>
+<p>Python 用 <b>colon (冒號) <code>:</code></b> 開始一組 statements，組內所有 statements 要用<b>相同 indentation (縮進距離)</b>。Python 冇規定一定要幾多個 spaces，但建議 <b>4 spaces</b> (PEP 8)。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">indentation.png 同 if_syntax.png (notebook 第 2 頁) 係圖片，文字擷取不到；請對照原 PDF 第 2 頁。</p></div>
+
+<h3>2.1 if statement</h3>
+<ul>
+  <li>用 <code>if</code> keyword；if 入面嘅 statements 要 indent 並且 indentation 一致，condition 為 True 時先執行。</li>
+  <li>Condition 可以係 assertions (<code>==</code>, <code>&gt;</code>, <code>&lt;</code>…) 或者 function 返回嘅 Boolean value。</li>
+  <li>多過一個 condition 用 <code>elif</code>。</li>
+</ul>
+<pre><code>weather = 'Sunny'
+print(f"The weather is {weather}.")
+if weather == 'Sunny':
+    print("Don't forget your suncream!")
+elif weather == 'rainy':
+    print("Dont forget your umbrella!")
+else:
+    print("Have a nice day!")
+# The weather is Sunny.
+# Don't forget your suncream!</code></pre>
+
+<div class="box exam"><span class="label">⭐ <code>=</code> vs <code>==</code></span>
+<p><code>weather = 'sunny'</code> → <b>assignment</b> (將值 assign 畀 variable)。<br><code>weather == 'sunny'</code> → <b>assertion</b> (比較，返回 <code>True</code> / <code>False</code>)。<code>if weather = 'sunny':</code> 會出 SyntaxError。</p></div>
+
+<h3>Indentation problems (Lab Q1)</h3>
+<pre><code># Example 1 (錯)：if 後面一定要有 indented 嘅 action
+if weather == 'sunny':
+print('let"s go to the beach')        # IndentationError: expected an indented block
+
+# 修正
+if weather == 'sunny':
+    print("let's go to the beach")    # 用雙引號包住，入面先可以用 apostrophe '
+
+# Example 2 (錯)：同一 block 嘅 indentation 唔一致 / else 對錯位
+# 修正
+if weather == 'sunny':
+    print("let's go to the beach")
+    print('we will be happy')
+else:
+    print("let's stay at home")</code></pre>
+<div class="box tip"><span class="label">💡 修正 apostrophe (撇號)</span>
+<p>Slide 用 <code>'let"s go'</code> 迴避問題。正確英文要 <code>Let's</code>：外面用雙引號 <code>"let's go"</code>，或者用 escape <code>'let\'s go'</code>。</p></div>
+
+<h3>elif vs else</h3>
+<ul>
+  <li><code>elif</code> 要有 condition — 「if something occurs」。</li>
+  <li><code>else</code> 冇 condition — 「for all other cases」。<b><code>else:</code> 之後唔可以再有 branch</b>，否則 <code>SyntaxError: invalid syntax</code>。</li>
+</ul>
+<pre><code>if weather == 'sunny':
+    print('beach')
+else:
+    print('home')
+elif weather == 'rainy':      # ✗ SyntaxError：else 一定係最後一個 branch
+    print('home')</code></pre>
+
+<h3>Lab Q2 參考答案</h3>
+<pre><code>for i in [-5, 0, 3, 8]:
+    if i &lt; 0:
+        print('Negative')
+    elif i == 0:
+        print('Equal to zero')
+    elif i &lt; 5:                 # 去到呢度已知 i &gt; 0
+        print('Positive but smaller than 5')
+    else:
+        print('Positive and larger than or equal to 5')
+# Negative / Equal to zero / Positive but smaller than 5 / Positive and larger than or equal to 5</code></pre>
+
+<h3>Conditional expression (ternary operator)</h3>
+<p>一行寫簡單 if-else：<code>value_if_true if condition else value_if_false</code>。適合根據 condition assign 值，可以用喺 assignments、function arguments、list comprehensions 等。Tip：只用於簡單 condition，保持可讀性。</p>
+<pre><code>weather = 'sunny'
+result = "Let's go to the beach" if weather == 'sunny' else "Let's stay at home"
+print(result)     # Let's go to the beach</code></pre>
+
+<h2>3. Loops: for, range, while</h2>
+<h3>3.1 for loops</h3>
+<p><code>for</code> loop 用嚟 iterate 一個 <b>iterable object</b> 嘅元素；list、tuple、甚至 dict 都係 iterable。</p>
+<pre><code>for item in object:
+    statement(s)</code></pre>
+<pre><code>l1 = [1, 2, 3, 4, 5]
+for i in l1:
+    print(i)          # 1 2 3 4 5 (每行一個)</code></pre>
+
+<h3>Supplementary: Arithmetic &amp; Logical operators</h3>
+<table>
+  <tr><th>Operator</th><th>Name</th><th>Description</th><th>Example</th><th>Result</th></tr>
+  <tr><td><code>+</code></td><td>Addition</td><td>相加</td><td><code>5 + 3</code></td><td>8</td></tr>
+  <tr><td><code>-</code></td><td>Subtraction</td><td>左減右</td><td><code>10 - 4</code></td><td>6</td></tr>
+  <tr><td><code>*</code></td><td>Multiplication</td><td>相乘</td><td><code>3 * 4</code></td><td>12</td></tr>
+  <tr><td><code>/</code></td><td>Division</td><td>除法，<b>永遠返回 decimal (float)</b></td><td><code>10 / 2</code></td><td>5.0</td></tr>
+  <tr><td><code>//</code></td><td>Floor Division</td><td>除完向下取整</td><td><code>11 // 3</code></td><td>3</td></tr>
+  <tr><td><code>%</code></td><td>Modulus</td><td>只返回餘數</td><td><code>11 % 3</code></td><td>2</td></tr>
+  <tr><td><code>**</code></td><td>Exponentiation</td><td>次方</td><td><code>2 ** 3</code></td><td>8</td></tr>
+</table>
+<p>Logical operators 組合多個 conditions，返回 <code>True</code>/<code>False</code>：</p>
+<ul>
+  <li><code>and</code>：兩個都 True 先 True — <code>(5 &gt; 3) and (2 &lt; 4)</code> → True</li>
+  <li><code>or</code>：至少一個 True — <code>(5 &gt; 3) or (2 &gt; 4)</code> → True</li>
+  <li><code>not</code>：反轉 — <code>not(5 &gt; 3)</code> → False</li>
+</ul>
+
+<h3>Example: odd / even (list 或 tuple 都得)</h3>
+<pre><code>l1 = (1, 2, 3, 4, 5)     # tuple 同 list 一樣可以 loop
+for i in l1:
+    if i % 2 == 0:
+        print(f"{i} is even")
+    else:
+        print(f"{i} is odd")
+# 1 is odd / 2 is even / 3 is odd / 4 is even / 5 is odd</code></pre>
+
+<h3>3.2 Looping over dictionaries</h3>
+<p>Dict 係 iterable，可以 loop 佢嘅 keys、values 或 items。<b>Python 3.7 起 dict 保留 insertion order</b>；之前版本係 unordered (可以 loop，但次序冇保證)。Notebook 用嘅係 Python 3.10。</p>
+<pre><code>d1 = {"name": "aileen", "marks": 100}
+type(d1.items())    # dict_items
+type(d1.keys())     # dict_keys
+type(d1.values())   # dict_values
+
+for pair in d1:            print(pair)   # name / marks          ← 直接 loop dict 得到 key
+for pair in d1.items():    print(pair)   # ('name','aileen') / ('marks',100)  ← tuple(key, value)
+for pair in d1.keys():     print(pair)   # name / marks
+for pair in d1.values():   print(pair)   # aileen / 100
+
+for d in d1.items():
+    print(f"the 'key' is {d[0]} and its value is {d[1]}")
+# the 'key' is name and its value is aileen
+# the 'key' is marks and its value is 100</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p><b>直接 loop dict 只會得到 keys</b>；要同時攞 key 同 value 就 loop <code>dict.items()</code>，每個元素係一個 <code>(key, value)</code> tuple (可以 <code>for k, v in d1.items():</code> unpack)。</p></div>
+
+<h3>3.3 range()</h3>
+<p><code>range</code> 係 built-in function，產生一串數字，常用嚟 loop 指定次數：<code>range(stop)</code>、<code>range(start, stop)</code>、<code>range(start, stop, step)</code>。同 slicing 一樣 <b>stop 唔包含</b>。產生嘅 sequence 係 iterable 但<b>唔係 list</b> (要 <code>list(range(...))</code> 先變 list)；直接 print 只會見到 <code>range(1, 10)</code>。</p>
+<pre><code>print(range(1, 10, 1))        # range(1, 10)  ← 唔會印出數字
+for ii in range(1, 10, 1):
+    print(ii)                 # 1 … 9 (冇 10)
+for i in range(2, 10, 3):
+    print(i)                  # 2 5 8
+
+sum = 0                       # (slide 用 sum 做名；實際應避免覆蓋 built-in sum())
+for i in range(13, 174, 7):
+    sum += i
+print(sum)    # 2070
+print(i)      # 167 ← loop 完 i 保留最後一個值 (13 + 7×22 = 167；174 唔包含)</code></pre>
+
+<h3>3.4 while loops</h3>
+<p>Condition 為 True 就一直 loop。<b>要自己 increment / decrement iterator</b>，否則 loop 永遠唔會停 (infinite loop)。</p>
+<pre><code>num = 0
+while (num &lt; 10):
+    num += 1          # 忘記呢句 → while loop never ends
+    print(num)        # 1 … 10
+
+# 緊接住再行：
+while (num in range(0, 10)):   # 此時 num == 10，唔喺 range(0,10) 入面 → 一次都唔行
+    num = num + 1
+print(num)            # 10</code></pre>
+<div class="box warn"><span class="label">⚠️ 易錯位</span>
+<p>第一個 while 印 1 至 10 (唔係 0 至 9)：因為先 <code>+= 1</code> 再 print；最後一輪 num = 9 &lt; 10 成立 → 變 10 → 印 10。第二個 while 因為 num 已經係 10，condition False，所以 body 唔執行，只印 10。</p></div>
+
+<h3>Lab Q3: sum multiples of 3 or 5 (0 – 99999)</h3>
+<div class="box exam"><span class="label">⭐ <code>or</code> vs <code>|</code> 嘅 precedence</span>
+<pre><code>a = 3
+print((a%3==0) | (a%2==0))   # True  ← 有括號，先比較再 bitwise OR
+print(a%3==0 | a%2==0)       # False ← | 優先過 ==，變成 a%3 == (0 | a%2) == 0 → 0 == 1 == 0 → False
+print(a%3==0 or a%2==0)      # True  ← 建議用 or (precedence 低過 ==)</code></pre></div>
+<pre><code># for loop
+total = 0
+for i in range(0, 100000):          # 0 至 99999 (inclusive)
+    if i % 3 == 0 or i % 5 == 0:
+        total += i
+print(total)    # 2333316668
+
+# while loop
+total, i = 0, 0
+while i &lt;= 99999:
+    if i % 3 == 0 or i % 5 == 0:
+        total += i
+    i += 1                          # 自己 increment
+print(total)    # 2333316668</code></pre>
+
+<h2>4. Functions (and Methods)</h2>
+<p>Functions (同 methods) 係完成特定任務嘅 <b>self-contained</b> code modules：通常「take in」data、處理、「return」結果 (return 係 optional)。寫好之後可以重複使用，亦可以喺其他 functions 入面 call。Methods 係屬於特定 class 嘅 light functions，要先有該 class 嘅 object，再用 <code>obj.abc()</code>。</p>
+
+<h3>4.1 Built-in functions</h3>
+<p>Python interpreter 內置、永遠可用：<code>print()</code>, <code>min()</code>, <code>max()</code>, <code>len()</code>, <code>type()</code> 等 (完整列表：docs.python.org/3/library/functions.html)。</p>
+<pre><code>len("hello")     # 5
+len([1, 2, 3])   # 3
+len(1)           # TypeError: object of type 'int' has no len()</code></pre>
+
+<h3>4.2 Custom-defined functions</h3>
+<p><b>點解唔 copy-paste 同一段 code？</b> Copy-paste 較易出錯；要改嘅時候要去每一個位置改。定義 function 就只需改定義嗰一處，之後 call 名就得，code 更乾淨清晰。</p>
+<p>Syntax：</p>
+<ul>
+  <li>用 keyword <code>def</code></li>
+  <li>圓括號放 argument(s)；可以係 variable length <code>def func(*var)</code></li>
+  <li>用 colon <code>:</code></li>
+  <li>Function body 用相同 indentation</li>
+  <li>可以有或冇 return value</li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Customized_Function.png (function 結構標注圖，notebook 第 10 頁) 係圖片，文字擷取不到；請對照原 PDF 該頁。</p></div>
+<pre><code>def calculate_area(width, height=3, *vars):
+    """Calculate rectangle area from width and height."""   # docstring
+    area = width * height
+    if len(vars) &gt; 0:
+        for each in vars:
+            print(each)
+    return area
+
+calculate_area(3, 5, ['random', 'input', 0])   # 印 ['random', 'input', 0]；return 15
+calculate_area(1)                              # height 用 default 3 → return 3
+
+def my_sum(a, b):
+    print(f'{a} + {b} is {a+b}')
+    return a + b
+
+my_sum(1, 2)              # 1 + 2 is 3
+my_sum('Aileen', 'Hou')   # Aileen + Hou is AileenHou  ← + 對 str 係連接
+my_sum(b=5, a=7)          # 7 + 5 is 12 ；Out: 12 (notebook 只顯示最後一句嘅 return)
+
+def myFunc():             # 冇乜意義但語法正確
+    return True</code></pre>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Input arguments &amp; return</span>
+<table>
+  <tr><th>種類</th><th>寫法</th><th>說明</th></tr>
+  <tr><td><b>Positional arguments</b></td><td><code>my_sum(1, 2)</code></td><td>按定義次序對應：1 → a，2 → b</td></tr>
+  <tr><td><b>Keyword arguments</b></td><td><code>my_sum(b=1, a=7)</code></td><td><code>keyword=value</code>，可以任意次序</td></tr>
+  <tr><td><b>Default values</b></td><td><code>def my_sum(a=5, b=5)</code></td><td>call 時冇提供就用 default</td></tr>
+  <tr><td><b>Variable-length positional</b></td><td><code>def f(*args)</code></td><td>接受任意數量 positional args，<b>收集成一個 tuple</b></td></tr>
+</table>
+<p><b>Return</b>：用 <code>return</code> statement；一執行到 explicit return，function <b>即刻終止</b>，並把值送返 caller。</p></div>
+<pre><code>def my_sum(a=5, b=5):
+    return a - b
+    print("Execution completed.")   # 永遠唔會執行 (return 之後)
+
+my_sum(1, 2)       # -1  positional：a=1, b=2
+my_sum(b=1, a=7)   # 6   keyword
+my_sum()           # 0   default 5 - 5
+
+def print_arguments(*args):
+    print(args)            # ('A', 'B', 'C') ← tuple
+    for arg in args:
+        print(arg)
+print_arguments("A", "B", "C")</code></pre>
+
+<h3>Variable scope</h3>
+<p>將 variable (例如 <code>a</code>) 傳入 function 時，對於 immutable types (例如 int)，function 收到嘅效果等同一個 copy；function 入面改 <code>a</code> <b>唔會影響外面嘅 <code>a</code></b>。</p>
+<pre><code>a = 3
+def my_update(a):
+    a = a + 1
+    print(f'inside the fucntion a is {a}')
+my_update(a)
+print(f'outside the function a is {a}')
+# inside the fucntion a is 4
+# outside the function a is 3</code></pre>
+<div class="box warn"><span class="label">⚠️ 補充 (超出 slide 但常見)</span>
+<p>Function 入面嘅 <code>a</code> 係 local variable。如果傳入嘅係 <b>mutable</b> object (例如 list) 而 function 用 <code>.append()</code> 修改佢，外面就會見到改變 — 因為兩個名指向同一個 object (Week 2 references 概念)。Slide 只講 immutable 情況。</p></div>
+
+<h3>Lab Q4 &amp; Q5 參考答案</h3>
+<pre><code># Q4 (for loop)
+def small_positive_number(seq):
+    result = []
+    for x in seq:
+        if (x &gt; 0) and (x &lt; 5):
+            result.append(x)
+    return result                      # return，唔係 print
+
+# Q4 (while loop)
+def small_positive_number(seq):
+    result, i = [], 0
+    while i &lt; len(seq):
+        if 0 &lt; seq[i] &lt; 5:
+            result.append(seq[i])
+        i += 1
+    return result
+
+small_positive_number([1, 2, 0, 4, 6, 5, 2, 1])   # [1, 2, 4, 2, 1]
+
+# Q5
+def my_func_varargs(arg1, *vartuple):
+    print(arg1)
+    for v in vartuple:
+        print(v)
+    return 1 + len(vartuple)           # 總 argument 數量
+
+my_func_varargs(1, 'a', 'b', 'c')      # 印 1 a b c；return 4</code></pre>
+
+<h2>5. Recursion &amp; Debugging</h2>
+<h3>5.1 Recursion</h3>
+<p><b>Recursion</b>：function call 自己，用嚟解決可以拆成較細、相似 subproblems 嘅問題。</p>
+<ul>
+  <li>一定要有 <b>base case</b>，防止 infinite recursion，令 recursive calls 最終終止。</li>
+  <li>某些問題用 recursion 更優雅易明，但對大 input 可能<b>用更多 memory、更慢</b> (相比 iterative)。</li>
+</ul>
+<p>例子：<b>binary search</b> — 喺已排序 list 搵 target：睇中間 <code>mid</code>，等於就 return；細過 target 就去右半邊搵；大過就去左半邊搵。</p>
+<pre><code>def binary_search(nums, target, left=None, right=None):
+    if left is None:
+        left = 0
+    if right is None:
+        right = len(nums) - 1
+    if left &gt;= right:            # ← base case (有 bug！)
+        return -1
+    mid = left + (right - left) // 2
+    if nums[mid] == target:
+        return mid
+    elif nums[mid] &lt; target:
+        return binary_search(nums, target, mid + 1, right)
+    else:
+        return binary_search(nums, target, left, mid - 1)
+
+my_list = [1, 2, 3, 4, 5]
+binary_search(my_list, 3)   # 2 ✓
+binary_search(my_list, 5)   # -1 ✗ 應該係 4</code></pre>
+
+<h3>5.2 Debugging</h3>
+<p><b>Debugging</b> = 找出並修正 errors / bugs。Python 常用工具：</p>
+<ul>
+  <li><b>Print statements</b>：喺不同位置 print variables 嘅值。</li>
+  <li><b>Exception handling</b>：<code>try-except</code> 捕捉 exceptions，幫助定位錯誤來源。</li>
+  <li><b>Logging</b>：用 <code>logging</code> module 記錄訊息同事件。</li>
+  <li><b>Debuggers</b>：IDE / command-line debugger，set breakpoints、逐步執行、inspect variables。</li>
+</ul>
+<pre><code># 5.2.1 用 print debug
+def binary_search(nums, target, left=None, right=None):
+    if left is None: left = 0
+    if right is None: right = len(nums) - 1
+    print(f"left = {left}, right = {right} -&gt; {nums[left:right + 1]}")
+    if left &gt;= right:
+        print("break because left &gt;= right")
+        return -1
+    mid = left + (right - left) // 2
+    if nums[mid] == target:
+        return mid
+    elif nums[mid] &lt; target:
+        return binary_search(nums, target, mid + 1, right)
+    else:
+        return binary_search(nums, target, left, mid - 1)
+
+binary_search(my_list, target=5)
+# left = 0, right = 4 -&gt; [1, 2, 3, 4, 5]
+# left = 3, right = 4 -&gt; [4, 5]
+# left = 4, right = 4 -&gt; [5]
+# break because left &gt;= right
+# Out: -1
+
+# 用 logging (效果一樣，但可以按 level 開關，唔使刪 print)
+import logging
+logging.basicConfig(level=logging.DEBUG)
+# 將上面 print(...) 改成 logging.debug(...) → 輸出 DEBUG:root:left = 0, right = 4 -&gt; ...</code></pre>
+
+<p><b>Debugger</b> (IDE)：set breakpoint (例如喺計 left / right 嗰行)，暫停時檢查 <code>left</code>, <code>right</code>, <code>mid</code>, <code>nums[mid]</code>：</p>
+<table>
+  <tr><th>Button</th><th>作用</th></tr>
+  <tr><td><b>Continue</b></td><td>一直行直到撞到下一個 breakpoint</td></tr>
+  <tr><td><b>Step over</b></td><td>執行當前一行，去下一行，<b>唔會入去</b> function call 裡面</td></tr>
+  <tr><td><b>Step into</b></td><td>如果當前行有 function call，<b>入去</b>該 function 第一行暫停</td></tr>
+  <tr><td><b>Step out</b></td><td>行完當前 function，返去 caller，喺 call 之後嗰行暫停</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Debugger.png (IDE debugger UI 截圖) 係圖片，文字擷取不到；請對照原 PDF debugging 一節。</p></div>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Bug 解釋</span>
+<p>由 print 可見最後一次 call 時 <code>left == right == 4</code>，<code>nums[4]</code> 正正係 5，但 condition <code>left &gt;= right</code> 令 function 提早 return -1。修正：改為 <b><code>if left &gt; right:</code></b> (只有 left 嚴格大過 right，即搜尋範圍為空，先 return -1)。修正後 <code>binary_search(my_list, target=5)</code> → <code>4</code>。</p>
+<p>Trace (修正版，target = 5)：left=0,right=4,mid=2,nums[2]=3 &lt; 5 → left=3；left=3,right=4,mid=3,nums[3]=4 &lt; 5 → left=4；left=4,right=4,mid=4,nums[4]=5 ✓ return 4。</p></div>
+
+<h2>6. Anonymous (lambda) functions</h2>
+<p>先分清：<b>statements</b> 包括 expressions；<b>expressions 一定會產生一個值</b>。例：<code>x = 1</code> 係 statement (assignment)，<code>x == 1</code> 係 expression (產生 True/False)。</p>
+<p><mark class="k">Lambda function</mark>：細小、<b>anonymous (冇名)</b> 嘅 function，可以有多個 parameters 但只有<b>一個 expression</b>，又叫 lambda expression。</p>
+<pre><code>lambda arguments: expression</code></pre>
+<pre><code>(lambda x, y: x - y)(3, 5)     # -2   ← 直接喺後面加 (args) call
+sum_up = lambda x, y: x + y    # sum_up 只係成個 lambda body 嘅 "nickname"
+sum_up(35, 5)                  # 40
+(lambda x, y: x + y)(35, 5)    # 40   冇 nickname 都可以，用 () 包住 body
+
+def remove_1st(x):             # 等價 full function
+    return x[1:]
+remove_1st_lambda = lambda x: x[1:]
+remove_1st([1, 2, 3, 4, 5])          # [2, 3, 4, 5]
+remove_1st_lambda(" Lecture 03")     # 'Lecture 03'  ← 對 string 一樣 work (slicing)</code></pre>
+
+<h3>Lab Q6</h3>
+<pre><code>is_even = lambda n: n % 2 == 0
+print(is_even(4))   # True
+print(is_even(7))   # False</code></pre>
+
+<h3>Embedded usage: lambda 作為另一個 function 嘅 input</h3>
+<p>老師<b>唔建議單獨用 lambda</b>；佢主要用喺另一個 function 入面 — 作為 input parameter 或 return value。最經典：<code>list.sort(key=...)</code>。</p>
+<pre><code>id_string = ['a3', 'b1', 'c5', 'd2']
+id_string.sort()                       # ['a3', 'b1', 'c5', 'd2']  按成個 string (第一個字母) 排
+id_string.sort(key=lambda x: x[1])     # ['b1', 'd2', 'a3', 'c5']  按第二個字元 (數字) 排</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p><code>key</code> 係一個「將每個元素轉成排序依據」嘅 function。<code>sort</code> 會對每個元素 call <code>key(x)</code>，然後按結果排。<code>lambda x: x[1]</code> 即係「用第二個字元做排序依據」。</p></div>
+
+<h3>Lab Q7 參考答案</h3>
+<pre><code>student_dict = {"b003": "John", "a005": "Robin", "a002": "Aileen", "b001": "Mary"}
+
+def student_sort(d):
+    key_list = list(d.keys())
+    key_list.sort(key=lambda x: int(x[-3:]), reverse=True)   # 按數字部分 (最後 3 位) 降序
+    sorted_values = []
+    for k in key_list:                 # ['a005', 'b003', 'a002', 'b001']
+        sorted_values.append(d[k])
+    return sorted_values
+
+student_sort(student_dict)   # ['Robin', 'John', 'Aileen', 'Mary']</code></pre>
+<div class="box warn"><span class="label">⚠️ 留意</span>
+<p>題目字面寫「descending by student number within each class」，但 hint 同 expected output 其實係<b>唔理 class、單純按數字降序</b>。<code>int(x[-3:])</code> 將 '005' 轉做 5 再比較；如果唔轉 int 用 string 比較，呢個例子結果一樣，但 '10' vs '9' 呢類情況就會錯。另外 slide 用 <code>dict</code> 做 parameter 名會覆蓋 built-in，建議改 <code>d</code>。</p></div>
+
+<h3>Lambda 作為 function 嘅 return value</h3>
+<pre><code>def my_func(adder):
+    return lambda x: x + adder
+
+my_func(5)        # &lt;function my_func.&lt;locals&gt;.&lt;lambda&gt;(x)&gt;  ← 返回嘅係一個 function
+my_func(5)(3)     # 8   等於 (lambda x: x + 5)(3)</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p><code>my_func(5)</code> 返回 <code>lambda x: x + 5</code> 呢個 function 本身 (未執行)，所以要再加一對括號提供 x：<code>my_func(5)(3)</code> → 8。</p></div>
+<div class="box note"><span class="label">🖼️ 留意</span><p class="missing">Notebook 中 <code>my_func(5)(3)</code> 嘅輸出多咗一行 “mul is 5”，但顯示嘅 function 定義冇對應 print，相信係老師舊版 cell 殘留；以 function 定義為準，結果係 8。</p></div>
+
+<h2>7. Python packages &amp; modules</h2>
+<ul>
+  <li><b>Module</b>：單一 <code>.py</code> 檔，包含 functions、classes、variables，可以 import 使用。</li>
+  <li><b>Package</b>：有結構嘅 modules 集合，將相關 modules 組合埋一齊。</li>
+  <li>用 <code>import</code> 載入：<code>import math</code>、<code>import pandas as pd</code>。</li>
+  <li>Python standard library 已包含好多 modules；numpy、pandas 等要另外安裝。</li>
+  <li>用 modules / packages 組織 code 令程式更 readable、reusable、maintainable。</li>
+</ul>
+
+<h3>7.1 pip commands</h3>
+<p><code>pip</code> 係 Python 嘅 package installer，用嚟 install、update、manage packages。可以喺 terminal / command prompt 用，或者喺 Jupyter 用 <code>!</code> (執行 terminal command) — 但<b>更建議用 <code>%pip</code></b>，因為佢保證裝喺 notebook <b>當前使用嘅 environment</b>；<code>!pip install</code> 可能裝咗去另一個 environment。</p>
+<table>
+  <tr><th>Command</th><th>作用</th></tr>
+  <tr><td><code>%pip show package_name</code></td><td>檢查有冇裝、睇 version 同 location</td></tr>
+  <tr><td><code>%pip install package_name</code></td><td>安裝</td></tr>
+  <tr><td><code>%pip uninstall package_name</code></td><td>移除</td></tr>
+</table>
+
+<h3>7.2 Install vs Import</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+  <tr><th></th><th>Install</th><th>Import</th></tr>
+  <tr><td>意思</td><td>下載並把外部 Python code 加到你部電腦</td><td>令 module / package 嘅 functions、classes、variables 喺當前 script / notebook 可用</td></tr>
+  <tr><td>點做</td><td>terminal: <code>pip install pandas</code>；Jupyter: <code>%pip install pandas</code></td><td><code>import pandas as pd</code></td></tr>
+  <tr><td>頻率</td><td><b>每個 environment 一次</b></td><td><b>每次開新 Python session / script 都要</b></td></tr>
+</table>
+<p>口訣：<b>Install before import.</b></p></div>
+
+<h3>Lab Q8</h3>
+<p>檢查並安裝：<b>pandas</b> (tables / DataFrames 嘅 data analysis &amp; manipulation)、<b>numpy</b> (fast numerical operations、arrays)、<b>seaborn</b> (基於 matplotlib 嘅 statistical visualization)、<b>plotly</b> (interactive plotting)、<b>scikit-learn</b> (machine learning / data mining)。</p>
+<pre><code>%pip show pandas          # 每個 package 一個 cell
+%pip show numpy
+%pip show seaborn
+%pip show plotly
+%pip show scikit-learn    # 注意：install 名係 scikit-learn，import 名係 sklearn
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import plotly.express as px
+import sklearn</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>Lambda + <code>key=</code> 嘅思路 Week 4 會用喺 <code>DataFrame.rename(mapper=lambda x: ...)</code>，之後亦會見到 <code>Series.apply(lambda x: ...)</code>。scikit-learn 嘅 imputers (Week 7) 同 COM6004 classification models 都靠呢度裝嘅 packages。Recursion + binary search 嘅「分而治之」概念亦係 COM6004 decision tree 遞歸分裂嘅基礎。</p></div>
+
+<p><b>How to submit</b>：將題目同答案放去另一個 notebook → export html → print as PDF → 確保所有 code、文字、outputs 都顯示 → 交 Moodle。</p>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 以下 code 輸出咩？<code>for i in range(1, 12, 4): print(i)</code></summary><p>1、5、9 (12 唔包含；下一個 13 已超出)。</p></details>
+<details class="q"><summary>Q2. <code>d = {"a": 1, "b": 2}</code>。<code>for x in d: print(x)</code> 同 <code>for x in d.items(): print(x)</code> 分別印咩？</summary><p>第一個印 keys：<code>a</code>、<code>b</code>。第二個印 tuples：<code>('a', 1)</code>、<code>('b', 2)</code>。</p></details>
+<details class="q"><summary>Q3. 計算：<code>17 // 5</code>、<code>17 % 5</code>、<code>2 ** 4</code>、<code>9 / 3</code></summary><p>3、2、16、3.0 (<code>/</code> 永遠返回 float)。</p></details>
+<details class="q"><summary>Q4. <code>def f(a, b=2, *args): return a + b + len(args)</code>。<code>f(1)</code>、<code>f(1, 5)</code>、<code>f(1, 5, 'x', 'y')</code>、<code>f(b=1, a=3)</code> 各返回咩？</summary><p><code>f(1)</code> = 1+2+0 = 3；<code>f(1, 5)</code> = 1+5+0 = 6；<code>f(1, 5, 'x', 'y')</code> = 1+5+2 = 8 (args = ('x','y') tuple)；<code>f(b=1, a=3)</code> = 3+1+0 = 4。</p></details>
+<details class="q"><summary>Q5. 以下會印咩？點解？<pre><code>x = 10
+def g(x):
+    x = x * 2
+    return x
+y = g(x)
+print(x, y)</code></pre></summary><p>印 <code>10 20</code>。Function 入面嘅 x 係 local variable，改佢唔影響外面嘅 x (int 係 immutable)；return 值 20 assign 畀 y。</p></details>
+<details class="q"><summary>Q6. 原本 binary_search 用 <code>if left &gt;= right: return -1</code>，喺 [1,2,3,4,5] 搵 5 點解錯？點改？</summary><p>最後一次 call left = right = 4，範圍只剩 [5]，本應檢查 nums[4]，但 <code>left &gt;= right</code> 成立直接 return -1。改為 <code>if left &gt; right:</code>，只有範圍真正為空先 return -1。修正後返回 4。</p></details>
+<details class="q"><summary>Q7. 寫一句 code 將 <code>words = ['banana', 'kiwi', 'apple']</code> 按字串長度排序。</summary><p><code>words.sort(key=lambda w: len(w))</code> (或 <code>key=len</code>) → <code>['kiwi', 'apple', 'banana']</code>。</p></details>
+<details class="q"><summary>Q8. <code>def h(n): return lambda x: x * n</code>。<code>h(3)</code> 同 <code>h(3)(4)</code> 係咩？</summary><p><code>h(3)</code> 返回一個 function (<code>lambda x: x * 3</code>)；<code>h(3)(4)</code> = 12。</p></details>
+<details class="q"><summary>Q9. Install 同 import 有咩分別？點解喺 Jupyter 用 %pip 而唔用 !pip？</summary><p>Install = 下載 package 到電腦，每個 environment 做一次；import = 載入當前 session，每次新 session 都要做。<code>%pip</code> 保證裝喺 notebook 當前 kernel 嘅 environment；<code>!pip</code> 係行 shell command，可能裝咗去另一個 environment。</p></details>
+<details class="q"><summary>Q10. <code>a = 3; print(a%3==0 | a%2==0)</code> 點解係 False？</summary><p><code>|</code> (bitwise OR) 嘅 precedence 高過 <code>==</code>，所以變成 <code>a%3 == (0 | a%2) == 0</code> → <code>0 == 1 == 0</code> (chained comparison) → False。應該用括號或者用 <code>or</code>。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><code>pop()</code> remove &amp; return；<code>append()</code> return <code>None</code> — 睇 docstring 有冇 “return”。</li>
+  <li>Block = colon <code>:</code> + 一致 indentation (建議 4 spaces)；if 後一定要有 indented action。</li>
+  <li><code>=</code> assignment vs <code>==</code> assertion；<code>elif</code> 有 condition，<code>else</code> 冇且必須最後。</li>
+  <li>Ternary：<code>a if cond else b</code>。</li>
+  <li><code>for item in iterable</code>；dict 直接 loop = keys；<code>.items()</code> = (key, value) tuples；Python 3.7+ dict 保留 insertion order。</li>
+  <li><code>range(start, stop, step)</code> stop 唔包含，唔係 list；<code>while</code> 要自己 increment。</li>
+  <li><code>/</code> → float，<code>//</code> floor，<code>%</code> 餘數，<code>**</code> 次方；用 <code>and/or/not</code>，小心 <code>|</code> precedence。</li>
+  <li><code>def f(pos, kw=default, *args):</code>；<code>*args</code> → tuple；<code>return</code> 即終止；immutable argument 喺 function 內改唔影響外面。</li>
+  <li>Recursion 要 base case；binary search bug：<code>left &gt;= right</code> → 改 <code>left &gt; right</code>。</li>
+  <li>Debug：print / try-except / logging / debugger (Continue, Step over, Step into, Step out)。</li>
+  <li><code>lambda args: expression</code>；主要用作 <code>sort(key=lambda x: ...)</code> 或 return value；<code>my_func(5)(3)</code>。</li>
+  <li>Module = 一個 .py；package = modules 集合。<code>%pip show/install/uninstall</code>；Install 一次 / Import 每 session；install before import。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w2.html">← Week 2 Python review 1</a>
+  <a href="COM6001-w4.html">Week 4 pandas data manipulation →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

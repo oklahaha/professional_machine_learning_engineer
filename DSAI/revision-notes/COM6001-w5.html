@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 5 Pandas data manipulation (II)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w5">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 5</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 5 · Source: Lecture05_notebook.pdf（Jupyter notebook export, 51 pages）· Lecturer: Dr. Aileen Hou</p>
+<h1>Pandas Data Manipulation (II)</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>用 string accessor <code>.str</code> 及 <code>DataFrame.rename()</code> 改 column labels，明白點解 <code>mapper</code> 要傳「function 本身」而唔係「function 嘅結果」。</li>
+    <li>分清 <mark class="k">reference</mark>（<code>df_ref = df</code>）同 <mark class="k">copy</mark>（<code>df.copy()</code>），識用 <code>is</code> / <code>id()</code> 驗證。</li>
+    <li>Selecting：<code>select_dtypes()</code> 揀 columns；<code>.loc</code>（label-based）vs <code>.iloc</code>（integer position-based）揀 rows；Boolean indexing、<code>&amp; | ~</code>、<code>isin()</code>。</li>
+    <li>Subsetting：<code>df.loc[row_indexer, column_indexer]</code> 同時揀 rows + columns。</li>
+    <li>Modifying data：用 selection + assignment 更新 cell / row / column / block，加新 row / column。</li>
+    <li>Sorting：<code>sort_values()</code>、<code>nlargest()</code>、<code>nsmallest()</code> 同 <code>keep</code> 參數。</li>
+    <li>Data cleaning 入門：點解要 clean（Garbage in, Garbage out）、unnecessary data（constant values、duplicated columns）用 <code>nunique()</code>、<code>value_counts()</code>、<code>compare()</code> 檢查。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><code>.loc[m:n]</code> 係 label-based，<b>頭尾都包括</b>；<code>.iloc[m:n]</code> 係 position-based，<b>包頭唔包尾</b>（同 Python slicing 一樣）。</li>
+    <li><code>df.loc[x]</code>（單一 label）→ Series；<code>df.loc[[x]]</code>（list）或 <code>df.loc[m:n]</code>（slice）→ DataFrame。</li>
+    <li>多個條件要用 element-wise operators <code>&amp;</code>、<code>|</code>、<code>~</code>，<b>每個條件加括號</b>；用 <code>and</code>/<code>or</code> 會出 error。<code>==</code> 係比較，<code>=</code> 係 assignment。</li>
+    <li><code>df_ref = df</code> 只係多一個名指向同一個 object；要獨立副本必須 <code>df.copy()</code>。</li>
+    <li><code>rename(mapper=str.upper)</code> ✔、<code>lambda x: x.upper()</code> ✔；<code>lambda x: x.upper</code> ✘（回傳 method object）、<code>str.upper()</code> ✘（即刻 call 冇 argument）。</li>
+  </ol>
+</div>
+
+<h2>0. 背景：hero dataset 同 notebook 結構</h2>
+<p>今堂 notebook 用一個 superhero dataset <code>hero.csv</code>（537 rows × 178 columns）：頭幾個 columns 係 <code>name</code>、<code>gender</code>、<code>eye color</code>、<code>race</code>、<code>hair color</code>、<code>height</code>、<code>publisher</code>、<code>alignment</code>、<code>weight</code>、<code>hero_names</code>，之後 167 個 <code>bool</code> columns 代表 superpowers（例如 <code>agility</code>、<code>flight</code>、<code>super strength</code>）。<code>hero.info()</code> 顯示 <code>dtypes: bool(167), float64(1), int64(2), object(8)</code>。另外第一個 column <code>Unnamed: 0</code> 係之前 save CSV 時連 index 一齊寫出嚟嘅產物，之後會 drop 走。</p>
+<p>Notebook 先複習 Week 4 嘅 Renaming（Section 5），然後係 Week 5 新內容：1. Copying → 2. Selecting → 3. Subsetting → 4. Modifying → 5. Sorting → 6. Data Cleaning (1)。</p>
+<pre><code>import pandas as pd
+dir_path = "./Datasets/week_5/"     # dataset 唔喺 study folder 入面
+hero = pd.read_csv(dir_path + "hero.csv")</code></pre>
+<div class="box note"><span class="label">🖼️ 關於輸出</span><p class="missing">PDF 係由 Jupyter HTML 印出嚟，好多 DataFrame 輸出被截斷或者欄位錯位，部分 code 行尾亦被切走（例如 <code>ascending=[Tru…</code>）。以下解釋以可讀到嘅 code 同輸出（rows × columns 數目、Series 值）為準，被截斷嘅部分會根據輸出推斷並註明。</p></div>
+
+<h2>1. Renaming (Week 4 複習)</h2>
+<h3>1.1 String accessor <code>.str</code></h3>
+<p><code>hero.columns</code> 係一個 <code>Index</code> object（唔係 string），所以唔可以直接 call <code>.upper()</code>。要經 <mark class="k">string accessor</mark> <code>.str</code> 先可以對每個 element 逐個套用 string methods（elementwise）。</p>
+<pre><code>hero.columns = hero.columns.str.upper()       # 全部大楷
+hero.columns = hero.columns.str.lower()       # 全部細楷
+hero.columns = hero.columns.str.title()       # 每個字第一個字母大楷：'Eye Color'
+hero.columns.str.capitalize()                 # 只有第一個字嘅第一個字母大楷：'Eye color'</code></pre>
+<p><span class="tag exam">Exam</span>Slide 特別強調：<b>It is INCORRECT to call <code>upper()</code> or <code>lower()</code> directly on Series or DataFrame objects</b>，因為佢哋係 <code>str</code> 嘅 methods，必須經 <code>.str</code>。同樣邏輯之後會見到 datetime accessor <code>.dt</code>（Week 7）同 categorical accessor <code>.cat</code>。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤：冇 assign 返</span><p>Notebook 示範咗：執行 <code>hero.columns.str.upper()</code> 之後再睇 <code>hero.columns</code>，label <b>冇變</b>。因為 <code>.str.upper()</code> 回傳一個<b>新嘅 Index</b>，原本嘅 object 唔會被改。要 <code>hero.columns = hero.columns.str.lower()</code> assign 返先生效。</p></div>
+
+<h3>1.2 <code>DataFrame.rename()</code></h3>
+<pre><code>DataFrame.rename(mapper=None, *, index=None, columns=None, axis=None, copy=True, ...)</code></pre>
+<ul>
+  <li><code>columns=</code> 可以係 <b>dict</b>（舊名 → 新名，只改部分 columns），或者係一個 <b>function</b>（套用落每一個 label）。</li>
+  <li><code>mapper=</code> + <code>axis='columns'</code>（或 <code>axis='index'</code>）效果等同 <code>columns=</code>/<code>index=</code>。</li>
+</ul>
+<pre><code>hero = hero.rename(columns={'hero_names': 'hero names'})   # dict：只改一個
+hero = hero.rename(columns=str.upper)                       # function：全部改大楷
+hero = hero.rename(mapper=str.lower, axis='columns')        # 等同 columns=str.lower
+hero.columns = hero.columns.str.lower()
+hero.to_pickle(dir_path + "hero.pkl")   # 存成 pickle，保留 dtype，下次 read_pickle 讀返</code></pre>
+<div class="box warn"><span class="label">⚠️ Notebook 小 bug</span><p>原 notebook 寫咗 <code>hero.to_pickle("dir_path+hero.pkl")</code>——成個係 string literal，會真係 save 成一個叫 <code>dir_path+hero.pkl</code> 嘅檔案。正確寫法係 <code>hero.to_pickle(dir_path + "hero.pkl")</code>（冇引號包住 <code>dir_path</code>）。</p></div>
+
+<h3>1.3 Lambda functions 作為 mapper</h3>
+<pre><code>hero.rename(mapper=lambda x: x.lower(), axis='columns')   # 全部細楷
+hero.rename(mapper=lambda x: x[:-1],   axis='columns')    # 每個 label 刪最後一個字元：'name' → 'nam'
+hero.rename(mapper=lambda x: x.upper(), axis='columns')   # 全部大楷</code></pre>
+<p>輸出可見 <code>x[:-1]</code> 令 columns 變成 <code>nam</code>、<code>gende</code>、<code>heigh</code>、<code>publishe</code>……（冇 assign 返，所以只係預覽）。</p>
+
+<h3>1.4 Q5 (Week 4)：點解 <code>lambda x: x.upper</code> 唔得？</h3>
+<pre><code>hero.rename(mapper=lambda x: x.upper,   axis='columns')  # ✘ wrong
+hero.rename(mapper=lambda x: x.upper(), axis='columns')  # ✔ correct
+hero.rename(mapper=str.upper,           axis='columns')  # ✔ correct
+hero.rename(mapper=str.upper(),         axis='columns')  # ✘ wrong</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：function object vs function call</span>
+<ul>
+  <li><code>rename()</code> 需要一個 <b>callable</b>（可以被 call 嘅 function），佢會自己對每個 label call 一次。</li>
+  <li><code>str.upper</code>（冇括號）= function object 本身 → rename 會做 <code>str.upper('name')</code> → <code>'NAME'</code> ✔。</li>
+  <li><code>lambda x: x.upper()</code> → lambda 本身係 callable，入面有 call <code>upper()</code>，回傳 string ✔。</li>
+  <li><code>lambda x: x.upper</code> → lambda 回傳嘅係 <b>bound method object</b>（未 call），所以新 column 名變成 <code>&lt;built-in method upper of str object at 0x...&gt;</code>（notebook 輸出正正係咁）✘。</li>
+  <li><code>str.upper()</code> → 喺傳入 rename 之前<b>已經即刻 call</b>，而且冇俾 string argument → <code>TypeError</code> ✘。</li>
+</ul></div>
+
+<h2>2. Copying DataFrames</h2>
+<p>Copying = 建立一個內容一樣、但<b>獨立</b>嘅新 DataFrame，令修改新 DataFrame 唔會影響原本嗰個。要用 <code>DataFrame.copy()</code>，佢會 copy indices 同 data。可以用 <code>is</code> operator 或 <code>id()</code> 檢查兩個名係咪指向同一個 object。</p>
+<pre><code>df = pd.DataFrame([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 2, 9]],
+                  columns=['A', 'B', 'C'],
+                  index=['Row 1', 'Row 2', 'Row 3'])
+df_ref  = df          # 只係另一個名（reference）
+df_copy = df.copy()   # 真正嘅副本
+
+print(id(df), id(df_ref), id(df_copy))
+# 6074892656 6074892656 5889568256   ← 頭兩個一樣
+
+df['org_ind']       = True    # 改 df
+df_ref['ref_ind']   = True    # 改 df_ref ＝ 改 df
+df_copy['copy_ind'] = False   # 只改 df_copy
+
+df.columns       # A B C org_ind ref_ind
+df_ref.columns   # A B C org_ind ref_ind   （同 df 一模一樣）
+df_copy.columns  # A B C copy_ind          （只有自己嘅改動）
+df is df_ref     # True
+df is df_copy    # False</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：reference vs copy</span>
+<table>
+<tr><th></th><th><code>df_ref = df</code></th><th><code>df_copy = df.copy()</code></th></tr>
+<tr><td>係咪新 object？</td><td>唔係，同一個 object（<code>id</code> 相同）</td><td>係，新 object（<code>id</code> 唔同）</td></tr>
+<tr><td>改 df_ref / df_copy 會唔會影響 df？</td><td><b>會</b></td><td><b>唔會</b></td></tr>
+<tr><td><code>is</code> 結果</td><td><code>df is df_ref → True</code></td><td><code>df is df_copy → False</code></td></tr>
+</table>
+<p>同樣道理適用於 Python <code>list</code>：<code>a_ref = a; a_ref[2] = 4</code> 會令 <code>a</code> 都變；<code>a.copy()</code> 先係獨立。</p></div>
+<pre><code>a = [1, 2, 3]
+a_copy = a.copy()
+a_ref = a
+a_ref[2] = 4            # a 都變成 [1, 2, 4]
+print(a_ref is a)       # True
+print(a_copy is a)      # False</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Variable 名就好似「標籤貼紙」。<code>df_ref = df</code> 只係喺同一個箱度多貼一張貼紙；<code>df.copy()</code> 先係搵個新箱，將啲嘢複製入去。所以喺 function 入面改 DataFrame 之前，如果唔想影響原本數據，記得先 <code>.copy()</code>（Week 7 OrdinalEncoder 例子都有用 <code>df.copy()</code>）。</p></div>
+
+<h3>Copying integers（optional，self-study）</h3>
+<p>Integer 冇 <code>copy()</code> method，因為 int 係 immutable，冇需要 copy。就算用 <code>copy.deepcopy()</code>，Python 都唔會整新 object：</p>
+<ul>
+  <li>細而常用嘅 integers（slide 寫 [-5, 255]／[-5, 256]；CPython 實際係 −5 至 256）會被 <mark class="k">intern</mark>：每個值只有一個 object，所以 <code>i1 = 1; i2 = 1</code> 嘅 <code>id</code> 完全一樣。</li>
+  <li>範圍外（例如 −6）：<code>i1 = -6</code> 同 <code>i2 = -6</code> 分開寫會係兩個唔同 object（id 唔同）；但 <code>i1_ref = i1</code> 同 <code>copy.deepcopy(i1)</code> 都只係指返同一個 object。</li>
+</ul>
+
+<h2>3. Selecting columns</h2>
+<h3>3.1 <code>select_dtypes()</code>：按 data type 揀 columns</h3>
+<pre><code>DataFrame.select_dtypes(include=None, exclude=None)  # → 回傳 DataFrame</code></pre>
+<ul>
+  <li><code>include</code>：要保留嘅 dtypes；<code>exclude</code>：要排除嘅 dtypes。</li>
+  <li>可以用 pandas dtypes：<code>int64</code>、<code>float64</code>、<code>object</code>、<code>bool</code>、<code>datetime64</code>、<code>category</code>；亦可以用 Python types：<code>int</code>、<code>float</code>、<code>str</code>、<code>bool</code>。</li>
+  <li>廣義類別：<code>'number'</code> 包晒所有 numeric（int64、float64）；<code>object</code> 包 string-like。</li>
+</ul>
+<pre><code>hero = pd.read_pickle(dir_path + "hero.pkl")
+hero.select_dtypes(include=['int64'])           # 537 rows × 1 column（height）
+hero.select_dtypes(include=['int'])             # 用 int 都得，同樣結果
+hero.select_dtypes(include=['number','string']) # 537 rows × 8 columns：name, eye color, race, ..., height, weight</code></pre>
+<p><span class="tag exam">Exam</span>呢招最常用喺 data cleaning：<code>numeric_cols = df.select_dtypes(include='number').columns</code>、<code>cat_cols = df.select_dtypes(exclude='number').columns</code>，之後分開處理 numerical 同 categorical columns（Week 6 imputation 會再用）。</p>
+
+<h3>3.2 用 labels 揀 columns</h3>
+<pre><code>hero[['gender', 'race']]     # 傳入一個 list of labels → 537 rows × 2 columns（DataFrame）
+hero['race']                 # 單一 label → Series</code></pre>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p><code>df['a']</code>（單括號、單一 label）回傳 <b>Series</b>；<code>df[['a']]</code>（雙括號，即 list）回傳 <b>DataFrame</b>。呢個規則同下面 <code>.loc[4]</code> vs <code>.loc[[4]]</code> 一樣。</p></div>
+
+<h2>4. Selecting rows：<code>.loc</code> 與 <code>.iloc</code></h2>
+<p>揀 rows 有兩大類方法：</p>
+<ul>
+  <li><b>Index based</b>：<code>df.loc[]</code> = <mark class="k">label based</mark> selection；<code>df.iloc[]</code> = <mark class="k">integer (position) based</mark> selection。</li>
+  <li><b>Condition based</b>：Boolean indexing，例如 <code>df[df['age'] &gt; 30]</code> 或 <code>df.loc[df['age'] &gt; 30]</code>。</li>
+</ul>
+
+<h3>4.1 <code>.loc</code> indexer</h3>
+<pre><code># 如果由 hero.csv 讀，先 drop 走多餘 column
+hero.drop(columns=['Unnamed: 0'], inplace=True)   # inplace=True：直接改 hero 本身
+
+hero.loc[1:4]          # labels 1 至 4（包括 4）→ 4 rows × 177 columns
+type(hero.loc[4])      # pandas.core.series.Series     （一個 label）
+type(hero.loc[[4]])    # pandas.core.frame.DataFrame   （list of labels）
+type(hero.loc[1:4])    # pandas.core.frame.DataFrame   （slice）</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：<code>.loc[m:n]</code> 包含兩端</span>
+<p><code>.loc[m:n]</code> is a label-based slicing from label m to label n (<b>inclusive both m &amp; n</b>)。呢點同 Python slicing（最後一個 index excluded）唔同，因為呢個唔係用數字位置 slice，而係用 labels。所以 <code>hero.loc[1:4]</code> 有 4 rows（1,2,3,4），而 <code>hero.iloc[1:4]</code> 只有 3 rows（position 1,2,3）。</p></div>
+
+<h3>4.2 用 <code>set_index()</code> 令 index 變成有意義嘅 labels</h3>
+<pre><code>hero = hero.set_index('name')     # 'name' column 變成 row index
+hero.to_pickle(dir_path + 'hero_name_as_index.pkl')
+hero.index    # Index(['Abin Sur', 'Adam Strange', ..., 'Ymir'], dtype='string', name='name', length=537)
+
+hero.loc['Superman']                     # 一個 label → Series（Name: Superman, Length: 178）
+hero.loc['Superman':'Wonder Woman']      # label range（包括 Wonder Woman）→ 13 rows × 178 columns</code></pre>
+<div class="box warn"><span class="label">⚠️ Notebook comment 與輸出不符</span><p>原 notebook 喺 <code>hero.loc['Superman']</code> 旁邊寫「select one row --&gt; a DataFrame」，但輸出明明係 <code>Name: Superman, Length: 178, dtype: object</code>，即係 <b>Series</b>。記住規則：單一 label → Series。</p></div>
+
+<h3>4.3 <code>.iloc</code> indexer</h3>
+<p><code>.loc</code> 用 label，好難「移動」：想攞 'Superman' 嘅下一行，<code>hero.loc['Superman'+1]</code> 係唔得嘅（string 加 int）。要攞連續 rows，用 <code>.iloc</code> 做 slicing 更好：</p>
+<ul>
+  <li><code>.iloc</code> 嘅 integer positions：<b>start inclusive，stop exclusive</b>，同標準 Python slicing 一樣。</li>
+</ul>
+<pre><code>hero.iloc[0]      # 第一行：Name: Abin Sur（Series）
+hero.iloc[1]      # 第二行：Name: Adam Strange
+hero.iloc[1:4]    # position 1,2,3 → Adam Strange, Alan Scott, Amazo（3 rows）
+
+# Superman 嘅下一行：先 .loc 由 Superman 開始 slice，再 .iloc[1]
+hero.loc['Superman':]            # 356 rows（由 Superman 到最尾）
+hero.loc['Superman':].iloc[1]    # Name: Swamp Thing</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 20 頁有一張 <code>iloc_slicing.png</code> 圖解 iloc slicing，文字擷取不到；請對照原 PDF。上面嘅文字規則（start inclusive、stop exclusive）已足夠理解。</p></div>
+<div class="box tip"><span class="label">💡 直覺：chain <code>.loc</code> + <code>.iloc</code></span><p>將 label 同 position 兩種世界接駁：先用 label 搵「起點」（<code>.loc['Superman':]</code> 產生一個新 DataFrame，Superman 喺 position 0），再喺新 DataFrame 用 position 行一步（<code>.iloc[1]</code>）。</p></div>
+
+<h2>5. Selecting rows with Boolean criteria</h2>
+<p><code>.loc</code> 可以接收一個 <b>Boolean Series</b>，揀出值為 <code>True</code> 嘅 rows——好似俾 indexer 一串「逐行 True/False」。<code>df[condition]</code> 同 <code>df.loc[condition]</code> 可以互換。條件表達式必須逐行輸出 True/False，例如一個 column 同某值比較。</p>
+<pre><code>df = pd.DataFrame([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 2, 9]],
+                  columns=['A', 'B', 'C'],
+                  index=['Row1', 'Row2', 'Row3'])
+
+df['A'] == 4     # 比較（condition）→ Row1 False, Row2 True, Row3 False
+df['A'] = 4      # assignment！成個 column A 變晒 4
+
+df[df['B'] == 2]       # 唔用 .loc 都得 → Row1, Row3
+df.loc[df['B'] == 2]   # 同上
+# df.iloc[df['B'] == 2]  ✘ 錯！iloc 唔收帶 index 嘅 Boolean Series</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：<code>==</code> vs <code>=</code></span><p><code>df['A'] == 4</code> 係 condition expression（回傳 Boolean Series）；<code>df['A'] = 4</code> <b>唔係</b> condition，係 assignment statement，會將成個 column 覆蓋。Q1.1 就係考呢點：<code>hero['alignment'] = 'good'</code> 會將<b>所有</b> hero 嘅 alignment 改成 <code>'good'</code>，唔係揀出 good 嘅 heroes。</p></div>
+
+<h3>5.1 用 <code>.iloc</code> 做 Boolean selection（optional）</h3>
+<p>條件嘅輸出有兩部分：indexable（index：Row1, Row2…）同 values（True/False）。<code>.iloc</code> 只識 values，所以要用 <code>.values</code> 剝走 index：</p>
+<pre><code>mask = df['B'] == 2
+mask.values      # array([ True, False,  True])
+mask.index       # Index(['Row1', 'Row2', 'Row3'], dtype='object')
+df.iloc[mask.values]   # → Row1, Row3</code></pre>
+
+<h3>5.2 Cascaded Boolean indexing：<code>&amp;</code>、<code>|</code>、<code>~</code></h3>
+<p>多個條件要用 element-wise Boolean operators：<code>&amp;</code>（AND）、<code>|</code>（OR）、<code>~</code>（NOT）。用 Python 嘅 <code>and</code>/<code>or</code> 唔會 element-wise 運作，會 raise error。</p>
+<pre><code># 此時 df 嘅 A 已經全部係 4
+df.loc[(df["B"] == 2) &amp; (df["C"] &lt; 6)]   # 只有 Row1（B=2 且 C=3）
+df.loc[(df["B"] == 2) | (df["C"] &lt; 6)]   # Row1, Row3</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤：漏括號</span><p>Python 中 <code>&amp;</code> 嘅 precedence 高過 <code>==</code>、<code>&lt;</code>。如果寫 <code>df["B"] == 2 &amp; df["C"] &lt; 6</code>，會先計 <code>2 &amp; df["C"]</code>，結果完全錯／出 error。<b>每個條件一定要用括號包住。</b></p></div>
+
+<h3>5.3 <code>Series.isin()</code></h3>
+<p><code>isin(values)</code>：Series 每個 element 如果喺提供嘅 set 入面就 True，否則 False。之後可以 <code>.sum()</code> 數 True（True = 1），即係符合條件嘅 rows 數目。</p>
+<pre><code>hero['race'].isin(["Human"])                        # Boolean Series, Length 537
+hero['race'].isin(["Human"]).sum()                  # np.int64(165) → 165 個 Human
+(~hero['race'].isin(['Human', 'Mutant'])).sum()     # np.int64(315) → 唔係 Human 亦唔係 Mutant
+hero[~hero['race'].isin(['Human ', 'Mutant'])]      # ⚠️ 480 rows，結果仲見到 Human！</code></pre>
+<div class="box warn"><span class="label">⚠️ Notebook 問題：「Why we see Humans in the result?」</span><p>因為 <code>'Human '</code> 尾有一個<b>空格</b>，同 data 入面嘅 <code>'Human'</code> 唔相等，所以 Human 冇被排除，只排除咗 Mutant。結果係 480 rows（537 − Mutant 數目），而唔係 315。教訓：字串比較係完全精確嘅，多一個空格都唔同——呢個亦係 data cleaning 要處理 inconsistent values 嘅原因（可以用 <code>.str.strip()</code> 清走頭尾空格）。</p></div>
+
+<h3>5.4 Q1 練習（含答案）</h3>
+<pre><code># Q1.2 讀 data、set index、drop 'Unnamed: 0'，揀 alignment == 'good'
+import pandas as pd
+path = './Datasets/week_5/'
+hero = pd.read_csv(path + 'hero.csv')
+hero = hero.set_index('name')
+hero = hero.drop(columns=['Unnamed: 0'])
+
+hero.loc[hero['alignment'] == 'good']    # with .loc    → 347 rows × 176 columns
+hero[hero['alignment'] == 'good']        # without .loc → 347 rows × 176 columns
+
+# Q1.3 Female 而且 height &gt; 200
+hero[(hero['gender'] == 'Female') &amp; (hero['height'] &gt; 200)]
+# → 6 rows：Bloodaxe(218), Frenzy(211), Hela(213), She-Hulk(201), Thundra(218), Wolfsbane(366)
+
+# Q1.4 eye color 既唔係 green 亦唔係 red
+hero[~hero['eye color'].isin(['green', 'red'])]          # 428 rows
+(~hero['eye color'].isin(['green', 'red'])).sum()        # np.int64(428)</code></pre>
+
+<h2>6. Subsetting：同時揀 rows 同 columns</h2>
+<p>Subsetting = 同時選 rows 同 columns，用逗號分隔 row indexer 同 column indexer：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：2-D indexing 語法</span>
+<ul>
+  <li><code>df.loc[row_indexer, column_indexer]</code>：label-based，start 同 stop <b>inclusive</b>。</li>
+  <li><code>df.iloc[row_indexer, column_indexer]</code>：position-based，start inclusive，stop <b>exclusive</b>。</li>
+  <li>row_indexer / column_indexer 可以係 slices、lists、arrays 或 Boolean masks。<code>:</code> 代表「全部」。</li>
+</ul></div>
+<pre><code>hero.loc[:, 'race']                                  # 所有 rows，'race' column → Series（dtype string）
+hero.loc['Adam Strange':'Amazo', 'race':'hair color']  # rows Adam Strange..Amazo；columns race..hair color（全包）
+#               race  hair color
+# Adam Strange  Human  Blond
+# Alan Scott    -      Blond
+# Amazo         Android -
+
+hero.iloc[1:4, 2:10:2]   # rows position 1–3；columns position 2,4,6,8（step 2）
+# → race, height, alignment, hero_names</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 31 頁有 <code>subsetting.png</code> 圖解 row/column indexer，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>6.1 Two-dimensional conditional selection</h3>
+<p>Boolean 條件可以放喺 row indexer 或 column indexer。注意：我哋通常係對 <b>columns 嘅值</b>落條件，但產生嘅 Boolean Series 係<b>逐行</b>嘅，所以佢係放喺<b>第一個參數（row indexer）</b>。</p>
+<pre><code># row-index：(hero['flight'] == True) &amp; (hero['gender'] == 'Male')
+# column-index：":" 全部 columns
+hero.loc[(hero['flight'] == True) &amp; (hero['gender'] == 'Male'), :]   # 136 rows × 176 columns
+
+# Q2：只顯示 'hero_names' 同 'race'
+hero[(hero['flight'] == True) &amp; (hero['gender'] == 'Male')][['hero_names', 'race']]       # option 1：無 .loc
+hero.loc[(hero['flight'] == True) &amp; (hero['gender'] == 'Male'), ['hero_names', 'race']]  # option 2：.loc
+# → 136 rows × 2 columns</code></pre>
+<div class="box tip"><span class="label">💡 Option 1 vs Option 2</span><p>Option 1 係「chained indexing」：先篩 rows 得到一個中間 DataFrame，再揀 columns。讀資料冇問題，但如果用嚟<b>改值</b>（assignment），可能只係改咗中間副本（pandas 會出 <code>SettingWithCopyWarning</code>）。改值時一定用 Option 2 嘅單一 <code>.loc[rows, cols] = ...</code>。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p><code>df.loc[condition, ['col1','col2']]</code> 對應 COM6002 SQL 嘅 <code>SELECT col1, col2 FROM table WHERE condition</code>：column indexer ≈ SELECT（projection），row condition ≈ WHERE（selection）；<code>&amp;</code>/<code>|</code>/<code>~</code> ≈ <code>AND</code>/<code>OR</code>/<code>NOT</code>；<code>isin([...])</code> ≈ <code>IN (...)</code>。</p></div>
+
+<h2>7. Modifying data</h2>
+<h3>7.1 Updating values</h3>
+<p>用「selection + assignment statement」改指定 cells：</p>
+<ul>
+  <li>單一 cell：<code>df.loc[x_label, y_label] = new_value</code> 或 <code>df.iloc[x, y] = new_value</code></li>
+  <li>成個 row / column：<code>df.iloc[x, :] = new_value</code> 或 <code>df.iloc[:, y] = new_value</code></li>
+  <li>一個 block：<code>df.iloc[x1:x2, y1:y2] = new_value</code></li>
+</ul>
+<pre><code>df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 2, 9]], columns=['A', 'B', 'C'])
+df.iloc[2, 1] = -100        # 第 3 行第 2 列
+#    A    B  C
+# 0  1  100  3     ← （notebook 之前已改 B[0]=100）
+# 1  4    5  6
+# 2  7 -100  9
+df.iloc[0:2, 0:2] = 999     # rows 0–1、columns 0–1（stop exclusive）
+#      A    B  C
+# 0  999  999  3
+# 1  999  999  6
+# 2    7 -100  9
+df.iloc[0, :] = 1000        # 成個 row 0
+#       A     B     C
+# 0  1000  1000  1000</code></pre>
+
+<h3>7.2 Adding entries（加 column / row）</h3>
+<pre><code>df[3] = [3, 3, 3]           # 新 column，label 係 integer 3
+df.loc[3] = [3, 3, 3, 4]    # 新 row，label 3（要俾齊 4 個 columns 嘅值）
+df[10000] = True            # 新 column '10000'，全部 True</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：「setting with enlargement」</span>
+<p>對 <code>.loc</code> 用一個<b>唔存在</b>嘅 label 做 assignment，pandas 唔會報錯，而係<b>新增</b>嗰個 row / column。Notebook 有個好例子：當 df 嘅 index 係 <code>'Row1','Row2','Row3'</code> 時執行 <code>df.loc[0, 'B'] = 100</code>，因為冇 label <code>0</code>，結果係多咗一個新 row <code>0</code>，只有 B = 100，其他 columns 係 <code>NaN</code>；而因為出現 NaN，int columns 被轉成 <code>float64</code>（1 → 1.0）。</p>
+<pre><code>      A      B    C  10000
+Row1  1.0    2.0  3.0  True
+Row2  4.0    5.0  6.0  True
+Row3  7.0    2.0  9.0  True
+0     NaN  100.0  NaN   NaN</code></pre></div>
+<pre><code>hero = pd.read_pickle(path + 'hero_name_as_index.pkl')
+hero = hero.reset_index()          # 'name' 變返普通 column，index 變返 0..536
+                                   # 一定要 assign 返！reset_index() 預設回傳新 DataFrame
+hero.loc[10000] = hero.loc[533]    # 複製 X-Man 嗰行，新增一行 label 10000（加喺最尾）
+hero.tail()                        # 最後一行 index 係 10000</code></pre>
+<div class="box note"><span class="label">ℹ️ 執行次序</span><p class="missing">Notebook 部分 cells 係亂序執行（In[] 號碼跳來跳去），所以某些輸出嘅 column 數（177/178/179/180）同 df 內容未必同上一格一致，例如 df 一時有 column <code>3</code>、一時有 <code>10000</code>。理解每句 code 嘅效果就夠。</p></div>
+
+<h3>7.3 Updating a selection of types</h3>
+<p>將 column labels 收集成一個變數，再用嚟做 selection 同 assignment——好適合一次過改多個 columns：</p>
+<pre><code>numeric_cols = hero.select_dtypes(include='number').columns   # height, weight
+hero[numeric_cols] = hero[numeric_cols] * 100   # 全部 numeric columns ×100
+hero[numeric_cols].iloc[:5]
+#    height   weight
+# 0   18500   9000.0
+# 1   18500   8800.0
+hero[numeric_cols] = hero[numeric_cols] / 100   # revert</code></pre>
+
+<h3>7.4 Q3 Heroes' BMI</h3>
+<p>BMI 公式（height 要用 meter，而 dataset 係 cm）：</p>
+<div class="formula">$$ \text{BMI} = \frac{\text{weight (kg)}}{\text{height (m)}^2} $$</div>
+<pre><code>hero['BMI'] = hero['weight'] / (hero['height'] / 100) ** 2
+hero['BMI'].mean()     # notebook 預期約 26（輸出 np.float64(26.23272651733959)）</code></pre>
+<p>例：Abin Sur height 185 cm、weight 90 kg → \( 90 / 1.85^2 = 90/3.4225 \approx 26.3 \)。</p>
+<div class="box warn"><span class="label">⚠️ 數據陷阱</span><p>輸出可見有啲 hero 嘅 height / weight 係 <b>-99</b>（例如 Swamp Thing height -99、Ymir weight -99.0），即係用特殊值代表 missing。直接計 BMI 會出現無意義嘅數。Week 6 會學點樣用 <code>na_values</code> / <code>describe()</code> 搵出呢類 placeholder。</p></div>
+
+<h2>8. Sorting</h2>
+<ul>
+  <li><code>df.sort_values()</code>：按一個或多個 columns，升序或降序。</li>
+  <li><code>df.nlargest(n, columns)</code>：最大嘅 n 行（降序）。</li>
+  <li><code>df.nsmallest(n, columns)</code>：最細嘅 n 行（升序）。</li>
+</ul>
+<pre><code># 先按 race 升序，同一 race 內按 height 降序（code 行尾被截斷，由輸出推斷 ascending=[True, False]）
+hero[['race', 'height']].sort_values(by=['race', 'height'], ascending=[True, False])
+#      race       height
+# 211  Symbiote   229.0
+# 514  Symbiote   229.0
+# 515  Symbiote   226.0
+# ...  （Symbiote 內 height 由大到細）</code></pre>
+
+<h3>8.1 <code>nlargest()</code> 與 <code>keep</code> 參數</h3>
+<p>根據 <code>help(hero.nlargest)</code>：等同 <code>df.sort_values(columns, ascending=False).head(n)</code>，但 more performant。唔可以用喺 <code>object</code> / <code>category</code> dtype columns（會 <code>TypeError</code>）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：<code>keep</code> 處理 ties（並列）</span>
+<table>
+<tr><th><code>keep=</code></th><th>意思</th></tr>
+<tr><td><code>'first'</code>（default）</td><td>並列時優先保留最早出現嘅</td></tr>
+<tr><td><code>'last'</code></td><td>並列時優先保留最後出現嘅</td></tr>
+<tr><td><code>'all'</code></td><td>保留所有同「最細入圍值」並列嘅 rows，即使超過 n 行</td></tr>
+</table>
+<p>Help 文件例子（population）：<code>nlargest(3, 'population')</code> → France, Italy, Malta；<code>keep='last'</code> → France, Italy, <b>Brunei</b>（434000 並列中最後一個）；<code>keep='all'</code> → France, Italy, Malta, Maldives, Brunei（5 行）。注意 nlargest 唔係揀「n 個不同值」。</p></div>
+<pre><code>hero.nlargest(6, 'height', keep="last")
+# Fin Fang Foom 975, Galactus 876, Groot 701, Wolfsbane 366, MODOK 366, Ymir 305
+# → 305 有三個並列（Onslaught, Sasquatch, Ymir），keep='last' 揀最後嘅 Ymir；6 rows
+
+hero.nlargest(6, 'height', keep="all")
+# → 8 rows：多咗 Onslaught 305、Sasquatch 305（所有並列 305 都保留）</code></pre>
+
+<h3>8.2 Q4：最細嘅 6 個「正數」height，保留並列</h3>
+<pre><code>hero[hero['height'] &gt; 0].nsmallest(6, 'height', keep='all')
+# 先排除 -99 等非正數，再 nsmallest；notebook 輸出 6 rows × 177 columns
+# （名單包括 Utgard-Loki、Krypto、Rocket Raccoon、Bloodwraith、Anti-Monitor、Giganta）</code></pre>
+<div class="box tip"><span class="label">💡 點解要 <code>&gt; 0</code>？</span><p>因為 -99 代表 missing。如果唔先過濾，最細嘅幾個全部都會係 -99，冇意義。呢個正正示範 sorting 之前要先了解數據。</p></div>
+
+<h2>9. Data Cleaning (1)：Handling unnecessary data</h2>
+<h3>9.1 What is data cleaning?</h3>
+<p><span class="tag exam">Exam</span><b>Definition</b>: <i>Data cleansing or data cleaning is the process of detecting and correcting (or removing) corrupt or inaccurate records from a record set, table, or dataset and refers to identifying incomplete, incorrect, inaccurate or irrelevant parts of the data and then replacing, modifying, or deleting the dirty or coarse data.</i></p>
+<ul>
+  <li><b>Why?</b> <mark class="k">Garbage in, Garbage out</mark>——輸入數據有問題，分析/模型結果都唔會可靠。</li>
+  <li><b>Data analysis procedures</b>：Data collection → <b>Data cleaning</b> → Data analysis → Insights</li>
+  <li><b>Data Audit</b>：每個 dataset 都唔同，可能有唔同問題：Inconsistent values、Unnecessary data、Missing data、Incorrect encodings。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Data cleaning 大綱（Week 5–7 都會用）</span>
+<ul>
+  <li><b>Removing unnecessary data (dropping)</b>：Repeated columns、Duplicated rows、Constant values</li>
+  <li><b>Handling the missing data</b>：Dropping、Imputing using constants、Imputing using statistics、Imputing using models</li>
+  <li><b>Handling the outliers</b></li>
+</ul>
+<p>檢查工具：Constant values → <code>value_counts()</code>、<code>nunique()</code>；One-to-one mapped data（冇額外資訊）→ <code>value_counts()</code>、<code>nunique()</code>；Duplicated data → <code>compare()</code>、<code>duplicated()</code>、<code>drop_duplicates()</code>、<code>drop()</code>。</p></div>
+
+<h3>9.2 World Development Indicators (wdi) dataset</h3>
+<pre><code>wdi = pd.read_csv(dir_path + 'world_development_indicators.csv')
+wdi.info(verbose=True)
+# RangeIndex: 446 entries；22 columns
+# 例如 atms_per_100000 417 non-null、alcohol_consumption_per_capita 220 non-null、country_category 289 non-null
+wdi[['country_name', 'planet', 'Country Name', 'Country Code']]
+#    country_name  planet  Country Name  Country Code
+# 0  Afghanistan   Earth   Afghanistan   AFG
+# 1  Albania       Earth   Albania       ALB</code></pre>
+<p>一眼睇落已經見到可疑嘅地方：<code>planet</code> 好似全部都係 Earth；<code>country_name</code> 同 <code>Country Name</code> 好似一模一樣；<code>Country Code</code> 似乎同國家名一一對應。</p>
+
+<h3>9.3 Constant values：<code>nunique()</code> 與 <code>value_counts()</code></h3>
+<ul>
+  <li><code>DataFrame.nunique()</code>：回傳每個 column 嘅 unique values 數目。<code>dropna=True</code>（default）只數 non-NaN；<code>dropna=False</code> 將 NaN 都當成一個 unique value。</li>
+  <li><code>Series.value_counts()</code>：每個值出現幾多次。<code>normalize=True</code> 輸出比例（%）；<code>normalize=False</code>（default）輸出絕對次數。</li>
+</ul>
+<pre><code>wdi.nunique(dropna=True)
+# country_name 217, year 2, Country Name 217, Country Code 217,
+# country_category 2, is_region 2, planet 1   ← planet 只有 1 個值！
+
+wdi.nunique(dropna=False) - wdi.nunique(dropna=True)
+# 結果 = 1 嘅 columns 代表有 NaN：atms_per_100000, compulsory_education_years,
+# health_expenditure_pct_of_gdp, population_density, alcohol_consumption_per_capita, country_category
+
+wdi['planet'].value_counts(normalize=True)   # Earth 1.0（100%）
+wdi['planet'].value_counts()                 # Earth 446</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span><p><b>Conclusion</b>：用 <code>nunique()</code> 或 <code>value_counts()</code> 檢查有冇 column 只有一個值。Constant column（例如 <code>planet</code> 全部 Earth）對分析冇任何資訊量，應該 drop。<br>小技巧：<code>nunique(dropna=False) - nunique(dropna=True)</code> 等於 1 嘅 column 就係含有 missing values 嘅 column。</p></div>
+
+<h3>9.4 Duplicated columns</h3>
+<pre><code>wdi['country_name'] == wdi['Country Name']                 # 446 個 True/False，太長難睇
+wdi['country_name'].compare(wdi['Country Name'])           # 空 DataFrame（self / other 冇 row）→ 冇差異
+(wdi['country_name'] == wdi['Country Name']).value_counts() # True 446 → 全部相同</code></pre>
+<p><code>Series.compare(other)</code> 只會列出<b>有差異</b>嘅位置（<code>self</code> vs <code>other</code> 兩欄）；輸出係空嘅 = 兩個 column 完全一樣（亦可以用 <code>.shape</code> 確認 0 rows）。</p>
+
+<h3>9.5 Q5：寫 function 回傳單一值判斷兩 column 是否相同</h3>
+<pre><code>def assert_single_value_result(col1, col2, return_type):
+    """return_type='bool'：全部相同回傳 True；
+       return_type='int'：全部相同回傳 0，否則回傳不相同的數目 (&gt;0)"""
+    if return_type == 'bool':
+        return (col1 == col2).all()          # 全部 True 先係 True
+    else:
+        return (col1 != col2).sum()          # 數不相同嘅個數
+
+assert_single_value_result(wdi['country_name'], wdi['Country Name'], return_type='bool')  # np.True_
+assert_single_value_result(wdi['country_name'], wdi['Country Name'], return_type='int')   # np.int64(0)</code></pre>
+<div class="box warn"><span class="label">⚠️ NaN 陷阱</span><p><code>NaN == NaN</code> 係 <code>False</code>。如果兩個 column 喺同一位置都係 NaN，<code>==</code> 會當佢哋唔同。更穩陣可以用 <code>col1.equals(col2)</code>（將同位置 NaN 視為相等）或者 <code>col1.compare(col2).shape[0] == 0</code>。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 2（Data）講 data quality（noise、outliers、missing values、duplicate data）同 data preprocessing；今堂嘅 constant / duplicated columns 就係 feature selection 入面最基本嘅「刪走 redundant / irrelevant features」。COM6002 嘅 Normalization 概念亦係避免重複儲存同一資訊（例如 Country Name 同 Country Code 一一對應）。</p></div>
+
+<h2>10. Take away points</h2>
+<ul>
+  <li>Copying（reference vs <code>.copy()</code>）</li>
+  <li>Selecting by <code>.loc</code> or <code>.iloc</code>，1-D 或 2-D</li>
+  <li>Updating data and sorting data</li>
+  <li>Why data cleaning；Unnecessary data</li>
+  <li>Duplicated columns and rows：<code>compare()</code>、<code>duplicated()</code></li>
+  <li>Constant or one-to-one mapped values：<code>value_counts()</code>、<code>nunique()</code></li>
+</ul>
+<p>（功課提交：將問題 copy 去新 notebook 作答，print 成 PDF 交 Moodle，確保 code 同 output cells 清楚可見。）</p>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 一個 DataFrame 嘅 index 係 0–9（default RangeIndex）。<code>df.loc[2:5]</code> 同 <code>df.iloc[2:5]</code> 各有幾多 rows？</summary><p><code>df.loc[2:5]</code> 係 label-based，包含 2,3,4,5 → <b>4 rows</b>。<code>df.iloc[2:5]</code> 係 position-based，stop exclusive，包含 position 2,3,4 → <b>3 rows</b>。</p></details>
+<details class="q"><summary>Q2. 執行以下 code 之後，<code>df</code> 有冇 <code>X</code> column？<code>df2 = df; df3 = df.copy(); df2['X'] = 1; df3['Y'] = 2</code></summary><p>有 <code>X</code>，冇 <code>Y</code>。<code>df2</code> 只係 <code>df</code> 嘅 reference（<code>df2 is df</code> 為 True），改 df2 即係改 df；<code>df3</code> 係獨立副本，改佢唔影響 df。</p></details>
+<details class="q"><summary>Q3. 解釋點解 <code>hero.rename(mapper=lambda x: x.upper, axis='columns')</code> 出咗奇怪 column 名，而 <code>mapper=str.upper</code> 冇括號反而啱？</summary><p><code>rename</code> 需要一個 callable，佢會對每個 label 自己 call。<code>str.upper</code> 就係 function object，rename 會做 <code>str.upper(label)</code>。<code>lambda x: x.upper</code> 雖然 lambda 係 callable，但佢回傳 <code>x.upper</code> 呢個<b>未被 call 嘅 bound method</b>，所以新名係 <code>&lt;built-in method upper of str object at ...&gt;</code>。正確應為 <code>lambda x: x.upper()</code>。至於 <code>str.upper()</code> 係即刻 call 而冇 argument，會 TypeError。</p></details>
+<details class="q"><summary>Q4. 寫一句 code：揀出 <code>gender</code> 為 Male <b>或</b> height 大於 200 嘅 heroes，只顯示 <code>race</code> 同 <code>publisher</code>。</summary><pre><code>hero.loc[(hero['gender'] == 'Male') | (hero['height'] &gt; 200), ['race', 'publisher']]</code></pre><p>要點：用 <code>|</code> 唔係 <code>or</code>；每個條件加括號；條件放 row indexer，column list 放第二個位置。</p></details>
+<details class="q"><summary>Q5. <code>hero['race'].isin(['Human ', 'Mutant'])</code> 有咩問題？點修正？</summary><p><code>'Human '</code> 尾有空格，同 data 中嘅 <code>'Human'</code> 唔相等，所以 Human 唔會被 match。修正：寫 <code>'Human'</code>；或者先清理 data：<code>hero['race'] = hero['race'].str.strip()</code>。</p></details>
+<details class="q"><summary>Q6. 有 df（index 為 'r1','r2'，columns A,B 皆 int）。執行 <code>df.loc[0, 'A'] = 5</code> 後會點？</summary><p>因為冇 label <code>0</code>，pandas 會 enlargement：新增一個 index 為 <code>0</code> 嘅 row，A = 5，B = NaN。由於出現 NaN，B column（甚至 A）會變成 float64。唔會報錯——呢個係常見 bug 來源；如果想改「第一行」應該用 <code>df.iloc[0, 0] = 5</code>。</p></details>
+<details class="q"><summary>Q7. heights = [305, 701, 366, 305, 975, 366, 305]（index 0–6）。<code>nlargest(4, keep='first')</code>、<code>keep='last'</code>、<code>keep='all'</code> 各回傳邊啲 index？</summary><p>排序：975(4), 701(1), 366(2), 366(5), 305(0), 305(3), 305(6)。頭 4 個係 975, 701, 366, 366 —— 第 4 名 366 有兩個並列，兩個都入到，所以三種 keep 都係 index [4, 1, 2, 5]。如果改成 <code>nlargest(5)</code>：first → 加 index 0；last → 加 index 6；all → 加 0、3、6（共 7 rows）。</p></details>
+<details class="q"><summary>Q8. 點樣用一句 code 搵出 DataFrame 入面所有 constant columns 嘅名？</summary><pre><code>wdi.columns[wdi.nunique(dropna=False) == 1]   # → Index(['planet'])</code></pre><p><code>nunique()</code> 回傳每 column unique 數，等於 1 即 constant。用 <code>dropna=False</code> 可以避免「一個值 + 一堆 NaN」被誤判為 constant。</p></details>
+<details class="q"><summary>Q9. <code>wdi.nunique(dropna=False) - wdi.nunique(dropna=True)</code> 結果為 1 代表咩？</summary><p>代表嗰個 column 含有至少一個 NaN（因為 dropna=False 將 NaN 多數一個 unique value）。結果 0 = 冇 missing values。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><code>.str</code> accessor 對 Index/Series 逐個做 string method；要 assign 返 <code>df.columns = ...</code> 先生效。</li>
+  <li><code>rename(columns={'old':'new'})</code>；<code>rename(columns=str.upper)</code>；<code>rename(mapper=lambda x: x.lower(), axis='columns')</code>。傳 function 本身，唔好加 <code>()</code>。</li>
+  <li><code>df_ref = df</code> → 同一 object；<code>df.copy()</code> → 獨立；用 <code>is</code> / <code>id()</code> 驗證。</li>
+  <li><code>select_dtypes(include='number')</code> / <code>exclude='number'</code> → 分 numeric / categorical columns。</li>
+  <li><code>df['a']</code> → Series；<code>df[['a']]</code> → DataFrame；<code>.loc[4]</code> → Series；<code>.loc[[4]]</code>、<code>.loc[1:4]</code> → DataFrame。</li>
+  <li><code>.loc</code> label-based、slice <b>包尾</b>；<code>.iloc</code> position-based、slice <b>唔包尾</b>。</li>
+  <li><code>set_index('name')</code> 令 labels 有意義；<code>reset_index()</code> 還原（記得 assign）。</li>
+  <li>Boolean indexing：<code>df[cond]</code> = <code>df.loc[cond]</code>；<code>.iloc</code> 要 <code>cond.values</code>。</li>
+  <li><code>&amp;</code> <code>|</code> <code>~</code> + 括號；<code>==</code> 比較 vs <code>=</code> assignment。</li>
+  <li><code>isin([...])</code> + <code>.sum()</code> 數符合條件 rows；小心字串空格。</li>
+  <li>Subsetting：<code>df.loc[row_cond, ['c1','c2']]</code>；<code>df.iloc[1:4, 2:10:2]</code>。</li>
+  <li>改值：<code>df.loc[r, c] = v</code>、<code>df.iloc[i, j] = v</code>、<code>df.iloc[0:2, 0:2] = v</code>；唔存在嘅 label → 新增 row/column（enlargement）。</li>
+  <li><code>sort_values(by=[...], ascending=[True, False])</code>；<code>nlargest/nsmallest(n, col, keep='first'|'last'|'all')</code>。</li>
+  <li>Data cleaning：Garbage in, Garbage out；collection → cleaning → analysis → insights。</li>
+  <li>Unnecessary data：constant（<code>nunique()==1</code>、<code>value_counts(normalize=True)</code>）、duplicated columns（<code>compare()</code> 空 / <code>(a==b).value_counts()</code>）。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w4.html">← Week 4</a>
+  <a href="COM6001-w6.html">Week 6 Data Cleaning (I) →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

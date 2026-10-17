@@ -9,6 +9,7 @@
     "validate": "node scripts/validate-questions.mjs",
     "validate:cards": "node scripts/validate-cards.mjs",
     "mcq": "node scripts/build-mcq.mjs",
+    "notes": "node scripts/build-notes.mjs",
     "test": "node --test --disable-warning=ExperimentalWarning lib/*.test.ts",
     "dev": "next dev",
     "build": "next build",

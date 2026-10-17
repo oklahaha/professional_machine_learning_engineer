@@ -11,6 +11,7 @@ const MODES: Record<"pmle" | "dsai", Mode[]> = {
   dsai: [
     { href: "/dsai/flashcards", label: "Cards", title: "DSAI flashcards with spaced repetition" },
     { href: "/dsai/quiz", label: "Quiz", title: "DSAI multiple-choice questions" },
+    { href: "/dsai/notes", label: "Notes", title: "DSAI revision notes, one page per lecture" },
   ],
 };
 

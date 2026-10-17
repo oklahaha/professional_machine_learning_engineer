@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 2 Python review 1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w2">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 2</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 2 · Source: Lecture 02.pdf “Python review 1” (45 slides) · Lab 2 Q1–Q7</p>
+<h1>Python Review 1: Environment, Data Types &amp; Data Structures</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>了解 computer program 同 Python 嘅特性 (scripting language、interpreted line-by-line)。</li>
+    <li>分辨 IDE、editor、Jupyter notebook / Lab、Anaconda、Python interpreter、Python kernel。</li>
+    <li>識用 Jupyter 嘅 code / markdown / raw cells 同 markdown heading 語法。</li>
+    <li>掌握 main data types：<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>；variables、assignment、<code>is</code>。</li>
+    <li>String 操作：indexing (positive / reverse)、slicing <code>[start:stop:step]</code> 及其 default values、methods、f-string。</li>
+    <li>四種 data structures：list, tuple, set, dict — mutable 與否、語法、常用 methods。</li>
+    <li>Functions vs methods；用 <code>help()</code> / docstring 了解 <b>return value</b>。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>String slicing <code>s[start:stop:step]</code>：stop 唔包含；default values (尤其 step 為負數時)。</li>
+    <li>List vs Tuple vs Set vs Dict：括號、ordered?、mutable?、duplicates?。</li>
+    <li>Variables 係 references (pointers)；<code>is</code> vs <code>==</code>；<code>a = b = c = 1</code> 然後 <code>a = 2</code> 嘅結果。</li>
+    <li>Function vs Method 分別；<code>list.pop()</code> 有 return value，<code>list.append()</code> return <code>None</code>。</li>
+    <li>Variable naming rules + PEP 8 (snake_case / PascalCase / UPPER_SNAKE_CASE、4 spaces)。</li>
+  </ol>
+</div>
+
+<h2>1. Computer programs &amp; Python</h2>
+<p>Slide 3：電腦做嘅嘢係 <b>executing stored steps for computation or processing</b>。<b>Computer program</b> 就係一系列要跟住做嘅步驟 (steps / flow)，即係「how to」knowledge，用電腦明白嘅語言寫出嚟。</p>
+<p>Slide 4 Python 特性：</p>
+<ul>
+  <li>本科用 <b>Python 3</b>。</li>
+  <li>易學：syntax 簡單，有大量 standard library 同 toolkits。</li>
+  <li>係 <mark class="k">scripting language</mark>，<b>唔需要 run 之前先 compile</b>；code 係 <b>line-by-line</b> 咁邊執行邊處理 (interpreted)。</li>
+  <li>Syntax 同 C-family (C, C++, Java, C#) 好唔同 (例如用 indentation 代替 <code>{ }</code>)。</li>
+  <li>Python programs 行得比 Java 同 C <b>慢</b>。</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>點解 Python 慢但 data science 仍然用佢？因為 pandas / numpy 底層係用 C 寫嘅，重活交畀 C 做；Python 負責「指揮」，寫得快、讀得明更重要。</p></div>
+
+<h2>2. IDEs &amp; Environments</h2>
+<p>Slide 5：Python code 可以用普通 text editor 寫，存成 <code>.py</code> 檔。<b>IDE (Integrated Development Environment)</b> 係裝喺電腦令 coding 更方便嘅軟件，提供：folder operations、syntax highlighting、autocomplete、building executables、debugging。</p>
+<p>做 data analysis / visualization (通常唔需要 executable) 建議用 <mark class="k">Jupyter notebook</mark>：</p>
+<ul>
+  <li>編輯同執行 <code>.ipynb</code> 檔而唔係 <code>.py</code>。</li>
+  <li>語言仍然係 Python，但每個 <b>cell</b> 可以獨立執行，output 直接顯示喺同一個檔案入面。</li>
+  <li>方便追蹤 data processing 進度同 debug。</li>
+</ul>
+
+<table>
+  <tr><th>Option</th><th>類型</th><th>優點</th><th>注意</th></tr>
+  <tr><td><b>1. Anaconda Jupyter Lab</b></td><td>Local</td><td>本機無限使用；校內 lab 已安裝；Python 隨 Anaconda 一齊裝；pre-installed key packages、好多 data science 應用</td><td>自己部機要裝 Anaconda；可能要自己裝 pandas, numpy, seaborn, plotly, scikit-learn</td></tr>
+  <tr><td><b>2. Visual Studio Code</b></td><td>Local</td><td>多語言 editor；auto-completion 反應快；UI 流暢；folder operations</td><td>要另外下載 Python kernel；要裝 Jupyter extension 同各 packages</td></tr>
+  <tr><td><b>3. Google Colab</b></td><td>Cloud</td><td>100% online、免安裝；pre-installed kernel 同主要 packages；易透過 Google Drive 分享</td><td>免費帳戶 GPU / storage 有限；datasets 同 code 分開存，<b>每次都要 mount Google Drive</b>；內地用唔到</td></tr>
+</table>
+<p>老師上堂主要用 <b>Anaconda</b> (slide 10)，但你用邊個 IDE 都得。</p>
+
+<h3>Key terminologies (slide 9)</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：術語分清楚</span>
+<ul>
+  <li><b>IDE</b>：不只係編輯 code，仲有 compilation、execution、debugging、version control、auto-completion、project-wide awareness 等 UI 功能。</li>
+  <li><b>VS Code</b>：本質係 <i>editor</i>，靠大量 extensions / plugins 令佢「looks like」一個強大 IDE。</li>
+  <li><b>Jupyter notebook</b> 係 <b>Jupyter Lab</b> 嘅核心；Jupyter Lab 係支援 notebook 檔案嘅 IDE。</li>
+  <li><b>Anaconda</b> 不只係 IDE，而係 <b>environment manager</b>，提供一系列 IDEs (VS Code, PyCharm, Spyder, Jupyter…)。</li>
+  <li><b>Python</b> = programming language (規則同藍圖)；<b>Python interpreter</b> = 明白呢種語言並執行 code 嘅引擎；<b>Python kernel</b> = 你嘅 code 同 interpreter 之間嘅 interface。三者 version number (幾乎) 一樣 — 揀 kernel version 即係揀 Python 同 interpreter 嘅 version。</li>
+</ul></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 6–8、10–14 主要係 Anaconda / VS Code / Colab 介面截圖同步驟圖，截圖內容擷取不到；請對照原 slides 第 6–14 頁。文字步驟已整理如下。</p></div>
+
+<h3>Launch Jupyter Lab &amp; Hello World (slides 11–14)</h3>
+<ol>
+  <li>開 terminal：Windows 搜尋並打開 <i>Anaconda Prompt (Anaconda3)</i>；Mac 開 Terminal 打 <code>conda activate base</code>。</li>
+  <li>打 <code>jupyter lab</code>。校內電腦只可用 D drive，要加 <code>--notebook-dir=D:/</code>。</li>
+  <li>左邊 sidebar 係你開 Jupyter Lab 嗰個目錄；新增 folder → 入去 → Notebook → Python (conda env base)。</li>
+  <li>Rename notebook；cell 入面打 <code>print("Hello World!")</code>；按 <b>Shift + Enter</b> 執行。</li>
+</ol>
+<p>VS Code：File → Open Folder (例如 <code>D:/COM6001/Week_2/</code>) → 裝 Jupyter extension → File → New File → Jupyter Notebook → 存為 <code>Lab_2_&lt;your name&gt;.ipynb</code>。Cell 左邊 <code>[1]</code> 係 <b>Execution Count</b> (執行次序)，下面係 output。</p>
+
+<pre><code>print("Hello World!")   # Shift + Enter 執行
+# 輸出：Hello World!</code></pre>
+
+<h2>3. Jupyter cell types &amp; Markdown</h2>
+<table>
+  <tr><th>Cell type</th><th>用途</th><th>特點</th></tr>
+  <tr><td><b>Code cell</b></td><td>寫 code statements</td><td>會執行，有 output 同 execution count</td></tr>
+  <tr><td><b>Markdown cell</b></td><td>寫 narrative texts</td><td><code>#</code> 開頭 = heading；<code>*text*</code> = italic；<code>**text**</code> = bold；Shift+Enter = render 顯示</td></tr>
+  <tr><td><b>Raw cell</b> (Anaconda only)</td><td>Plain text</td><td>No input-output distinction；not rendered；not executed</td></tr>
+</table>
+<p>Heading 層級 (slide 16)：<code># abc</code> = level-1、<code>## abc</code> = level-2、<code>### abc</code> = level-3，如此類推。Lab Q1 就係新增 markdown cell 打 <code># Q2:Variables</code>。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 右邊嘅 keyboard shortcuts 表係圖片，文字擷取不到；請對照原 slide 第 16 頁。(常見 Jupyter shortcut：command mode 下 <code>M</code> 轉 markdown、<code>Y</code> 轉 code、<code>A</code>/<code>B</code> 喺上/下新增 cell — 此為一般知識，未必與 slide 相同。)</p></div>
+
+<h2>4. Learning a programming language &amp; PEP 8</h2>
+<p>Slide 17 列出學一門語言要掌握：<b>Syntax</b>、<b>Main data types and data structures</b>、<b>The controlling logic</b>、<b>How to make functions</b>、<b>How to run</b>、<b>Code every day</b> — “Learn by Doing, Not Just Reading/Asking AI”。</p>
+<ul>
+  <li>永遠要 rename 檔案，唔好交 <code>untitled1.ipynb</code>！</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：PEP 8 (de facto Python style guide)</span>
+<ul>
+  <li><b>snake_case</b> → variables 同 functions，例如 <code>my_int</code>, <code>calculate_area()</code></li>
+  <li><b>PascalCase</b> → classes，例如 <code>DataFrame</code></li>
+  <li><b>UPPER_SNAKE_CASE</b> → constants，例如 <code>MAX_SIZE</code></li>
+  <li>每層 indentation 用 <b>4 spaces</b>；逗號後加空格，operators 兩邊加空格 (<code>a = 1</code>，唔係 <code>a=1</code>)。</li>
+</ul></div>
+
+<h3>Generative AI usage (slide 18)</h3>
+<p>「Gen AI is your worker, not your manager!」不同階段可以點用：</p>
+<table>
+  <tr><th>Stage</th><th>Dos</th><th>Don'ts</th></tr>
+  <tr><td>Beginner (Weeks 2–3)</td><td>code explanation, error explanation</td><td>directly give the code</td></tr>
+  <tr><td>Intermediate (Weeks 4–11)</td><td>+ function suggestion, sample snippets (&lt; 10 lines)</td><td>directly give the code for the question</td></tr>
+  <tr><td>Project (Weeks 12+)</td><td>ideation, analysis ideas, API / library suggestion, sample codes in your context</td><td>directly give the implementation / draw analysis for you</td></tr>
+</table>
+<p>GenAI 答案可能有 bias，要 double check；最重要係自己消化 — 因為 tests / exam 係 <b>paper-based close-book</b>，仲有 oral presentation。</p>
+
+<h2>5. Main Data Types</h2>
+<p><span class="tag exam">Exam</span> Slide 20：</p>
+<table>
+  <tr><th>類別</th><th>Type</th><th>存咩</th><th>例子</th></tr>
+  <tr><td rowspan="2">Numeric</td><td><code>int</code></td><td>Integers</td><td><code>6001</code>, <code>-3</code></td></tr>
+  <tr><td><code>float</code></td><td>Numbers with a decimal point</td><td><code>70.2</code>, <code>1.0</code></td></tr>
+  <tr><td rowspan="2">Non-numeric</td><td><code>str</code></td><td>Ordered sequences of characters</td><td><code>'john'</code></td></tr>
+  <tr><td><code>bool</code></td><td>Logical values (binary)</td><td><code>True</code> / <code>False</code></td></tr>
+</table>
+<p>Slide 21：Data structures 可以裝一堆 (唔同類型嘅) data objects；Python 容許<b>同一個 data structure 入面放唔同 type</b> 嘅元素 (例如 <code>['com', 6001, 'john', 70.2]</code>)。</p>
+
+<h2>6. Variables &amp; Assignment</h2>
+<p>Slide 22：<mark class="k">Variables</mark> 係用嚟存單一 data 或 data structure 嘅 containers。</p>
+<ul>
+  <li>Python <b>冇 declare variable 嘅指令</b>；第一次 assign value 嗰刻就建立咗。</li>
+  <li>唔使指定 type，之後仲可以<b>改 type</b> — Python 會自動揀最合適嘅 type (dynamic typing)。</li>
+  <li>想指定 type 用 <b>casting</b>：<code>int()</code>, <code>float()</code>, <code>str()</code>。</li>
+  <li>用 <code>type()</code> 睇 variable 嘅 type。</li>
+</ul>
+<pre><code>x = 5            # int
+x = "five"       # 同一個 variable 可以改 type → str
+y = float(3)     # casting → 3.0
+z = int("42")    # casting → 42
+print(type(x), type(y), type(z))
+# &lt;class 'str'&gt; &lt;class 'float'&gt; &lt;class 'int'&gt;</code></pre>
+
+<h3>Rules for variable names (slide 23)</h3>
+<ul>
+  <li>唔可以用數字開頭 (<code>2nd_name</code> ✗)</li>
+  <li>名入面唔可以有空格 (<code>my name</code> ✗)</li>
+  <li><b>Case sensitive</b> (<code>Age</code> 同 <code>age</code> 係兩個 variable)</li>
+  <li>避免用 special keywords / built-in 名，否則會改變佢原本意思</li>
+</ul>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<p>Slide 23 示範咗 <code>print = 1</code>：之後 <code>print</code> 變咗一個值為 1 嘅 variable，再 call <code>print("hi")</code> 會出 <code>TypeError: 'int' object is not callable</code>。同樣，Lab Q4 用咗 <code>str = 'Hello, World!'</code> 做 variable 名，會蓋過 built-in <code>str()</code> function — 實際寫 code 時應避免 (用 <code>del str</code> 可還原)。</p></div>
+
+<h3>Assignment, references 同 <code>is</code> (slide 24)</h3>
+<p><code>=</code> 係 <b>assignment operator</b>：<code>x = 1</code> 把 value 1 assign 畀名為 <code>x</code> 嘅 variable。Variable 亦可以 assign 畀另一個 variable。</p>
+<p><span class="tag exam">Exam</span> 重點：<b>喺 Python，variables (names) 只係指向 objects 嘅 references / pointers</b>。用 <code>is</code> operator 檢查兩個 variables 係咪指向<b>同一個 object</b>；用 <code>whos</code> (Jupyter magic) 列出 workspace 所有 variables。</p>
+<pre><code>a = b = c = 1     # a, b, c 全部指向同一個 object 1
+print(a is b, b is c)   # True True
+a = 2             # a 改為指向另一個 object 2；b, c 仍指向 1
+print(a is b)     # False
+print(b is c)     # True
+print(a == 2)     # True  —— == 比較「值」，is 比較「係咪同一個 object」</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解 (Lab Q3)</span>
+<p>想像 object 係一個盒，variable 名係貼喺盒上嘅標籤。<code>a = 2</code> 唔係「改盒入面嘅嘢」，而係把 <code>a</code> 呢張標籤撕走、貼去另一個盒 (2)。所以 <code>b</code>、<code>c</code> 完全唔受影響。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–24 嘅 code 示範 (包括 <code>whos</code> 輸出同 pointer 示意圖) 係截圖，文字擷取不到；請對照原 slides 第 22–24 頁。以上 code 為按 slide 文字重寫。</p></div>
+
+<p>Lab Q2：建立 <code>my_int</code>、<code>my_float</code>、<code>my_string</code> 並加 comment：</p>
+<pre><code>my_int = 6001          # this is an int number
+my_float = 70.2        # this is a float number
+my_string = "COM6001"  # this is a string</code></pre>
+
+<h2>7. Working with Strings</h2>
+<h3>7.1 Basics (slide 27)</h3>
+<ul>
+  <li>String 用引號包住，<b>單引號或雙引號都得</b>，但要成對；可以互相嵌套：<code>"this is the 'abc' book"</code>。</li>
+  <li>用 <code>+</code> 連接 strings。</li>
+  <li><code>'\n'</code> = 換行。</li>
+  <li><code>print()</code> 印出 string。</li>
+</ul>
+<pre><code>s1 = "Hello"
+s2 = 'World'
+print(s1 + ", " + s2 + "!")       # Hello, World!
+print("line 1\nline 2")           # \n 換行
+print("this is the 'abc' book")   # 雙引號入面用單引號</code></pre>
+
+<h3>7.2 Indexing (slide 28)</h3>
+<p>String 係 sequence of characters，可用 index 攞單一字元。長度 N 嘅 string 有兩種 indexing：</p>
+<ul>
+  <li><b>Positive index</b>：由 <code>0</code> 到 <code>N-1</code></li>
+  <li><b>Reverse index</b>：由 <code>-1</code> (最後一個) 到 <code>-N</code> (第一個)</li>
+</ul>
+<table>
+  <tr><th>char</th><td>H</td><td>e</td><td>l</td><td>l</td><td>o</td><td>,</td><td>␣</td><td>W</td><td>o</td><td>r</td><td>l</td><td>d</td><td>!</td></tr>
+  <tr><th>positive</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+  <tr><th>reverse</th><td>-13</td><td>-12</td><td>-11</td><td>-10</td><td>-9</td><td>-8</td><td>-7</td><td>-6</td><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>
+</table>
+
+<h3>7.3 Slicing <code>s[start:stop:step]</code> (slide 29)</h3>
+<p><span class="tag exam">Exam</span> Slicing = 由 string 攞一段 characters：</p>
+<ul>
+  <li><b>start</b>：開始嘅 index (包含)。Default <code>0</code>。</li>
+  <li><b>stop</b>：<b>up to but not included</b> 嗰個位置。Default = 該方向嘅盡頭 (包括盡頭)。</li>
+  <li><b>step</b>：每次跳幾多。Default <code>1</code>。</li>
+  <li>三個都可以省略，省略就用 default。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：slicing 規則</span>
+<ul>
+  <li>結果長度 (step = 1 時) = <code>stop − start</code>。例：<code>s[2:5]</code> 攞 index 2, 3, 4 共 3 個字。</li>
+  <li><b>step 為負</b>時，方向反轉：default start 變成<b>最後一個</b>字 (-1)，default stop 變成<b>超越開頭</b> (包含 index 0)。</li>
+  <li>如果 start 喺 stop 嘅「錯誤方向」(例如 step 正但 start &gt; stop)，結果係<b>空 string</b> <code>''</code> — 呢個就係 slide 29 「Why empty?」嘅答案。</li>
+</ul></div>
+<pre><code>s = 'Hello, World!'
+print(s[0:5])     # 'Hello'      index 0–4
+print(s[7:])      # 'World!'     由 7 到盡頭
+print(s[:5])      # 'Hello'      由 0 開始
+print(s[::2])     # 'Hlo ol!'    每隔一個
+print(s[-6:-1])   # 'World'      -1 唔包含
+print(s[5:2])     # ''           step 預設 +1，但 5 &gt; 2 → 空 (Why empty?)
+print(s[5:2:-1])  # ',ol'        反方向就得：index 5, 4, 3</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 27–29 嘅 code 示範係截圖，slide 29 「Why empty?」所指嘅具體例子文字擷取不到；請對照原 slide 第 29 頁。上面 <code>s[5:2]</code> 係用嚟解釋同一原理嘅例子。</p></div>
+
+<h3>Lab Q5: Default values in slicing (slide 33)</h3>
+<pre><code>s = 'Hello, World!'
+print(s[::])     # 'Hello, World!'
+print(s[::-1])   # '!dlroW ,olleH'
+print(s[0::-1])  # 'H'
+print(s[:-1:])   # 'Hello, World'</code></pre>
+<table>
+  <tr><th>#</th><th>Expression</th><th>start</th><th>stop</th><th>step</th><th>Output</th></tr>
+  <tr><td>1</td><td><code>s[::]</code></td><td>0</td><td>very end of forward direction (incl. last)</td><td>1</td><td>Hello, World!</td></tr>
+  <tr><td>2</td><td><code>s[::-1]</code></td><td>-1 (last char)</td><td>very end of backward direction (incl. index 0)</td><td>-1</td><td>!dlroW ,olleH</td></tr>
+  <tr><td>3</td><td><code>s[0::-1]</code></td><td>0</td><td>very end of backward direction (incl. index 0)</td><td>-1</td><td>H</td></tr>
+  <tr><td>4</td><td><code>s[:-1:]</code></td><td>0</td><td>-1 (excluded)</td><td>1</td><td>Hello, World</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>Q5 第 3 題：由 index 0 開始向<b>左</b>行，左邊已經冇字，所以只得 'H'。關鍵係：省略 stop 時佢會行到<b>該方向盡頭並包括盡頭</b>。</p></div>
+
+<h2>8. Functions vs Methods; String methods &amp; f-string</h2>
+<p>Slide 30：兩者都係<b>可重用嘅 code</b>，可以喺程式任何地方 「call」，令 code 模組化、唔使重複寫。</p>
+<table>
+  <tr><th></th><th>Function</th><th>Method</th></tr>
+  <tr><td>定義</td><td>獨立於任何 object / class 定義</td><td>同某個 object / class 綁定 (light functions that only belong to certain objects)</td></tr>
+  <tr><td>點 call</td><td>直接用名 + arguments：<code>print(st)</code>, <code>len(st)</code></td><td>一定要用 object 嚟 call：<code>st.upper()</code></td></tr>
+  <tr><td>例子</td><td><code>print("Hello World!")</code></td><td><code>st.find("s", 0, 6)</code> — 喺 slice 0 到 6 搵字母 s</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<p><code>int.upper()</code> 會出錯 — int class 冇 <code>upper</code> method。Method 只屬於特定 type 嘅 objects。</p></div>
+<p>String methods (slide 31)：<code>.find()</code> (搵 substring 位置，搵唔到 return -1)、<code>.upper()</code>、<code>.lower()</code>。</p>
+<p><b>f-string</b>：string 前面加 <code>f</code> 或 <code>F</code>，<code>{ }</code> 入面可以放 Python expressions，執行時會換成其值。</p>
+<pre><code>st = "Hello, World!"
+print(st.upper())          # HELLO, WORLD!
+print(st.lower())          # hello, world!
+print(st.find("o"))        # 4  (第一個 o 嘅 index)
+print(st.find("o", 5))     # 8  (由 index 5 開始搵)
+print(st.find("z"))        # -1 (搵唔到)
+n = len(st)
+print(f"There are {n} chars in this string")       # There are 13 chars in this string
+print(f"2 + 3 = {2 + 3}, upper: {st.upper()}")     # { } 入面可以係任何 expression</code></pre>
+
+<h3>Lab Q4 參考答案 (slide 32)</h3>
+<pre><code>s = 'Hello, World!'          # slide 用 str 做名，但建議避免蓋過 built-in str
+print(s)                     # complete string
+print(s[0])                  # first character → 'H'
+print(s[2:5])                # 第三至第六 (exclusive) → 'llo'
+print(s[-1:-4:-1])           # 最後三個字倒轉 → '!dl'
+print(s + "TEST")            # 'Hello, World!TEST'
+print(f"There are {len(s)} chars in this string")   # 13</code></pre>
+<div class="box warn"><span class="label">⚠️ 留意</span>
+<p>「the third to sixth (exclusive)」有兩種理解：如果「third」指第 3 個字 (index 2)，答案係 <code>s[2:5]</code>；如果指 index 3，就係 <code>s[3:6]</code> = <code>'lo,'</code>。考試作答時寫明你嘅理解。</p></div>
+
+<h2>9. Boolean</h2>
+<p>Slide 34：Boolean variable 只可以係 <code>True</code> 或 <code>False</code> (<b>第一個字母大寫</b>)。Boolean 係 conditions / assertions 返回嘅 type。</p>
+<pre><code>print(3 &gt; 2)          # True
+print(type(3 == 2))   # &lt;class 'bool'&gt;
+flag = true           # ✗ NameError：要寫 True</code></pre>
+
+<h2>10. Main Data Structures: list, tuple, set, dict</h2>
+<p><span class="tag exam">Exam</span> Slide 35：</p>
+<table>
+  <tr><th>Structure</th><th>類別</th><th>括號</th><th>Ordered?</th><th>Mutable?</th><th>Duplicates?</th><th>Access</th></tr>
+  <tr><td><b>List</b></td><td>Sequence</td><td><code>[ ]</code></td><td>✓</td><td>✓ (can be changed after creation)</td><td>✓</td><td>index <code>l[0]</code></td></tr>
+  <tr><td><b>Tuple</b></td><td>Sequence</td><td><code>( )</code></td><td>✓</td><td>✗</td><td>✓</td><td>index <code>t[0]</code></td></tr>
+  <tr><td><b>Dictionary</b></td><td>Mapping</td><td><code>{key: value}</code></td><td>slide 寫 unordered*</td><td>✓</td><td>keys unique</td><td>key <code>d['name']</code></td></tr>
+  <tr><td><b>Set</b></td><td>Set type</td><td><code>{ }</code> / <code>set()</code></td><td>✗ unordered</td><td>✓ (可 add)</td><td>✗ unique only</td><td>冇 index</td></tr>
+</table>
+<p>*Week 3 補充：Python 3.7 之後 dict 會保留 insertion order。</p>
+
+<h3>10.1 List methods &amp; functions (slide 36)</h3>
+<ul>
+  <li>Methods：<code>.sort()</code>、<code>.append(x)</code> (加到尾)、<code>.pop(i)</code> — <b>remove and return</b> item at index i，default index = 最後一個。</li>
+  <li>Functions：<code>len()</code>、<code>max()</code>、<code>min()</code>。</li>
+</ul>
+<pre><code>nums = [3, 1, 2]
+nums.append(5)       # [3, 1, 2, 5]
+nums.sort()          # [1, 2, 3, 5]  (in-place，冇 return)
+last = nums.pop()    # 移除並返回 5 → nums = [1, 2, 3]
+first = nums.pop(0)  # 移除並返回 1 → nums = [2, 3]
+print(len(nums), max(nums), min(nums))   # 2 3 2</code></pre>
+
+<h3>10.2 Tuples (slide 37)</h3>
+<p>Tuple 用一個 variable 存多個 items，係 <b>ordered and unchangeable</b> — 一經 assign，元素就唔可以改。</p>
+<p><b>Why do we need tuples?</b> 因為 immutable 嘅特性保證元素唔會被改動，確保 <b>data integrity</b>，喺某些情況好重要 (例如做 dict key、儲存座標 / 設定值)。</p>
+<pre><code>my_tup = ('com', 6001, 'john', 70.2)
+print(my_tup[1])        # 6001
+my_tup[2] = 'Aileen'    # TypeError: 'tuple' object does not support item assignment</code></pre>
+
+<h3>10.3 Sets (slide 38)</h3>
+<p>由 <b>unique</b> member elements 組成；用 <code>{ }</code> 直接建立或者 <code>set()</code> function。</p>
+<pre><code>s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5}
+s1.add(10)          # .add() 加新元素 → {1, 2, 3, 4, 10}
+print(s1 - s2)      # {1, 2, 10}  只喺 s1 出現 (difference)
+print(s2 - s1)      # {5}         只喺 s2 出現
+print(s1 &amp; s2)      # {3, 4}      共同元素 (intersection)
+s1.add(3)           # 3 已存在 → set 不變
+empty = set()       # 注意：{} 係空 dict，唔係空 set！</code></pre>
+
+<h3>10.4 Dictionary (slide 39)</h3>
+<p>以 <b>key-value pair</b> 形式存 objects 嘅 mapping。</p>
+<ul>
+  <li>Construction：<code>{key: value, key: value, ...}</code></li>
+  <li>Insertion：<code>dict[new_key] = new_value</code></li>
+  <li>Retrieval：<code>dict[key_name]</code> — 例如用 key <code>"name"</code> 攞返 value <code>"mango"</code></li>
+</ul>
+<pre><code>fruit = {"name": "mango", "price": 12}
+print(fruit["name"])     # mango
+fruit["color"] = "yellow"   # insertion
+fruit["price"] = 15         # 同一 key 再 assign = update</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 35–39 嘅 code 示範係截圖，文字擷取不到；請對照原 slides 第 35–39 頁。以上 code 依 slide 文字重寫。</p></div>
+
+<h3>Lab Q6 參考答案 (slide 40)</h3>
+<pre><code>my_list = ['com', 6001, 'john', 70.2]
+my_tup  = ('com', 6001, 'john', 70.2)
+my_set  = {'com', 6001, 'john', 70.2}
+my_dict = {'name': 'john', 'mark': 70.2}
+
+my_list[2] = 'Aileen'      # 5. 第三個元素 index = 2
+print(my_list)             # ['com', 6001, 'Aileen', 70.2]
+
+# 6. my_tup[2] = 'Aileen' → TypeError：tuple 係 immutable，建立後唔可以改
+
+my_list.pop(1)             # 7. 移除第二個元素 (6001)；亦可 del my_list[1]
+print(my_list)             # ['com', 'Aileen', 70.2]
+
+my_set.add('com')          # 8. 'com' 已經存在，set 只存 unique elements，所以冇加到
+print(my_set)
+
+print(my_dict['mark'])     # 9. 70.2</code></pre>
+
+<h2>11. Getting help &amp; Return values</h2>
+<p>Slide 41：官方說明有兩種來源：</p>
+<ul>
+  <li><b>Docstring</b>：寫喺 source code 入面，用三引號 <code>"""</code> 包住，放喺 function / class definition 下面。</li>
+  <li><b>Official Documentation</b>：外部網站 (例如 docs.python.org) 同 API references。</li>
+</ul>
+<p>Slide 42 四種即時求助方法：</p>
+<ol>
+  <li><b>Mouse hover</b> (IDE tooltips)：VS Code / Pylance 自動彈出 docstring。</li>
+  <li><b><code>help()</code> function</b>：<code>help(list.append)</code> — Pro-tip：<b>唔好加 <code>()</code></b>，咁 Python 會讀個 function 而唔係執行佢。</li>
+  <li><b><code>__doc__</code> attribute</b>：<code>print(list.append.__doc__)</code>，直接印 raw docstring。</li>
+  <li><b>Keyboard shortcut</b>：cursor 放喺括號入面按 Ctrl + Shift + Space (Mac: Cmd + Shift + Space) 睇 parameter hints。</li>
+</ol>
+<pre><code>help(list.pop)
+# pop(index=-1, /) method of builtins.list instance
+#     Remove and return item at index (default last).
+#     Raises IndexError if list is empty or index is out of range.
+print(list.append.__doc__)
+# Append object to the end of the list.</code></pre>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Lab Q7 Return value</span>
+<pre><code>my_list = [1, 2, 3]
+print(my_list.pop(0))      # 1     ← pop 會 "Remove and RETURN item"
+print(my_list.append(0))   # None  ← append 只係 in-place 修改 list，冇 return statement</code></pre>
+<p>解釋：<code>print()</code> 印出嘅係 method 嘅 <b>return value</b>。<code>pop()</code> 嘅 docstring 寫明 “Remove and <b>return</b> item”，所以印到被移除嘅元素；<code>append()</code> 只係 “Append object to the end of the list”，直接修改原本嘅 list，<b>冇 return 任何嘢</b>，Python 嘅 function 冇 return 時預設返回 <code>None</code>。同理 <code>list.sort()</code> 都係 return <code>None</code>。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<p><code>my_list = my_list.append(4)</code> — 呢句之後 <code>my_list</code> 變咗 <code>None</code>！in-place methods 唔好 assign 返落去。</p></div>
+
+<h2>12. Lab submission &amp; Summary</h2>
+<p>Slide 44：答晒 Q1–Q7，rename 做 <code>Lab_2_&lt;your name&gt;.ipynb</code>，交 <b>PDF</b> (Colab / Anaconda 直接 print to PDF；VS Code 用 More Actions → Export → HTML 再由 browser print)，檢查所有答案同 output 都印得清楚。</p>
+<p>Summary (slide 45)：Python characteristics；basic data types and structures；string manipulations；string slicing and indexing；slicing of data structures；data structures and their methods。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>Slicing 規則 (<code>start:stop</code>，stop 唔包含) 同樣適用於 list、tuple，以及 Week 4 pandas 嘅 <code>.iloc[]</code>。Dict of lists 正正係 Week 4 建 <code>pd.DataFrame</code> 最常用嘅輸入格式。Set 嘅 difference / intersection 概念對應 COM6002 SQL 嘅 <code>EXCEPT</code> / <code>INTERSECT</code> 同 Week 4 merge 嘅 inner join。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Python 點解叫 scripting language？同 C / Java 比較有咩優缺點？</summary><p>Python 唔需要 run 之前先 compile，code 係執行時 line-by-line 處理。優點：syntax 簡單易學、大量 libraries；缺點：行得比 Java 同 C 慢。</p></details>
+<details class="q"><summary>Q2. Python、Python interpreter、Python kernel 有咩分別？</summary><p>Python 係 programming language (規則同藍圖)；interpreter 係明白並執行 Python code 嘅引擎；kernel 係你嘅 code (例如 notebook) 同 interpreter 之間嘅 interface。三者 version number 幾乎一樣，揀 kernel version 即係揀 Python version。</p></details>
+<details class="q"><summary>Q3. s = 'Data Science'。寫出 s[0:4]、s[-7:]、s[::-1]、s[5:2]、s[::3] 嘅結果。</summary><p><code>s[0:4]</code> = 'Data'；<code>s[-7:]</code> = 'Science'；<code>s[::-1]</code> = 'ecneicS ataD'；<code>s[5:2]</code> = '' (step 預設 +1，start &gt; stop → 空)；<code>s[::3]</code> = index 0,3,6,9 → 'D', 'a', 'c', 'n' → 'Dacn'。</p></details>
+<details class="q"><summary>Q4. 執行 a = b = c = 1; a = 2 之後，a is b 同 b is c 係咩？點解？</summary><p><code>a is b</code> → False；<code>b is c</code> → True。Variables 只係指向 object 嘅 references。一開始三個都指向 object 1；<code>a = 2</code> 令 a 改為指向 object 2，b 同 c 仍然指向 1。</p></details>
+<details class="q"><summary>Q5. 比較 list、tuple、set、dict：邊個 immutable？邊個唔可以有重複？邊個用 key 存取？</summary><p>Tuple immutable；set 只容許 unique elements (dict 嘅 keys 亦必須 unique)；dict 用 key 存取 (<code>d[key]</code>)。List 同 tuple 係 ordered sequences 用 index 存取；set unordered 冇 index。</p></details>
+<details class="q"><summary>Q6. print(my_list.append(0)) 點解印出 None？</summary><p><code>append()</code> 係 in-place 修改 list，冇 return value；Python function / method 冇 return 時預設 return <code>None</code>。相反 <code>pop()</code> 會 remove and return 該 item，所以印到元素。</p></details>
+<details class="q"><summary>Q7. Function 同 method 有咩分別？各舉一例。</summary><p>Function 獨立定義，直接用名 call，例如 <code>len(s)</code>、<code>print(s)</code>。Method 屬於某個 object / class，要經 object call，例如 <code>s.upper()</code>、<code>my_list.append(1)</code>；<code>int</code> 冇 <code>upper()</code> method。</p></details>
+<details class="q"><summary>Q8. 以下邊啲 variable 名合法？2data, my data, myData, _temp, print</summary><p><code>2data</code> ✗ (數字開頭)；<code>my data</code> ✗ (有空格)；<code>myData</code> ✓ (合法但 PEP 8 建議 <code>my_data</code>)；<code>_temp</code> ✓；<code>print</code> 語法上可以但<b>應避免</b>，會覆蓋 built-in function。</p></details>
+<details class="q"><summary>Q9. s1 = {1,2,3}; s2 = {2,3,4}。s1 - s2、s2 - s1、s1 &amp; s2 係咩？</summary><p><code>s1 - s2</code> = {1}；<code>s2 - s1</code> = {4}；<code>s1 &amp; s2</code> = {2, 3}。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li>Python 3 = scripting language，無需 compile，line-by-line 執行；比 C / Java 慢。</li>
+  <li>IDE ≠ editor (VS Code) ≠ environment manager (Anaconda)；Jupyter Lab 係支援 notebook 嘅 IDE；kernel = code ↔ interpreter 嘅 interface。</li>
+  <li>Cells：code / markdown (<code>#</code> heading, <code>*italic*</code>, <code>**bold**</code>) / raw；Shift + Enter 執行。</li>
+  <li>PEP 8：snake_case (var / func)、PascalCase (class)、UPPER_SNAKE_CASE (const)、4 spaces。</li>
+  <li>Types：<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code> (<code>True</code>/<code>False</code> 大寫)；<code>type()</code> 睇類型；casting <code>int()</code>/<code>float()</code>/<code>str()</code>。</li>
+  <li>Variable = reference；<code>is</code> 比較同一 object，<code>==</code> 比較值；名唔可以數字開頭、有空格；case sensitive；避免 keywords。</li>
+  <li>Index：0…N−1 / −1…−N。Slicing <code>[start:stop:step]</code>：stop 唔包含；defaults 0 / 盡頭(含) / 1；step 負 → 由尾向頭；方向錯 → <code>''</code>。</li>
+  <li>String：<code>+</code> 連接、<code>\n</code> 換行、<code>.find()</code> (搵唔到 −1)、<code>.upper()</code>、<code>.lower()</code>、<code>f"{expr}"</code>。</li>
+  <li>List <code>[]</code> mutable · Tuple <code>()</code> immutable (data integrity) · Set <code>{}</code> unique, <code>-</code> difference, <code>&amp;</code> intersection, <code>.add()</code> · Dict <code>{k: v}</code>, <code>d[k] = v</code> 插入, <code>d[k]</code> 取值。</li>
+  <li>List：<code>.sort()</code>, <code>.append()</code> (return None), <code>.pop(i)</code> (remove &amp; return，default 最後)；<code>len/max/min</code>。</li>
+  <li>Help：hover、<code>help(list.append)</code> (唔加括號)、<code>.__doc__</code>、Ctrl+Shift+Space。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w1.html">← Week 1 Introduction to Big Data</a>
+  <a href="COM6001-w3.html">Week 3 Python basics II →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

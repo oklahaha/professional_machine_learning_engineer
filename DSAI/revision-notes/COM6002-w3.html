@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 3 RDBMS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w3">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 3</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 3 · Source: 3-RDBMS.pptx (81 slides)</p>
+<h1>(Centralized) Relational Database Management Systems (RDBMS): Theories and Concepts</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>理解 relation (table) 同 join 的概念</li>
+    <li>用 Big O notation 分析成本（O(1), O(lg n), O(n), O(n²)），識 Big O rules 同 best / worst / average case</li>
+    <li>掌握 B tree 同 B+ tree 的結構、point search、range query 同成本；index 的 overhead；query plan 同 query optimizer</li>
+    <li>認識其他 index：R-tree、HNSW、Inverted index</li>
+    <li>理解 transaction、concurrency control（serial execution、locks、Two-Phase Locking、deadlock、rollback / cascading rollback）</li>
+    <li>理解 log-based recovery（undo / redo）、blocking vs fuzzy checkpoints，以及 ACID</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>B+ tree：結構特點（pointers 只喺 leaf、separator、sibling pointer、balanced）、search 同 range query 步驟、O(lg n) search &amp; update</li>
+    <li>Two-Phase Locking (2PL)：growing / shrinking phase、readlock / writelock conflict table、deadlock = precedence graph 有 cycle</li>
+    <li>Log-based recovery：undo incomplete、redo committed；用 log 計 recovery 後的 database 值</li>
+    <li>Blocking vs fuzzy checkpoints；scan backward 去到邊度停</li>
+    <li>ACID 四個 property（slide 標明 Very important!）</li>
+  </ol>
+</div>
+
+<h2>1. RDBMS overview</h2>
+<p>Latest trend（db-engines.com ranking）：<b>RDBMS dominates the market!</b> 重要 RDBMS：Oracle、MySQL / MariaDB、Microsoft MS SQL、PostgreSQL、IBM DB2、SQLite；Microsoft Access（Not a real powerful RDBMS）。</p>
+<p>RDBMS 用 tables 管理 data，<mark class="k">Table is called "relation"</mark>。Slide 3 例子有三個 tables：</p>
+<table>
+<tr><th colspan="3">Student</th><th></th><th colspan="3">Result</th><th></th><th colspan="2">Module</th></tr>
+<tr><th>Student ID</th><th>Name</th><th>Major</th><td></td><th>Student ID</th><th>Module Code</th><th>Grade</th><td></td><th>Module Code</th><th>Module Name</th></tr>
+<tr><td>101101</td><td>Amy</td><td>BBA</td><td></td><td>101101</td><td>COM2006</td><td>B</td><td></td><td>COM2103</td><td>Database Design and Management</td></tr>
+<tr><td>101103</td><td>Bob</td><td>CS</td><td></td><td>101101</td><td>COM2103</td><td>A</td><td></td><td>COM2006</td><td>Database Management Systems</td></tr>
+<tr><td>101106</td><td>Cathy</td><td>CS</td><td></td><td>101103</td><td>COM2103</td><td>A</td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td>101106</td><td>COM2103</td><td>B</td><td></td><td></td><td></td></tr>
+</table>
+<h3>Search &amp; Join</h3>
+<p>Q：What are the names of students who get A in the module "Database Design and Management"? 資料散落三個 table，所以要 <b>"join" the tables together</b>（用 Student ID 同 Module Code 配對）：</p>
+<table>
+<tr><th>Student ID</th><th>Name</th><th>Major</th><th>Module Code</th><th>Module Name</th><th>Grade</th></tr>
+<tr><td>101101</td><td>Amy</td><td>BBA</td><td>COM2006</td><td>Database Management Systems</td><td>B</td></tr>
+<tr><td>101101</td><td>Amy</td><td>BBA</td><td>COM2103</td><td>Database Design and Management</td><td>A</td></tr>
+<tr><td>101103</td><td>Bob</td><td>CS</td><td>COM2103</td><td>Database Design and Management</td><td>A</td></tr>
+<tr><td>101106</td><td>Cathy</td><td>CS</td><td>COM2103</td><td>Database Design and Management</td><td>B</td></tr>
+</table>
+<p>答案：Amy、Bob。（Week 4 會寫成 SQL。）</p>
+<div class="box tip"><span class="label">💡 點解要拆成三個 table？</span><p>如果將 module name 寫入每一行 Result，"Database Design and Management" 會重複好多次（redundancy），改名時要改晒所有行，漏改就 inconsistent——即 Week 1 File-based 的問題。拆 table 每樣嘢只記一次，要用時先 join。</p></div>
+
+<h2>2. Efficient search 與 Big O notation</h2>
+<p>Slide 6 問題：IG 有 3 billion MAU (2026)，你的程式每秒可以 loop 100M records，login 時逐個搵要幾耐？</p>
+<div class="formula">$$ \frac{3{,}000{,}000{,}000}{100{,}000{,}000\ \text{records/s}} = 30\ \text{s (worst case)},\quad \text{average} \approx 15\ \text{s} $$</div>
+<p>Login 要等 15–30 秒明顯唔接受得 → 需要 index。</p>
+<h3>2.1 Big O notation</h3>
+<p>In computer science, we usually use <b>complexity</b>：<b>Big O notation</b> measures the <b>order</b> of the running cost (time / space etc.)。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Slide 的四個 Big O 例子</span>
+<table>
+<tr><th>Example</th><th>Task</th><th>Complexity</th></tr>
+<tr><td>1</td><td>For each student, mark his/her assignment</td><td><b>O(n)</b> — workload grows linearly with n</td></tr>
+<tr><td>2</td><td>每個學生寫 peer evaluation 俾每個其他學生，老師 mark 晒所有報告</td><td><b>O(n²)</b> — n(n−1) 份報告</td></tr>
+<tr><td>3</td><td>Knock-out tournament：每兩個 player 比賽，贏的留低；同時進行的比賽叫一個 round</td><td>Rounds = <b>O(lg n)</b>；Games = <b>O(n)</b>（剛好 n−1 場）</td></tr>
+<tr><td>4</td><td>Find any ONE student in the class</td><td><b>O(1)</b> — constant time regardless of n</td></tr>
+</table>
+<p>Note：<b>lg</b> is binary log (base 2)；<b>log</b> is base 10。</p>
+</div>
+<p>Worked example（Example 3）：n = 16 players → round 1: 8 games, round 2: 4, round 3: 2, round 4: 1 → 4 rounds = lg 16；games = 8+4+2+1 = 15 = n−1。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 有一張 tournament 圖，文字擷取不到。</p></div>
+
+<h3>2.2 Big O rules</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Big O rules</span>
+<ul>
+<li>\( 3n^2 + 4n + 100 \Rightarrow O(n^2) \)：We only care about the <b>highest order term</b>；We don't care about the <b>coefficient</b></li>
+<li>We usually consider the <b>average case</b> or the <b>worst case</b></li>
+<li>例子：逐個學生搵 Tom，搵到就停 → Best case O(1)（第一個就係）；Worst case O(n)；Average O(n)（平均要查一半，n/2 仍然係 O(n)）</li>
+</ul>
+</div>
+
+<h2>3. Index on RDBMS：B tree</h2>
+<p>Common method：<b>B tree (and its variants)</b>（Bayer et al., 1972）。不同版本概念相近，細節有別；本科講 B tree 同 B+ tree。<span class="tag exam">Exam</span>Cost complexity of search：<b>O(lg n)</b>。</p>
+<p>以 IG 為例：\( \log_{10}(3\times10^9) = 9.38 \)（slide 數字）；用 binary log，\( \lg(3\times 10^9) \approx 31.5 \)。即係由 30 秒 linear scan 變成大約幾十步——幾乎即時。</p>
+<h3>3.1 Structure of B tree（slide 13）</h3>
+<pre><code>                    [ 11 ]                      ← Root node
+             /                 \
+        [ 5 | 8 ]           [ 15 | 20 ]         ← Non-leaf nodes
+       /    |    \          /    |    \
+   [1 3] [6 7] [9 10]  [12 14] [17 19] [21 23]  ← Leaf nodes</code></pre>
+<p>Key properties：<b>Items on the left are all smaller；items on the right are all larger</b>。Note：There could be multiple records for each value。喺 B tree，每個 node（包括 root 同 non-leaf）的值本身都係 data。</p>
+<p><b>Example: Finding 15</b>：15 &gt; 11 → go right → 喺 [15 | 20] 搵到，Bingo!（未去到 leaf 已經搵到）<br>
+<b>Example: Finding 22</b>：22 &gt; 11 → right；22 &gt; 20 → right；leaf [21 23] 冇 22 → 22 does not exist。</p>
+<p><b>Cost analysis</b>：Best scenario O(1)（例如搵 11，root 就係）；Worst scenario O(lg n)（slide 寫 O(ln(n))，同一個 order）——n 係 distinct values 數目（≤ records 數）。</p>
+
+<h2>4. B+ tree</h2>
+<pre><code>                    [ 13 ]
+             /                 \
+        [ 5 | 9 ]           [ 17 | 20 ]          ← separators only
+       /    |    \          /    |    \
+   [1 3]→[5 7]→[9 11]→[13 15]→[17 19]→[21 23]    ← leaf level, → = sibling pointer</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：B+ tree 特點（同 B tree 的分別）</span>
+<ul>
+<li>Record <b>pointers are always at leaf level</b></li>
+<li>Values at non-leaf level are <b>separators only</b>：左邊全部 <b>&lt;</b> separator，右邊全部 <b>≥</b> separator</li>
+<li>There is a <b>sibling pointer</b> to the sibling leaf node（方便 range query）</li>
+<li>Separator 唔一定要存在於 database：例如 20 並唔存在，但仍可做 separator</li>
+</ul>
+</div>
+<p><b>Finding 15</b>：15 ≥ 13 → right；15 &lt; 17 → left → leaf [13 15]，Bingo。（B+ tree 一定要去到 leaf，因為 pointer 只喺 leaf。）</p>
+<h3>4.1 Range query：find 10–16</h3>
+<ol>
+<li><b>Step 1：search the smaller value (10)</b>：10 &lt; 13 → left；10 ≥ 9 → right → leaf [9 11]，由 11 開始（9 &lt; 10 唔要）</li>
+<li><b>Step 2：Go to siblings</b>：沿 sibling pointer 去 [13 15] → 13、15 都喺範圍；最大值係 16，可能仲有 &gt;15 且 ≤16 的值，所以再去下一個 sibling [17 19]；最細已經係 17 &gt; 16 → 停</li>
+</ol>
+<p>結果：11, 13, 15。<b>Total number of nodes visited: 5</b>（root, [5|9], [9 11], [13 15], [17 19]）。</p>
+<div class="box tip"><span class="label">💡 點解 range query 用 B+ tree？</span><p>B tree 的值散落喺唔同 level，range query 要上上落落咁 traverse。B+ tree 所有值都喺 leaf，而且 leaf 已排序 + 有 sibling pointer，搵到起點之後只需要「向右行」，好似喺一本已排序的電話簿揭頁。</p></div>
+<h3>4.2 Other key characteristics</h3>
+<ul>
+<li><span class="tag exam">Exam</span><b>The update cost is also O(lg n)</b>。對比：Binary tree（a well-known data structure）has a linear update cost（樹可以變得唔平衡，worst case 似一條 linked list）</li>
+<li><b>Balanced tree</b>：由 root 去任何 leaf 的 path length 都一樣</li>
+<li>B / B+ tree is for <b>one-dimensional search</b>；可以將多個 attributes 合成一個 attribute（composite key）再用 B+ tree</li>
+<li>可以用 USFCA 的 B+ tree visualization 睇 maintenance 同 search 動畫</li>
+</ul>
+
+<h2>5. Index design &amp; Query plan</h2>
+<p>Discussion：要 list 喺某 module 攞 A 的 student IDs，index 應該點建？用 slide 23 的 Result table：</p>
+<table>
+<tr><th>Record</th><th>Student ID</th><th>Module Code</th><th>Grade</th></tr>
+<tr><td>R1</td><td>101101</td><td>COM6002</td><td>B</td></tr>
+<tr><td>R2</td><td>101101</td><td>COM6104</td><td>A</td></tr>
+<tr><td>R3</td><td>101103</td><td>COM6104</td><td>A</td></tr>
+<tr><td>R4</td><td>101106</td><td>COM6104</td><td>B</td></tr>
+</table>
+<table>
+<tr><th>Index</th><th>Leaf entries (key → record pointers)</th></tr>
+<tr><td>On module code</td><td>COM6002 → R1；COM6104 → R2, R4, R3（同一 key 下的 pointers 次序不受控制；但 leaf 的 keys 係有序的）</td></tr>
+<tr><td>On grade</td><td>A → R2, R3；B → R4, R1</td></tr>
+<tr><td>On (module code, grade)</td><td>(COM6002, B) → R1；(COM6104, A) → R2, R3；(COM6104, B) → R4</td></tr>
+</table>
+<p><b>Yes! We can have multiple indices on the same table!</b></p>
+<h3>5.1 The overhead of indexing</h3>
+<ul>
+<li>Index requires <b>additional space and maintenance effort</b></li>
+<li>Additional space &lt; space of records，因為 index 只存 pointers；record 內容永遠只有一份</li>
+<li>Is the maintenance effort worth it? <b>Depends on your usage!</b> How often is your index used? Is it necessary?（每次 INSERT/UPDATE/DELETE 都要更新所有相關 index）</li>
+</ul>
+<h3>5.2 Query plans（Query: Students who get A in COM6104）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：同一 query 有多個 query plan</span>
+<table>
+<tr><th>Plan</th><th>做法</th><th>要檢查的 records（本例）</th></tr>
+<tr><td>1</td><td>No index, scan all records</td><td>R1–R4 全部 4 個</td></tr>
+<tr><td>2</td><td>Index on module code → 拎 COM6104 所有 records 再 check grade</td><td>R2, R4, R3（3 個）</td></tr>
+<tr><td>3</td><td>Index on grade → 拎所有 A 再 check module</td><td>R2, R3（2 個）</td></tr>
+<tr><td>4</td><td>Index on (module code, grade) → 直接搵 (COM6104, A)</td><td>R2, R3 — 全部都係答案，冇浪費</td></tr>
+</table>
+</div>
+<h3>5.3 Query optimizer</h3>
+<ul>
+<li>RDBMS 會嘗試搵 <b>optimal query plan</b>：keeps <b>statistics</b> about the database（例如 number of records），automatically pick the "best" plan</li>
+<li>Note：<b>Don't rely on query optimizer</b>。佢識 rewrite 簡單 pattern（e.g., filter-join query），但 complex queries 好難 rewrite</li>
+<li>Recommendations：Try to write efficient SQL queries；<b>Build index! Based on your usage</b></li>
+</ul>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>pandas 的 <code>df.set_index("StudentID")</code> 再 <code>df.loc[...]</code> 都係用 index 加速 lookup（hash-based），概念同 DB index 一樣：用額外空間換速度。Week 4 會學 <code>CREATE INDEX</code>。</p></div>
+
+<h2>6. Other indices</h2>
+<table>
+<tr><th>Index</th><th>用途</th><th>重點</th></tr>
+<tr><td><b>R-tree</b> (Guttman, SIGMOD 1984)</td><td>Multi-dimensional spatial query：Find the object closest to me；objects within 1km</td><td>Worst case：Search O(n)、Update O(n)</td></tr>
+<tr><td><b>HNSW</b> (Hierarchical Navigable Small World, Malkov et al. 2016)</td><td>Top-k <b>cosine similarity</b> search on a <b>vector database</b>（approximate nearest neighbor）</td><td>Example application：<b>RAG in LLM</b></td></tr>
+<tr><td><b>Inverted index</b></td><td>Full-text (keyword-based) search</td><td>The reverse of a document-to-term mapping</td></tr>
+</table>
+<p>Inverted index 例子：D1 = "He wins"，D2 = "She wins"，D3 = "I lose"：</p>
+<table>
+<tr><th>Term</th><th>Document</th></tr>
+<tr><td>He</td><td>D1</td></tr><tr><td>Win</td><td>D1, D2</td></tr><tr><td>She</td><td>D2</td></tr><tr><td>I</td><td>D3</td></tr><tr><td>Lose</td><td>D3</td></tr>
+</table>
+<p>搜尋 "win" → 直接得 D1, D2，唔使逐份文件睇。（留意 wins → Win：做咗 stemming / normalization。）</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 30 R-tree 有一張空間示意圖，文字擷取不到。</p></div>
+
+<h2>7. Database transaction</h2>
+<p><b>Transaction</b> = the basic unit in RDBMS，each transaction may contain several commands。例子：轉帳——(1) Deduct $5,000 from your account；(2) Add $5,000 to your friend's account。<b>Both actions 1 and 2 are done or none is — All or nothing</b>。試想部電腦喺 step 1 後、step 2 前 hang 機：錢就憑空消失。</p>
+<p>Transaction structure：<code>Transaction begins → … (all actions) → Commit</code>。Once committed，DBMS 確保 transaction 真係完整做咗；否則 transaction should have no effect to the database。</p>
+<p>Challenges：<b>Concurrency control</b>（多個 users 同時用同一 data items，要避免出錯）同 <b>Recovery</b>（系統 fail，例如 power outage，要 recover database contents）。</p>
+
+<h2>8. Concurrency control</h2>
+<h3>8.1 Why concurrent execution?</h3>
+<p>多部 ATM 同時 access central database。如果唔支援 concurrent execution：電腦一次只做一個 transaction → 所有人排隊用一部 ATM，連銀行職員都要等。</p>
+<h3>8.2 The ATM example（slides 37–47）</h3>
+<p>Initial：X = 100，Y = 100。ATM 1 的 transaction：X = X + 100, Y = Y − 100。ATM 2：Y = Y + 100, X = X − 100。（每次 update 要等 database 回 "OK"，因為 network 可能 drop message；長時間收唔到 OK 就 resend。）</p>
+<table>
+<tr><th>Step</th><th>Action</th><th>X</th><th>Y</th></tr>
+<tr><td>1</td><td>ATM 2 reads Y → 100；ATM 1 reads X → 100</td><td>100</td><td>100</td></tr>
+<tr><td>2</td><td>ATM 1: Update X to 200</td><td>200</td><td>100</td></tr>
+<tr><td>3</td><td>ATM 1 reads Y → 100</td><td>200</td><td>100</td></tr>
+<tr><td>4</td><td>ATM 2: Update Y to 200</td><td>200</td><td>200</td></tr>
+<tr><td>5</td><td>ATM 1: Update Y to 0（用舊值 100 − 100）</td><td>200</td><td>0</td></tr>
+<tr><td>6</td><td>ATM 2 reads X → 200</td><td>200</td><td>0</td></tr>
+<tr><td>7</td><td>ATM 2: Update X to 100</td><td>100</td><td>0</td></tr>
+</table>
+<p><b>Something wrong?</b> Final X = 100, Y = 0。正確應該係兩個轉帳互相抵銷：X = 100, Y = 100。ATM 2 對 Y 的 +100 被 ATM 1 覆蓋咗（lost update），總金額由 200 變 100。</p>
+<h3>8.3 Correct execution = Serial execution</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Definition of a correct execution</span>
+<p>Assumption：each transaction is itself correct（brings the DB from a consistent state to another consistent state）。<b>Serial execution</b>：transactions executed one by one → <b>serial execution is correct</b>。不同 serial order 可以有不同結果，但 <b>都算正確</b>。</p>
+<p>例子：X = 1000；T1：X increases by 1%；T2：X decreases by 100。</p>
+<ul><li>T1 then T2：1000 → 1010 → <b>910</b></li><li>T2 then T1：1000 → 900 → <b>909</b></li></ul>
+<p>910 同 909 都係 correct results。</p>
+</div>
+<p>點樣確保 correct execution？<b>Two phase locking</b>（Eswaran et al., 1976）：ensure multiple transactions executing simultaneously do not corrupt shared data。Other methods：Timestamp ordering、Multi-Version Concurrency Control (MVCC)、Raft algorithm。</p>
+
+<h3>8.4 Locking</h3>
+<p>Make sure no other (active) transaction has a conflict action at the same time。兩種 lock：<b>Readlock</b>（read 之前要攞）同 <b>Writelock</b>（write 之前要攞）。</p>
+<pre><code>Transaction 1 (ATM 1):          加 lock 後：
+Read(x)                          Readlock(x)  Read(x)
+Write(x)                         Writelock(x) Write(x)
+Read(y)                          Readlock(y)  Read(y)
+Write(y)                         Writelock(y) Write(y)
+                                 Releaselocks()</code></pre>
+<p>Q：做完 Write(x) 之後已經冇 x 的 action，可唔可以即刻 release x 的 lock？<br>
+A（lecturer notes）：<b>No.</b> Another transaction may be done between Write(x) and Read(y). If this transaction also has actions on x and y, the result will be incorrect.（佢會見到「X 已轉、Y 未轉」的中間狀態。）</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Lock conflict table</span>
+<p>（同一個 variable、由不同 transactions 申請）</p>
+<table>
+<tr><th></th><th>Readlock</th><th>Writelock</th></tr>
+<tr><th>Readlock</th><td>No conflict</td><td>Conflict</td></tr>
+<tr><th>Writelock</th><td>Conflict</td><td>Conflict</td></tr>
+</table>
+<p><b>Lock upgrade</b>：writelock 係 readlock 的 upgraded version；持有 writelock 的 transaction 唔需要再持有 readlock。</p>
+</div>
+<h3>8.5 Two-phase locking (2PL)</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：2PL</span>
+<ul>
+<li><b>Phase 1: growing phase</b> — 只可以攞新 lock，<b>No lock is released</b></li>
+<li><b>Phase 2: shrinking phase</b> — 只可以 release lock，<b>No new lock can be obtained</b></li>
+<li>Transaction commits（之後 release locks）</li>
+</ul>
+<p>即係：一旦放咗任何一個 lock，就唔可以再攞新 lock。</p>
+</div>
+<h3>8.6 2PL example → Deadlock</h3>
+<p>T1：Read(x), Write(x), Read(y), Write(y)。T2：Read(y), Read(x), Write(x), Write(y)。</p>
+<table>
+<tr><th>Step</th><th>Request</th><th>Result</th><th>Locks held</th></tr>
+<tr><td>1</td><td>T1 已攞 Writelock(x)、Readlock(y)</td><td>—</td><td>W(x) by T1, R(y) by T1</td></tr>
+<tr><td>2</td><td>T2 Readlock(y)</td><td><b>OK</b> — readlock does not conflict with another readlock</td><td>+ R(y) by T2</td></tr>
+<tr><td>3</td><td>T2 Readlock(x)</td><td><b>No</b> — readlock conflicts with writelock → T2 waiting</td><td></td></tr>
+<tr><td>4</td><td>T1 Writelock(y)（upgrade）</td><td><b>No</b> — writelock conflicts with T2's readlock(y) → T1 waiting</td><td></td></tr>
+</table>
+<p>T1 等 T2 放 y，T2 等 T1 放 x → 永遠完唔到：呢個就係 <mark class="k">deadlock</mark>。</p>
+<p>有 conflict 時點做？<b>Option 1: wait</b>（等其他 transaction 放 lock）；<b>Option 2: rollback</b>（Undo what the transaction has done；declare it failed；retry later）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Deadlock detection &amp; rollback</span>
+<ul>
+<li>用 <b>precedence graph</b>（wait-for graph）：T1 → T2 表示 T1 等緊 T2 持有的 lock</li>
+<li><b>A deadlock means that there is a cycle in the graph</b></li>
+<li>Slide 60 練習（lecturer notes 答案）：Yes — T3 waits for T4, T4 waits for T2, T2 waits for T3 → cycle</li>
+<li>Rollback 的用途：<b>To resolve a deadlock</b>（揀一個 transaction rollback，打破 cycle）</li>
+<li><b>Cascading rollback</b>：其他 transactions 可能已經讀咗呢個 transaction 更新的值，佢哋都要 rollback。例：T1 將 X 1000 → 1010，T2 讀 1010 再減 100 → 910；If T1 rollbacks, T2 must rollback too</li>
+</ul>
+</div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 60 precedence graph 的箭咀方向係圖形，只擷取到 node 名（T1–T5）；上面答案引用 lecturer notes。請對照原 slide 第 60 頁睇完整的圖。</p></div>
+
+<h2>9. Database recovery</h2>
+<p>點解要 recovery？<b>Cancelled transaction</b>（user 撳 cancel）、<b>System failure</b>（disk failure, system crash, system errors）。</p>
+<p><span class="tag exam">Exam</span><b>Log-based recovery</b> is the mainstream method。Core principle：<mark class="k">Save to the log before writing to the database system</mark>（write-ahead）。</p>
+<p>Challenges：How to perform backup without stopping the database? How to make sure all contents before the crash can be recovered?</p>
+<h3>9.1 What do we put in the log?</h3>
+<p>Log 成個 database？（唔理 efficiency 都）唔得——<b>the snapshot of a database may be inconsistent</b>：snapshot 嗰刻可能有 T1、T2 的 partial updates。</p>
+<p>Failure 發生時：所有 working transactions 同 database 斷聯 → stop processing、rollback、report failure。Slide 65 例子中只有已 commit 的 T3 的效果應該留喺 database。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Contents of the log</span>
+<ul>
+<li>Clear record about the <b>start</b> of a transaction</li>
+<li>Clear record about the <b>commit</b> of a transaction</li>
+<li>The update contents，兩種做法：
+<ul><li><b>Before-after values</b>（e.g., x, 10, 15 — x 由 10 變 15）：More storage；more straightforward recovery</li>
+<li><b>Delta values</b>（e.g., x, +5）：Less storage；need a mechanism to tell if the value on the harddisk is before or after the update</li></ul></li>
+</ul>
+</div>
+<h3>9.2 Example logs（slide 67–69）</h3>
+<p>Log entry 意思：<code>T3</code> = start of T3；<code>T3, X, 12</code> = T3 sets X to 12；<code>T3 commit</code> = end of T3 (commit)。</p>
+<pre><code>T3
+T3, X, 12
+T1
+T3, Y, 10
+T2
+T1, A, 60
+T1, B, 30
+T3, Z, 8
+T2, M, 100
+T3 commit
+--- Crash ---
+Initial database: A=0 B=0 C=0 M=0 N=0 P=0 X=0 Y=0 Z=0</code></pre>
+<p>Crash 嗰刻：memory 入面係 A60 B30 M100 X12 Y10 Z8，但 disk 上可能只有 X12 Y10（其他仲喺 memory 未寫落 disk）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Recovery actions</span>
+<p><b>Undo incomplete transactions；Redo committed transactions</b></p>
+<ul>
+<li>T3 committed → <b>redo</b>：X = 12, Y = 10, Z = 8</li>
+<li>T1、T2 冇 commit → <b>undo</b>：A = 0, B = 0, M = 0</li>
+</ul>
+<p>Recovery 後：<b>A=0, B=0, C=0, M=0, N=0, P=0, X=12, Y=10, Z=8</b>。</p>
+</div>
+<h3>9.3 Recovery algorithm</h3>
+<p>由 log 尾開始，<b>scan the log backwards</b> 搵出 incomplete 同 completed transactions。Q：When do we stop? 要確保所有 completed transactions 都搵到 → <b>scan until the starting point of the log</b>——即成個 log！（如果 log 由 30 年前開始？！）→ 需要 checkpoints。</p>
+
+<h2>10. Database checkpoints</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：Blocking vs Fuzzy checkpoints</span>
+<table>
+<tr><th></th><th>Blocking checkpoint</th><th>Fuzzy checkpoint (Non-blocking)</th></tr>
+<tr><td>做法</td><td><b>Stop all the updates</b> to the database，create a snapshot</td><td><b>Do NOT stop</b> the updates；create a snapshot <b>and keep records about what transactions are running</b></td></tr>
+<tr><td>Recovery</td><td>只需 scan 到最近的 checkpoint</td><td>Scan 到最近 checkpoint，再追查 checkpoint 記錄中仍在 running 的 transactions</td></tr>
+<tr><td>缺點</td><td>做 checkpoint 時 database 要停</td><td>Worst case recovery cost O(n)（scan 到第一條 log），但實際上幾乎唔會發生——除非 log 好短或者 transaction 長得離譜</td></tr>
+</table>
+</div>
+<h3>10.1 Fuzzy checkpoint example（slides 73–77）</h3>
+<p>Checkpoint 101 記錄 running：T1, T2；Checkpoint 102：T2, T3, T4；Checkpoint 103：T2, T5；之後 Failure。</p>
+<ul>
+<li>Scan backwards until Checkpoint 103；All committed transactions before Checkpoint 103 are already in the checkpoint image</li>
+<li>Only need to chase further for <b>T2 and T5</b>（checkpoint 103 時仍 running）</li>
+<li>去到 checkpoint 102：要唔要追 T2 / T3 / T4？T2：Maybe yes；<b>T3: No! T4: No!</b>（佢哋喺 checkpoint 103 已經唔喺 running list，即已完成，效果喺 image 入面）</li>
+<li>T5 喺邊度開始？喺 checkpoint 102 同 103 之間（102 冇 T5，103 有）</li>
+<li>T2 / T5 有冇 commit？Depends on whether we see "T2 / T5 commit" in the latest log（checkpoint 103 之後）</li>
+</ul>
+
+<h3>10.2 Full example（slides 78–79）</h3>
+<pre><code>T1
+T1, X, 10
+T2
+            ← Checkpoint 101 (running: T1, T2)
+T1 commit
+T3
+T4
+T2, X, 15
+T3, Y, 5
+T4, Z, 70
+            ← Checkpoint 102 (running: T2, T3, T4)
+T3 commit
+T5
+T2, A, 10
+T4 commit
+T5, Z, 30
+            ← Checkpoint 103 (running: T2, T5)
+T6
+T6, Z, 50
+T2, B, 30
+T2 commit
+T5, X, 10
+--- crash ---</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">原 slide 的 checkpoints 係畫喺時間線上的標記，上面 checkpoint 插入的位置係按每個 checkpoint 記錄的 running transactions 推斷（例如 102 有 T4 冇 T5、103 冇 T4），某條 log 確實落喺 checkpoint 前定後（例如 T5, Z, 30）請對照原 slide 第 78–79 頁的紅 / 綠標示。</p></div>
+<p>分析：</p>
+<ul>
+<li>T1、T3、T4 喺 checkpoint 103 前 commit → 已在 checkpoint image，唔使理</li>
+<li><b>T2</b>：checkpoint 103 後見到 "T2 commit" → committed → <b>redo</b> T2, B, 30。T2 喺 checkpoint 前的 action（T2, X, 15；T2, A, 10）本應 redo，但 <b>as this action is before the checkpoint, the update is always on the harddisk</b>，唔需要真係 redo</li>
+<li><b>T5</b>、<b>T6</b>：冇 commit → <b>undo</b>（T5, X, 10；T6, Z, 50；T5, Z, 30）。T5 喺 checkpoint 102–103 之間開始，所以要 scan 返去 T5 的 start 先可以停（slide 79 "We stop here"）</li>
+</ul>
+<p>Recovery 後（假設 undo 有 before values 可用）：X = 15（T2），Y = 5（T3），Z = 70（T4），A = 10，B = 30。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Undo 需要知道 <b>舊值</b>。如果 log 只記新值（例如 "T5, Z, 30"），就要靠 before-after logging（"Z, 70, 30"）先知 undo 去返 70。呢個就係 slide 66 講 before-after values「more straightforward recovery」的原因。</p></div>
+
+<h2>11. ACID property of database</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：ACID（Very important!）</span>
+<table>
+<tr><th>Property</th><th>Definition (slide)</th><th>由乜機制保證</th></tr>
+<tr><td><b>A</b>tomicity</td><td>Transaction is handled in an "all-or-nothing" manner：either the entire transaction is done, or none is done</td><td>Log + undo / rollback</td></tr>
+<tr><td><b>C</b>onsistency</td><td>Any transaction will bring the database from one valid state to another。例：X = X − 50, Y = Y + 50；Before X=100, Y=100 → After X=50, Y=150（總和 200 不變）</td><td>Transaction 本身正確 + 其他三個 property</td></tr>
+<tr><td><b>I</b>solation</td><td>It appears like transactions are executed independently</td><td>Concurrency control（2PL 等），效果等同 serial execution</td></tr>
+<tr><td><b>D</b>urability</td><td>Once a transaction is committed, its effect stays in the database forever</td><td>Log + redo、checkpoints</td></tr>
+</table>
+</div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 1 File-based 的缺點正正對應 ACID：Lack of Atomic Transactions ↔ Atomicity；No Concurrency Control ↔ Isolation。Week 5 會講 OLTP 要求 ACID compliance，而 OLAP 就唔一定需要 strong consistency。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 一個演算法成本係 \(5n^3 + 2n^2\log n + 1000\)，Big O 係乜？Knock-out tournament 有 64 個 players，要幾多 rounds、幾多 games？</summary><p>O(n³)（只取最高次項、忽略係數）。Rounds = lg 64 = 6；Games = n − 1 = 63（O(n)）。</p></details>
+<details class="q"><summary>Q2. 用 slide 17 的 B+ tree（root 13；[5|9]、[17|20]；leaves 1 3 / 5 7 / 9 11 / 13 15 / 17 19 / 21 23），寫出 range query 6–14 的步驟同 visit 了幾多個 nodes。</summary><p>6 &lt; 13 → left；5 ≤ 6 &lt; 9 → middle child → leaf [5 7]，攞 7。Sibling → [9 11]：9, 11；sibling → [13 15]：13（15 &gt; 14，停）。結果 7, 9, 11, 13。Visited：root, [5|9], [5 7], [9 11], [13 15] = 5 nodes（喺 [13 15] 已見到 15 &gt; 14，唔使再去下一個 sibling）。</p></details>
+<details class="q"><summary>Q3. B tree 同 B+ tree 有咩分別？點解 B+ tree 更適合 range query？</summary><p>B+ tree：record pointers 只喺 leaf level；non-leaf values 只係 separators（左 &lt;，右 ≥，可以唔存在於 DB）；leaf 之間有 sibling pointers。B tree 每個 node 的值都係 data，搜尋可以喺 non-leaf 停（best case O(1)）。Range query 用 B+ tree 只要搵到起點 leaf，再沿 sibling pointers 向右掃，唔使上落 traverse。兩者 search 同 update 都係 O(lg n)，都係 balanced。</p></details>
+<details class="q"><summary>Q4. 要搵「COM6104 攞 A 的學生」，列出四個 query plan，邊個最有效率？Index 有咩代價？</summary><p>(1) 全表 scan；(2) 用 module code index 再 check grade；(3) 用 grade index 再 check module；(4) 用 composite index (module code, grade) 直接搵——最有效率，冇多餘 records。代價：額外空間（只存 pointers，比 records 細）同每次更新資料的 maintenance effort；值唔值得視乎 usage。Query optimizer 會根據 statistics 揀 plan，但複雜 query 唔好倚賴佢。</p></details>
+<details class="q"><summary>Q5. 喺 2PL 下，T1 持有 Writelock(x)。T2 申請 Readlock(x)、T3 申請 Readlock(y)（冇人持有 y 的 lock），結果點？一個 transaction 放咗 lock 之後可唔可以再攞新 lock？</summary><p>T2 被拒（readlock 同 writelock conflict）→ wait 或 rollback。T3 成功。2PL 下一旦開始 release（shrinking phase）就唔可以再攞新 lock。</p></details>
+<details class="q"><summary>Q6. Wait-for graph 有 edges：T1→T2、T2→T3、T3→T1、T4→T1。有冇 deadlock？點解決？</summary><p>有，T1→T2→T3→T1 形成 cycle。解決：揀 cycle 入面一個 transaction（例如 T3）rollback、undo 佢的 actions、稍後 retry；如有其他 transaction 讀過佢寫的值，要 cascading rollback。T4 只係等緊，唔喺 cycle。</p></details>
+<details class="q"><summary>Q7. Log：T1 / T1,A,5 / T2 / T2,B,7 / T1 commit / T3 / T3,A,9 / T2,C,4 / crash。Initial 全部係 0。Recovery 後 A、B、C 係幾多？</summary><p>T1 committed → redo A = 5。T2、T3 冇 commit → undo：B = 0、C = 0、A 嘅 T3 update 撤回 → A = 5（T1 的值）。結果 A = 5, B = 0, C = 0。</p></details>
+<details class="q"><summary>Q8. Fuzzy checkpoint 103 記錄 running：T2, T5。Scan backwards 時，喺 checkpoint 102（running: T2, T3, T4）需唔需要追 T3、T4？Worst-case recovery cost 係幾多？</summary><p>唔使追 T3、T4：佢哋喺 checkpoint 103 已唔喺 running list，即已完成並包含喺 checkpoint image。只需追 T2、T5（T2 視乎有冇見到 commit）。Worst case O(n)（scan 到第一條 log），但實際極少發生。</p></details>
+<details class="q"><summary>Q9. 解釋 ACID，並說明 ATM lost-update 例子違反咗邊個 property。</summary><p>Atomicity（all-or-nothing）、Consistency（valid state → valid state）、Isolation（好似獨立執行）、Durability（commit 後永久）。ATM 例子 interleaving 令 Y 的 +100 被覆蓋，結果唔等於任何 serial execution → 違反 Isolation（亦令 Consistency 破壞：總額由 200 變 100）。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Table = relation；join tables 搵跨表資料</li>
+<li>Big O：只取最高次項、忽略係數；看 average / worst case；lg = log₂</li>
+<li>O(1) 搵任何一個；O(lg n) tournament rounds / B tree search；O(n) 逐個 mark；O(n²) peer review</li>
+<li>B tree：左細右大；值喺所有 level；best O(1)，worst O(lg n)</li>
+<li>B+ tree：pointers 只喺 leaf；non-leaf = separators（左 &lt;，右 ≥）；sibling pointers；range query = 搵起點 + 行 siblings</li>
+<li>B/B+ tree：balanced；search &amp; update O(lg n)（binary tree update linear）；one-dimensional</li>
+<li>Multiple / composite indices；overhead = space (pointers) + maintenance；Query plan / optimizer（用 statistics；唔好完全依賴）</li>
+<li>R-tree（spatial，worst O(n)）；HNSW（vector cosine top-k，RAG）；Inverted index（full-text）</li>
+<li>Transaction = all or nothing；begin … commit</li>
+<li>Correct = equivalent to serial execution；不同 serial order 結果唔同都算正確（910 / 909）</li>
+<li>Locks：R–R OK；R–W、W–W conflict；writelock = upgraded readlock</li>
+<li>2PL：growing（只攞）→ shrinking（只放）</li>
+<li>Conflict → wait 或 rollback；deadlock = wait-for graph 有 cycle；cascading rollback</li>
+<li>Log-based recovery：write log before DB；log 有 start、commit、updates（before-after 或 delta）</li>
+<li>Recovery：undo incomplete, redo committed；scan backwards</li>
+<li>Blocking checkpoint（停 update）vs Fuzzy（不停，記 running transactions；worst O(n)）</li>
+<li>ACID：Atomicity / Consistency / Isolation / Durability</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w2.html">← Week 2 Data collection</a>
+  <a href="COM6002-w4.html">Week 4 SQL →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

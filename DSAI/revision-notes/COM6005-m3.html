@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 3 CI &amp; Hypothesis Testing</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m3">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 3</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 3 · Source: M3_CI_HT_Concepts_v2_L02_complete.pdf (24 slides，by Carlin Chu)</p>
+<h1>Confidence Interval &amp; Hypothesis Testing: Concepts</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>分清 point estimate 同 interval estimate；理解 unbiasedness \( E(\bar x)=\mu \)。</li>
+    <li>由 sampling distribution（Central Limit Theorem）推導 Confidence Interval，並正確解讀 95% 嘅意思。</li>
+    <li>識計 Z-based 同 t-based CI，識查 critical value（1.645 / 1.96 / 2.576）。</li>
+    <li>理解 Hypothesis testing 嘅邏輯：H0 / H1、significance level α、p-value、rejection region、one-tailed vs two-tailed。</li>
+    <li>Type I error (α)、Type II error (β)、Power (1 − β)；statistical vs practical significance。</li>
+    <li>CI 同 Hypothesis test 係「同一個銀幣嘅兩面」。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>CI 公式：\( \bar x \pm z_{\alpha/2}\,\sigma/\sqrt n \)（σ known）或 \( \bar x \pm t_{\alpha/2,n-1}\, s/\sqrt n \)，同埋 slide 11 嘅推導。</li>
+    <li>95% CI 嘅正確解讀：重複呢個 procedure 好多次，95% 嘅 interval 會 cover 真正 μ（唔係「μ 有 95% 機會喺呢個 interval」）。</li>
+    <li>p-value 定義：<b>假設 H0 成立</b>，得到 equal to or more extreme 結果嘅 conditional probability；p &lt; α → reject H0。</li>
+    <li>Type I / Type II error / Power 表，α = Type I error = significance level。</li>
+    <li>One-tailed vs two-tailed 嘅 H0/H1 寫法同 rejection region；95% CI 唔包 μ0 ⇔ two-tailed test p &lt; 0.05。</li>
+  </ol>
+</div>
+
+<h2>1. 乜嘢係 Confidence Interval？（Candy Jar）</h2>
+<p>Slide 2：老師帶咗一大罐朱古力入課室，問「入面有幾多粒？」</p>
+<ul>
+<li><b>The Exact Guess (Not a CI)</b>：你估「500」。要 100% 啱好難——真數係 501 你都錯。</li>
+<li><b>The Confidence Interval (Range Guess)</b>：「我有 95% 信心粒數喺 450 至 550 之間。」</li>
+<li><b>The Interval</b>：450 至 550 呢個 range estimate。</li>
+<li><b>The Confidence Level</b>：95% 即係如果你用同一種聰明方法估 100 個唔同嘅罐，大約有 95 次個 range 會估啱。</li>
+</ul>
+<p>科學家數唔晒全世界，就測試一小組（sample），再為所有人（population）俾一個「安全 range」。</p>
+
+<h2>2. Point estimate 同 Unbiasedness</h2>
+<p>Inferential statistical process（slide 3）：</p>
+<ul>
+<li><b>Point estimate</b>：sample statistic → population parameter，即 \( \bar x, s^2 \to \mu, \sigma^2 \)。</li>
+<li><b>Inductive reasoning</b>：用 sample 去總結 population 嘅特徵。</li>
+<li>Point estimator 常見嘅性質：<mark class="k">Unbiasedness</mark> \( E(\bar x) = \mu \)——「好多個」sample mean 嘅平均 = 真正 population mean。每個 sample 只會俾一個特定嘅 point estimate。</li>
+</ul>
+<p>Slide 4 “Which one is ‘correct’??”：三個 sample 分別得到 \( \bar x = 12, 10, 13 \)，如果只信 point estimate，就會分別得出「population mean 係 12 / 10 / 13」——三個答案互相矛盾，冇一個肯定啱。</p>
+
+<h2>3. 點解需要 Confidence Interval？</h2>
+<p>Slide 5：</p>
+<ul>
+<li>實務上通常只有<b>一個</b> sample，結果幾乎肯定（almost surely）同真值唔同。</li>
+<li>點樣更好咁估 population parameter？→ <b>Interval estimate</b>。</li>
+<li>Interval estimate 建基於 <b>sampling distribution</b> 嘅統計性質，例如 <mark class="k">Central Limit Theorem</mark>：sample mean is normally distributed。</li>
+<li>Meaning of C.I.：95% of the results from the C.I. procedure will contain the true population mean → the C.I. procedure is good to be used。</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解：Central Limit Theorem</span><p>就算原始數據唔係 normal，只要 n 夠大，\( \bar x \) 嘅 sampling distribution 都近似 \( N(\mu, \sigma^2/n) \)。\( \sigma/\sqrt n \) 叫 <mark class="k">standard error</mark>：n 越大，\( \bar x \) 越集中喺 μ 附近，CI 越窄。</p></div>
+
+<h3>3.1 Notation（slide 6）</h3>
+<table>
+<tr><th></th><th>Mean</th><th>Standard deviation</th></tr>
+<tr><td><b>Population</b></td><td>mu (\( \mu \))</td><td>Sigma (\( \sigma \)) or \( \sigma_\mu \)</td></tr>
+<tr><td><b>Sample</b></td><td>x-bar (\( \bar x \))</td><td>\( \sigma_{\bar x} \) or \( s \)</td></tr>
+</table>
+
+<h2>4. Interval estimate 公式</h2>
+<p>Slide 7 嘅 t-based interval（σ 未知，用 sample SD s）：</p>
+<div class="formula">$$ \bar x - t_{n-1}\frac{s}{\sqrt n} \;\le\; \mu \;\le\; \bar x + t_{n-1}\frac{s}{\sqrt n} $$</div>
+<p>各部分（slide 7 標註）：\( \bar x \) = sample mean；\( s \) = sample SD；\( n \) = sample size；\( t_{n-1} \) = distribution value（critical value）。Slide 7 用三個 sample（\( \bar x = 12, 10, 13 \)）各自砌出一個 interval（例如 10–14、7.5–12.5、12–14），表示「95% of chance that the population mean falls in the interval」——每個 sample 嘅 interval 都唔同，有啲 cover 到真 μ、有啲 cover 唔到。</p>
+
+<h3>4.1 Boundary、alpha 同 tails（slides 8–10）</h3>
+<ul>
+<li>Slide 8：standard normal 曲線下面積 = probability，例如 \( P(Z &lt; -1) \)（左尾陰影）同 \( P(Z &gt; -1) \)（其餘部分）；兩者加埋 = 1。</li>
+<li>Slide 9（Two tail case）：α 分喺左尾同右尾兩邊，中間係 1 − α。</li>
+<li>Slide 10（Empirical rule）：</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 68–95–99.7 rule（slide 10）</span>
+<ul>
+<li>約 68.3% 數據喺 μ ± 1σ 之內</li>
+<li>約 95.5% 喺 μ ± 2σ 之內</li>
+<li>約 99.7% 喺 μ ± 3σ 之內</li>
+</ul>
+<p>“What is alpha for 6 sigma?”（即 μ − 3σ 至 μ + 3σ，總闊度 6σ）→ α = 1 − 99.7% = <b>0.3%</b>。<br>每段面積：μ 至 μ ± 1σ 各 34.1%；1σ 至 2σ 各 13.6%；2σ 至 3σ 各 2.1%；3σ 以外各 0.1%。</p></div>
+
+<h3>4.2 由 sampling distribution 推導 CI（slide 11）</h3>
+<p>假設 \( \bar x \) normally distributed 而 σ 已知：</p>
+<div class="formula">$$ \begin{aligned}
+&amp;P(-z_{\alpha/2} \le Z \le z_{\alpha/2}) = 1-\alpha \\
+&amp;P\!\left(-z_{\alpha/2} \le \frac{\bar x-\mu}{\sigma/\sqrt n} \le z_{\alpha/2}\right) = 1-\alpha \\
+&amp;P\!\left(-z_{\alpha/2}\frac{\sigma}{\sqrt n} - \bar x \le -\mu \le z_{\alpha/2}\frac{\sigma}{\sqrt n} - \bar x\right) = 1-\alpha \\
+&amp;P\!\left(z_{\alpha/2}\frac{\sigma}{\sqrt n} + \bar x \ge \mu \ge -z_{\alpha/2}\frac{\sigma}{\sqrt n} + \bar x\right) = 1-\alpha \\
+&amp;P\!\left(\bar x - z_{\alpha/2}\frac{\sigma}{\sqrt n} \le \mu \le \bar x + z_{\alpha/2}\frac{\sigma}{\sqrt n}\right) = 1-\alpha
+\end{aligned} $$</div>
+<div class="box exam"><span class="label">⭐ 考試重點：推導步驟</span>
+<ol>
+<li>由 standard normal 開始：中間面積 1 − α。</li>
+<li>代入 \( Z = (\bar x - \mu)/(\sigma/\sqrt n) \)。</li>
+<li>乘 \( \sigma/\sqrt n \)，再減 \( \bar x \)。</li>
+<li>乘 −1（不等號反轉）。</li>
+<li>整理成 \( \bar x \pm z_{\alpha/2}\,\sigma/\sqrt n \)。</li>
+</ol></div>
+<table>
+<tr><th>Confidence level 1 − α</th><th>α</th><th>\( z_{\alpha/2} \)（two-sided）</th><th>\( z_\alpha \)（one-sided）</th></tr>
+<tr><td>90%</td><td>0.10</td><td>1.645</td><td>1.282</td></tr>
+<tr><td>95%</td><td>0.05</td><td>1.96</td><td>1.645</td></tr>
+<tr><td>99%</td><td>0.01</td><td>2.576</td><td>2.326</td></tr>
+</table>
+<p>（呢啲數就係 t-table 最底 ∞ 嗰行；Python：<code>stats.norm.ppf(0.975)</code> = 1.96。）</p>
+
+<h3>4.3 Worked example：計 CI</h3>
+<div class="box exam"><span class="label">⭐ 例 1（Z-based，用 slide 19 嘅數據）</span>
+<p>\( \bar x = 13,\ s^2 = 3,\ n = 100 \)。求 μ 嘅 95% 同 99% CI。</p>
+<ol>
+<li>Standard error：\( s/\sqrt n = \sqrt 3/10 = 0.1732 \)（n = 100 大，用 z 近似）</li>
+<li>95%：\( z_{0.025} = 1.96 \) → margin of error = 1.96 × 0.1732 = 0.3395</li>
+<li>95% CI = 13 ± 0.3395 = <b>(12.66, 13.34)</b></li>
+<li>99%：2.576 × 0.1732 = 0.4462 → 99% CI = <b>(12.55, 13.45)</b>（confidence 越高，interval 越闊）</li>
+</ol></div>
+<div class="box exam"><span class="label">⭐ 例 2（t-based，Module 3a 腫瘤數據）</span>
+<p>n = 10，\( \bar y = 1.74 \)，s = 2.6505。求 95% CI。</p>
+<ol>
+<li>df = n − 1 = 9；查 t-table α = 0.025（two-sided 95%）→ \( t_{0.025,9} = 2.262 \)</li>
+<li>SE = 2.6505/√10 = 0.8381</li>
+<li>Margin = 2.262 × 0.8381 = 1.896</li>
+<li>95% CI = 1.74 ± 1.896 = <b>(−0.156, 3.636)</b></li>
+</ol></div>
+
+<h3>4.4 正確解讀 CI（slide 12）</h3>
+<div class="box exam"><span class="label">⭐ Interpretation（slide 12）</span><p>Given a set of random sample, you can follow the above procedure to construct an interval to ‘cover’ the true underlying parameter. If the procedure is repeated for hundreds of times, <b>(1 − α)% of the constructed intervals will cover the true value</b>.</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>μ 係一個固定（但未知）嘅數，唔係 random；random 嘅係 interval。所以嚴格嚟講唔應該話「μ 有 95% 機會喺 (12.66, 13.34) 入面」，而應該話「用呢個 procedure 砌出嚟嘅 interval，長遠有 95% 會 cover μ」。</p></div>
+
+<h2>5. Hypothesis Testing 嘅推理（Coin Toss Challenge）</h2>
+<p>Slide 14：朋友擲硬幣連續 5 次 Heads，你懷疑個硬幣有古惑。</p>
+<ul>
+<li><b>H0 (Null Hypothesis，Boring Idea)</b>：硬幣完全正常，佢只係好彩。</li>
+<li><b>H1 (Alternative Hypothesis，Detective Idea)</b>：硬幣被做咗手腳，傾向出 Heads。</li>
+<li><b>The Math Check</b>：假設公平硬幣 p = 0.5，\( P(HHHHH) = 0.5^5 = 0.03125 \approx 3\% \)。</li>
+<li><b>The Decision</b>：3% 對「純粹好彩」嚟講太低 → reject H0，硬幣好大機會有古惑。但即使 H0 其實啱，都有機會判錯（have risk even H0 is correct）。</li>
+<li>Pre-specified acceptable level of risk = significance level α = 0.05；0.03125 &lt; 0.05 → reject。</li>
+</ul>
+<p>Hypothesis testing 就係一個正式、逐步嘅方法去問：「呢個證據夠唔夠強去支持新理論，定只係巧合？」</p>
+
+<h3>5.1 Hypothesis 同 probability（slide 15）</h3>
+<ul>
+<li>Population characteristic 嘅可能狀態叫 hypothesis，例如 H0：Population mean = 10；H1：Population mean ≠ 10。</li>
+<li>Hypothesis testing 嘅「probability」係 <b>conditional probability</b>：假設 null 為真，得到 equal to or more extreme 結果嘅機率。</li>
+<li>佢 <b>NOT</b> 係 H0 發生嘅機率。要計「某個 state 發生嘅機率」要用 Bayesian approach（out of scope）。</li>
+</ul>
+
+<h3>5.2 Logic of Hypothesis testing（slide 16）</h3>
+<ul>
+<li>根據 sampling distribution 作「induced judgement」：observed sample statistic → population parameter；observed values → H0 或 H1。</li>
+<li>假設 H0 為真，有幾大機會見到咁嘅結果？如果機會低過預先指定嘅 significance level α，就 <b>reject</b> null，改為接受 alternative。→ 有機會作出錯誤結論。</li>
+<li>研究者通常將佢嘅「hope」放喺 <b>alternative hypothesis</b>；reject null 時 hope 就得到支持。</li>
+<li>Significance level α = Type I error。</li>
+</ul>
+
+<h2>6. Type I、Type II error 同 Power</h2>
+<div class="box exam"><span class="label">⭐ 考試重點（slide 17）</span>
+<table>
+<tr><th>Test result ＼ Actual situation</th><th>H0 is false（H1 真）</th><th>H0 is true</th></tr>
+<tr><td><b>Reject H0</b>（+ve）</td><td>TP：<b>Power (1 − β)</b> ✔</td><td>FP：<b>Type I error (α)</b> ✘</td></tr>
+<tr><td><b>Do not reject H0</b>（−ve）</td><td>FN：<b>Type II error (β)</b> ✘</td><td>TN：(1 − α) ✔</td></tr>
+</table>
+<ul>
+<li><b>Type I (α) error</b>：Incorrect rejection of a true null hypothesis. P(reject H0 | H0 true)。</li>
+<li><b>Type II (β) error</b>：Fail to reject a false null hypothesis. P(fail to reject H0 | H1 true)。</li>
+<li><b>Power (1 − β)</b>：Correctly reject the null when it is wrong. P(reject H0 | H1 true)。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 直覺理解：法庭比喻</span><p>H0 = 被告無罪。Type I error = 冤枉好人（判有罪但其實無罪）；Type II error = 放走犯人。α 係我哋願意承受冤枉好人嘅風險，所以要定得細（0.05 / 0.01）。降低 α 通常會令 β 上升；增加 sample size 可以同時降低兩者（提升 power）。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Slide 17 嘅表用咗 classification 嘅 TP/FP/FN/TN 標籤，「positive」= reject H0。原 slide 欄位標題寫法有啲反轉（“True (H0 is wrong)” / “False (H0 is correct)”），記住核心：<b>H0 啱但 reject = Type I</b>；<b>H0 錯但唔 reject = Type II</b>。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification 嘅 confusion matrix：FP rate 對應 α，FN rate 對應 β，Recall / Sensitivity (TP rate) 對應 Power。同一個 2×2 結構！</p></div>
+
+<h2>7. Statistical vs Practical significance</h2>
+<p>Slide 18：</p>
+<ul>
+<li>Reject H0 時，我哋話 subject of interest 係 <b>statistically significant</b>。</li>
+<li>Statistical significance：表示個 effect 唔係由 chance 造成。</li>
+<li>Statistical significance ≠ <b>practical significance</b>：一個好細嘅 coefficient，practical significance 好細，但如果 sample size 好大，都可以 highly statistically significant。</li>
+</ul>
+<div class="box tip"><span class="label">💡 例子</span><p>一個新教學法令考試平均分高 0.3 分（滿分 100）。如果 n = 100,000，standard error 極細，p-value 可以 &lt; 0.001（statistically significant），但 0.3 分喺實際上冇乜意義（practically insignificant）。</p></div>
+
+<h2>8. p-value、significance level 同 rejection region</h2>
+<div class="box exam"><span class="label">⭐ p-value 定義（slide 19）</span>
+<p><b>p-value</b> = (conditional) probability of obtaining a (any) result which is ‘<b>equal to or more extreme</b>’ than what was actually observed, <b>when the null hypothesis is true</b>.</p>
+<p>Slide 例子：H0：Population mean μ ≤ 10；observed \( \bar x = 13,\ s^2 = 3,\ n = 100 \)；\( \bar x' \) = 另一組新 random data 嘅結果：</p>
+<div class="formula">$$ \text{p-value} = \text{Prob}(\bar x' &gt; \bar x \mid \mu \le 10,\ \bar x = 13,\ s^2 = 3,\ n = 100) $$</div>
+<p>p-value 可以用嚟作判斷：p-value 落喺某範圍（significance level）就 reject null → Regions of <b>Rejection</b> and <b>Non-rejection</b>。</p></div>
+
+<p>Slide 20：</p>
+<ul>
+<li><b>Significance level α</b>（= 0.05, 0.1）：假設 H0 正確，出現嗰啲極端值嘅機率；亦即我哋願意承受作出「錯誤」決定（Type I error）嘅 risk——H0 正確但我哋結論佢錯。</li>
+<li><b>p-value</b>：假設 H0 正確，數據出現比目前 sample 更極端值（圖中右手邊）嘅機率。</li>
+<li>Slide 20 嘅圖：sampling distribution of \( z = (\bar x - \mu_0)/(\sigma/\sqrt n) \)，α = 0.05 嘅 critical line，p-value = 0.011（右尾橙色面積）。p-value 細過 α → H0 is rejected。</li>
+<li>α 係接受錯誤結論（H0 啱都 reject）嘅 risk；p-value 細過 α，即呢個 risk 可以接受 → reject H0。</li>
+</ul>
+
+<div class="box exam"><span class="label">⭐ Worked example：用 slide 19 數據做完整 test（5-step procedure）</span>
+<ol>
+<li><b>State hypotheses</b>：H0：μ ≤ 10；H1：μ &gt; 10（right-tailed）。</li>
+<li><b>Significance level</b>：α = 0.05。</li>
+<li><b>Test statistic</b>：\( z = \dfrac{\bar x - \mu_0}{s/\sqrt n} = \dfrac{13 - 10}{\sqrt 3/\sqrt{100}} = \dfrac{3}{0.1732} = 17.32 \)。</li>
+<li><b>Critical value / p-value</b>：right-tailed α = 0.05 → \( z_{0.05} = 1.645 \)；p-value = P(Z &gt; 17.32) ≈ 0。</li>
+<li><b>Decision &amp; conclusion</b>：17.32 &gt; 1.645（或 p ≈ 0 &lt; 0.05）→ reject H0。有充分證據顯示 population mean 大於 10。</li>
+</ol></div>
+
+<h3>8.1 One-tailed vs Two-tailed（slide 21）</h3>
+<div class="box exam"><span class="label">⭐ Region of rejection</span>
+<table>
+<tr><th>Test Type</th><th>Hypotheses</th><th>Rejection Region</th><th>Critical value（α = 0.05, Z）</th></tr>
+<tr><td>Two-Tailed</td><td>\( H_0:\mu=\mu_0 \)；\( H_a:\mu\ne\mu_0 \)</td><td>兩邊尾，每邊 α/2</td><td>|z| &gt; 1.96</td></tr>
+<tr><td>Right-Tailed</td><td>\( H_0:\mu\le\mu_0 \)；\( H_a:\mu&gt;\mu_0 \)</td><td>右尾 α</td><td>z &gt; 1.645</td></tr>
+<tr><td>Left-Tailed</td><td>\( H_0:\mu\ge\mu_0 \)；\( H_a:\mu&lt;\mu_0 \)</td><td>左尾 α</td><td>z &lt; −1.645</td></tr>
+</table>
+<p>規則：<b>等號永遠喺 H0</b>；H1 嘅方向（&gt;、&lt;、≠）決定 rejection region 喺邊。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+<li>將「hope」放咗喺 H0：例如想證明新藥有效，H1 先係「有效」。</li>
+<li>Two-tailed 用錯 critical value：α = 0.05 two-tailed 要查 α/2 = 0.025（1.96），唔係 1.645。</li>
+<li>結論寫「accept H0」：應寫「do not reject H0 / fail to reject H0」——冇足夠證據唔等於證明 H0 啱。</li>
+</ul></div>
+
+<h2>9. Confidence Interval vs Hypothesis Testing</h2>
+<p>Slides 22–24（provided by Google AI）：</p>
+<table>
+<tr><th>Confidence interval</th><th>Hypothesis testing</th></tr>
+<tr><td>gives a range of plausible values for an unknown population parameter</td><td>decides whether a specific claim about a population is supported by sample data</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Two sides of the same coin（slide 24）</span>
+<ul>
+<li>A 95% confidence interval corresponds to an α = 0.05 significance test.</li>
+<li>If a 95% CI <b>excludes</b> the null hypothesis value, the two-tailed test will yield p &lt; 0.05 (statistically significant, reject H₀).</li>
+<li>If the CI <b>includes</b> the null value, p ≥ 0.05 (fail to reject H₀).</li>
+</ul>
+<p>例：slide 19 數據嘅 95% CI = (12.66, 13.34)，唔包 10 → two-tailed test H0：μ = 10 會 reject（p &lt; 0.05）。如果 H0：μ = 13，13 喺 CI 入面 → do not reject。</p></div>
+
+<h2>10. 總結：Hypothesis testing 5-step procedure</h2>
+<div class="box exam"><span class="label">⭐ 考試答題框架（之後 3a t-test、3b chi-square、4 regression 都用）</span>
+<ol>
+<li><b>State H0 and H1</b>（mutually exclusive、collectively exhaustive；等號喺 H0；判斷 one- / two-tailed）。</li>
+<li><b>Choose significance level α</b>（通常 0.05 或 0.01）。</li>
+<li><b>Compute the test statistic</b>（z、t、χ²、F）。</li>
+<li><b>Find the critical value from the table</b>（或計 p-value）。</li>
+<li><b>Decision &amp; conclusion in context</b>：test statistic 落 rejection region（或 p &lt; α）→ reject H0；否則 do not reject H0。用題目語境寫結論。</li>
+</ol></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. n = 64，\( \bar x = 52 \)，σ = 8（known）。求 μ 嘅 95% CI。</summary><p>SE = 8/√64 = 1；margin = 1.96 × 1 = 1.96；95% CI = (50.04, 53.96)。</p></details>
+<details class="q"><summary>Q2. 同上，如果要 90% CI 呢？比較兩者闊度。</summary><p>z = 1.645 → 52 ± 1.645 = (50.355, 53.645)。90% CI 較窄：confidence 低啲，interval 窄啲。</p></details>
+<details class="q"><summary>Q3. 有人話「95% CI (50.04, 53.96) 代表 μ 有 95% 機率喺 50.04 同 53.96 之間」。啱唔啱？</summary><p>嚴格嚟講唔啱。μ 係固定值；正確講法：如果重複抽樣並用同一 procedure 砌好多個 interval，約 95% 嘅 interval 會 cover 真正 μ（slide 12）。</p></details>
+<details class="q"><summary>Q4. 解釋 Type I error、Type II error、Power，並講 α 同邊個有關。</summary><p>Type I：H0 真但 reject（機率 α = significance level）。Type II：H0 假但冇 reject（機率 β）。Power = 1 − β：H0 假時正確 reject。</p></details>
+<details class="q"><summary>Q5. 某廠聲稱電池平均壽命至少 500 小時，你想證明佢誇大。寫 H0 同 H1，係咩 tail？</summary><p>H0：μ ≥ 500；H1：μ &lt; 500。Left-tailed test。</p></details>
+<details class="q"><summary>Q6. 一個 two-tailed test 得 p-value = 0.03。α = 0.05 同 α = 0.01 時結論各係咩？對應 95% / 99% CI 會唔會包 μ0？</summary><p>α = 0.05：0.03 &lt; 0.05 → reject H0；95% CI 唔包 μ0。α = 0.01：0.03 &gt; 0.01 → do not reject；99% CI 包 μ0。</p></details>
+<details class="q"><summary>Q7. 擲硬幣 5 次全部 Heads。假設公平，p-value 係幾多（one-sided）？α = 0.05 結論？</summary><p>p-value = P(5 heads | fair) = 0.5⁵ = 0.03125 &lt; 0.05 → reject H0，結論硬幣傾向出 Heads（但有 α 嘅 Type I 風險）。</p></details>
+<details class="q"><summary>Q8. 「n = 1,000,000，回歸係數 0.0001，p &lt; 0.001」。點評？</summary><p>Statistically significant 但 practical significance 可能好細：sample size 極大時，極細嘅 effect 都會顯著（slide 18）。</p></details>
+<details class="q"><summary>Q9. 「6 sigma」嘅 α 係幾多？點解？</summary><p>μ ± 3σ（闊 6σ）包含約 99.7% 數據，所以 α = 1 − 99.7% = 0.3%。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Point estimate：\( \bar x \to \mu,\ s^2 \to \sigma^2 \)；unbiased：\( E(\bar x)=\mu \)。</li>
+<li>CLT：\( \bar x \) ~ normal，SE = \( \sigma/\sqrt n \)。</li>
+<li>CI：\( \bar x \pm z_{\alpha/2}\frac{\sigma}{\sqrt n} \)；σ 未知 → \( \bar x \pm t_{\alpha/2,n-1}\frac{s}{\sqrt n} \)。z：90% 1.645｜95% 1.96｜99% 2.576。</li>
+<li>解讀：重複 procedure，(1 − α) 嘅 interval cover 真值。</li>
+<li>68.3–95.5–99.7 rule；6 sigma α = 0.3%。</li>
+<li>H0 = boring idea（有等號）；H1 = researcher's hope。</li>
+<li>p-value = P(結果 ≥ 觀察值咁極端 | H0 真)；唔係 P(H0 真)。p &lt; α → reject H0。</li>
+<li>Type I = reject 真 H0（α）；Type II = 唔 reject 假 H0（β）；Power = 1 − β。</li>
+<li>Two-tailed：≠，|z| &gt; 1.96；Right：&gt;，z &gt; 1.645；Left：&lt;，z &lt; −1.645（α = 0.05）。</li>
+<li>Statistical ≠ practical significance（大 n 令細 effect 都顯著）。</li>
+<li>95% CI 唔包 μ0 ⇔ two-tailed p &lt; 0.05 ⇔ reject H0。</li>
+<li>5 steps：H0/H1 → α → test statistic → critical value / p-value → decision + conclusion。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m2c.html">← Module 2c Normal distribution &amp; approximation</a>
+  <a href="COM6005-m3a.html">Module 3a T-test →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

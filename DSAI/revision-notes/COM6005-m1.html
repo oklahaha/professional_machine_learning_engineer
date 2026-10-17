@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 1 Descriptive &amp; Inferential</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m1">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 1</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 1 · Source: Module_1_Introduction_2026.pdf (26 slides)</p>
+<h1>Descriptive Statistics &amp; Inferential Statistics</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>分清 <b>Descriptive statistics</b>（描述手上數據）同 <b>Inferential statistics</b>（由 sample 推論 population）。</li>
+    <li>識講 location parameter（mean / median / mode / sum）同 dispersion parameter（SD / variance / range / IQR / percentile），並識計。</li>
+    <li>知道 inferential statistics 包括 population vs sample、Confidence Interval、Hypothesis testing、p-value、prediction models。</li>
+    <li>分辨兩類模型：<b>prediction of numeric value</b>（→ Linear regression）同 <b>Classification</b>（→ Logistic regression）。</li>
+    <li>理解 training data / new data、n（rows）同 p（columns of X），classical（p 細 n 大）vs modern（p、n 都可以大）情況。</li>
+    <li>識用 naïve 方法：畫直線做 prediction；用 <b>k-nearest neighbor</b> + Euclidean distance 做 classification。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>Descriptive vs Inferential 嘅定義同例子（HSUHK 畢業生薪金 = sample；香港勞動市場薪金 = population）。</li>
+    <li>Location vs Dispersion measures 嘅分類，同埋 mean / median / variance / SD / range / IQR 嘅計算。</li>
+    <li>判斷一個問題係 numeric prediction 定 classification，並講出 n 同 p（例如 digit recognition：n = 60,000、p = 784）。</li>
+    <li>k-NN 嘅 4 個步驟 + Euclidean distance 公式，並識手計一個例子。</li>
+    <li>Linear regression ↔ numeric prediction；Logistic regression ↔ classification。</li>
+  </ol>
+</div>
+
+<h2>1. Descriptive vs Inferential Statistics</h2>
+<p>統計學可以粗略分兩大類（slide 2）：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：定義（slide 2）</span>
+<ul>
+<li><b>Descriptive Statistics</b>: gain an overview of the distribution of data sets. Aim to summarize and present observed data using numerical measures, charts, and tables.</li>
+<li><b>Inferential Statistics</b>: use sample data to estimate characteristics of a population or test claims about that population.</li>
+</ul>
+<p>一句講晒：Descriptive 只係「描述你手上見到嘅數據」；Inferential 係「用 sample 去估計／檢驗你見唔晒嘅 population」。</p>
+</div>
+<p>Slide 3 嘅例子：</p>
+<table>
+<tr><th></th><th>例子</th><th>適用</th></tr>
+<tr><td><b>Sample data</b></td><td>Salaries of HSUHK graduates</td><td>計 sample mean、畫 histogram → Descriptive</td></tr>
+<tr><td><b>Population</b></td><td>Salaries in Hong Kong labour market</td><td>用 HSUHK sample 推論全港薪金 → Inferential</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>如果你話「我問咗 200 個 HSUHK 畢業生，平均月薪係 $22,000」——呢句係 descriptive（純粹總結 sample）。如果你再講「所以我有 95% 信心全港大學畢業生平均月薪喺 $21,000–$23,000 之間」——呢句已經係 inferential，因為你由 sample 跳去 population，必然帶有不確定性（uncertainty），所以要用 Confidence Interval / Hypothesis testing 去量化。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3 有一張 descriptive vs inferential 嘅示意圖（來源 numiqo.com），圖片內容文字擷取不到；請對照原 slide 第 3 頁。</p></div>
+
+<h2>2. Descriptive Statistics：Location 同 Dispersion</h2>
+<p>Slide 4 將 descriptive statistics 分做四大類：</p>
+<table>
+<tr><th>類別</th><th>包括</th><th>回答咩問題？</th></tr>
+<tr><td><b>Location parameter / characteristic</b></td><td>Mean (Average)、Median、Mode、Sum</td><td>數據「中心」喺邊？</td></tr>
+<tr><td><b>Dispersion parameter / characteristic</b></td><td>Standard deviation、Variance、Range、IQR (Interquartile range)、Percentile</td><td>數據有幾「散」？</td></tr>
+<tr><td><b>Tables</b></td><td>frequency table、contingency table</td><td>用表格總結</td></tr>
+<tr><td><b>Charts</b></td><td>histogram、boxplot、bar chart、scatter plot</td><td>用圖總結</td></tr>
+</table>
+
+<h3>2.1 公式</h3>
+<div class="formula">$$ \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2 \qquad s=\sqrt{s^2} $$</div>
+<div class="formula">$$ \text{Range} = x_{\max}-x_{\min} \qquad \text{IQR} = Q_3 - Q_1 \;(\text{75th percentile} - \text{25th percentile}) $$</div>
+<ul>
+<li><mark class="k">Median</mark>：排好序之後中間嗰個（n 雙數就取中間兩個嘅平均）。</li>
+<li><mark class="k">Mode</mark>：出現次數最多嘅值（categorical data 都用得）。</li>
+<li><mark class="k">Percentile</mark>：第 k 個 percentile 即係有 k% 數據 ≤ 呢個值；Q1 = 25th、Median = 50th、Q3 = 75th percentile。</li>
+</ul>
+
+<h3>2.2 Worked example（用 slide 15 嘅 Sales 數據）</h3>
+<p>Y = Sales：60, 43, 52, 36, 40（n = 5）</p>
+<div class="box exam"><span class="label">⭐ 手計步驟</span>
+<ol>
+<li>排序：36, 40, 43, 52, 60</li>
+<li>Mean：\( \bar{y} = (60+43+52+36+40)/5 = 231/5 = 46.2 \)</li>
+<li>Median：第 3 個 = <b>43</b>（mean &gt; median → 有少少 right-skewed）</li>
+<li>Mode：冇重複值 → 冇 mode</li>
+<li>Sum：231</li>
+<li>Range：60 − 36 = <b>24</b></li>
+<li>Variance：偏差平方 \( (13.8)^2+(-3.2)^2+(5.8)^2+(-10.2)^2+(-6.2)^2 = 190.44+10.24+33.64+104.04+38.44 = 376.8 \)；\( s^2 = 376.8/(5-1) = 94.2 \)</li>
+<li>SD：\( s = \sqrt{94.2} \approx 9.71 \)</li>
+<li>IQR（numpy 預設 linear interpolation）：Q1 = 40、Q3 = 52 → IQR = <b>12</b></li>
+</ol></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+<li>Sample variance 除 <b>n − 1</b>（唔係 n）。pandas <code>.var()</code> 預設 ddof=1；numpy <code>np.var()</code> 預設 ddof=0，要寫 <code>np.var(y, ddof=1)</code>。Module 3a 計 t-statistic 時 slide 都特登寫 <code>y.var(ddof=1)</code>。</li>
+<li>Quartile 有幾種計法（不同教科書／軟件答案可能差少少），考試跟題目指定方法。</li>
+<li>Mean 受 outlier 影響大；median、IQR 比較 robust。</li>
+</ul></div>
+<pre><code>import pandas as pd
+import numpy as np
+y = pd.Series([60, 43, 52, 36, 40])
+print(y.mean(), y.median(), y.sum())          # 46.2 43.0 231
+print(y.var(), y.std())                        # 94.2 9.705...（ddof=1）
+print(y.max() - y.min())                       # Range = 24
+print(y.quantile(0.75) - y.quantile(0.25))     # IQR = 12.0
+print(y.describe())                            # 一次過出 count/mean/std/min/25%/50%/75%/max</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 pandas 嘅 <code>describe()</code>、<code>value_counts()</code> 就係 descriptive statistics；COM6004 Chapter 2 (Data) 同 Chapter 3 (Data Visualization) 亦會講 summary statistics、boxplot、histogram，概念完全一樣。</p></div>
+
+<h2>3. Inferential Statistics 包括咩？</h2>
+<p>Slide 5 列出 inferential statistics 嘅主要內容（之後幾個 Module 會逐一詳細講）：</p>
+<div class="box exam"><span class="label">⭐ 考試重點（slide 5）</span>
+<ul>
+<li><b>Population vs Sample</b>：A population is the entire group of people or things you want to study, while a Sample is a smaller, manageable subset chosen from that population.</li>
+<li><b>Confidence Intervals</b>：Giving a range of plausible values rather than just a single guess, showing how sure you are.（→ Module 3）</li>
+<li><b>Hypothesis Testing</b>：Testing an idea or claim about a population to see if the sample data supports it or shows it is false.（→ Module 3, 3a, 3b）</li>
+<li><b>P-values</b>：Measuring the probability that your results happened just by random luck rather than a real effect.（→ Module 3）</li>
+<li><b>Prediction models</b>, etc.（→ Module 4 Linear regression）</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Slide 5 對 p-value 嘅描述係簡化版。Module 3 會俾正式定義：p-value 係「<b>假設 H0 成立</b>之下，得到等於或更極端結果嘅（conditional）probability」，<b>唔係</b>「H0 為真嘅機率」。</p></div>
+
+<h2>4. 兩類模型：Prediction vs Classification</h2>
+<p>Slide 6：課程會研究兩類模型——</p>
+<table>
+<tr><th>類型</th><th>Y 係咩</th><th>例子</th><th>常用方法</th></tr>
+<tr><td><b>Prediction of numeric value</b></td><td>numerical / continuous</td><td>price、sales、fuel consumption</td><td><b>Linear regression</b></td></tr>
+<tr><td><b>Classification</b></td><td>categorical（類別）</td><td>cancer/healthy、agree/neutral/disagree、phase I/II/III cancer</td><td><b>Logistic regression</b></td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點</span><p>判斷題型嘅關鍵係睇 <b>Y 嘅 data type</b>：Y 係數字（連續）→ numeric prediction（regression）；Y 係類別 → classification。X 係咩 type 唔影響呢個判斷。</p></div>
+
+<h3>4.1 Background：Training data、n 同 p（slide 7）</h3>
+<ul>
+<li><b>Problem</b>：In the training data, both X and Y are given. In the new data, only X is known. The goal is to guess Y for the new data.</li>
+<li><b>Multivariate</b> means p is more than 1. <mark class="k">n</mark> = number of rows in training；<mark class="k">p</mark> = number of columns in X。</li>
+<li><b>Classical situation</b>：p is small, n is large。</li>
+<li><b>Modern situation</b>：both p and n can be large。</li>
+<li><b>PCA</b> 同 <b>LASSO</b> 係處理 modern large-p 問題嘅技術。</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>當 p 大過 n（例如 6000 個 gene、得 50 個病人），你嘅「未知數」多過「方程」，普通 regression 解唔到唯一答案，亦極易 overfitting。PCA 將 p 個變數壓縮成少數 principal components；LASSO 加 penalty 令大部分 coefficient 變 0，自動揀變數。</p></div>
+
+<h3>4.2 四個例子（slides 8–13）</h3>
+<table>
+<tr><th>例子</th><th>X</th><th>Y</th><th>題型</th><th>n, p</th></tr>
+<tr><td>Fuel consumption（slide 8）</td><td>X1 %Driving License, X2 Income, X3 Tax</td><td>Fuel consumption（數字）</td><td>Numeric prediction</td><td>n = 4（training 年份 2016–2019）, p = 3</td></tr>
+<tr><td>Heart attack（slide 9）</td><td>X1 Tobacco, X2 Family history (Present/Absent), X3 Alcohol</td><td>Get heart attack? Yes/No</td><td>Classification</td><td>n = 4, p = 3</td></tr>
+<tr><td>Handwritten digit（slides 10–11）</td><td>28×28 = 784 個 pixel（Black/White）</td><td>digit 0–9</td><td>Classification（10 類）</td><td>n = 60,000, p = 784（n、p 都大 → modern）</td></tr>
+<tr><td>Cancer microarray（slides 12–13）</td><td>6000 個 gene expression level</td><td>Healthy / Cancer</td><td>Classification</td><td>n = 50, p = 6000（p ≫ n → modern large-p）</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Slide 10、12 嘅問題 “Type of this problem???”</span>
+<p><b>Digit recognition</b>：Y 係 0–9 嘅類別 → <b>classification</b>（雖然 Y 寫成數字，但「3」同「4」之間冇大小意義，只係 label）。<b>Microarray</b>：Y 係 Healthy/Cancer → <b>classification</b>，而且係 p (6000) 遠大過 n (50) 嘅 modern situation，要用 PCA / LASSO 類方法。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>見到 Y 係數字就以為係 regression——digit 0–9 係 categorical label。同樣，X 入面有 categorical（Family history）都唔會令題目變成 classification；決定題型嘅只係 Y。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 10、12 右邊有 handwritten digit 同 microarray 嘅示意圖，文字擷取不到；請對照原 slide。</p></div>
+
+<h2>5. Prediction：Is it possible?（p = 1 簡單情況）</h2>
+<p>Slide 15 嘅數據：X = Advertisement Expenditure，Y = Sales。</p>
+<table>
+<tr><th>Year</th><th>X</th><th>Y</th></tr>
+<tr><td>2015</td><td>172</td><td>60</td></tr>
+<tr><td>2016</td><td>156</td><td>43</td></tr>
+<tr><td>2017</td><td>167</td><td>52</td></tr>
+<tr><td>2018</td><td>145</td><td>36</td></tr>
+<tr><td>2019</td><td>150</td><td>40</td></tr>
+<tr><td>2025 (new)</td><td>180</td><td>???</td></tr>
+</table>
+<p><b>Naïve method for prediction p = 1</b>（slide 16）：</p>
+<ol>
+<li>Plot the training data（scatter plot）</li>
+<li>Draw a straight line that “fit the data well”</li>
+<li>Make prediction from the straight line</li>
+</ol>
+<p>Slide 17 嘅圖顯示：5 個 training 點大致排成一條直線，喺 X = 180 嗰度沿直線讀出 Y ≈ 65。</p>
+<div class="box tip"><span class="label">💡 預告 Module 4：用 OLS 正式計條線</span>
+<p>「fit the data well」嘅正式定義係 <b>Ordinary Least Squares</b>：揀 a、b 令 \( \sum (Y_t - a - bX_t)^2 \) 最細。答案：</p>
+<div class="formula">$$ \hat{b} = \frac{S_{XY}}{S_{XX}} = \frac{\sum (X_t-\bar X)(Y_t-\bar Y)}{\sum (X_t-\bar X)^2},\qquad \hat{a} = \bar Y - \hat b \bar X $$</div>
+<p>代入：\( \bar X = 158,\ \bar Y = 46.2,\ S_{XX} = 514,\ S_{XY} = 434 \) → \( \hat b = 434/514 \approx 0.8444 \)，\( \hat a = 46.2 - 0.8444(158) \approx -87.21 \)。<br>
+Prediction：\( \hat Y = -87.21 + 0.8444(180) \approx 64.8 \)，同 slide 17 圖上讀到嘅 ≈ 65 吻合。</p></div>
+
+<h2>6. Classification：Is it possible?（p = 2，k-NN）</h2>
+<p>Slide 19 用 Iris 數據：X1 = Sepal Length、X2 = Sepal Width、Y = Species（Setosa / Versicolor / Virginica）。New data = (5.3, 3.3)。</p>
+<p><b>Naïve method for classification p = 2</b>（slide 20）：</p>
+<ul>
+<li>Plot the training data with labels</li>
+<li>For the new data, check the neighboring training data. “Neighbor” requires the concept of <b>distance</b>.</li>
+<li>Predict based on the proportions of neighboring points falling into different categories</li>
+</ul>
+<p>Slide 21 嘅 scatter plot：新點（紅色菱形，約 (5.3, 3.25)）周圍畫咗一個圓圈 “Neighbor of new data”，圈入面大部分係 setosa（圓圈符號）。</p>
+
+<div class="box exam"><span class="label">⭐ k-nearest neighbor method（slide 22）</span>
+<ol>
+<li>Compute the distances (Euclidean) between the new point to all training points.</li>
+<li>Consider k training points that are the closest to the new point.</li>
+<li>Count the proportion of each category.</li>
+<li>Predict the category with the largest proportion.</li>
+</ol>
+<p>Slide 例子：k = 5 → P(setosa) = 5/5、P(versicolor) = 0/5、P(virginica) = 0/5 → predicted as “setosa”。</p></div>
+
+<p><b>Euclidean distance</b>（slide 23）between \( (x_1,y_1) \) and \( (x_2,y_2) \)：</p>
+<div class="formula">$$ d = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2} $$</div>
+
+<h3>6.1 Worked example：用 slide 19 列出嘅 4 個 training 點</h3>
+<p>New point = (5.3, 3.3)</p>
+<table>
+<tr><th>Training point</th><th>Species</th><th>Distance</th></tr>
+<tr><td>(5.1, 3.5)</td><td>Setosa</td><td>\( \sqrt{0.2^2+0.2^2} = \sqrt{0.08} \approx 0.283 \)</td></tr>
+<tr><td>(4.9, 3.0)</td><td>Setosa</td><td>\( \sqrt{0.4^2+0.3^2} = \sqrt{0.25} = 0.500 \)</td></tr>
+<tr><td>(5.9, 3.0)</td><td>Virginica</td><td>\( \sqrt{0.6^2+0.3^2} = \sqrt{0.45} \approx 0.671 \)</td></tr>
+<tr><td>(6.2, 3.4)</td><td>Virginica</td><td>\( \sqrt{0.9^2+0.1^2} = \sqrt{0.82} \approx 0.906 \)</td></tr>
+</table>
+<p>如果 k = 3（淨係用呢 4 點示範）：最近 3 個 = Setosa, Setosa, Virginica → P(setosa) = 2/3、P(virginica) = 1/3 → predict <b>Setosa</b>。</p>
+<pre><code>import numpy as np
+from collections import Counter
+train_X = np.array([[5.1, 3.5], [4.9, 3.0], [6.2, 3.4], [5.9, 3.0]])
+train_y = np.array(["Setosa", "Setosa", "Virginica", "Virginica"])
+new = np.array([5.3, 3.3])
+d = np.sqrt(((train_X - new) ** 2).sum(axis=1))   # Euclidean distance
+k = 3
+nearest = train_y[np.argsort(d)[:k]]               # 最近 k 個嘅 label
+print(d.round(3), Counter(nearest))                # Setosa: 2, Virginica: 1
+
+# 用 scikit-learn
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=3).fit(train_X, train_y)
+print(knn.predict([new]), knn.predict_proba([new]))</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+<li>k 太細（例如 1）→ 對 noise 好敏感；k 太大 → 鄰居包含太多遠嘅點，界線變模糊。k 通常揀單數避免打和。</li>
+<li>Euclidean distance 受 scale 影響：如果一個變數單位係「千」、另一個係「0.1」，大 scale 嗰個會主導 distance，所以實務上要先 Normalization / Standardization。</li>
+<li>Slide 23 話 “You can learn better definitions if you study more statistics”——即係仲有 Manhattan、Mahalanobis 等其他 distance。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 4 Classification 會詳細講 k-NN（nearest-neighbor classifier）同 distance/proximity measures（Chapter 2 Data 嘅 similarity &amp; dissimilarity），同埋 Normalization 對 distance 嘅影響。COM6001 data cleaning 入面嘅 scaling 亦係為咗呢類 distance-based 方法。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 14、18 只有標題頁／圖片（“Prediction: Is it possible?”、“Classification: Is it possible?”），冇額外文字。</p></div>
+
+<h2>7. 其他相關數學知識同 Python</h2>
+<p>Slide 24 列出之後會用到嘅數學：</p>
+<table>
+<tr><th>範疇</th><th>內容</th><th>用喺邊</th></tr>
+<tr><td>Linear algebra</td><td>Matrix、solving linear equations、matrix inverse</td><td>Regression（Module 4：\( \hat\beta = (X'X)^{-1}X'Y \)）</td></tr>
+<tr><td>Linear algebra</td><td>Eigenvalue and eigenvector</td><td>Principal component analysis (PCA)</td></tr>
+<tr><td>Calculus</td><td>Derivatives、maximum、minimum</td><td>OLS：對 SS 求導 = 0 搵最小值</td></tr>
+</table>
+<p><b>Problem Solving with Python</b>（slides 25–26）：大部分統計方法都可以用 Python（freeware）做。Python tutorial 會示範：</p>
+<ul>
+<li>Reading data to the computer（例如 <code>pd.read_csv()</code>）</li>
+<li>Specifying the data type (numerical, categorical)（例如 <code>astype("category")</code>）</li>
+<li>Drawing graphs visualizing the data（matplotlib / seaborn）</li>
+</ul>
+<pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame({"adv": [172, 156, 167, 145, 150],
+                   "sales": [60, 43, 52, 36, 40]})
+df["year"] = pd.Categorical([2015, 2016, 2017, 2018, 2019])  # 指定為 categorical
+print(df.dtypes)
+plt.scatter(df["adv"], df["sales"])      # 畫 scatter plot 睇下係咪似直線
+plt.xlabel("Advertisement"); plt.ylabel("Sales"); plt.show()</code></pre>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 「調查 300 個香港中學生每日用手機時間，平均 4.2 小時」同「由此推斷全港中學生平均用手機時間嘅 95% CI 係 (3.9, 4.5)」各屬咩類統計？</summary><p>前者係 <b>Descriptive</b>（總結 sample）；後者係 <b>Inferential</b>（由 sample 推論 population，用 Confidence Interval）。Sample = 300 個學生；Population = 全港中學生。</p></details>
+<details class="q"><summary>Q2. 數據 3, 7, 7, 10, 13：計 mean、median、mode、range、sample variance、SD。</summary><p>Mean = 40/5 = 8；Median = 7；Mode = 7；Range = 13 − 3 = 10。偏差平方：25 + 1 + 1 + 4 + 25 = 56；\( s^2 = 56/4 = 14 \)；\( s = \sqrt{14} \approx 3.742 \)。</p></details>
+<details class="q"><summary>Q3. 將以下歸類為 location 或 dispersion：median、IQR、sum、percentile、mode、variance。</summary><p>Location：median、sum、mode。Dispersion：IQR、percentile、variance（跟 slide 4 嘅分類，percentile 列喺 dispersion 之下）。</p></details>
+<details class="q"><summary>Q4. 用病人嘅年齡、血壓、膽固醇預測「住院日數」，同預測「會否再入院 (Yes/No)」，各屬咩題型？建議用咩方法？</summary><p>住院日數係數字 → numeric prediction → Linear regression。再入院 Yes/No 係類別 → Classification → Logistic regression。兩題都係 p = 3。</p></details>
+<details class="q"><summary>Q5. Handwritten digit 數據：n 同 p 係幾多？屬 classical 定 modern situation？</summary><p>n = 60,000（training images），p = 28 × 28 = 784（pixels）。n 同 p 都大 → modern situation。題型係 classification（Y = 0–9 label）。</p></details>
+<details class="q"><summary>Q6. 新點 (2, 2)；training 點 A(1, 1) 屬 “Red”、B(4, 2) 屬 “Blue”、C(2, 4) 屬 “Blue”、D(3, 3) 屬 “Red”、E(0, 2) 屬 “Blue”。用 k = 3 嘅 k-NN 預測。</summary><p>Distance：A = √2 ≈ 1.414；B = 2；C = 2；D = √2 ≈ 1.414；E = 2。最近 3 個：A (Red)、D (Red)，第三近有 B、C、E 打和（都係 2，而且全部係 Blue）→ 揀邊個都係 Blue。比例 Red 2/3、Blue 1/3 → predict <b>Red</b>。</p></details>
+<details class="q"><summary>Q7. 點解 microarray（n = 50, p = 6000）唔可以直接用普通 multiple linear regression？slide 提咗咩技術？</summary><p>p ≫ n，參數多過觀測值，\( X'X \) 唔可逆，有無限多組解，亦會嚴重 overfitting。Slide 7 提到 <b>PCA</b>（降維）同 <b>LASSO</b>（variable selection / shrinkage）用嚟處理 modern large-p 問題。Module 4 亦提到 multiple regression 要求 p 相對 n 細（p &gt; 10 已可能好有問題）。</p></details>
+<details class="q"><summary>Q8. Slide 15 數據用 OLS 計出 \( \hat Y = -87.21 + 0.8444X \)。廣告開支 = 160 時預測 sales？slope 點解讀？</summary><p>\( \hat Y = -87.21 + 0.8444 \times 160 \approx 47.9 \)。Slope：廣告開支每增加 1 單位，預期 sales 平均增加約 0.844 單位。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>Descriptive</b> = summarize observed data (numbers, charts, tables)；<b>Inferential</b> = sample → population（estimate / test claims）。</li>
+<li>Location：mean, median, mode, sum｜Dispersion：SD, variance, range, IQR, percentile。</li>
+<li>\( s^2 = \frac{\sum(x_i-\bar x)^2}{n-1} \)；Range = max − min；IQR = Q3 − Q1。</li>
+<li>Inferential 包括：population vs sample、CI、Hypothesis testing、p-value、prediction models。</li>
+<li>Y 數字 → numeric prediction（Linear regression）；Y 類別 → Classification（Logistic regression）。</li>
+<li>n = rows；p = columns of X；multivariate = p &gt; 1；classical：p 細 n 大；modern：p、n 都可以大 → PCA、LASSO。</li>
+<li>Naïve prediction：plot → draw line → predict。</li>
+<li>k-NN：計 Euclidean distance → 揀最近 k 個 → 計各類比例 → 揀最大。\( d=\sqrt{(x_1-x_2)^2+(y_1-y_2)^2} \)。</li>
+<li>數學工具：matrix inverse（regression）、eigenvalue/eigenvector（PCA）、derivatives（optimisation）。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="../index.html">← 返回目錄</a>
+  <a href="COM6005-m2a.html">Module 2a Probability functions →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 1 Introduction</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w1">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 1</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 1 · Source: 1-Introduction.pptx (30 slides)</p>
+<h1>Introduction to Big Data Management</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>講出 File-based data management 的優缺點，以及 DBMS 點樣解決呢啲問題</li>
+    <li>理解 Relational Model (E. F. Codd, 1970) 同 SQL 的角色</li>
+    <li>分辨 Scale Up (vertical scaling) 同 Scale Out (horizontal scaling)，以及 scale out 的難處</li>
+    <li>用 4 V's (Volume, Variety, Veracity, Velocity) 描述 Big Data，並舉例</li>
+    <li>分辨 Structured / Semi-structured / Unstructured data</li>
+    <li>認識 NoSQL (Not Only SQL) 的種類、data pipeline 各 layer、Data Warehouse / Data Lake / Lakehouse</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>File-based data management 的 5 個缺點（Inefficiency, Redundancy &amp; Inconsistency, No Concurrency Control, Lack of Atomic Transactions, Data Isolation &amp; Security）</li>
+    <li>Scale Up vs Scale Out 的定義、例子同 scale out 的挑戰</li>
+    <li>4 V's of Big Data，每個 V 的意思同例子</li>
+    <li>Structured vs Semi-structured vs Unstructured data（含例子：SQL table / JSON, XML, YAML / text, audio, image, video, PDF）</li>
+    <li>Data Warehouse vs Data Lake vs Lakehouse；data pipeline 的 Ingestion / Processing / Orchestration / Serving / Storage layers</li>
+  </ol>
+</div>
+
+<h2>1. Evolution of Data Management：由 File 到 DBMS</h2>
+<h3>1.1 File-Based Data Management</h3>
+<p>最原始的做法係將資料直接放喺一個 file 入面（例如 CSV file）。寫 Python 讀寫 CSV 好簡單，所以 <b>Pros: Convenient — minimal effort in coding</b>。但當資料量大、多人同時用，問題就嚟：</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點：File-based 的 5 大缺點 (Cons)</span>
+<table>
+<tr><th>缺點</th><th>Slide 原文</th><th>解釋 / 例子</th></tr>
+<tr><td><b>Inefficiency</b></td><td>Write the entire file every time you have a tiny update</td><td>CSV 冇辦法「只改一行」—改一個股價都要重寫成個 1GB file。</td></tr>
+<tr><td><b>Data Redundancy &amp; Inconsistency</b></td><td>Same entity stored across multiple files</td><td>同一個學生喺 <code>students.csv</code> 同 <code>enrol.csv</code> 都有地址；改咗一個冇改另一個 → 兩份資料唔一致。</td></tr>
+<tr><td><b>No Concurrency Control</b></td><td>Simultaneous writes lead to corruption or simply blocking the entire system</td><td>兩個程式同時寫同一個 file，結果互相覆蓋或者 file 爛咗；或者要成個 file 鎖住，其他人全部等。</td></tr>
+<tr><td><b>Lack of Atomic Transactions</b></td><td>Partial writes leave system in inconsistent state upon failure</td><td>寫到一半斷電 → file 只有一半新資料，冇「all-or-nothing」保證。</td></tr>
+<tr><td><b>Data Isolation &amp; Security</b></td><td>Hard to enforce fine-grained access control across custom files</td><td>OS 只可以控制「成個 file 讀唔讀得」，好難做到「某人只可以睇某幾欄 / 某幾行」。</td></tr>
+</table>
+</div>
+
+<h3>1.2 Database Management Systems (DBMS)</h3>
+<p><span class="tag exam">Exam</span>DBMS 的核心思想：<mark class="k">Decoupling Data Storage &amp; Access from Application Logic</mark>——application 唔再自己處理 file 點樣存、點樣鎖、點樣 recover，而係交俾 DBMS 處理。DBMS addresses all the concerns in File-Based Data Management。</p>
+<p>Traditional DBMSs 的特徵：</p>
+<ul>
+  <li><b>Centralized</b>（集中喺一部機）</li>
+  <li><b>Based on Relational Model (using tables)</b> — 出自 E. F. Codd: <i>A Relational Model of Data for Large Shared Data Banks</i>, Commun. ACM 13(6), 1970</li>
+  <li><b>Use SQL to interact with the database</b></li>
+</ul>
+<p>Slide 4 的 relational data 例子：一個股價 table，每行係一日，每欄係一個 attribute：</p>
+<table>
+<tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th></tr>
+<tr><td>1/1</td><td>3.2</td><td>3.5</td><td>3.1</td><td>3.2</td><td>1.6M</td></tr>
+<tr><td>2/1</td><td>3.2</td><td>3.3</td><td>2.9</td><td>3</td><td>1M</td></tr>
+<tr><td>3/1</td><td>3</td><td>3.6</td><td>2.9</td><td>3.5</td><td>2M</td></tr>
+<tr><td>4/1</td><td>3.5</td><td>3.9</td><td>3.1</td><td>3.6</td><td>2.3M</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>File-based 好似每個部門自己有本 notebook 記資料；DBMS 就好似公司有個中央檔案室 + 專業管理員：佢負責「邊個可以睇乜」、「兩個人同時改點算」、「改到一半停電點復原」。Application 只需要用 SQL 話俾管理員知要乜。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 用 pandas <code>read_csv</code> / <code>to_csv</code> 就係典型 file-based 做法：方便，但每次 <code>to_csv</code> 都重寫成個 file。一個 pandas DataFrame 本質上就係一個 relation (table)，之後 Week 4 學 SQL 時你會發現 <code>merge</code> ≈ JOIN、<code>groupby</code> ≈ GROUP BY。</p></div>
+
+<h2>2. From Centralized to Distributed：Scale Up vs Scale Out</h2>
+<p>問題：How to improve the capacity of the database system? 有兩條路：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Scale Up vs Scale Out</span>
+<table>
+<tr><th></th><th>Scale Up (Vertical Scaling)</th><th>Scale Out (Horizontal Scaling)</th></tr>
+<tr><td>定義</td><td>Adding more power to an existing single machine</td><td>Adding more machines to a distributed network to share the workload</td></tr>
+<tr><td>例子</td><td>Upgrading CPU, RAM</td><td>加多幾部 server，資料 / 工作分散處理</td></tr>
+<tr><td>難度</td><td>簡單（程式唔使改），但一部機有物理上限、愈升級愈貴</td><td><b>Very challenging!</b> — What if one of the machines fails? What if two machines are working on the same data record?</td></tr>
+</table>
+<p>歷史：Distributed database systems already existed in 1990s（但因為 network 慢，performance 差）；到 late 2000s 先流行起嚟。</p>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Scale up = 請一個更勁的廚師；Scale out = 請多幾個廚師一齊煮。後者理論上可以無限加人，但要協調：一個廚師病咗（machine fails）點算？兩個廚師同時加鹽落同一煲湯（two machines working on the same record）點算？呢啲正正係 Week 3 concurrency control / recovery 要解決的問題，而喺 distributed 環境更難。</p></div>
+
+<h2>3. What is Big Data?</h2>
+<p>Definition (Wikipedia)：<i>Big data primarily refers to data sets that are too large or complex to be dealt with by traditional data-processing application software.</i></p>
+<p>Slide 6 亦提醒：有啲人講 Big Data，其實只係指「佢手上嗰份 data」，而份 data 根本唔大（slide 6 附有 MIMIC-III critical care database 的引用及一張圖片，圖片內容擷取不到）。重點係「traditional software 處理唔到」，唔單止係「大」。</p>
+
+<h2>4. Characteristics of Big Data：4 V's</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：4 V's of Big Data</span>
+<table>
+<tr><th>V</th><th>意思</th><th>Slide 例子</th></tr>
+<tr><td><b>Volume</b></td><td>Too much data to handle</td><td>研究 bitcoin 自 2009 年起的社交情緒：Twitter archive 約 5M messages/day ≈ 2GB/day（Twitter 實際約 500M messages/day）</td></tr>
+<tr><td><b>Variety</b></td><td>Multiple types / formats</td><td>一個 tweet 有 multi-lingual text、images、videos…；follow 關係形成 graph data</td></tr>
+<tr><td><b>Veracity</b></td><td>Data quality — Is your data always correct?</td><td>GIGO；missing / duplicated / ambiguous / outdated / inconsistent data</td></tr>
+<tr><td><b>Velocity</b></td><td>Speed of data — real-time, generated continuously</td><td>Binance BTCUSDT 交易隊列；家用 security camera 影片</td></tr>
+</table>
+</div>
+
+<h3>4.1 Volume</h3>
+<p>Worked example（用 slide 數字）：由 2009 到 2026 大約 17 年 ≈ 6,200 日。每日 2GB → 約 <b>12 TB</b>，而呢個只係 archive 的 1% sample（5M vs 500M）。如果要全量，就係 ~1.2 PB——一部普通電腦明顯處理唔到，所以需要 big data 技術。</p>
+
+<h3>4.2 Variety 與 Graph data</h3>
+<p>X / Twitter 上可以搵到：multi-lingual text、images、videos 等等。另外「Alice is following Elon, Bob is following Elon…」呢類關係可以 represented in a <b>graph</b>（node = 用戶，edge = follow）。Graph analysis 可以答：<b>Who is a KOL (Key Opinion Leader)?</b>——例如被最多人 follow（in-degree 最高）的 node，喺 slide 例子中就係 Elon（Alice、Bob、Cathy、Doris 都指向佢）。</p>
+
+<h3>4.3 Types of data</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：三種資料類型</span>
+<table>
+<tr><th>Type</th><th>特徵</th><th>例子</th></tr>
+<tr><td><b>Structured</b></td><td>With fixed-schema</td><td>Traditional SQL tables, spreadsheets</td></tr>
+<tr><td><b>Semi-structured</b></td><td>With certain format; flexible, self-describing formats with tags or key-value pairs</td><td>JSON, XML, YAML</td></tr>
+<tr><td><b>Unstructured</b></td><td>Formats without an internal schema or structural markers</td><td>Raw text documents, audio files, images, videos, PDFs</td></tr>
+</table>
+</div>
+<p>例如同一個 tweet 用 JSON 表示（semi-structured）：</p>
+<pre><code>{
+  "user": "Alice",
+  "text": "BTC to the moon 🚀",
+  "lang": "en",
+  "media": [{"type": "image", "url": "..."}],   // 有啲 tweet 有，有啲冇
+  "retweets": 25
+}</code></pre>
+<p>每個 key 自己描述自己（self-describing），而且唔同 tweet 可以有唔同 key——呢個就係「flexible」，同 SQL table 每行都要有一樣 columns（fixed schema）唔同。至於 <code>media</code> 指向的 image 本身就係 unstructured data。</p>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>JSON / XML 唔係 unstructured！佢哋有 tags / key-value 結構，只係 schema 唔固定 → <b>semi-structured</b>。PDF 雖然有格式，但內容冇 internal schema → slide 歸類為 <b>unstructured</b>。</p></div>
+
+<h3>4.4 Veracity：data quality</h3>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 12 用兩張圖片（標註 "Mechanism?" 同 "Terrorist?"）說明資料可能唔正確，圖片內容文字擷取不到；請對照原 slide 第 12 頁。</p></div>
+<p><span class="tag exam">Exam</span><b>GIGO — Garbage in, garbage out</b>：Data quality is very important! 輸入資料錯，無論 model 幾勁，輸出都係垃圾。Types of data quality concerns：</p>
+<ul>
+  <li><b>Missing data</b> — 例如某日股價冇記錄</li>
+  <li><b>Duplicated data</b> — 同一筆交易記咗兩次</li>
+  <li><b>Ambiguous data</b> — slide 例子：“There is a bird in a cage that can talk.” Who can talk?（bird 定 cage？語意含糊）</li>
+  <li><b>Outdated data</b> — 舊地址、過期價錢</li>
+  <li><b>Inconsistent data</b> — 一個 file 寫 “HK”，另一個寫 “Hong Kong”</li>
+</ul>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 data cleaning（<code>drop_duplicates</code>、<code>fillna</code>、<code>IterativeImputer</code>）同 COM6004 Chapter 2 Data quality / preprocessing（noise, outliers, missing values, duplicate data）就係處理 Veracity 問題的工具。</p></div>
+
+<h3>4.5 Velocity：speed of data</h3>
+<p>Real-time data：data is generated continuously；而且 <b>the data source does not always keep all the data for you to download later</b>——錯過咗就冇。</p>
+<p>例子 1：記錄 Binance BTCUSDT futures 的資料。要儲乜？每次 update 的 trade queue 都儲？資料量會極大。<br>
+例子 2：Home security camera app — Will you keep the video data? 一部 CCTV 一日可產生幾 GB 至幾十 GB 影片（slide 15 引用 Quora 數據，圖片部分擷取不到）。</p>
+<h3>4.6 Streaming algorithms</h3>
+<p>What if the data generation speed far exceeds our storage capability? → <b>Streaming algorithms</b>：資料流過時只睇一次、只保留摘要。Key design issues：</p>
+<ul>
+  <li>How to extract key summaries and what to keep?</li>
+  <li>Can we find the exact answers to queries?</li>
+  <li>If it is an approximation, how close will it be? Any bounds on the performance?</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>例如要計 BTC 一整日的平均成交價，你唔需要儲晒每一筆交易，只要不斷更新兩個數：<code>sum</code> 同 <code>count</code>，最後 sum/count 就係 exact answer。但如果要「今日出現過幾多個唔同 wallet」（distinct count），就要儲晒所有 wallet ID——太大；streaming algorithm 會用近似方法（例如 HyperLogLog），並保證誤差喺某個 bound 之內。</p></div>
+
+<h2>5. Why do we have Big Data?</h2>
+<ul>
+  <li><b>Internet!</b> Many data sources are available to the public — Social network: Twitter；Finance: Cryptocurrency market data</li>
+  <li><b>Increased capability of machines</b>, e.g., increased storage → We tend to store more data。Slide 圖示：1990's 磁碟 1.44MB；而家 256 GB 記憶卡約 HKD $100；個人雲端 15 GB 免費。</li>
+</ul>
+
+<h2>6. Next-generation Data Management：NoSQL</h2>
+<p><b>NoSQL stands for Not Only SQL</b>——data is not well structured as a table。Types of NoSQL databases：</p>
+<ul>
+  <li><b>Graph database</b>（例如儲 follow 關係）</li>
+  <li><b>Key-value store</b></li>
+  <li><b>Document store</b> — Example: <b>MongoDB</b></li>
+</ul>
+<p><span class="tag exam">Exam</span>Note: <b>RDBMS are still the most widely used DBMS</b>（db-engines.com ranking）。NoSQL 唔係取代 RDBMS。</p>
+<h3>Example MongoDB data（slide 19）</h3>
+<pre><code>{ "Symbol": "BTC", "Date": "1/1", "Open": 3.1, "High": 3.3, "Low": 2.9, "Close": 3.1,
+  "Sentiment": 0.39, "Basis": 0.0003, "Whale transactions": 1056 }
+{ "Symbol": "ETH", "Date": "1/1", "Close": 11.3, "BTC Correlation": 0.77 }
+{ "Symbol": "DOGE", "Date": "1/1", "Close": 0.000065, "Twitter mention": 25694 }</code></pre>
+<p><b>Q: What happens if we put the data in a table?</b><br>
+答：Table 要 fixed schema，即係 columns = 所有 document 出現過的 key 的聯集（Symbol, Date, Open, High, Low, Close, Sentiment, Basis, Whale transactions, BTC Correlation, Twitter mention）。結果 ETH 同 DOGE 好多欄都係 NULL（sparse table，浪費空間）；而且將來加新指標就要 <code>ALTER TABLE</code> 改 schema。Document store 就可以每個 document 有自己的欄位。</p>
+
+<h3>Which type of database should we use?</h3>
+<p>This is a core topic of this module! RDBMS vs NoSQL 會喺之後幾堂詳細比較；而且仲要考慮其他選項，例如 <b>single file / HDFS</b>。</p>
+
+<h2>7. Use of Big Data：Big Data Analytics</h2>
+<p>Big Data is almost understood as <b>Big Data Analytics</b>。Data analytics 其實歷史好長：</p>
+<p><b>“Beer and Diapers” (early 1990s)</b>：超市做 <b>market basket analysis</b>，分析顧客一齊買咩。預期結果：bread and butter；意外發現：beer and diapers 經常一齊被買。而家幾乎任何 data analytics task 都被叫做 Big Data Analytics——Is this a good sign?（暗示「Big Data」一詞被濫用。）</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Market basket analysis 就係 COM6004 Data Mining 的 Association Rule Mining（support / confidence）的經典例子。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 21 只有一張圖片（Big Data Analytics），文字擷取不到；請對照原 slide 第 21 頁。</p></div>
+
+<h3>Big Data Analytics tools</h3>
+<ul>
+  <li><b>Data cleaning</b> — Improve the data quality of your data</li>
+  <li><b>ETL</b> — Extract-transform-load pipeline to preprocess your data for your analysis</li>
+  <li><b>Analytics tools</b> — Machine learning / Data mining / Artificial Intelligence</li>
+  <li><b>OLAP</b> — Online Analytical Processing（Week 5 Power BI 會詳講）</li>
+</ul>
+
+<h2>8. Data Pipeline</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24 "Example Data Pipeline" 係一張架構圖，文字擷取不到；請對照原 slide 第 24 頁。以下根據 slide 25 文字解釋。</p></div>
+<div class="box exam"><span class="label">⭐ 考試重點：Common data pipeline components</span>
+<table>
+<tr><th>Layer</th><th>功能</th><th>例子工具</th></tr>
+<tr><td><b>Ingestion Layer</b></td><td>Extracts raw data from diverse source systems；store data into the central storage</td><td>API、web scraping（Week 2）</td></tr>
+<tr><td><b>Processing Layer</b></td><td>Performs computation on raw ingested data, such as cleaning, schema transformations, aggregations</td><td>pandas / Spark</td></tr>
+<tr><td><b>Orchestration Layer</b></td><td>Coordinates, schedules, and monitors execution dependencies across the entire pipeline as <b>Directed Acyclic Graphs (DAGs)</b></td><td><b>Apache Airflow</b></td></tr>
+<tr><td><b>Serving Layer</b></td><td>Stores processed, business-ready data in specialized engines optimized for applications</td><td><b>Snowflake</b></td></tr>
+<tr><td><b>Storage Layer</b></td><td>中央儲存（Data Warehouse / Data Lake）</td><td>—</td></tr>
+</table>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解：點解係 DAG？</span><p>Pipeline 每一步有依賴：「download 價格」→「clean」→「計 daily average」→「更新 dashboard」。用 graph 表示，箭咀有方向 (directed)，而且唔可以兜返轉頭 (acyclic)，否則永遠行唔完。Airflow 就係按 DAG 次序定時執行、監察失敗。</p></div>
+
+<h2>9. Data Warehouse / Data Lake / Lakehouse</h2>
+<p>Data Warehouse / Data Lake 都係：</p>
+<ul>
+  <li>A <b>central repository</b></li>
+  <li>A <b>copy / snapshot</b> of your data from the original source</li>
+  <li><b>Require synchronization strategy</b>（原始資料變咗，copy 點樣跟住更新？）</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Warehouse vs Lake vs Lakehouse</span>
+<table>
+<tr><th></th><th>Data Warehouse</th><th>Data Lake</th><th>Lakehouse</th></tr>
+<tr><td>Data</td><td>Structured data</td><td>Unstructured data（including structured data!）</td><td>建喺 Data Lake 之上</td></tr>
+<tr><td>特點</td><td>有 schema、適合 SQL 分析、一致性好</td><td>乜都可以掟入去、scalable、平</td><td>Implements a <b>metadata and transaction layer</b> directly on top of open object storage (Data Lake)；Maps unstructured / semi-structured data into structured, queryable schemas <b>without physical data movement</b></td></tr>
+<tr><td>一句總結</td><td>整齊的倉庫</td><td>乜都有的湖</td><td>Unifies Data Lake scalability with Data Warehouse features e.g., consistency</td></tr>
+</table>
+</div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 26、27 各有一張示意圖，文字擷取不到；請對照原 slide。</p></div>
+
+<h2>10. Working with Data：Where does the time go?</h2>
+<p><span class="tag exam">Exam</span><b>Data scientists spend 80% of their time cleaning data</b>——幾十年來唔同行業的調查結果都差唔多。所以 Veracity / data cleaning 係 big data 工作的大部分。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 28、29 的圖表（時間分佈調查）係圖片，文字擷取不到；請對照原 slide。</p></div>
+<h3>Big Data is not always successful：Google Flu Trends</h3>
+<p>Google 最初的 paper 聲稱 Google Flu Trends（用搜尋關鍵字預測流感）同 CDC 數據比較有 97% accurate；但 2012/2013 季節，佢預測的求診人數係 CDC 最終記錄的<b>兩倍</b>。教訓：資料量大唔代表準確；data quality、模型假設、搜尋行為改變（concept drift）都會令結果出錯。</p>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 列出 File-Based Data Management 的優點同五個缺點。</summary><p>Pros：Convenient — minimal effort in coding。Cons：(1) Inefficiency — 小改動都要重寫成個 file；(2) Data Redundancy &amp; Inconsistency — 同一 entity 散落多個 file；(3) No Concurrency Control — 同時寫會損壞或 block 成個系統；(4) Lack of Atomic Transactions — 寫到一半失敗令系統 inconsistent；(5) Data Isolation &amp; Security — 難做 fine-grained access control。</p></details>
+<details class="q"><summary>Q2. 一間公司把 database server 由 16GB RAM 升到 128GB，另一間就由 1 部 server 加到 10 部。分別係咩 scaling？後者有咩挑戰？</summary><p>前者 = Scale Up (Vertical Scaling)；後者 = Scale Out (Horizontal Scaling)。Scale out very challenging：其中一部機 fail 點算？兩部機同時處理同一個 data record 點算（一致性）？加上 network 速度影響 performance（1990s distributed DB 表現差的原因）。</p></details>
+<details class="q"><summary>Q3. 將以下資料分類為 structured / semi-structured / unstructured：(a) Excel 成績表 (b) API 回傳的 JSON (c) 錄音 mp3 (d) XML config (e) 掃描的 PDF 合約</summary><p>(a) Structured；(b) Semi-structured；(c) Unstructured；(d) Semi-structured；(e) Unstructured。</p></details>
+<details class="q"><summary>Q4. 說明 4 V's，並各舉一個 crypto 相關例子。</summary><p>Volume：多年 Twitter 討論 bitcoin 的 archive（2GB/day 的 sample）。Variety：tweet 有多語言文字、圖片、影片，follow 關係係 graph。Veracity：付費 API 的價格錯 10 倍、LUNA 崩盤後 sentiment 仍顯示 positive。Velocity：Binance 交易隊列不斷更新，來源唔會保留晒俾你之後下載。</p></details>
+<details class="q"><summary>Q5. 如果每日收集 2GB tweets，連續收 10 年需要幾多儲存空間？如果收全量（100 倍）呢？</summary><p>2GB × 365 × 10 ≈ 7,300 GB ≈ 7.3 TB。全量約 100 倍 ≈ 730 TB（接近 1 PB）。說明 Volume 問題：單機難以處理，要考慮 scale out / distributed storage。</p></details>
+<details class="q"><summary>Q6. 將 slide 19 的 BTC / ETH / DOGE MongoDB documents 放入一個 relational table 會有咩問題？</summary><p>Table 需要 fixed schema，columns 要包括所有 document 的 keys 聯集；ETH、DOGE 大部分欄位會係 NULL（sparse、浪費），而新增指標要改 schema。Document store（NoSQL）容許每個 document 有不同欄位，更適合。</p></details>
+<details class="q"><summary>Q7. Data pipeline 中，負責「按 DAG 排程、監察各步驟依賴」的係邊個 layer？舉一個工具。Serving layer 呢？</summary><p>Orchestration Layer，例如 Apache Airflow。Serving Layer 儲存 business-ready data 喺為 application 優化的引擎，例如 Snowflake。</p></details>
+<details class="q"><summary>Q8. Data Warehouse、Data Lake、Lakehouse 有咩分別？</summary><p>三者都係 central repository（原始資料的 copy/snapshot，需要 synchronization strategy）。Warehouse 存 structured data；Lake 存 unstructured（包括 structured）data；Lakehouse 喺 data lake 之上加 metadata + transaction layer，將 unstructured/semi-structured data map 成可 query 的 schema 而唔使搬資料，結合 lake 的 scalability 同 warehouse 的 consistency。</p></details>
+<details class="q"><summary>Q9. 咩係 GIGO？列出五種 data quality concerns。</summary><p>Garbage in, garbage out：輸入資料差，分析結果亦差。五種：Missing, Duplicated, Ambiguous, Outdated, Inconsistent data。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>File-based：Pro = convenient；Cons = Inefficiency / Redundancy &amp; Inconsistency / No Concurrency Control / No Atomic Transactions / Isolation &amp; Security</li>
+<li>DBMS = decouple storage &amp; access from application logic；traditional = centralized + relational model (Codd 1970) + SQL</li>
+<li>Scale Up = 升級單機 (CPU/RAM)；Scale Out = 加機器，難在 machine failure 同 concurrent update；distributed DB 1990s 已有，late 2000s 流行</li>
+<li>Big Data = too large or complex for traditional software</li>
+<li>4 V's：Volume / Variety / Veracity / Velocity</li>
+<li>Structured (fixed schema) / Semi-structured (JSON, XML, YAML) / Unstructured (text, audio, image, video, PDF)</li>
+<li>GIGO；quality concerns：missing, duplicated, ambiguous, outdated, inconsistent</li>
+<li>Streaming algorithms：what to keep? exact or approximate? error bounds?</li>
+<li>NoSQL = Not Only SQL：graph DB / key-value store / document store (MongoDB)；RDBMS 仍然最多人用</li>
+<li>Analytics tools：data cleaning, ETL, ML/DM/AI, OLAP；Beer &amp; Diapers = market basket analysis</li>
+<li>Pipeline layers：Ingestion → Processing → Orchestration (DAG, Airflow) → Serving (Snowflake) + Storage</li>
+<li>Warehouse (structured) / Lake (unstructured incl. structured) / Lakehouse (metadata + transaction layer on lake)</li>
+<li>80% time on data cleaning；Google Flu Trends 高估 2 倍 → Big Data 唔一定成功</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="../index.html">← 返回目錄</a>
+  <a href="COM6002-w2.html">Week 2 Data collection →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

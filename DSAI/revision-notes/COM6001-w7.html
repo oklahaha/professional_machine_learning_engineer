@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 7 Data Cleaning (II)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w7">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 7</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 7 · Source: Lecture07_notebook.pdf（Jupyter notebook export, 42 pages）· Lecturer: Dr. Aileen Hou</p>
+<h1>Data Cleaning (II): Outliers, Datetime, Encoding &amp; Binning</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>Outliers：定義、成因；用 five-number summary（<code>describe()</code>）、percentiles（<code>quantile()</code>）、<mark class="k">IQR method</mark>、histogram、boxplot 偵測；用 drop 或 <mark class="k">capping</mark>（例如 99th percentile）處理。</li>
+    <li>Date &amp; time：Python <code>datetime</code> module 各 classes；<code>parse_dates</code> / <code>pd.to_datetime()</code>；<code>.dt</code> accessor 抽 year/month/day/hour…；<code>Timedelta</code> 運算；用日期做 Boolean filtering。</li>
+    <li>Categorical → numerical：nominal vs ordinal；binary、<mark class="k">one-hot encoding</mark>（<code>pd.get_dummies()</code>）、<mark class="k">ordinal encoding</mark>（sklearn <code>OrdinalEncoder</code>）。</li>
+    <li>Numerical → categorical：<mark class="k">binning</mark>，<code>pd.cut()</code>（equal-width / custom edges）vs <code>pd.qcut()</code>（equal-sized / quantile-based）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>IQR = Q3 − Q1；Upper bound = Q3 + 1.5×IQR；Lower bound = Q1 − 1.5×IQR；超出即 potential outlier。識由 <code>quantile(0.25)</code>、<code>quantile(0.75)</code> 計同數 outliers。</li>
+    <li>Capping：<code>df.loc[df[col] &gt; p99, col] = p99</code>——保留 data points 但限制極端值。</li>
+    <li>Nominal（無次序：red/green）→ one-hot（<code>get_dummies</code>）；Ordinal（有次序：High/Mid/Low）→ ordinal encoding（<code>OrdinalEncoder(categories=[...])</code>，default 跟字母排序）。</li>
+    <li><code>pd.cut(bins=N)</code> 將<b>值域</b>切成等寬區間（每組人數可以好唔平均）；<code>pd.qcut(q=M)</code> 按 <b>quantiles</b> 切成人數相近嘅組。Salary 例子：cut → 16/2/1/1；qcut → 5/5/5/5。</li>
+    <li>Datetime：<code>pd.to_datetime()</code>、<code>.dt.year/.month/.day/.hour/.quarter/.dayofweek/.day_name()</code>；Timestamp − Timestamp = Timedelta；Timedelta / Timedelta = float；Timedelta / number = Timedelta。</li>
+  </ol>
+</div>
+
+<h2>0. Data preparation：沿用 Week 6 嘅 imputation</h2>
+<p>Notebook 開頭將 Week 6 嘅步驟包成一個 function：drop 多餘 columns → numeric 用 IterativeImputer（有 min/max 界限）→ categorical 用 SimpleImputer most_frequent → save 成 pickle。</p>
+<pre><code>import pandas as pd
+path = "./Datasets/week_7/"
+
+def data_prep_week7(path):
+    wdi = pd.read_csv(path + 'world_development_indicators.csv')
+    wdi = wdi.drop(columns=['Country Name', 'Country Code', 'planet'])
+    numeric_cols = wdi.select_dtypes(include='number').columns
+    cat_cols = wdi.select_dtypes(exclude='number').columns
+    # numerical columns：model-based imputation
+    from sklearn.experimental import enable_iterative_imputer
+    from sklearn.impute import IterativeImputer
+    iter_imput = IterativeImputer(min_value=wdi[numeric_cols].min(),
+                                  max_value=wdi[numeric_cols].max())
+    wdi[numeric_cols] = iter_imput.fit_transform(wdi[numeric_cols])
+    # categorical columns：most frequent
+    from sklearn.impute import SimpleImputer
+    simple_imput_cat = SimpleImputer(strategy="most_frequent")
+    wdi[cat_cols] = simple_imput_cat.fit_transform(wdi[cat_cols])
+    pd.to_pickle(wdi, path + "wdi_imp.pkl")     # save
+    return wdi
+
+wdi = data_prep_week7(path)
+wdi.info()      # 446 entries，19 columns 全部 446 non-null；float64(17), object(2)
+wdi_imp = pd.read_pickle(path + 'wdi_imp.pkl')</code></pre>
+<div class="box tip"><span class="label">💡 點解包成 function？</span><p>Data cleaning pipeline 要可以<b>重複執行</b>（reproducible）：新數據來、或者 notebook restart 之後，一句 <code>data_prep_week7(path)</code> 就重建同一個 clean dataset，唔使逐格再 run。</p></div>
+
+<h3>Review：Data cleaning 大綱（今堂新增 Transforming features）</h3>
+<ul>
+  <li>Removing unnecessary data：Constant-value columns、Repeated columns、One-to-one mapped columns、Duplicated rows</li>
+  <li>Handling the missing data：Dropping、Imputing using constants / statistics / models</li>
+  <li><b>Handling the outliers</b>（今堂）</li>
+  <li><b>Transforming features</b>（今堂）：Date and time、Feature encoding、Binning、Feature scaling</li>
+</ul>
+<div class="box note"><span class="label">ℹ️ 範圍</span><p class="missing">大綱列咗 Feature scaling，但本 notebook 冇對應內容（可能下一講）。</p></div>
+
+<h2>1. Handling the Outliers</h2>
+<p><span class="tag exam">Exam</span><b>Outliers</b>：unusual observations that are distinct from most of the others。通常係 aberrations，未必反映我哋分析緊嘅真實現象，可能導致誤導性嘅分析結果。</p>
+<p><b>Main reasons：</b></p>
+<ul>
+  <li><b>Rare cases</b>（真實數據，你可能想保留！）</li>
+  <li><b>Measurement or data input errors</b></li>
+  <li><b>Mix-up of data from different sources/categories</b>（例如 wdi 入面「World」「regions」同國家混埋一齊）</li>
+</ul>
+<p>Outlier 冇統一定義，要 case-by-case study。偵測方法（只適用於 numerical data）：</p>
+<table>
+<tr><th>Statistical methods</th><th>Data visualization methods</th></tr>
+<tr><td>Min, max, mean, percentiles<br>Interquartile range (IQR) method</td><td>Histogram<br>Boxplot</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 3–4 頁 <code>outlier.png</code> 同 <code>five number.png</code>（five-number summary 圖解）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>1.1 用 <code>describe()</code> 偵測</h3>
+<p><code>DataFrame.describe()</code> 顯示 count、mean、std、min、25%、50%、75%、max（categorical columns 自動被排除）。判斷原則：</p>
+<ul>
+  <li>Range（max − min）越大，越有可能有 outliers。</li>
+  <li>Max 或 min 距離其他 percentiles 越遠，越有可能。</li>
+</ul>
+
+<h3>1.2 Percentiles 同 quartiles</h3>
+<p><b>Percentile</b>：data 由細到大排序，X% percentile 係「有 X% 數據 ≤ 呢個值」嘅值。</p>
+<ul>
+  <li>50% percentile = <b>median</b>（Q2）</li>
+  <li>25% percentile = first quartile <b>Q1</b></li>
+  <li>75% percentile = third quartile <b>Q3</b></li>
+</ul>
+<p>用 <code>Series.quantile(percentile)</code> 攞某 percentile，參數範圍係 [0, 1]（例如 0.33，唔係 33）。</p>
+<pre><code>from numpy import random
+value = random.randint(101, size=20)   # 20 個 0–100 嘅隨機整數
+value.sort()
+# [ 0 11 13 35 44 45 47 52 52 52 58 60 68 71 82 83 84 85 95 99]
+df = pd.DataFrame(value)
+df.describe().T
+#    count  mean       std   min    25%   50%    75%   max
+# 0   20.0  56.8  27.740527  0.0  44.75  55.0  82.25  99.0</code></pre>
+<div class="box exam"><span class="label">⭐ Worked example：pandas 點計 percentile（linear interpolation）</span>
+<p>n = 20，位置 = \( (n-1) \times p \)（由 0 開始數）：</p>
+<ul>
+  <li>25%：\( 19 \times 0.25 = 4.75 \) → 第 4 個 (44) 同第 5 個 (45) 之間 → \( 44 + 0.75 \times (45-44) = 44.75 \) ✔</li>
+  <li>50%：\( 19 \times 0.5 = 9.5 \) → 52 同 58 之間 → \( 52 + 0.5 \times 6 = 55.0 \) ✔</li>
+  <li>75%：\( 19 \times 0.75 = 14.25 \) → 82 同 83 之間 → \( 82 + 0.25 \times 1 = 82.25 \) ✔</li>
+</ul>
+<p>IQR = 82.25 − 44.75 = 37.5；1.5×IQR = 56.25 → Upper = 138.5、Lower = −11.5。所有值都喺 0–99 之內 → <b>冇 outliers</b>。</p></div>
+
+<h3>1.3 wdi_imp 嘅 describe 同「normalized distance」</h3>
+<pre><code>des_wdi = wdi_imp.describe()
+#        access_to_electricity_pct  atms_per_100000  compulsory_education_years
+# mean   84.396673                  46.582851        9.650608
+# 25%    71.693660                  11.894731        9.000000
+# 50%    98.849995                  38.034455       10.000000
+# 75%   100.000000                  64.213716       10.875000
+# max   100.000000                 272.592801       16.000000
+
+(des_wdi.loc['max'] - des_wdi.loc['75%']) / des_wdi.loc['75%']
+# access_to_electricity_pct 0.0, atms_per_100000 3.245, gdp_per_capita_usd 6.58,
+# population_density 57.66, population 71.19, year 0.0, is_region inf</code></pre>
+<div class="formula">$$ \text{normalized distance} = \frac{\max - Q_3}{Q_3} $$</div>
+<p>數值越大，max 離「大部分數據」越遠：<code>population</code>（71 倍）、<code>population_density</code>（58 倍）最可疑。<code>is_region</code> 出 <code>inf</code> 係因為 75% = 0（大部分 rows 係國家，is_region=0），除以 0。</p>
+
+<h3>1.4 Histogram</h3>
+<ul>
+  <li><code>df.hist()</code>：為每個 numerical column 畫 histogram。</li>
+  <li><code>figsize=(w, h)</code> 控制圖嘅大小；<code>bins=N</code> 用 N 個等寬 bins。</li>
+  <li>由 histogram 可以快速睇到 outliers（例如大部分值擠喺左邊，右邊有零星柱）。</li>
+</ul>
+<pre><code>wdi_imp.hist(figsize=(20, 20));          # 分號：唔顯示返回嘅 Axes object 文字
+wdi_imp['population'].hist(bins=50)</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 7、8、10 頁嘅 histograms（全部 columns、population、wdi_country_only population）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>1.5 Q1：Outlier detection（含答案）</h3>
+<pre><code># Q1.1 人口最多嘅「國家」
+wdi_imp[['country_name', 'is_region', 'population']].sort_values('population', ascending=False)
+# 431 World 1.0 7.591945e+09；214 World；303 IDA &amp; IBRD total；335 Low &amp; middle income ...
+# → 最大嘅全部係 regions（is_region = 1），唔係國家！
+
+# Q1.2 睇 is_region == 1 嘅名
+wdi_imp.loc[wdi_imp['is_region'] == 1, 'country_name']
+# Arab World, Caribbean small states, ..., World, Euro area, IDA total   Length: 95
+wdi_country_only = wdi_imp[wdi_imp['is_region'] == 0]     # 只保留國家
+wdi_country_only['population'].hist()
+
+# Q1.3 method 1：人口 &gt; 1.2 billion
+wdi_country_only[wdi_country_only['population'] &gt; 1.2e9]   # China ×2, India ×2（兩個年份）
+# Q1.3 method 2：5 個最大
+wdi_country_only.nlargest(5, 'population')[['country_name', 'population']]
+# China 1.392730e+09, China 1.386395e+09, India 1.352617e+09, India 1.338659e+09, United States 3.266875e+08</code></pre>
+<div class="box warn"><span class="label">⚠️ 題目字眼</span><p>Q1.2 原文寫「drop the rows with is_region == 0」，但 DataFrame 名叫 <code>wdi_country_only</code>、目的係只留國家，所以應該係 drop <b>is_region == 1</b>（regions），保留 is_region == 0。</p></div>
+<div class="box tip"><span class="label">💡 呢個例子嘅教訓</span><p>「World」嘅人口係 outlier，但唔係錯誤數據——係 <b>mix-up of data from different categories</b>（regions 同 countries 混埋）。正確處理唔係 cap，而係將兩類分開。而 China / India 就算分開之後仍然係 outliers，但佢哋係 <b>rare cases（真實數據）</b>，應該保留。</p></div>
+
+<h2>2. IQR-based outlier detection</h2>
+<p><b>Quartiles</b> 係將 data 分成四等份嘅特殊 percentiles：Q1 = 25th percentile；Q2 = 50th percentile（median）；Q3 = 75th percentile。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：IQR 公式</span>
+<div class="formula">$$ IQR = Q_3 - Q_1 $$</div>
+<div class="formula">$$ \text{Upper bound} = Q_3 + 1.5 \times IQR, \qquad \text{Lower bound} = Q_1 - 1.5 \times IQR $$</div>
+<p>大過 upper bound 或細過 lower bound 嘅值 = potential outliers。Slide 補充：如果冇 data 高過 \(Q_3 + 1.5 IQR\)，upper bound 就用 data 嘅 max（lower 同理用 min）——即係 boxplot whisker 嘅畫法：whisker 伸到「界限內最遠嘅真實數據點」。</p></div>
+<pre><code># Q2（homework）：33% percentile
+wdi_imp['atms_per_100000'].quantile(0.33)     # np.float64(24.32170064268077)
+
+# Boxplot（根據 IQR 畫，盒外嘅點 = outliers）
+wdi_imp.boxplot(column='atms_per_100000', figsize=(3, 5))
+
+Q1 = wdi_imp['atms_per_100000'].quantile(0.25)   # 11.894731154404873
+Q3 = wdi_imp['atms_per_100000'].quantile(0.75)   # 64.21371556643965</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 12 頁 boxplot 同第 13 頁 <code>IQR detection.png</code> 圖解係圖片，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>2.1 Q3：計 bounds 同數 outliers</h3>
+<pre><code>IQR = Q3 - Q1                       # 52.3190
+upper_bound = Q3 + 1.5 * IQR        # 142.6921921844918
+lower_bound = Q1 - 1.5 * IQR        # -66.58374546364729
+print(upper_bound); print(lower_bound)
+
+large_outliers = wdi_imp[wdi_imp['atms_per_100000'] &gt; upper_bound]
+len(large_outliers)                 # 15
+# 全部 outliers（一行）：((wdi_imp['atms_per_100000'] &gt; upper_bound) | (wdi_imp['atms_per_100000'] &lt; lower_bound)).sum()</code></pre>
+<p>驗算：\( IQR = 64.2137 - 11.8947 = 52.3190 \)；\( 1.5 \times 52.3190 = 78.4785 \)；Upper = \( 64.2137 + 78.4785 = 142.692 \) ✔；Lower = \( 11.8947 - 78.4785 = -66.584 \) ✔。Lower bound 係負數而 ATM 數冇可能負，所以只有 large outliers。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul><li>寫成 <code>quantile(25)</code>——參數要喺 [0,1]，應為 <code>quantile(0.25)</code>。</li><li>將 1.5 乘錯對象：係 <b>1.5 × IQR</b> 加落 Q3，唔係 1.5 × Q3。</li><li>Lower bound 用 Q3、upper bound 用 Q1 調轉咗。</li></ul></div>
+
+<h2>3. Treating the outliers by capping</h2>
+<p>IQR 方法搵到 15 個超出範圍嘅值（共 217 個國家/地區）——全部當 outliers drop 走就太多。改為睇 <b>99th percentile</b>（99% 嘅值細過佢），揀出真正極端嘅：</p>
+<pre><code>p99 = wdi_imp['atms_per_100000'].quantile(0.99)    # 220.007919399819
+wdi_imp.sort_values(by='atms_per_100000', ascending=False).head(10)
+#      country_name   atms_per_100000
+# 103  Korea, Rep.    272.592801
+# 320  Korea, Rep.    266.967032
+# 30   Canada         228.429181
+# 148  North America  228.429181
+# 247  Canada         220.007919   ← = p99
+# 365  North America  220.007919
+# 225  Austria        169.405219 ...
+# → 有 4 個值大過 p99</code></pre>
+<p><span class="tag exam">Exam</span><b>Capping</b>：將極端值限制喺某個 threshold（例如 99th percentile）。好處：減低極端值對分析嘅影響，但<b>唔使將 data points 整個刪走</b>。用 <code>df.loc[row_indices, col_indices] = p99</code>：</p>
+<pre><code>wdi_imp.loc[wdi_imp['atms_per_100000'] &gt; p99, 'atms_per_100000'] = p99
+wdi_imp.sort_values(by='atms_per_100000', ascending=False).head(10)
+# 頭 6 行（Canada, North America, Korea ×2, Canada, North America）全部變成 220.007919
+# Austria 169.405219 不變</code></pre>
+<div class="box tip"><span class="label">💡 直覺</span><p>Capping（又叫 winsorizing）好似話：「你好高，我承認你係最高嗰班，但我唔俾你高到拉歪成個平均」。Korea 由 272.6 被壓到 220.0，佢仍然排第一梯隊，但對 mean / regression 嘅影響細咗。</p></div>
+
+<h3>3.1 Q4（homework）：gdp_per_capita_usd capping</h3>
+<pre><code>wdi_imp.boxplot(column='gdp_per_capita_usd')
+p99 = wdi_imp['gdp_per_capita_usd'].quantile(0.99)       # np.float64(79627.04955097953)
+(wdi_imp['gdp_per_capita_usd'] &gt; p99).sum()              # np.int64(5)
+wdi_imp.loc[wdi_imp['gdp_per_capita_usd'] &gt; p99, 'gdp_per_capita_usd'] = p99   # capping
+(wdi_imp['gdp_per_capita_usd'] &gt; p99).sum()              # np.int64(0)</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 15 頁 gdp_per_capita_usd 嘅 boxplot 係圖片，文字擷取不到。</p></div>
+
+<h3>3.2 Advices for dealing with the outliers</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：處理任何 column 嘅 guideline（slide 原文要點）</span>
+<ol>
+  <li><b>Plot</b> your data to identify if you have outliers.</li>
+  <li><b>Handle</b> outliers accordingly：<b>keep</b> them、<b>drop</b> them 或 <b>capping</b> them。</li>
+  <li>如果冇 outliers 而且 data 係 normal distribution → 用 <b>mean 同 standard deviation</b> 描述，並報告 data are normally distributed。</li>
+  <li>如果 data skewed 或有 outliers → 用 <b>five number summary</b>（min, Q1, median, Q3, max）描述，並報告 outliers。</li>
+  <li>唔肯定係咪 normal → 可以用 normal quantile plots 或者 Kolmogorov-Smirnov test（超出本科範圍，fun fact）。</li>
+</ol></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6005 Statistical Modeling 嘅 descriptive statistics（mean/SD vs median/IQR、skewness、Normal distribution）同呢度直接相關：skewed data 用 robust statistics（median、IQR）。COM6004 Chapter 2（Data）講 data quality 嘅 outliers 同 noise，Chapter 3 Data Visualization 有 boxplot / histogram。</p></div>
+
+<h2>4. Feature Transformations：Date and time data</h2>
+<p><b>Why？</b>Date/time data 經常有各種 formats，需要 standardize；正確處理先可以做準確嘅時間計算、比較同 feature engineering。</p>
+<h3>4.1 Python <code>datetime</code> module</h3>
+<p>提供操作日期時間嘅 classes；支援 date/time arithmetic，但重點係 efficient attribute extraction（for output formatting and manipulation）。</p>
+<table>
+<tr><th>Class</th><th>說明</th><th>Attributes</th></tr>
+<tr><td><code>datetime.date</code></td><td>Idealized naive date，假設 Gregorian calendar 一直適用</td><td>year, month, day</td></tr>
+<tr><td><code>datetime.time</code></td><td>Idealized time，獨立於任何一日，假設每日剛好 24×60×60 = 86400 秒（冇 leap seconds）</td><td>hour, minute, second, microsecond, tzinfo</td></tr>
+<tr><td><code>datetime.datetime</code></td><td>date + time 嘅組合</td><td>year, month, day, hour, minute, second, microsecond, tzinfo</td></tr>
+<tr><td><code>datetime.timedelta</code></td><td>Duration：兩個 date/time/datetime 之差，精確到 microsecond</td><td>days, seconds, microseconds</td></tr>
+<tr><td><code>datetime.tzinfo</code></td><td>Time zone 資訊嘅 abstract base class（time zone / daylight saving 調整）</td><td>—</td></tr>
+<tr><td><code>datetime.timezone</code></td><td>實作 tzinfo，表示同 UTC 嘅固定 offset</td><td>—</td></tr>
+</table>
+<pre><code>import datetime
+datetime.datetime.today()          # datetime.datetime(2026, 10, 12, 12, 12, 22, 852513)
+type(datetime.datetime.today())    # datetime.datetime
+datetime.MAXYEAR                   # 9999
+datetime.MINYEAR                   # 1
+
+# datetime − datetime → timedelta
+datetime.datetime.today() - datetime.datetime(2026, 1, 1)
+# datetime.timedelta(days=284, seconds=43980, microseconds=789669)
+
+# 轉做「日數」：除以 timedelta(days=1)
+(datetime.datetime.today() - datetime.datetime(2026, 11, 22)) / datetime.timedelta(days=1)
+# -40.48948315456018   ← 負數：仲有約 40.5 日先到 11 月 22 日</code></pre>
+
+<h3>4.2 Extracting date and time：轉成 datetime dtype</h3>
+<p>Dataset 入面嘅日期時間通常被 pandas 當普通 string（<code>object</code>）讀入，要轉成 datetime dtype，兩個方法：</p>
+<ol>
+  <li>讀檔時 parse：<code>pd.read_csv(..., parse_dates=['col'])</code></li>
+  <li>先當 string 讀，再用 <code>pd.to_datetime()</code> 轉</li>
+</ol>
+<pre><code># 方法 1：讀入時 parse
+air_quality = pd.read_csv(path + 'air_quality.csv', parse_dates=['date_time'])
+air_quality.info()
+# 95685 entries，14 columns；date_time → datetime64[ns]
+# PM2.5, PM10, SO2, NO2, CO, O3, TEMP, PRES, DEWP, RAIN, WSPM → float64；wd, station → object
+
+# 方法 2：讀入後轉
+air_quality = pd.read_csv(path + 'air_quality.csv')     # date_time 係 object
+air_quality['date_time'] = pd.to_datetime(air_quality['date_time'])   # → datetime64[ns]
+
+air_quality['date_time'].loc[0]      # Timestamp('2013-03-01 00:00:00')  ← 每個 element 係 Timestamp</code></pre>
+
+<h3>4.3 <code>.dt</code> accessor</h3>
+<p><code>.dt</code> = accessor object for datetime-like properties of the Series values。Series dtype 係 datetime 時，經 <code>.dt</code> 可以逐個 element 用 datetime functions / attributes（同 Week 5 <code>.str</code> 一樣嘅邏輯）。</p>
+<pre><code>air_quality['date_time'].dt.month          # 3, 3, 3, ..., 2   dtype: int32
+air_quality['year']             = air_quality['date_time'].dt.year
+air_quality['month']            = air_quality['date_time'].dt.month
+air_quality['day']              = air_quality['date_time'].dt.day
+air_quality['hour']             = air_quality['date_time'].dt.hour
+air_quality['quarter']          = air_quality['date_time'].dt.quarter       # 1–4
+air_quality['day_of_week_num']  = air_quality['date_time'].dt.dayofweek     # Monday=0 … Sunday=6
+air_quality['day_of_week_name'] = air_quality['date_time'].dt.day_name()    # 'Friday' 等（係 method，要括號）
+air_quality.head(3)    # 3 rows × 21 columns（14 + 7 個新 columns）</code></pre>
+<div class="box warn"><span class="label">⚠️ 易錯</span><p><code>.dt.year</code>、<code>.dt.month</code>、<code>.dt.dayofweek</code> 係 <b>attributes</b>（冇括號）；<code>.dt.day_name()</code> 係 <b>method</b>（要括號）。另外如果 column 仲係 object（未轉 datetime），用 <code>.dt</code> 會出 <code>AttributeError: Can only use .dt accessor with datetimelike values</code>。</p></div>
+
+<h3>4.4 Checking the time range 與 Timedelta 運算</h3>
+<pre><code>air_quality['date_time'].max() - air_quality['date_time'].min()
+# Timedelta('1460 days 23:00:00')     ← 2013-03-01 00:00 至 2017-02-28 23:00
+date_time_range = air_quality['date_time'].max() - air_quality['date_time'].min()
+
+date_time_range / pd.Timedelta(weeks=1)   # 208.70833333333334  ← Timedelta / Timedelta = float（幾多個星期）
+date_time_range / 7                       # Timedelta('208 days 17:00:00')  ← Timedelta / number = Timedelta
+date_time_range.days                      # 1460</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：Timedelta 運算結果 type</span>
+<table>
+<tr><th>運算</th><th>結果</th><th>例子</th></tr>
+<tr><td>Timestamp − Timestamp</td><td>Timedelta</td><td><code>max() - min()</code> → <code>1460 days 23:00:00</code></td></tr>
+<tr><td>Timedelta ÷ Timedelta</td><td>float（單位換算）</td><td><code>/ pd.Timedelta(weeks=1)</code> → 208.708</td></tr>
+<tr><td>Timedelta ÷ number</td><td>Timedelta</td><td><code>/ 7</code> → <code>208 days 17:00:00</code></td></tr>
+<tr><td><code>.days</code></td><td>int（只取日數部分）</td><td>1460</td></tr>
+</table>
+<p>驗算：1460 日 23 小時 = 1460.9583 日；÷ 7 = 208.7083 星期 = 208 日 + 0.7083×24 = 17 小時 ✔。</p></div>
+
+<h3>4.5 Time until / time prior to a specific date</h3>
+<ul>
+  <li><code>date_time</code> column − 特定日期 → 「time until」嗰個日期（或之後）；特定日期 − column → 「time prior to」嗰個日期。</li>
+  <li>結果係 Timedelta（dtype <code>timedelta64[ns]</code>）——適合需要「時間跨度」而唔係實際日期嘅 features。</li>
+  <li>因為 column 每個 element 係 Timestamp，所以要構造 Timestamp 或 datetime object 嚟減。</li>
+</ul>
+<pre><code>datetime.datetime.now() - air_quality['date_time'].max()   # Timedelta('3512 days 13:35:58.220781')
+datetime.datetime(2022, 1, 1) - air_quality['date_time']   # 0: 3228 days 00:00:00 ... 95684: 1767 days 01:00:00
+
+# pd.Timestamp 接受多種格式，更方便
+pd.Timestamp('01-01-2022'); pd.Timestamp('2022/1/1'); pd.Timestamp('2022-01-01')
+pd.Timestamp('01-01-2022') - air_quality['date_time']      # 同上結果
+
+air_quality['time_until_2022'] = pd.Timestamp('01-01-2022') - air_quality['date_time']
+air_quality['time_until_2022_days'] = air_quality['time_until_2022'] / pd.Timedelta(days=1)
+# 3228.000000, 3227.958333, 3227.791667, ...   ← 1 小時 = 1/24 = 0.041667 日</code></pre>
+
+<h3>4.6 Data prior to / after a specific date（Boolean filtering）</h3>
+<pre><code>air_quality['date_time'] &lt; pd.Timestamp('2016-01-01')     # Boolean Series：True ... False
+air_quality['prior_2016_ind'] = (air_quality['date_time'] &lt; pd.Timestamp('2016/01/01'))
+air_quality[['date_time', 'prior_2016_ind']]
+# 0      2013-03-01 00:00:00  True
+# 95684  2017-02-28 23:00:00  False</code></pre>
+
+<h3>4.7 Q5（homework）</h3>
+<pre><code>import pandas as pd
+air_quality = pd.read_csv(path + 'air_quality.csv')                                   # reload
+air_quality['date_time'] = pd.to_datetime(air_quality['date_time'])                   # 轉 datetime
+air_quality['year'] = air_quality['date_time'].dt.year                                # 抽 year
+air_quality['time_since_2022_weeks'] = (air_quality['date_time'] - pd.Timestamp('2022-01-01')) / pd.Timedelta(weeks=1)
+# （數據喺 2022 之前，所以會係負數）
+air_quality_after_2016 = air_quality[air_quality['date_time'] &gt;= pd.Timestamp('2016-01-01')]   # in or after 2016
+air_quality_after_2016.shape[0], air_quality.shape[0]     # (29340, 95685)</code></pre>
+
+<h2>5. Feature transformation：categorical → numerical（Encoding）</h2>
+<p>好多分析同 machine learning 需要 numeric input，所以要將 non-numeric features 轉成數字。通常用喺 distinct values 有限嘅 categorical features，呢個過程叫 <mark class="k">encoding</mark>。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：兩種 categorical features 同對應 encoding</span>
+<table>
+<tr><th>類型</th><th>定義</th><th>例子</th><th>Encoding</th></tr>
+<tr><td><b>Nominal</b></td><td>Values in <b>unranked</b> categories</td><td>Red, green, yellow, blue；True, False</td><td>Binary（True/False → 1/0）、<b>One-hot encoding</b></td></tr>
+<tr><td><b>Ordinal</b></td><td>Values in <b>ranked</b> categories</td><td>High, Mid, Low；Hot, warm, cold, very cold</td><td><b>Ordinal encoding</b>：{High, Mid, Low} → {0, 1, 2}</td></tr>
+</table>
+<ul>
+<li><b>Binary</b>：For True or False variables，assign 0 or 1。</li>
+<li><b>One-hot encoding</b>（for nominal）：將有多個值嘅 variable 轉成多個 binary (0/1) variables，每個 category 一個——即係會<b>新增幾個 columns</b>。</li>
+<li><b>Ordinal encoding</b>（for ordinal）：用<b>一個</b> integer variable，整數對應有次序嘅 categories。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 點解 nominal 唔用 0,1,2？</span><p>如果將 red=0、green=1、yellow=2，model 會以為 yellow &gt; green &gt; red，而且 yellow − green = green − red——但顏色根本冇次序。One-hot 令每個顏色係獨立嘅 0/1 column，冇虛假次序。相反，Size S/M/L 本身有次序，用 0/1/2 保留咗呢個資訊，又只用一個 column。</p></div>
+
+<h3>5.1 One-hot encoding：<code>pd.get_dummies()</code></h3>
+<pre><code>pandas.get_dummies(data, prefix=None, prefix_sep='_', dummy_na=False, ...)</code></pre>
+<pre><code>df = pd.DataFrame([['a', 'green', 1], ['b', 'yellow', 2], ['c', 'red', 3]],
+                  columns=['class', 'color', 'quantity'])
+pd.get_dummies(df)   # default：所有 non-numeric columns 都 encode；numeric（quantity）保持
+#    quantity  class_a  class_b  class_c  color_green  color_red  color_yellow
+# 0         1     True    False    False         True      False         False
+# 1         2    False     True    False        False      False          True
+# 2         3    False    False     True        False       True         False
+
+pd.get_dummies(df, prefix=['col1', 'col2'])   # 用 prefix 取代原 column 名
+# quantity, col1_a, col1_b, col1_c, col2_green, col2_red, col2_yellow</code></pre>
+<p>新 column 名 = <code>原名 + prefix_sep('_') + category</code>；新 pandas 版本輸出 bool（True/False），可以 <code>dtype=int</code> 改成 0/1。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 26 頁 <code>one hot.png</code> 圖解 one-hot encoding，文字擷取不到；上面 code 輸出已示範同一概念。</p></div>
+
+<h3>5.2 Ordinal encoding：sklearn <code>OrdinalEncoder</code></h3>
+<p>將 categorical features encode 成 integer array。兩個關鍵步驟：</p>
+<ul>
+  <li><code>OrdinalEncoder.fit(sample_data)</code>：學習所有值、決定次序（sample data <b>必須包含每個 column 所有 unique values</b>）。</li>
+  <li><code>OrdinalEncoder.transform(data)</code>：將 encoding scheme 套用落 data。</li>
+</ul>
+<p>Steps：① import 同 construct encoder → ② <code>fit(sample_data)</code>（default 按<b>字母次序</b>編號）→ ③（optional）睇 <code>categories_</code> attribute → ④ <code>transform(full_data)</code>，assign 返 DataFrame。</p>
+<pre><code>import pandas as pd
+from sklearn.preprocessing import OrdinalEncoder
+
+df = pd.DataFrame([['a','green'], ['b','yellow'], ['c','red'],
+                   ['a','red'],   ['b','green'],  ['a','yellow']])
+df.columns = ['class', 'color']
+
+# sample data 要涵蓋所有 unique values
+sample_data = pd.DataFrame({'class': df['class'].unique(), 'color': df['color'].unique()})  # method 1：programmatic
+sample_data = df.head(3)                                                                    # method 2：自己檢查過頭 3 行已齊
+
+enc = OrdinalEncoder()
+enc.fit(sample_data.head(3))
+enc.categories_
+# [array(['a', 'b', 'c']), array(['green', 'red', 'yellow'])]   ← 字母次序
+enc.transform(df)
+# [[0., 0.],    a, green
+#  [1., 2.],    b, yellow
+#  [2., 1.],    c, red
+#  [0., 1.],    a, red
+#  [1., 0.],    b, green
+#  [0., 2.]]    a, yellow</code></pre>
+<div class="box warn"><span class="label">⚠️ Notebook 中 <code>df.copy()</code> 嘅用法</span><p>Notebook 寫 <code>df_enc1 = df.copy()</code> 然後 <code>df_enc1 = enc.transform(df)</code>——第二句將 <code>df_enc1</code> 重新指向一個 <b>NumPy array</b>，前面嘅 copy 其實冇用到。原 <code>df</code> 冇變係因為 <code>transform()</code> 本身唔會改 input。如果想得到 encode 咗嘅 DataFrame，應該寫 <code>df_enc1 = df.copy(); df_enc1[['class','color']] = enc.transform(df)</code>。</p></div>
+
+<h3>5.3 自訂次序：<code>categories=</code></h3>
+<pre><code>my_cat = [['b', 'a', 'c'], ['red', 'green', 'yellow']]   # 每個 column 一個 list，次序 = 編號
+enc1 = OrdinalEncoder(categories=my_cat)
+enc1.fit(sample_data.head(1))   # 提供咗 categories，sample data 內容唔重要（但仍要 call fit）
+enc1.categories_                # [array(['b','a','c']), array(['red','green','yellow'])]
+enc1.transform(df)
+# b→0, a→1, c→2；red→0, green→1, yellow→2
+# [[1., 1.], [0., 2.], [2., 0.], [1., 0.], [0., 1.], [1., 2.]]
+
+enc2 = OrdinalEncoder()
+enc2.fit_transform(df)          # fit + transform 一步完成（default 字母次序）</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：真正 ordinal 數據一定要自訂 categories</span><p>Default 字母次序對 S/M/L 會變成 L=0、M=1、S=2——次序錯晒。所以 ordinal features 必須用 <code>OrdinalEncoder(categories=[['S','M','L']])</code> 明確指定次序。<code>categories</code> 係 <b>list of lists</b>（每個 column 一個 list），就算只 encode 一個 column 都要兩層括號。</p></div>
+
+<h3>5.4 Q6：one-hot + ordinal 綜合</h3>
+<pre><code>df = pd.DataFrame([['a','S'], ['b','L'], ['c','M'], ['a','L'], ['b','S'], ['a','M']])
+df.columns = ['class', 'size']
+
+# Part 1：class 用 one-hot，concat 返原 df，drop 原 'class'
+df = pd.concat([df, pd.get_dummies(df['class'], prefix='class')], axis=1).drop(columns=['class'])
+#   size  class_a  class_b  class_c
+# 0    S     True    False    False
+# 1    L    False     True    False ...
+
+# Part 2：size 用 ordinal，S=0, M=1, L=2
+enc = OrdinalEncoder(categories=[['S', 'M', 'L']])
+enc.fit(df[['size']])                  # 注意雙括號：encoder 要 2-D input
+enc.categories_                        # [array(['S', 'M', 'L'])]
+df['size'] = enc.transform(df[['size']])
+#   size  class_a  class_b  class_c
+# 0  0.0     True    False    False
+# 1  2.0    False     True    False
+# 2  1.0    False    False     True
+# 3  2.0     True    False    False
+# 4  0.0    False     True    False
+# 5  1.0     True    False    False</code></pre>
+
+<h3>5.5 Summary on encoding</h3>
+<table>
+<tr><th>Data</th><th>類型</th><th>建議 encoding</th></tr>
+<tr><td>Apple, banana, pear?</td><td>Nominal</td><td>One-hot</td></tr>
+<tr><td>Fat, Medium, Slim?</td><td>Ordinal</td><td>Ordinal encoding（自訂次序）</td></tr>
+<tr><td>East, South, West, North</td><td>Cyclic</td><td>用 <b>sine 同 cosine</b> transformations 保留循環性質</td></tr>
+<tr><td>Geolocations (latitude, longitude)</td><td>座標</td><td>Haversine distance 或轉成 Cartesian coordinates</td></tr>
+<tr><td>Text data</td><td>文字</td><td>TF-IDF、word embeddings，或 categorical text 用 one-hot</td></tr>
+</table>
+<p>Cyclic encoding 例子：方向有 \(K=4\) 個，第 \(k\) 個（East=0, South=1, West=2, North=3）：</p>
+<div class="formula">$$ x_{\sin} = \sin\!\left(\frac{2\pi k}{K}\right), \quad x_{\cos} = \cos\!\left(\frac{2\pi k}{K}\right) $$</div>
+<p>咁 North（k=3）同 East（k=0）喺 (sin, cos) 平面上係相鄰，而唔係「相差 3」。同樣適用於 month（K=12）、hour（K=24）。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 2 嘅 attribute types（nominal / ordinal / interval / ratio）就係決定 encoding 嘅依據；COM6004 Classification 嘅大部分 algorithms（同 COM6005 logistic regression）都要求 numeric input，所以 one-hot / ordinal encoding 係 modelling 前必經步驟。</p></div>
+
+<h2>6. Feature transformation：numerical → categorical（Binning）</h2>
+<p><mark class="k">Binning</mark>：將一個 numerical column 分成多組，每組俾一個 label，變成 categorical data。例如 Height (cm) → tall, medium, short。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：<code>cut()</code> vs <code>qcut()</code></span>
+<table>
+<tr><th></th><th><code>pd.cut()</code></th><th><code>pd.qcut()</code></th></tr>
+<tr><td>基礎</td><td><b>Value-based</b>：你提供想要嘅值範圍</td><td><b>Quantile-based</b>：你提供想要嘅組大小</td></tr>
+<tr><td>整數參數</td><td><code>bins=N</code>：N 個 <b>equal-width</b> intervals</td><td><code>q=M</code>：M 個 <b>equal-sized</b> 組（每組數據量相近）</td></tr>
+<tr><td>自訂</td><td><code>bins=[edge0, edge1, ...]</code></td><td><code>q=[0, .25, .5, .75, 1.]</code>（quantiles）</td></tr>
+<tr><td>每組數目</td><td>可以極唔平均（skewed data）</td><td>大致相同（ties 會令佢略為唔同）</td></tr>
+</table></div>
+
+<h3>6.1 Salary 例子：cut vs qcut</h3>
+<pre><code># 偏斜嘅真實薪金：大部分人薪金低，少數極高
+salary = pd.Series([32000, 35000, 37000, 39000, 41000, 43000, 45000, 48000, 50000, 52000,
+                    55000, 58000, 62000, 75000, 85000, 100000, 200000, 220000, 350000, 500000],
+                   name='annual_salary')
+salary.hist(bins=20)
+
+salary_cut  = pd.cut(salary, bins=4, labels=["Low", "Medium-Low", "Medium-High", "High"])
+salary_qcut = pd.qcut(salary, q=4, labels=["1st quartile", "2nd quartile", "3rd quartile", "4th quartile"])
+
+print(salary_cut.value_counts().sort_index())
+# Low 16, Medium-Low 2, Medium-High 1, High 1
+print(salary_qcut.value_counts().sort_index())
+# 1st quartile 5, 2nd quartile 5, 3rd quartile 5, 4th quartile 5</code></pre>
+<div class="box exam"><span class="label">⭐ Worked calculation：cut 嘅 edges</span>
+<p>Range = 500000 − 32000 = 468000；每個 bin 寬 = 468000 / 4 = <b>117000</b>。Edges：32000（實際向左延伸 0.1% of range 以包含 min）, 149000, 266000, 383000, 500000。</p>
+<ul>
+<li>Low (≤149000)：32000 … 100000 → <b>16</b> 人</li>
+<li>Medium-Low (149000, 266000]：200000, 220000 → <b>2</b></li>
+<li>Medium-High (266000, 383000]：350000 → <b>1</b></li>
+<li>High (383000, 500000]：500000 → <b>1</b></li>
+</ul>
+<p>qcut 就按人數切：20 人 ÷ 4 = 每組 5 人。結論：skewed data 用 cut 會令大部分人擠喺同一組；想要每組人數平均就用 qcut。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 32 頁 salary histogram 係圖片，文字擷取不到。</p></div>
+<div class="box warn"><span class="label">⚠️ Notebook 標題小錯</span><p>Notebook 有個小標題寫「cut: divides data into equal-sized groups」，但下面內文同結果都清楚顯示：<b>cut 係 equal-width（等寬值域）</b>，<b>qcut 先係 equal-sized（等人數）</b>。考試以後者為準。</p></div>
+
+<h3>6.2 <code>pandas.cut()</code> 參數</h3>
+<pre><code>pandas.cut(x, bins, right=True, labels=None, retbins=False, precision=3,
+           include_lowest=False, duplicates='raise', ordered=True)</code></pre>
+<ul>
+  <li><code>x</code>：要 bin 嘅 array-like，必須 1-dimensional。</li>
+  <li><code>bins</code>：
+    <ul>
+      <li><code>int</code>：x 範圍內 equal-width bins 數目；x 嘅 range 會每邊延伸 0.1% 以包含 min 同 max。</li>
+      <li>sequence of scalars：bin edges，可以唔等寬；唔會延伸範圍。</li>
+      <li><code>IntervalIndex</code>：指定確切 bins（不可重疊）。</li>
+    </ul></li>
+  <li><code>labels</code>：bins 嘅 labels；<code>False</code> 就只回傳 integer bin 編號。</li>
+  <li><code>right=True</code>：區間係 (a, b]——左開右閉。</li>
+  <li>Returns：<b>out</b>（Categorical / Series，長度同 x 一樣）；<b>bins</b>（只有 <code>retbins=True</code> 先回傳，即分界值）。</li>
+</ul>
+<pre><code>pm2p5_labels = pd.cut(air_quality['PM2.5'], bins=10)
+pm2p5_labels, pm2p5_bins = pd.cut(air_quality['PM2.5'], bins=10, retbins=True)   # 要兩個變數接收
+pm2p5_labels.sample(100)     # (1.181, 83.9], (83.9, 165.8], ...   dtype: category
+pm2p5_bins
+# [1.181, 83.9, 165.8, 247.7, 329.6, 411.5, 493.4, 575.3, 657.2, 739.1, 821.]   ← 每格相差 81.9
+
+pd.cut(air_quality['PM2.5'], bins=10).value_counts(dropna=False)
+# (1.181, 83.9] 59923；(83.9, 165.8] 22741；(165.8, 247.7] 8132；... (739.1, 821.0] 6   ← 極唔平均</code></pre>
+<p>驗算：PM2.5 min = 2、max = 821，寬度 = (821 − 2)/10 = 81.9；第一個 edge = 2 − 0.1%×819 = 2 − 0.819 = <b>1.181</b> ✔。</p>
+
+<h3>6.3 <code>cut()</code> with customized (unequal) edges</h3>
+<p>有時想用有實際意義、唔等寬嘅範圍，例如美國官方 PM2.5 分 6 級。提供<b>所有</b> edges：<code>pd.cut(series, bins=[edge0, edge1, ..., edge_max])</code>。如果 edges 冇覆蓋晒所有數據，範圍外嘅值會變成 <b>NaN</b> category。</p>
+<pre><code>pd.cut(air_quality['PM2.5'], bins=[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4])   # 6 個不等寬區間
+pd.cut(air_quality['PM2.5'], bins=[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4]).value_counts(dropna=False)
+# (55.4, 150.4] 34257；(12.0, 35.4] 19853；(0.0, 12.0] 13576；(35.4, 55.4] 12457；
+# (150.4, 250.4] 10821；(250.4, 500.4] 4474；NaN 247   ← 247 個值 &gt; 500.4
+pd.cut(air_quality['PM2.5'], bins=[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4])[86709]   # nan（最大值嗰行）
+
+# Q7：換 edges 避免 NaN —— 最後一個 edge 用 data 嘅 max
+pd.cut(air_quality['PM2.5'],
+       bins=[0, 12, 35.4, 55.4, 150.4, 250.4, air_quality['PM2.5'].max()]).value_counts(dropna=False)
+# ... (250.4, 821.0] 4721   ← 4474 + 247 = 4721 ✔，冇 NaN</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 37 頁 <code>PM2.5_category.png</code>（官方 PM2.5 等級表）係圖片；上面 edges 同 labels 係由 code 得知。</p></div>
+
+<h3>6.4 <code>cut()</code> with customized bin labels</h3>
+<p>Default labels 只係數字區間（例如 <code>(0.0, 12.0]</code>）。用 <code>labels=[...]</code> 自訂，令 column 變成有意義嘅 categorical column。<b>Labels 數目 = edges 數目 − 1</b>（slide：「6 commas in bins → 6 labels」，7 個 edges 有 6 個逗號）。</p>
+<pre><code>air_quality['PM2.5_cat'] = pd.cut(air_quality['PM2.5'],
+    bins=[0, 12, 35.4, 55.4, 150.4, 250.4, air_quality['PM2.5'].max()],
+    labels=['Good', 'Moderate', 'Unhealthy for sensitive groups',
+            'Unhealthy', 'Very unhealthy', 'Hazardous'])
+air_quality[['PM2.5_cat', 'PM2.5']]     # 9.0 → Good；18.0 → Moderate
+air_quality['PM2.5_cat'].value_counts(sort=False)    # 按 category 次序，唔按數目排
+# Good 13576, Moderate 19853, Unhealthy for sensitive groups 12457,
+# Unhealthy 34257, Very unhealthy 10821, Hazardous 4721</code></pre>
+<div class="box warn"><span class="label">⚠️ 易錯：右閉區間同 0</span><p>因為 <code>right=True</code>，區間係 (0, 12]——如果 data 有<b>剛好等於 0</b> 嘅值，會落唔到任何 bin 變 NaN。可以設 <code>include_lowest=True</code> 令第一個區間包括左端。</p></div>
+
+<h3>6.5 <code>qcut()</code> for equal-size cutting</h3>
+<pre><code>qcut(x, q, labels=None, retbins=False, precision=3, duplicates='raise')</code></pre>
+<ul>
+  <li><code>q</code>：int = quantiles 數目（10 = deciles、4 = quartiles）；或者 quantiles array，例如 <code>[0, .25, .5, .75, 1.]</code>。</li>
+  <li>Returns：Categorical / Series（<code>labels=False</code> 時係整數 array）；<code>retbins=True</code> 時另外回傳 bins。</li>
+  <li><b>Note</b>：qcut 之後每組數目仍可能唔相等，因為有重複值（ties），qcut 要遷就。</li>
+</ul>
+<pre><code>pd.qcut(air_quality['PM2.5'], q=4)
+# Categories: [(1.999, 23.0] &lt; (23.0, 59.0] &lt; (59.0, 116.0] &lt; (116.0, 821.0]]
+pd.qcut(air_quality['PM2.5'], q=4).value_counts()
+# (1.999, 23.0] 24708；(59.0, 116.0] 23908；(116.0, 821.0] 23645；(23.0, 59.0] 23424   ← 接近但唔完全相等
+
+cut_data, my_bins = pd.qcut(air_quality['PM2.5'], q=4, retbins=True, labels=False)
+my_bins                              # array([  2.,  23.,  59., 116., 821.])
+air_quality['PM2.5'].describe()      # min 2, 25% 23, 50% 59, 75% 116, max 821   ← 同 qcut edges 一模一樣</code></pre>
+<div class="box tip"><span class="label">💡 qcut 同 five-number summary 嘅關係</span><p><code>qcut(q=4)</code> 嘅 edges 就係 min, Q1, median, Q3, max——即 <code>describe()</code> 嘅 five-number summary。所以 qcut(q=4) 就係「按 quartiles 分組」。因為好多讀數係整數（例如好多個 23.0），落喺邊界嘅重複值只能全部放喺同一組，所以 24708 ≠ 23424。</p></div>
+
+<h3>6.6 Q8：TEMP 分 5 個 equal-sized intervals</h3>
+<pre><code>air_quality['TEMP'].describe()     # min -16.8, 25% 3.5, 50% 14.6, 75% 23.4, max 41.6
+air_quality['TEMP_category'] = pd.qcut(air_quality['TEMP'], q=5,
+                                       labels=['very cold', 'cold', 'moderate', 'warm', 'hot'])
+# 最冷 20% → very cold … 最熱 20% → hot（labels 由低到高對應）
+air_quality.head()                 # 5 rows × 24 columns
+air_quality.to_pickle(path + 'air_quality.pkl')</code></pre>
+<p>（題目一處寫「coldest」、一處寫「very cold」，以 labels list 為準。）</p>
+
+<h2>7. Summary of the lesson</h2>
+<ul>
+  <li><b>Outliers</b>：Five-number summary；Upper/lower bound by IQR；Get the number of outliers；Drop or cap the value of outliers</li>
+  <li><b>Datetime</b>：<code>pd.to_datetime()</code>；<code>.dt</code> accessor 抽 year、month、day 等；Time until / time after（Timedelta data）</li>
+  <li><b>Categorical → numerical</b>：One-hot encoding for nominal data（syntax）；Ordinal encoder for ordinal data（syntax）</li>
+  <li><b>Binning</b>：<code>cut()</code> vs <code>qcut()</code> 將 continuous data 分成 intervals</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 某 column：Q1 = 20，Q3 = 50。計 IQR 同 outlier bounds。值 −30、100、120 邊啲係 outliers？</summary><p>IQR = 50 − 20 = 30；1.5×IQR = 45。Upper = 50 + 45 = <b>95</b>；Lower = 20 − 45 = <b>−25</b>。−30 &lt; −25 → outlier；100 &gt; 95 → outlier；120 → outlier。三個都係。</p></details>
+<details class="q"><summary>Q2. 寫 code：將 <code>df['income']</code> 高過 95th percentile 嘅值 cap 喺 95th percentile，並確認之後冇值高過佢。</summary><pre><code>p95 = df['income'].quantile(0.95)
+df.loc[df['income'] &gt; p95, 'income'] = p95
+(df['income'] &gt; p95).sum()    # 0</code></pre></details>
+<details class="q"><summary>Q3. Capping 同 dropping outliers 有咩分別？幾時應該 keep？</summary><p>Dropping 會刪走成行（失去其他 columns 嘅資料）；capping 保留該 data point，只係將極端值壓到 threshold，減低對分析嘅影響。如果 outlier 係 rare case 但真實（例如 China 人口），應該 keep；如果係輸入錯誤，可以 drop 或當 missing 再 impute；如果係不同類別混埋（regions vs countries），應該分開處理。</p></details>
+<details class="q"><summary>Q4. 一個 <code>date_time</code> column 係 object dtype。寫 code 轉 datetime，加一個 column 表示星期幾（名稱），同計每行距離 2020-01-01 幾多日（float）。</summary><pre><code>df['date_time'] = pd.to_datetime(df['date_time'])
+df['weekday'] = df['date_time'].dt.day_name()
+df['days_since_2020'] = (df['date_time'] - pd.Timestamp('2020-01-01')) / pd.Timedelta(days=1)</code></pre></details>
+<details class="q"><summary>Q5. <code>td = pd.Timedelta('10 days 12:00:00')</code>。<code>td / pd.Timedelta(days=1)</code>、<code>td / 2</code>、<code>td.days</code> 各係咩？</summary><p><code>td / pd.Timedelta(days=1)</code> = <b>10.5</b>（float）；<code>td / 2</code> = <b>Timedelta('5 days 06:00:00')</b>；<code>td.days</code> = <b>10</b>（int，只取日數部分）。</p></details>
+<details class="q"><summary>Q6. 以下 features 應該用咩 encoding？(a) Blood type A/B/AB/O (b) Education: Primary/Secondary/Bachelor/Master (c) Month 1–12 (d) Is_member True/False</summary><p>(a) Nominal → <b>one-hot</b>；(b) Ordinal → <b>ordinal encoding</b>（自訂 categories 次序）；(c) Cyclic → <b>sine/cosine</b>（12 月同 1 月相鄰）；(d) Binary → <b>0/1</b>。</p></details>
+<details class="q"><summary>Q7. <code>OrdinalEncoder()</code>（無參數）對 column ['Low','High','Mid'] fit 之後，<code>categories_</code> 係咩？有咩問題？點修正？</summary><p>Default 字母排序 → <code>['High', 'Low', 'Mid']</code>，即 High=0、Low=1、Mid=2——次序同實際大小唔符。修正：<code>OrdinalEncoder(categories=[['Low', 'Mid', 'High']])</code> → Low=0、Mid=1、High=2。</p></details>
+<details class="q"><summary>Q8. 數據 [1, 2, 3, 4, 5, 6, 7, 100]。<code>pd.cut(x, bins=3)</code> 同 <code>pd.qcut(x, q=4)</code> 各組數目大概點？</summary><p>cut：range 1–100，寬 33 → (0.901, 34], (34, 67], (67, 100] → <b>7, 0, 1</b>。qcut q=4：每組約 2 個 → <b>2, 2, 2, 2</b>（[1,2], [3,4], [5,6], [7,100]）。示範 skewed data 下 cut 會極唔平均，qcut 按人數平均分。</p></details>
+<details class="q"><summary>Q9. <code>pd.cut(s, bins=[0, 10, 20])</code>，s 有值 0、5、20、25。結果係咩？</summary><p>區間係 (0, 10] 同 (10, 20]（右閉）。0 → <b>NaN</b>（唔包左端）；5 → (0, 10]；20 → (10, 20]；25 → <b>NaN</b>（超出範圍）。可以用 <code>include_lowest=True</code> 包括 0，最後 edge 改成 <code>s.max()</code> 包括 25。</p></details>
+<details class="q"><summary>Q10. <code>(des.loc['max'] - des.loc['75%']) / des.loc['75%']</code> 量度咩？點解 is_region 會出 inf？</summary><p>量度 max 比 Q3 遠幾多倍（normalized distance），數值越大越可能有極端大值。is_region 嘅 75% percentile 係 0（大部分係國家），除以 0 → inf；呢個 column 係 binary，根本唔適合用呢個方法判斷 outliers。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li>Outlier：distinct from most others；成因：rare cases（keep）、measurement/input errors、mix-up of sources/categories。</li>
+  <li>偵測：<code>describe()</code>（range、max vs 75%）、<code>quantile(p)</code>（p ∈ [0,1]）、IQR、<code>hist(bins=N, figsize=...)</code>、<code>boxplot(column=...)</code>。</li>
+  <li>IQR = Q3 − Q1；bounds = Q3 + 1.5·IQR、Q1 − 1.5·IQR；數：<code>(s &gt; upper).sum()</code>。</li>
+  <li>Capping：<code>df.loc[df[c] &gt; p99, c] = p99</code>（p99 = <code>quantile(0.99)</code>）。</li>
+  <li>Advice：plot → keep/drop/cap → normal 用 mean+SD；skewed/outliers 用 five-number summary。</li>
+  <li>datetime classes：date、time、datetime、timedelta、tzinfo、timezone；MAXYEAR 9999、MINYEAR 1。</li>
+  <li>轉 datetime：<code>read_csv(parse_dates=['col'])</code> 或 <code>pd.to_datetime(s)</code>；element = Timestamp。</li>
+  <li><code>.dt.year/.month/.day/.hour/.quarter/.dayofweek</code>（Mon=0）、<code>.dt.day_name()</code>。</li>
+  <li>Timestamp − Timestamp = Timedelta；÷ Timedelta = float；÷ number = Timedelta；<code>.days</code>。</li>
+  <li>日期 filtering：<code>df[df['date_time'] &gt;= pd.Timestamp('2016-01-01')]</code>。</li>
+  <li>Nominal（無序）→ one-hot <code>pd.get_dummies(df, prefix=...)</code>；Ordinal（有序）→ <code>OrdinalEncoder(categories=[[...]])</code>；Binary → 0/1。</li>
+  <li>OrdinalEncoder：<code>fit</code>（sample 要齊所有值）→ <code>categories_</code> → <code>transform</code>；或 <code>fit_transform</code>；default 字母次序；輸出 NumPy array。</li>
+  <li>Cyclic → sin/cos；geolocation → Haversine / Cartesian；text → TF-IDF / embeddings。</li>
+  <li><code>pd.cut(bins=N)</code> equal-width（range 延伸 0.1%）；<code>bins=[edges]</code> 自訂，範圍外 → NaN；labels 數 = edges − 1；<code>retbins=True</code> 回傳 edges；區間 (a, b]。</li>
+  <li><code>pd.qcut(q=M)</code> equal-sized（quantile-based）；q=4 edges = five-number summary；ties 令數目略唔等。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w6.html">← Week 6 Data Cleaning (I)</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 4 SQL</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w4">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 4</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 4 · Source: 4-SQL.pptx (70 slides)</p>
+<h1>SQL</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>知道 SQL 的四類語言 DDL / DML / DQL / DCL；SQLite 的優缺點</li>
+    <li>識寫 <code>CREATE TABLE</code>、<code>INSERT</code>、<code>DELETE</code>、<code>DROP</code>、<code>CREATE INDEX</code>、<code>UPDATE</code>；理解 data types 同 NULL</li>
+    <li>識寫 query：<code>SELECT</code> / <code>DISTINCT</code> / <code>WHERE</code> / <code>ORDER BY</code> / <code>LIMIT</code> / <code>OFFSET</code> / <code>CASE</code></li>
+    <li>掌握各種 JOIN（inner、left / right outer、Cartesian、self join、multiple tables）同 alias</li>
+    <li>掌握 aggregate functions、<code>GROUP BY</code>、<code>HAVING</code>，以及 WHERE vs HAVING、execution order</li>
+    <li>識用 set operations（UNION / UNION ALL / INTERSECT / EXCEPT）、sub-query 同 <code>WITH</code></li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>JOIN 類型：INNER vs LEFT vs RIGHT vs Cartesian；Cartesian + WHERE = inner join；self join 例子（比 101 更好成績）</li>
+    <li>Aggregate functions 忽略 NULL；GROUP BY 要用 unique key（StudentID 而唔係 StudentName）</li>
+    <li>WHERE vs HAVING（group by 之前 vs 之後；原始 attribute vs aggregated data）</li>
+    <li>Execution order：FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET</li>
+    <li>Sub-query / WITH：「平均每個 major 修幾多科」兩步法（count 唔可以同一句再 average）</li>
+  </ol>
+</div>
+
+<h2>0. 點樣跑本頁所有例子（Runnable setup）</h2>
+<p>Slide 2 建議用 <b>db-fiddle.com</b>（online playground）或者 VS Code + <b>SQLite</b>（Python 內置 <code>sqlite3</code> package；可裝 SQLite Viewer extension 睇內容）；練習可用 LeetCode database problems。以下 script 建立本頁用到的所有 tables（跟 slides 的數據）。貼入 db-fiddle（揀 SQLite）或者用下面 Python 跑：</p>
+<pre><code>-- setup.sql
+CREATE TABLE Student (            -- slide 8–23
+    Student_ID CHAR(4),
+    Name       VARCHAR(100),
+    Year       INT
+);
+INSERT INTO Student VALUES ('s123', 'Amy', 1);
+INSERT INTO Student VALUES ('s234', 'Bob', 2);
+INSERT INTO Student VALUES ('s345', 'Cathy', 1);
+
+-- slide 24–29、35–36、57–63（為免同上面撞名，Student 改叫 Stud）
+CREATE TABLE Stud   (StudentID INT, StudName VARCHAR(50), Major VARCHAR(10));
+INSERT INTO Stud VALUES (1,'Amy','DS'), (3,'Bob','CS'), (6,'Cathy','CS');
+CREATE TABLE Result (StudentID INT, ModuleCode CHAR(6), Grade CHAR(1));
+INSERT INTO Result VALUES (1,'CS1002','B'), (1,'CS1001','A'), (3,'CS1001','A'), (6,'CS1001','B');
+CREATE TABLE Module (ModuleCode CHAR(6), ModuleName VARCHAR(100));
+INSERT INTO Module VALUES ('CS1001','Programming'), ('CS1002','Databases');  -- module 名為示範自訂
+
+-- slide 30–42（Student AS a / Result AS b）
+CREATE TABLE S (ID INT, Name VARCHAR(50));
+INSERT INTO S VALUES (102,'Mary'), (103,'Alice'), (101,'Alice');
+CREATE TABLE R (ID INT, MCode CHAR(6), Grade CHAR(1));
+INSERT INTO R VALUES (101,'CS1001','B'), (103,'CS1002','B'), (104,'CS1001','A');
+
+-- slide 45–50（每行係一張 order：Shop ID + Amount）
+CREATE TABLE T (Shop INT, Amount INT);
+INSERT INTO T VALUES (1,1),(1,2),(1,3),(2,2),(2,4),(3,1),(3,3),(3,4);</code></pre>
+<pre><code># run_sql.py — 用 Python 內置 sqlite3 執行
+import sqlite3
+con = sqlite3.connect(":memory:")          # 或 "school.db" 存落 file
+con.executescript(open("setup.sql").read())
+
+def q(sql):
+    cur = con.execute(sql)
+    print([d[0] for d in cur.description])  # column names
+    for row in cur.fetchall():
+        print(row)
+
+q("SELECT * FROM Student")</code></pre>
+<div class="box warn"><span class="label">⚠️ 引號</span><p>Slides 用 “Mary” 呢類雙引號表示 text。Standard SQL 字串用 <b>單引號</b> <code>'Mary'</code>（雙引號喺 standard SQL / PostgreSQL 係 identifier，即欄名）。MySQL 同 SQLite 對雙引號比較寬鬆，但考試 / 實務建議用單引號。本頁 code 一律用單引號。</p></div>
+
+<h2>1. Tools、SQLite 與 SQL 分類</h2>
+<p>Cloud platforms [Self-study]：Oracle（Always Free Tier，要 credit card）、GCP Cloud SQL、Azure SQL Database、AWS Amazon RDS（Free Tier）。</p>
+<h3>1.1 SQLite vs standard RDBMS</h3>
+<table>
+<tr><th>Pros</th><th>Cons</th></tr>
+<tr><td><b>Lightweight</b>；<b>can be embedded in the application</b>（一個 file 就係一個 DB）</td><td><b>Database level locking</b> instead of row-based locking（鎖成個 DB 而唔係個別 data items）；<b>Not scalable</b>（single node）；<b>Not for remote access</b>；<b>No built-in authentication</b></td></tr>
+</table>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Database level locking 即係 Week 3 的 lock 粒度好粗：一個人寫，全部人都要等 → concurrency 差，所以 SQLite 唔適合多用戶 OLTP。</p></div>
+<h3>1.2 SQL 四類語言</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+<tr><th>類別</th><th>全名</th><th>例子</th></tr>
+<tr><td><b>DDL</b></td><td>Data Definition Language</td><td>Create / delete database and tables（<code>CREATE TABLE</code>, <code>DROP TABLE</code>, <code>CREATE INDEX</code>）</td></tr>
+<tr><td><b>DML</b></td><td>Data Manipulation Language</td><td>Add / remove data（<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>）</td></tr>
+<tr><td><b>DQL</b></td><td>Data Query Language</td><td>Query（<code>SELECT</code>）— <b>the focus here</b></td></tr>
+<tr><td><b>DCL</b></td><td>Data Control Language</td><td>Grant access（<code>GRANT</code>）</td></tr>
+</table>
+<p>SQL versions：唔同 RDBMS 支援的 syntax 可能有少少唔同。</p>
+</div>
+
+<h2>2. Basic commands &amp; data types</h2>
+<table>
+<tr><th>Command</th><th>Description</th></tr>
+<tr><td><code>CREATE TABLE [table] ([attribute1] [type1], [attribute2] [type2], ...);</code></td><td>Create new table</td></tr>
+<tr><td><code>INSERT INTO [table] VALUES ([value], …, [value]);</code></td><td>Inserting a record</td></tr>
+<tr><td><code>DELETE FROM [table] WHERE [condition]</code></td><td>Delete record(s) from tables</td></tr>
+<tr><td><code>DROP TABLE [table];</code></td><td>Delete a table</td></tr>
+</table>
+<p><span class="tag exam">Exam</span><b>Commands are case-insensitive!</b>（<code>select</code> = <code>SELECT</code>）<b>Username and password are case-sensitive!</b></p>
+<h3>2.1 Data types（commonly used）</h3>
+<table>
+<tr><th>Data type</th><th>Description</th></tr>
+<tr><td><code>INT</code></td><td>Integer</td></tr>
+<tr><td><code>DECIMAL(a, b)</code></td><td>Decimal numbers with <b>a digits</b>（總位數）and <b>b decimals</b>（小數位）。例：DECIMAL(5, 2): 347.88；DECIMAL(3, 1): 11.2；DECIMAL(3, 2): 3.14</td></tr>
+<tr><td><code>VARCHAR(n)</code></td><td>Text with variable length, at most n characters</td></tr>
+<tr><td><code>CHAR(n)</code></td><td>Fixed length text, exactly n characters</td></tr>
+<tr><td><code>BLOB</code></td><td>Large binary data, e.g., image</td></tr>
+<tr><td><code>DATE</code> / <code>TIME</code></td><td>'2047-07-01' / '11:22:33'</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 易錯</span><p>DECIMAL(5, 2) 嘅 5 係<b>總位數</b>（包括小數），唔係整數位。所以最大係 999.99；1234.5 放唔落。DECIMAL(3, 2) 最大 9.99。</p></div>
+<h3>2.2 Create &amp; insert（slides 8–9）</h3>
+<pre><code>CREATE TABLE Student (
+    Student_ID char(4),
+    Name varchar(100),
+    Year int
+);
+INSERT INTO Student VALUES ('s123', 'Amy', 1);
+INSERT INTO Student VALUES ('s234', 'Bob', 2);
+INSERT INTO Student VALUES ('s345', 'Cathy', 1);</code></pre>
+<p>Notes：string data 用引號包住；VALUES 要 <b>follow the order of attributes in the table</b>。</p>
+<h3>2.3 NULL</h3>
+<p><span class="tag exam">Exam</span><b>NULL</b> 係 special value，兩個 interpretations：(1) The data value <b>does not exist</b>；(2) The data value <b>is not known</b>。Rule of thumb：database design 應避免有（太多）NULL。<b>Empty string ("") ≠ NULL</b>：""表示有值，而且知道個值係 ""。</p>
+<table>
+<tr><th>Student ID</th><th>English Name</th><th>Chinese name</th></tr>
+<tr><td>s123</td><td>Amy</td><td>NULL（未知 / 冇）</td></tr>
+<tr><td>s234</td><td>Bob</td><td>""（知道係空）</td></tr>
+<tr><td>s345</td><td>Cathy</td><td>Li Yi</td></tr>
+</table>
+<pre><code>-- 搵 NULL 要用 IS NULL，唔可以用 = NULL
+SELECT * FROM R WHERE Grade IS NULL;</code></pre>
+<h3>2.4 Creating index</h3>
+<pre><code>CREATE INDEX idx  ON Student (Name);
+CREATE INDEX idx2 ON Student (Name, Year);   -- composite index（同一 DB 內 index 名要唯一）</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個就係 Week 3 的 B+ tree index；<code>(Name, Year)</code> 就係 composite index，好似 (module code, grade) 嗰個例子。</p></div>
+
+<h2>3. Basic query：SELECT, DISTINCT, WHERE</h2>
+<pre><code>SELECT * FROM Student;               -- Option 1：* = all attributes
+SELECT Name, Year FROM Student;      -- Option 2：逐個列出 attribute</code></pre>
+<p>Potential errors：<b>Syntax error</b>（睇 error message）；<b>Table / Column doesn't exist</b>（檢查串字）。</p>
+<h3>3.1 DISTINCT</h3>
+<pre><code>SELECT DISTINCT Year FROM Student;   -- 1, 2      （去除重複）
+SELECT Year FROM Student;            -- 1, 2, 1</code></pre>
+<h3>3.2 WHERE clause</h3>
+<pre><code>SELECT * FROM S
+WHERE (ID &gt; 100 AND ID &lt; 102) OR Name = 'Mary';</code></pre>
+<p>Table S：(101, Alice), (102, Mary), (103, Alice)。<b>Result</b>（lecturer notes）：101 Alice（100 &lt; 101 &lt; 102）、102 Mary（Name = Mary）。103 Alice 兩個條件都唔符合。</p>
+<p>Parameter format：text 要用引號（<code>Name = 'Mary'</code>）；integer 唔使（<code>ID &gt; 100</code>）。</p>
+<table>
+<tr><th>Comparison operators</th><th>Logical operators</th></tr>
+<tr><td><code>=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>（<b>not equal</b>）</td><td><code>AND</code>（both）, <code>OR</code>（either）, <code>NOT</code>（reverse）</td></tr>
+</table>
+<pre><code>SELECT * FROM S WHERE ID &lt;&gt; 101;            -- 102 Mary, 103 Alice
+SELECT * FROM S WHERE NOT Name = 'Alice';    -- 102 Mary</code></pre>
+
+<h2>4. ORDER BY, LIMIT, OFFSET</h2>
+<pre><code>SELECT * FROM Result ORDER BY Grade;                         -- 預設 ascending
+SELECT * FROM Result ORDER BY Grade DESC;                    -- 加 DESC 變 descending
+SELECT * FROM Result ORDER BY Grade DESC, StudentID DESC;    -- 先按 Grade，同分再按 StudentID；兩個都 DESC
+SELECT * FROM Result LIMIT 2;                                -- 只要頭 2 個
+SELECT * FROM Result LIMIT 2 OFFSET 2;                       -- 跳過頭 2 個，攞第 3–4 個</code></pre>
+<p>Slide 例子：<code>LIMIT 10 OFFSET 10</code> = return the 11th to 20th records（常用嚟做分頁）。注意 <code>DESC</code> 只作用喺佢前面嗰一個 attribute——slide 20 兩個都要寫 DESC。</p>
+<p>Order of commands：<code>SELECT [DISTINCT] … FROM … WHERE … ORDER BY …</code>——ORDER BY 要放喺 WHERE 之後。</p>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>Standard SQL / MySQL 冇 LIMIT 唔可以單獨用 OFFSET（slide 22 第一個例子 <code>SELECT * FROM Result OFFSET 10</code> 喺 PostgreSQL 得，喺 MySQL / SQLite 會 error）。保險寫法係 <code>LIMIT n OFFSET m</code>。</p></div>
+
+<h2>5. JOIN</h2>
+<p>可以同時由多個 tables 拎資料；<b>There is (usually) a join condition!</b> Types of join：Inner Join；Left / Right (OUTER) JOIN；Full outer join；Cartesian Join；Self Join (example)；Theta join、Natural join 等等。</p>
+<h3>5.1 INNER JOIN</h3>
+<pre><code>SELECT * FROM Stud INNER JOIN Result
+ON Stud.StudentID = Result.StudentID;</code></pre>
+<table>
+<tr><th>StudentID</th><th>StudName</th><th>Major</th><th>ModuleCode</th><th>Grade</th></tr>
+<tr><td>1</td><td>Amy</td><td>DS</td><td>CS1002</td><td>B</td></tr>
+<tr><td>1</td><td>Amy</td><td>DS</td><td>CS1001</td><td>A</td></tr>
+<tr><td>3</td><td>Bob</td><td>CS</td><td>CS1001</td><td>A</td></tr>
+<tr><td>6</td><td>Cathy</td><td>CS</td><td>CS1001</td><td>B</td></tr>
+</table>
+<p>（實際 <code>SELECT *</code> 會出兩個 StudentID 欄，一個來自每個 table。）多個 tables 可能有同名 attributes，用 <b>[table name].[attribute name]</b> 區分。</p>
+<h3>5.2 Alias</h3>
+<pre><code>SELECT * FROM Stud AS s INNER JOIN Result AS r ON s.StudentID = r.StudentID;
+SELECT * FROM Stud s INNER JOIN Result r ON s.StudentID = r.StudentID;   -- 唔寫 AS 都得
+SELECT s.StudentID AS newname FROM Stud AS s;                             -- 改 attribute 名</code></pre>
+<h3>5.3 LEFT / RIGHT (OUTER) JOIN</h3>
+<p>Student (S)：102 Mary, 103 Alice, 101 Alice。Result (R)：101 CS1001 B, 103 CS1002 B, 104 CS1001 A。</p>
+<pre><code>SELECT a.ID, a.Name, b.MCode, b.Grade
+FROM S AS a LEFT JOIN R AS b ON a.ID = b.ID;</code></pre>
+<table>
+<tr><th>a.ID</th><th>Name</th><th>MCode</th><th>Grade</th></tr>
+<tr><td>102</td><td>Mary</td><td>NULL</td><td>NULL</td></tr>
+<tr><td>103</td><td>Alice</td><td>CS1002</td><td>B</td></tr>
+<tr><td>101</td><td>Alice</td><td>CS1001</td><td>B</td></tr>
+</table>
+<pre><code>SELECT a.ID, a.Name, b.MCode, b.Grade
+FROM S AS a RIGHT JOIN R AS b ON a.ID = b.ID;</code></pre>
+<table>
+<tr><th>a.ID</th><th>Name</th><th>MCode</th><th>Grade</th></tr>
+<tr><td>NULL</td><td>NULL</td><td>CS1001</td><td>A</td></tr>
+<tr><td>103</td><td>Alice</td><td>CS1002</td><td>B</td></tr>
+<tr><td>101</td><td>Alice</td><td>CS1001</td><td>B</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點：Join 結果點估</span>
+<ul>
+<li><b>INNER</b>：只保留兩邊都 match 的 rows（101, 103）</li>
+<li><b>LEFT</b>：左表全部保留；右表冇 match 就填 NULL（Mary 冇成績）</li>
+<li><b>RIGHT</b>：右表全部保留；左表冇 match 就填 NULL（104 唔喺 Student 表）</li>
+<li><b>FULL OUTER</b>：兩邊全部保留（102 + 101 + 103 + 104）</li>
+</ul>
+</div>
+<pre><code>-- FULL OUTER JOIN（SQLite ≥ 3.39 / PostgreSQL 支援；MySQL 要用 LEFT UNION RIGHT 模擬）
+SELECT a.ID, a.Name, b.MCode, b.Grade FROM S AS a FULL OUTER JOIN R AS b ON a.ID = b.ID;</code></pre>
+<h3>5.4 Cartesian join</h3>
+<pre><code>SELECT * FROM S AS a, R AS b;          -- 3 × 3 = 9 rows：每個組合都出</code></pre>
+<p>Cartesian join（cross product）唔需要 join condition：|S| × |R| rows。<span class="tag exam">Exam</span><b>Inner join = Cartesian join + WHERE</b>：</p>
+<pre><code>SELECT * FROM S AS a, R AS b WHERE a.ID = b.ID;   -- 同 INNER JOIN 結果一樣</code></pre>
+<p>（Slides 32–33 的 Result 表第三行係 103 CS1001 A，所以 slide 的結果有 3 行：101/CS1001、103/CS1002、103/CS1001；用本頁 R 表（第三行係 104）就只得 2 行。）</p>
+<p><b>Performance?</b> 先做 Cartesian join 再 WHERE 理論上慢好多，但 existing DBMS 會自動 <b>"re-write"</b> query 去 optimize，所以速度一樣，兩種寫法都可以用。</p>
+<h3>5.5 Joining multiple tables</h3>
+<pre><code>SELECT s.StudName, m.ModuleName, r.Grade
+FROM Stud s INNER JOIN Result r ON s.StudentID = r.StudentID
+            INNER JOIN Module m ON r.ModuleCode = m.ModuleCode;</code></pre>
+<p>Just add another join statement in the FROM clause。<b>Each join action is done sequentially</b>：(Student + Result) 先，結果再 + Module。</p>
+<h3>5.6 Self join example</h3>
+<p>Query：<b>Who has a better grade on CS1001 than student ID 101?</b>（R 表：101 CS1001 B、103 CS1002 B、104 CS1001 A）</p>
+<p>難處：WHERE clause 係逐 row 計算，唔可以跨 rows 比較。Idea：用 <b>同一個 table 兩份 copy</b>（a, b），Cartesian join 將不同 rows 帶入同一個 joined row，就可以比較。（Self join 唔係新的 join 類型，只係示範點解有時同一 SQL 要用同一 table 多次。）</p>
+<pre><code>SELECT b.ID
+FROM R a, R b
+WHERE a.ID = 101 AND a.MCode = 'CS1001'     -- a：搵 101 喺 CS1001 的成績
+  AND b.ID &lt;&gt; 101 AND b.MCode = 'CS1001'    -- b：其他學生喺 CS1001 的成績
+  AND b.Grade &lt; a.Grade;                    -- 'A' &lt; 'B'（字母序），即 b 成績較好
+-- 結果：104</code></pre>
+<p>Joined row 係 (a.ID=101, CS1001, B, b.ID=104, CS1001, A)，用 <code>a.xxx</code> / <code>b.xxx</code> 引用各自的 attributes。</p>
+<p><b>Another solution</b>：刪走 <code>b.ID &lt;&gt; 101</code>，因為 <b>the condition b.Grade &lt; a.Grade will also filter the student 101 in table b</b>（B &lt; B 為 false）。兩個 solution 結果一樣；第二個較簡潔，第一個較清楚表達意圖。</p>
+<div class="box warn"><span class="label">⚠️ 易錯</span><p>用字母比較 grade 只係因為 A &lt; B &lt; C… 剛好等於「愈細愈好」。如果有 "A-"、"B+" 呢類 grade，字母序就唔啱，要另外 map 成 grade point。</p></div>
+
+<h2>6. CASE</h2>
+<pre><code>SELECT StudentID, ModuleCode, Grade,
+    CASE
+        WHEN Grade = 'A' THEN 'Excellent'
+        WHEN Grade = 'B' THEN 'Good'
+        ELSE 'Pass'
+    END AS Status
+FROM Result;</code></pre>
+<p>結果：(1, CS1002, B, Good)、(1, CS1001, A, Excellent)、(3, CS1001, A, Excellent)、(6, CS1001, B, Good)。CASE 由上至下檢查，第一個成立的 WHEN 就用佢的 THEN；全部唔成立就用 ELSE。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>pandas 對應：<code>np.select([df.Grade=='A', df.Grade=='B'], ['Excellent','Good'], default='Pass')</code>。</p></div>
+
+<h2>7. Aggregate query</h2>
+<p>For finding statistics：minimum, maximum, sum, average, count；配合 <b>GROUP BY</b> 同 <b>HAVING</b>。Key idea：<b>Notice the intermediate results are also tables!</b></p>
+<h3>7.1 Aggregate functions</h3>
+<p>T 的 B 欄：1, 2, 3, 2, 4, 1, 3, 4（A 欄係 1,1,1,2,2,3,3,3）。</p>
+<table>
+<tr><th>SQL</th><th>Result</th></tr>
+<tr><td><code>SELECT SUM(B) FROM T</code></td><td>20</td></tr>
+<tr><td><code>SELECT COUNT(*) FROM T</code></td><td>8</td></tr>
+<tr><td><code>SELECT AVG(B) FROM T</code></td><td>2.5</td></tr>
+<tr><td><code>SELECT MIN(B) FROM T</code></td><td>1</td></tr>
+<tr><td><code>SELECT MAX(B) FROM T</code></td><td>4</td></tr>
+</table>
+<pre><code>-- 用本頁 T(Shop, Amount)，數據同 slide 的 (A, B) 一樣
+SELECT SUM(Amount), COUNT(*), AVG(Amount), MIN(Amount), MAX(Amount) FROM T;   -- 20, 8, 2.5, 1, 4</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：Aggregate functions on NULL values — NULL values are ignored</span>
+<p>將 B 欄其中兩個值（原本 2 同 1）改做 NULL：B = 1, 2, 3, NULL, 4, NULL, 3, 4</p>
+<ul>
+<li><code>COUNT(B)</code> = <b>6</b>（唔計 NULL）；但 <code>COUNT(*)</code> 仍然 = 8（數 rows）</li>
+<li><code>SUM(B)</code> = 1+2+3+4+3+4 = <b>17</b></li>
+<li><code>MIN(B)</code> = <b>1</b></li>
+<li>延伸：<code>AVG(B)</code> = 17 / 6 ≈ 2.83（分母係 6 而唔係 8！）</li>
+</ul>
+</div>
+<pre><code>-- 自己試：
+CREATE TABLE TN (A INT, B INT);
+INSERT INTO TN VALUES (1,1),(1,2),(1,3),(2,NULL),(2,4),(3,NULL),(3,3),(3,4);
+SELECT COUNT(B), COUNT(*), SUM(B), MIN(B), AVG(B) FROM TN;   -- 6, 8, 17, 1, 2.833…</code></pre>
+<h3>7.2 GROUP BY</h3>
+<p>每個 record 係一張 order（Shop ID, Amount）。</p>
+<pre><code>SELECT Shop, SUM(Amount)
+FROM T
+GROUP BY Shop;
+-- Shop 1: 1+2+3 = 6；Shop 2: 2+4 = 6；Shop 3: 1+3+4 = 8</code></pre>
+<p>GROUP BY 將 rows 按 Shop 分組（概念上每組係一個細 table），再對每組計 SUM。</p>
+<h3>7.3 GROUP BY with WHERE</h3>
+<pre><code>SELECT Shop, SUM(Amount)
+FROM T
+WHERE Amount &gt; 2
+GROUP BY Shop;
+-- 先過濾剩 (1,3),(2,4),(3,3),(3,4) → Shop 1: 3；Shop 2: 4；Shop 3: 7</code></pre>
+<h3>7.4 HAVING</h3>
+<p><b>Post-filtering after you get the aggregate results</b>：</p>
+<pre><code>SELECT Shop, SUM(Amount) AS Total
+FROM T
+WHERE Amount &gt; 2
+GROUP BY Shop
+HAVING Total &gt; 5;          -- 只剩 Shop 3, Total 7</code></pre>
+<div class="box warn"><span class="label">⚠️ 方言差異</span><p><code>HAVING Total &gt; 5</code>（用 SELECT 的 alias）喺 MySQL / SQLite 得；standard SQL / PostgreSQL 要寫 <code>HAVING SUM(Amount) &gt; 5</code>。後者到處都 work。</p></div>
+<div class="box exam"><span class="label">⭐ 考試重點：WHERE vs HAVING</span>
+<table>
+<tr><th></th><th>WHERE</th><th>HAVING</th></tr>
+<tr><td>處理時間</td><td>Processed <b>before</b> the group by action</td><td>Processed <b>after</b> the group by action</td></tr>
+<tr><td>條件用乜</td><td>Attributes of the original tables</td><td>The aggregated data：count / sum / average</td></tr>
+<tr><td>例子</td><td><code>WHERE Amount &gt; 2</code>（逐張 order 過濾）</td><td><code>HAVING SUM(Amount) &gt; 5</code>（逐間 shop 過濾）</td></tr>
+</table>
+</div>
+<h3>7.5 GROUP BY 要用乜？</h3>
+<p>想計每個學生修咗幾多科：</p>
+<pre><code>-- Option A：正確
+SELECT COUNT(*) FROM Result GROUP BY StudentID;
+-- Option B：錯誤 —— 兩個同名學生會被放入同一組
+SELECT COUNT(*) FROM Result GROUP BY StudentName;</code></pre>
+<p><span class="tag exam">Exam</span>GROUP BY 要用能唯一識別 entity 的 attribute（key）。Slide 30 的 S 表就有兩個 "Alice"（101、103）——如果按 Name group，佢哋會被當成同一人。</p>
+
+<h2>8. Putting it all together：Clause order vs Execution order</h2>
+<pre><code>SELECT A, B, SUM(C) AS Total
+FROM T INNER JOIN W ON T.X = W.Y
+WHERE B &gt; 10
+GROUP BY A, B
+HAVING Total &gt; 100
+ORDER BY A DESC</code></pre>
+<p>注意寫法次序 <b>唔係</b> 執行次序！</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Execution &amp; evaluation order</span>
+<ol>
+<li><b>FROM</b> clause (including JOINs)</li>
+<li><b>WHERE</b> clause</li>
+<li><b>GROUP BY</b> clause</li>
+<li><b>HAVING</b> clause</li>
+<li><b>SELECT</b> projections</li>
+<li><b>DISTINCT</b></li>
+<li><b>ORDER BY</b></li>
+<li><b>LIMIT / OFFSET</b></li>
+</ol>
+<p>推論：WHERE 喺 GROUP BY 之前，所以 WHERE 唔可以用 SUM()；ORDER BY 喺 SELECT 之後，所以 ORDER BY 可以用 SELECT 定義的 alias。</p>
+</div>
+
+<h2>9. Set operations</h2>
+<p><code>UNION</code>、<code>INTERSECT</code>、<code>EXCEPT</code>——係 <b>set</b> operations（會去除重複），<b>not multiset</b>。要求兩邊 <b>compatible data types and same number of columns</b>。</p>
+<pre><code>SELECT ID FROM S UNION     SELECT ID FROM R;   -- 101, 102, 103, 104（去重）
+SELECT ID FROM S UNION ALL SELECT ID FROM R;   -- 102, 103, 101, 101, 103, 104（multiset，保留重複）
+SELECT ID FROM S INTERSECT SELECT ID FROM R;   -- 101, 103
+SELECT ID FROM S EXCEPT    SELECT ID FROM R;   -- 102（喺 S 但唔喺 R）</code></pre>
+
+<h2>10. Sub-query 與 WITH</h2>
+<p>Observation：SELECT 的結果係一個 table → 可以放喺 FROM clause：</p>
+<pre><code>SELECT * FROM (SELECT * FROM Stud) AS X;   -- sub-query 必須俾佢一個 table name，否則 error</code></pre>
+<h3>10.1 例子：每個 major 平均修幾多科？</h3>
+<p>Expected：DS → 2，CS → 1。<b>唔可以用一句 SQL 直接做</b>——You cannot average a count in the same SQL。分兩步：</p>
+<p><b>Step 1</b>：每個學生修幾多科</p>
+<pre><code>SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule
+FROM Stud AS S LEFT JOIN Result AS R
+ON S.StudentID = R.StudentID
+GROUP BY S.StudentID, S.Major;
+-- (1, DS, 2), (3, CS, 1), (6, CS, 1)</code></pre>
+<p><b>Step 2</b>：將 Step 1 結果當 table T，每個 major 計平均：</p>
+<pre><code>SELECT Major, AVG(NumModule) AS Avg_Num FROM T GROUP BY Major;</code></pre>
+<p><b>Combining together</b>（sub-query）：</p>
+<pre><code>SELECT Major, AVG(NumModule) AS Avg_Num
+FROM (
+    SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule
+    FROM Stud AS S LEFT JOIN Result AS R
+    ON S.StudentID = R.StudentID
+    GROUP BY S.StudentID, S.Major
+) AS T
+GROUP BY Major;
+-- CS 1.0 ; DS 2.0</code></pre>
+<p><b>WITH statement</b>（CTE，更易讀）：</p>
+<pre><code>WITH T AS (
+    SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule
+    FROM Stud AS S
+    LEFT JOIN Result AS R ON S.StudentID = R.StudentID
+    GROUP BY S.StudentID, S.Major
+)
+SELECT Major, AVG(NumModule) AS Avg_Num
+FROM T
+GROUP BY Major;</code></pre>
+<div class="box tip"><span class="label">💡 點解用 LEFT JOIN 同 COUNT(R.ModuleCode)？</span><p>如果有學生一科都冇修，INNER JOIN 會令佢消失，平均就會偏高。LEFT JOIN 保留佢（R 的欄位係 NULL），而 <code>COUNT(R.ModuleCode)</code> 忽略 NULL → 計到 0。如果用 <code>COUNT(*)</code> 就會錯計成 1。呢個係 aggregate 忽略 NULL 的實際應用。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫（COM6001 pandas）</span>
+<pre><code>import pandas as pd
+stud = pd.DataFrame({"StudentID":[1,3,6], "StudName":["Amy","Bob","Cathy"], "Major":["DS","CS","CS"]})
+res  = pd.DataFrame({"StudentID":[1,1,3,6], "ModuleCode":["CS1002","CS1001","CS1001","CS1001"],
+                     "Grade":["B","A","A","B"]})
+t = (stud.merge(res, on="StudentID", how="left")                   # LEFT JOIN
+         .groupby(["StudentID","Major"])["ModuleCode"].count()      # COUNT 忽略 NaN
+         .reset_index(name="NumModule"))
+print(t.groupby("Major")["NumModule"].mean())                     # CS 1.0, DS 2.0</code></pre>
+<p><code>merge</code> = JOIN、<code>groupby().count()</code> = GROUP BY + COUNT、<code>df[df.x &gt; 2]</code> = WHERE、groupby 後再 filter = HAVING。</p></div>
+
+<h2>11. Updating your data</h2>
+<pre><code>UPDATE Student SET Year = 2 WHERE Student_ID = 's345';   -- 格式：UPDATE t SET c1 = v1, c2 = v2, ... WHERE condition
+DELETE FROM Student WHERE Year = 2;                      -- 刪走 Bob 同 Cathy</code></pre>
+<div class="box warn"><span class="label">⚠️ 危險</span><p><b>Be careful. If there is no WHERE condition, the entire table will be affected.</b> <code>DELETE FROM student</code> → All data in the student table will be removed；<code>UPDATE Student SET Year = 2</code> → 全部人都變 Year 2。</p></div>
+
+<h2>12. More features &amp; query optimization [Self-study]</h2>
+<p>DBA 相關 features：Primary key、Foreign keys、Database design [Normal forms]、Constraints、Not Null、Stored procedures、Triggers、Views、Backup and recovery、Access control。</p>
+<pre><code>-- 示範：Primary key / Foreign key / NOT NULL 約束
+CREATE TABLE Student2 (StudentID INT PRIMARY KEY, Name VARCHAR(100) NOT NULL);
+CREATE TABLE Result2 (
+    StudentID INT REFERENCES Student2(StudentID),
+    ModuleCode CHAR(6),
+    Grade CHAR(1),
+    PRIMARY KEY (StudentID, ModuleCode)
+);</code></pre>
+<p><b>Query plan optimizer</b>：</p>
+<pre><code>SELECT * FROM S AS a, R AS b WHERE a.ID = b.ID AND a.Name = 'Tom';</code></pre>
+<p>最有效率：<b>先喺 Student 表 filter Name = 'Tom'</b>，再計 join——因為 filtered student table 的 records 少好多，join 時要配對的組合大減（filter pushdown）。例：Student 10,000 行、Result 100,000 行，如果 Tom 只有 1 個，先 filter 就只需要用 1 行去 join。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個就係 Week 3 query optimizer 識 rewrite 的 "filter-join" pattern。</p></div>
+
+<h2>13. In-class exercises &amp; SQL beyond coding</h2>
+<p>LeetCode basic：Combine Two Tables、Employees Earning More Than Their Managers、Duplicate Emails、Game Play Analysis I、Classes With at Least 5 Students（2 marks，screenshot 提交 Moodle）。More challenging：Delete Duplicate Emails（hint: DELETE query）、Percentage of Users Attended a Contest（hint: ROUND）、Average Time of Process per Machine、The Number of Employees Which Report to Each Employee。</p>
+<p>Slide 70：SQL beyond coding——例如喺 Power BI load data from RDBMS、Databricks 的 SQL Editor（截圖，內容擷取不到）。</p>
+<p>以下係幾題 basic 題的典型寫法（用題目的 table 名）：</p>
+<pre><code>-- Combine Two Tables：每個人都要出，冇地址都要 → LEFT JOIN
+SELECT p.firstName, p.lastName, a.city, a.state
+FROM Person p LEFT JOIN Address a ON p.personId = a.personId;
+
+-- Employees Earning More Than Their Managers：self join
+SELECT e.name AS Employee
+FROM Employee e JOIN Employee m ON e.managerId = m.id
+WHERE e.salary &gt; m.salary;
+
+-- Duplicate Emails：GROUP BY + HAVING
+SELECT email AS Email FROM Person GROUP BY email HAVING COUNT(*) &gt; 1;
+
+-- Game Play Analysis I：每個 player 第一次登入日期
+SELECT player_id, MIN(event_date) AS first_login FROM Activity GROUP BY player_id;
+
+-- Classes With at Least 5 Students
+SELECT class FROM Courses GROUP BY class HAVING COUNT(student) &gt;= 5;</code></pre>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 將以下 SQL 分類為 DDL / DML / DQL / DCL：CREATE INDEX、UPDATE、SELECT、GRANT、DROP TABLE、INSERT。</summary><p>CREATE INDEX：DDL；UPDATE：DML；SELECT：DQL；GRANT：DCL；DROP TABLE：DDL；INSERT：DML。</p></details>
+<details class="q"><summary>Q2. 一個價錢欄最大值係 99999.99，應該用 DECIMAL(?, ?)？DECIMAL(4, 1) 可以存 123.45 嗎？</summary><p>DECIMAL(7, 2)（共 7 位，其中 2 位小數）。DECIMAL(4,1) 只有 1 位小數、最大 999.9，123.45 會被四捨五入成 123.5（或視乎系統報錯），唔可以準確存。</p></details>
+<details class="q"><summary>Q3. 用 S 同 R 表，寫出 S LEFT JOIN R、S RIGHT JOIN R、S INNER JOIN R 的行數，並說明 Cartesian join 有幾多行。</summary><p>LEFT：3 行（102 Mary 配 NULL、103、101）；RIGHT：3 行（103、101、NULL 配 104）；INNER：2 行（101、103）；Cartesian：3 × 3 = 9 行。</p></details>
+<details class="q"><summary>Q4. 寫 SQL：列出喺 CS1001 成績比學生 101 差的學生 ID（用 R 表）。</summary><p><code>SELECT b.ID FROM R a, R b WHERE a.ID = 101 AND a.MCode = 'CS1001' AND b.MCode = 'CS1001' AND b.Grade &gt; a.Grade;</code> 用本頁數據結果係空（104 係 A，比 B 好）。同 slide 的 self join 一樣，只係比較方向反轉；<code>b.Grade &gt; a.Grade</code> 已排除 101 自己。</p></details>
+<details class="q"><summary>Q5. B = 5, NULL, 3, NULL, 7。COUNT(*)、COUNT(B)、SUM(B)、AVG(B) 各係幾多？</summary><p>COUNT(*) = 5；COUNT(B) = 3；SUM(B) = 15；AVG(B) = 15 / 3 = 5（NULL 被忽略，分母係 3）。</p></details>
+<details class="q"><summary>Q6. 用 T(Shop, Amount) 寫 SQL：只計 Amount ≥ 2 的 orders，列出總額大於 5 的 shops，按總額由大到細排列。結果係乜？</summary><p><code>SELECT Shop, SUM(Amount) AS Total FROM T WHERE Amount &gt;= 2 GROUP BY Shop HAVING SUM(Amount) &gt; 5 ORDER BY Total DESC;</code> 過濾後：Shop 1: 2+3 = 5；Shop 2: 2+4 = 6；Shop 3: 3+4 = 7。HAVING &gt; 5 → Shop 3 (7)、Shop 2 (6)。</p></details>
+<details class="q"><summary>Q7. 以下 SQL 有咩錯？<code>SELECT Shop, SUM(Amount) FROM T WHERE SUM(Amount) &gt; 5 GROUP BY Shop;</code></summary><p>WHERE 喺 GROUP BY 之前執行，嗰陣仲未有 aggregate 結果，所以 WHERE 唔可以用 SUM()。應改為 <code>GROUP BY Shop HAVING SUM(Amount) &gt; 5</code>。</p></details>
+<details class="q"><summary>Q8. 寫出 SQL 的 execution order，並解釋點解 ORDER BY 可以用 SELECT 入面的 alias。</summary><p>FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET。ORDER BY 喺 SELECT 之後執行，alias 已經定義咗，所以用得；WHERE 喺 SELECT 之前，所以（標準上）唔可以用 alias。</p></details>
+<details class="q"><summary>Q9. 用 WITH 寫：每個 major 有幾多個學生攞過至少一個 A？（用 Stud / Result）</summary><p><code>WITH A AS (SELECT DISTINCT StudentID FROM Result WHERE Grade = 'A') SELECT s.Major, COUNT(*) AS NumA FROM Stud s INNER JOIN A ON s.StudentID = A.StudentID GROUP BY s.Major;</code> 結果：CS 1（Bob）、DS 1（Amy）。DISTINCT 確保同一學生多個 A 只計一次。</p></details>
+<details class="q"><summary>Q10. UNION 同 UNION ALL 有咩分別？用 set operations 有咩要求？</summary><p>UNION 係 set operation，會去除重複；UNION ALL 係 multiset union，保留重複。要求兩邊 same number of columns 同 compatible data types。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>SQLite：lightweight、embedded；但 DB-level locking、not scalable、no remote access、no auth</li>
+<li>DDL (CREATE/DROP) / DML (INSERT/UPDATE/DELETE) / DQL (SELECT) / DCL (GRANT)；commands case-insensitive，username/password case-sensitive</li>
+<li>DECIMAL(a,b)：a 總位數、b 小數；VARCHAR(n) 可變長；CHAR(n) 固定長</li>
+<li>NULL = 不存在 / 未知；≠ ""；用 IS NULL</li>
+<li><code>CREATE INDEX idx ON t (c1, c2)</code></li>
+<li>SELECT [DISTINCT] … FROM … WHERE … ORDER BY … [DESC] LIMIT n OFFSET m；<code>&lt;&gt;</code> = not equal</li>
+<li>INNER = 兩邊 match；LEFT/RIGHT 保留一邊、另一邊 NULL；Cartesian = |A|×|B|；Cartesian + WHERE = inner join（optimizer 會 rewrite，速度一樣）</li>
+<li>Alias：<code>Student AS s</code> 或 <code>Student s</code>；multiple joins 逐個順序做</li>
+<li>Self join：同一 table 兩個 alias，將不同 rows 放入同一 row 比較</li>
+<li>CASE WHEN … THEN … ELSE … END AS col</li>
+<li>Aggregates：SUM / COUNT / AVG / MIN / MAX；忽略 NULL（COUNT(*) 除外）</li>
+<li>WHERE（group 前、原始欄位）vs HAVING（group 後、aggregate）</li>
+<li>GROUP BY 用 unique key（StudentID 唔係 Name）</li>
+<li>Execution：FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET</li>
+<li>UNION / INTERSECT / EXCEPT = set（去重）；UNION ALL = multiset</li>
+<li>Sub-query 要有 table name；WITH T AS (…)；average of counts 要兩步</li>
+<li>UPDATE / DELETE 冇 WHERE = 影響全表</li>
+<li>Optimizer：先 filter 再 join</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w3.html">← Week 3 RDBMS</a>
+  <a href="COM6002-w5.html">Week 5 Power BI →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

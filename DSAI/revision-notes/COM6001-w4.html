@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 4 pandas data manipulation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w4">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 4</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 4 · Source: Lecture04_pandas_data_manipulation.pdf (exported Jupyter notebook, 41 pages) · Lab 4 Q1–Q5 · Datasets: superhero_powers.csv, superhero_info.xlsx, titanic.csv (不在此資料夾)</p>
+<h1>pandas Data Manipulation: Series, DataFrame, I/O, Combining &amp; Renaming</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>重溫 lambda functions 同 packages (install vs import) — Week 3 內容喺本講<b>再講一次</b>。</li>
+    <li>理解 pandas 兩大 data structures：<b>Series</b> (1D labeled array) 同 <b>DataFrame</b> (2D table)；Series 同 list 嘅分別。</li>
+    <li>用 constructor <code>pd.Series()</code> / <code>pd.DataFrame()</code> 建立 objects；理解 <b>index alignment</b> 陷阱。</li>
+    <li>分辨 attributes (<code>shape</code>, <code>columns</code>, <code>index</code>, <code>dtypes</code>) 同 methods (<code>head()</code>, <code>tail()</code>, <code>info()</code>, <code>describe()</code>)。</li>
+    <li>用 <code>read_csv()</code> / <code>read_excel()</code> 載入數據、處理 file paths、指定 <code>dtype</code>；用 <code>to_csv()</code> / <code>to_pickle()</code> 匯出。</li>
+    <li>分辨 <b><code>concat</code> vs <code>merge</code></b>；<code>merge</code> 嘅 <code>on</code> / <code>left_on</code> / <code>right_on</code> 同 <code>how</code> (inner, outer, left, right, cross)。</li>
+    <li>用 <code>.str</code> accessor 同 <code>DataFrame.rename()</code> (dict / function / lambda mapper) 改 column labels。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><code>concat</code> (按 axis 疊 / 按 index 對齊) vs <code>merge</code> (按 key column 值配對，SQL join)；<code>how</code> 五種結果。</li>
+    <li><code>df['col']</code> → Series vs <code>df[['col']]</code> → DataFrame。</li>
+    <li>CSV vs Pickle：CSV 通用可讀但<b>唔保留 dtypes</b>；Pickle 100% 還原 dtypes 但只可開 trusted source。</li>
+    <li>Index alignment：用有自己 index 嘅 Series 建 DataFrame 再指定另一個 index → 全部 <code>NaN</code>。</li>
+    <li>Rename：<code>.str.upper()</code> 要 assign 返；<code>rename(mapper=str.upper)</code> ✓ vs <code>str.upper()</code> ✗；<code>lambda x: x.upper()</code> ✓ vs <code>lambda x: x.upper</code> ✗。</li>
+  </ol>
+</div>
+
+<h2>1. Recap: Lambda functions &amp; Packages (Week 3)</h2>
+<p><span class="tag exam">Exam</span> 本講開頭重複咗 Week 3 嘅 lambda (Q6/Q7) 同 packages 部分 (今次叫 Q1) — 老師講兩次嘅內容，考試機會較高。詳細解釋見 <a href="COM6001-w3.html">Week 3</a>，以下係精簡版：</p>
+<pre><code># lambda arguments: expression  —— anonymous，一個 expression
+(lambda x, y: x - y)(3, 5)            # -2
+id_string = ['a3', 'b1', 'c5', 'd2']
+id_string.sort(key=lambda x: x[1])    # ['b1', 'd2', 'a3', 'c5']
+
+def my_func(adder):
+    return lambda x: x + adder        # lambda 作為 return value
+my_func(5)(3)                         # 8
+
+# Q1：檢查 / 安裝 packages (用 %pip，保證裝喺 notebook 當前 environment)
+%pip show pandas
+%pip install openpyxl                 # read_excel 需要
+import pandas as pd                   # Install 一次 / 每個 session 都要 import</code></pre>
+<div class="box exam"><span class="label">⭐ 速記</span>
+<p><b>Install</b> = add the package to your computer (one-time per environment)；<b>Import</b> = load the package into your current Python program (every time)。<b>Install before import.</b> <code>%pip</code> 優於 <code>!pip</code>。</p></div>
+
+<h2>2. The pandas package: Series &amp; DataFrame</h2>
+<p><b>pandas</b> 係 fast, powerful, flexible, easy to use 嘅 open-source data analysis and manipulation tool，建基於 Python。用之前要 <code>import pandas as pd</code>。</p>
+<p>兩個主要 data structures (亦即 pandas library 嘅兩個 <b>classes</b>)：</p>
+<table>
+  <tr><th></th><th>Series</th><th>DataFrame</th></tr>
+  <tr><td>維度</td><td>1D indexed array</td><td>2D table，有 index (row labels) 同 column labels</td></tr>
+  <tr><td>類比</td><td>Spreadsheet 嘅一個 column</td><td>Excel table / SQL database table</td></tr>
+  <tr><td>關係</td><td colspan="2"><b>DataFrame 嘅每一個 column 都係一個 Series</b></td></tr>
+</table>
+<p><b>Class</b> 係建立 objects 嘅 blueprint，定義 objects 會有嘅 attributes 同 methods。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">SeriesandDataFrame.png (Series 與 DataFrame 結構示意圖，PDF 第 6 頁) 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>2.1 Series</h3>
+<p>1D labeled array，可以裝任何 data type (integers, strings, floats, Python objects)。由 <b>index</b> (axis labels 嘅集合) 同 <b>data</b> 組成。</p>
+<div class="box exam"><span class="label">⭐ Series vs Lists</span>
+<ul>
+  <li>Series 有<b>靈活嘅 index labels</b> (唔止整數位置)。</li>
+  <li>Series 支援更多 data analysis operations 同 methods，例如 <code>s**2</code> (element-wise)；list 做唔到。</li>
+  <li>大數據量時 Series 一般比 Python list <b>快</b>。</li>
+</ul></div>
+
+<h4>Constructor</h4>
+<p><code>pd.Series()</code> 係 Series class 嘅 <b>constructor</b> (建立新 object 嘅 method)；Python 中 constructor 同 class 同名。可以用 <code>pd.Series.__init__</code> 睇 constructor 參數，或者睇官方文檔：</p>
+<pre><code>class pandas.Series(data=None, index=None, dtype=None, name=None, copy=None)</code></pre>
+<ul>
+  <li><code>pd.Series(list)</code> → index 係由 0 開始嘅自然數。</li>
+  <li><code>pd.Series(data_list, index=index_list)</code> → index 用你提供嘅 list。</li>
+</ul>
+<pre><code>import pandas as pd
+index_day = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun', 'Mon']
+data = [1, 2, 3, 4, 5, 6, 7, 8]
+s = pd.Series(data)                    # index 0–7, dtype: int64
+s = pd.Series(data, index=index_day)   # index = Mon … Sun, Mon (可以重複！)</code></pre>
+
+<h4>Basic operations</h4>
+<pre><code>s['new'] = 100     # insertion：用新 index label 直接 assign
+s['Mon']           # retrieval by label → 返回兩行 (Mon 1 同 Mon 8)，因為 label 重複
+s[2]               # FutureWarning：用整數當 position 已 deprecated → 應用 s.iloc[2]  (= 3)
+
+s.mean()           # 15.11  = (1+2+…+8+100)/9 = 136/9
+s.max()            # 100
+s + s              # element-wise addition
+s * 2              # element-wise multiplication
+s ** 3             # 每個元素立方 (new → 1000000)
+
+import numpy as np
+s['Tue'] = np.nan  # dtype 由 int64 變 float64 (NaN 係 float)
+s.mean()           # 16.75 = (136 − 2)/8  ← NaN 自動被跳過</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解：點解 mean 由 15.11 變 16.75？</span>
+<p>原本 9 個值總和 136，平均 \( 136/9 \approx 15.11 \)。將 Tue (=2) 改成 <code>NaN</code> 後，pandas 計 mean 時<b>預設 skip NaN</b>，剩 8 個值總和 134，平均 \( 134/8 = 16.75 \)。分母都變咗！呢個係 Week 5–7 missing values 處理嘅伏筆。</p></div>
+
+<div class="box warn"><span class="label">⚠️ Series data type considerations</span>
+<p><code>s['Tue'] = "NA"</code> → FutureWarning：將 string 放入 float64 Series 係 “incompatible dtype”，將來會 raise error。<code>"NA"</code> 只係普通 string，<b>唔係 missing value</b>。Series 無法高效存 mixed types，numeric Series 嘅 missing values 應該用 <code>np.nan</code>。</p></div>
+
+<h3>2.2 DataFrame construction</h3>
+<p>Constructor <code>pd.DataFrame()</code> 可以接 dictionaries、lists、其他 DataFrames 等；可以指定 <code>index</code>、<code>columns</code>、<code>dtype</code>。所有 args 都有 default <code>None</code>，所以 <code>pd.DataFrame()</code> 會得到空 DataFrame。</p>
+<pre><code>class pandas.DataFrame(data=None, index=None, columns=None, dtype=None, copy=None)</code></pre>
+<pre><code>pd.DataFrame([[1, 2], [3, 4]])                    # list of lists：每個內層 list 係一個 ROW
+#    0  1
+# 0  1  2
+# 1  3  4
+pd.DataFrame([[1, 2], [3, 4]], columns=["A", "B"])
+#    A  B
+# 0  1  2
+# 1  3  4
+pd.DataFrame({'A': [1, 2], 'B': [3, 4]})          # dict of lists：每個 key 係一個 COLUMN
+#    A  B
+# 0  1  3
+# 1  2  4
+pd.DataFrame(data={'A': [1, 2], 'B': [3, 4]}, index=['one', 'two'])
+#      A  B
+# one  1  3
+# two  2  4
+pd.DataFrame([[1, 2], ["Robin", "Aileen"]])       # mixed data types 都得 (column dtype 變 object)</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：list of lists vs dict of lists</span>
+<p><b>List of lists → 每個 inner list 係一 row。Dict of lists → 每個 key 係一 column (key = column label)。</b> 所以 <code>[[1,2],[3,4]]</code> 嘅第一行係 1 2，但 <code>{'A':[1,2],'B':[3,4]}</code> 嘅第一行係 1 3。</p></div>
+
+<h3>2.3 Using Series as columns — index alignment</h3>
+<p><span class="tag exam">Exam</span> <b>Key point: Series are objects that have their own index!</b> 用 Series 建 DataFrame 時，pandas 會<b>按 index label 對齊</b>，唔係按位置。</p>
+<pre><code>s = pd.Series(range(1, 8))                  # index 係 0–6
+index_day = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+df = pd.DataFrame({'first': s, 'second': s**2}, index=index_day)
+df     # 全部 NaN！因為 s 嘅 index (0–6) 同 'Mon'…'Sun' 完全對唔上
+#       first  second
+# Mon     NaN     NaN
+# ...     ...     ...
+
+# 正確做法：一開始就畀 Series 相同 index
+s = pd.Series(range(1, 8), index=index_day)
+df = pd.DataFrame({'first': s, 'second': s**2, 'third': s**3})
+#       first  second  third
+# Mon       1       1      1
+# Tue       2       4      8
+# ...
+# Sun       7      49    343</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span>
+<p>想像每個 Series 係一疊有「標籤」嘅卡。DataFrame 問：「<i>Mon</i> 嗰行嘅 first 係咩？」pandas 就去 Series 搵標籤 <i>Mon</i> 嘅卡 — 搵唔到就填 <code>NaN</code> (Not a Number)。佢唔會「按次序」塞入去。</p></div>
+
+<h3>2.4 Attributes and methods of DataFrame</h3>
+<p>Object 係名詞 (「我架車」)，<b>attribute</b> 係形容詞 (「我架車嘅顏色係藍色」)，<b>method</b> (特殊 attribute) 係動詞 (「我架車可以 <code>drive()</code>」)。Attributes <b>冇括號</b>，methods <b>要括號</b>。</p>
+<table>
+  <tr><th>Attribute</th><th>返回</th><th>Method</th><th>作用</th></tr>
+  <tr><td><code>df.shape</code></td><td>tuple (rows, columns)</td><td><code>df.head(n)</code></td><td>頭 n rows (default 5)</td></tr>
+  <tr><td><code>df.columns</code></td><td>column labels</td><td><code>df.tail(n)</code></td><td>尾 n rows</td></tr>
+  <tr><td><code>df.index</code></td><td>index (row labels)</td><td><code>df.info()</code></td><td>簡要 summary：index dtype、column dtypes、non-null values、memory usage</td></tr>
+  <tr><td><code>df.dtypes</code></td><td>每個 column 嘅 data type</td><td><code>df.describe()</code></td><td>numerical columns 嘅 descriptive statistics</td></tr>
+</table>
+<pre><code>print("DataFrame shape:", df.shape)            # (7, 3)
+print("Column names:", df.columns.tolist())    # ['first', 'second', 'third']
+print("Index:", df.index.tolist())             # ['Mon', 'Tue', ..., 'Sun']
+
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+print(df.info())       # 印 summary 之後再印 None —— info() 自己 print，return None！
+print(df.describe())
+#          A    B
+# count  3.0  3.0
+# mean   2.0  5.0
+# std    1.0  1.0
+# min    1.0  4.0
+# 25%    1.5  4.5
+# 50%    2.0  5.0
+# 75%    2.5  5.5
+# max    3.0  6.0</code></pre>
+<div class="box tip"><span class="label">💡 點解 <code>print(df.info())</code> 最後有個 None？</span>
+<p>同 Week 2 Q7 一樣原理：<code>info()</code> 係直接 print summary，return value 係 <code>None</code>，外面再 <code>print()</code> 就印出 None。describe 嘅 25% / 50% / 75% 係 quartiles：A = [1,2,3]，25% = 1.5 (linear interpolation)、50% = median 2、std = 1 (sample std, n−1)。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p><code>describe()</code> 嘅 mean、std、quartiles 正係 COM6005 Module 1 descriptive statistics；pandas 嘅 <code>std()</code> 預設用 sample standard deviation (分母 \( n-1 \))：</p>
+<div class="formula">$$ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2} $$</div>
+<p>例：A = [1,2,3]，\( \bar{x}=2 \)，\( s = \sqrt{(1+0+1)/2} = 1 \)。</p></div>
+
+<h3>Lab Q2: DataFrame construction</h3>
+<pre><code>city_list = ['Tokyo', 'Delhi', 'Shanghai', 'Sao Paulo', 'Mexico City']
+pop_list = [37.4, 28.5, 25.6, 21.7, 21.6]
+# Step 1
+data_dict = {'city': city_list, 'population': pop_list}   # 避免用 dict 做名
+# Step 2
+country_index = ['Japan', 'India', 'China', 'Brazil', 'Mexico']
+# Step 3
+df = pd.DataFrame(data_dict, index=country_index)
+# Step 4
+print(type(df['city']))     # &lt;class 'pandas.core.series.Series'&gt;
+print(type(df[['city']]))   # &lt;class 'pandas.core.frame.DataFrame'&gt;</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：<code>df['city']</code> vs <code>df[['city']]</code></span>
+<p><code>df['city']</code> 用單一 label → 返回一個 <b>Series</b> (1D，一條 column)。<code>df[['city']]</code> 入面係一個 <b>list of labels</b> → 返回一個 <b>DataFrame</b> (2D，只有一個 column 嘅 table)；list 可以放多個 labels，例如 <code>df[['city', 'population']]</code>。</p></div>
+
+<h2>3. Importing data</h2>
+<p>常見外部檔案：<b>csv</b> (structured)、<b>spreadsheets</b> (structured)、<b>json</b> (semi-structured)、<b>xml</b> (semi-structured)…</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>Structured vs semi-structured vs unstructured data 正係 COM6002 Big Data Management 嘅內容；亦對應 Week 1 嘅 Variety。</p></div>
+
+<h3>3.1 <code>pd.read_csv()</code></h3>
+<p>Signature 好長 (<code>sep</code>, <code>header</code>, <code>names</code>, <code>index_col</code>, <code>usecols</code>, <code>dtype</code>, <code>skiprows</code>, <code>nrows</code>, <code>na_values</code>, <code>parse_dates</code>, <code>encoding</code>…)。要識讀嘅參數：</p>
+<table>
+  <tr><th>Parameter</th><th>意思</th></tr>
+  <tr><td><code>filepath_or_buffer</code></td><td>CSV 檔路徑或 file-like object — <b>冇 default value → required argument</b></td></tr>
+  <tr><td><code>sep</code></td><td>Delimiter (default comma)</td></tr>
+  <tr><td><code>header</code></td><td>用邊行做 column names</td></tr>
+  <tr><td><code>index_col</code></td><td>用邊個 column 做 index</td></tr>
+  <tr><td><code>usecols</code></td><td>只讀部分 columns</td></tr>
+  <tr><td><code>dtype</code></td><td>指定 columns 嘅 data type (可以用 dict：<code>{'col': 'string'}</code>)</td></tr>
+  <tr><td><code>parse_dates</code></td><td>嘗試 parse 成 datetime</td></tr>
+  <tr><td><code>na_values</code></td><td>額外當作 NA/NaN 嘅 strings</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點：讀 function signature</span>
+<p>Signature 入面<b>冇 <code>=default</code> 嘅參數係 required</b> (例如 <code>filepath_or_buffer</code>)，有 default 嘅都係 optional。同 Week 3 default values 概念一樣。</p></div>
+
+<h4>File paths</h4>
+<ul>
+  <li>Current path：<code>"./"</code></li>
+  <li>當前路徑下 sub-folder：<code>"./sub_folder/"</code> (slide 亦列 <code>"/sub_folder/"</code>)</li>
+  <li>另一個 drive：<code>"D:/another_folder/"</code> (absolute path)</li>
+</ul>
+<pre><code>df = pd.read_csv('your_file_with_its_path.csv')                 # 同一 folder
+df = pd.read_csv('sub_folder/your_file_with_its_path.csv')      # relative path
+df = pd.read_csv('D:/absolute_path_to_your_file/your_file.csv') # absolute path
+
+dir_path = './Datasets/week_4/'          # 只放 folder，唔包括檔名
+hero_power = pd.read_csv(dir_path + 'superhero_powers.csv')     # string 相加砌完整路徑
+hero_power          # 667 rows × 168 columns (hero_names + 167 個 True/False power columns)
+hero_power.head()   # 頭 5 rows</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<p><code>dir_path</code> 尾記得有 <code>/</code>。Notebook Q3 寫 <code>dir_path = './Datasets/week_4'</code> (冇尾 <code>/</code>)，<code>dir_path + 'titanic.csv'</code> 就會變成 <code>'./Datasets/week_4titanic.csv'</code> → FileNotFoundError。</p></div>
+
+<h3>3.2 <code>pd.read_excel()</code></h3>
+<p>同 read_csv 差唔多，但要指定 <b>sheet</b>：</p>
+<pre><code>hero_dc = pd.read_excel(dir_path + 'superhero_info.xlsx', sheet_name='DC Comics')
+hero_marvel = pd.read_excel(dir_path + 'superhero_info.xlsx', sheet_name='Marvel Comics')
+# 如果出現 missing "openpyxl" error → %pip install openpyxl</code></pre>
+
+<h3>3.3 Previewing DataFrames</h3>
+<pre><code>hero_power.info()     # RangeIndex: 667 entries；Columns: 168；dtypes: bool(167), object(1)
+hero_dc.head()        # 頭 5 rows
+hero_marvel.tail(10)  # 尾 10 rows
+hero_dc.columns       # Index(['name', 'Gender', 'Eye color', 'Race', 'Hair color', 'Height',
+                      #        'Publisher', 'Alignment', 'Weight'], dtype='object')
+hero_marvel.index     # RangeIndex(start=0, stop=388, step=1)</code></pre>
+<p>留意：dtype 係 pandas <b>自動推斷 (inferred)</b> 嘅，有時會出乎意料。例如 Marvel data 入面 Height / Weight 有 <code>-99</code> 呢類「假」數值、Race / Hair color 有 <code>-</code>，其實代表 missing — 呢啲係 Week 5–7 data cleaning 要處理嘅問題。</p>
+
+<h3>3.4 pandas dtypes</h3>
+<p>用 <code>df.dtypes</code> 睇。pandas dtypes 唔同 Python types：整數 column 係 <code>int64</code> 而唔係 <code>int</code>，浮點係 <code>float64</code> 而唔係 <code>float</code>。</p>
+<table>
+  <tr><th>pandas dtype</th><th>意思</th><th>對應 Week 1 attribute type</th></tr>
+  <tr><td><code>int64</code></td><td>64-bit integer</td><td>Numerical (discrete)</td></tr>
+  <tr><td><code>float64</code></td><td>64-bit floating-point</td><td>Numerical (continuous)</td></tr>
+  <tr><td><code>object</code></td><td>string 或 mixed types</td><td>Categorical / text</td></tr>
+  <tr><td><code>bool</code></td><td>Boolean values</td><td>Binary</td></tr>
+  <tr><td><code>datetime64[ns]</code></td><td>date and time</td><td>Numerical (dates)</td></tr>
+  <tr><td><code>category</code></td><td>categorical data</td><td>Categorical (nominal / ordinal)</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">dtypes.png (dtype 對照表圖片，PDF 第 18 頁) 文字擷取不到；請對照原 PDF。上表係根據 notebook 文字列表整理。</p></div>
+
+<h3>3.5 指定 dtype 讀入</h3>
+<pre><code>hero_dtype = {'name': 'string', 'Gender': 'category', 'Eye color': 'string',
+              'Race': 'string', 'Hair color': 'string', 'Publisher': 'string',
+              'Alignment': 'category'}
+hero_dc = pd.read_excel(dir_path + 'superhero_info.xlsx', sheet_name='DC Comics', dtype=hero_dtype)
+hero_dc.info()
+#  8   Weight      144 non-null     float64     ← DC: 215 rows 只有 144 個 non-null → float64
+hero_marvel.info()
+#  8   Weight      388 non-null     int64       ← Marvel: 冇 missing → int64
+hero_dc.shape, hero_marvel.shape          # (215, 9), (388, 9)
+hero_dc.columns == hero_marvel.columns    # array([True, True, ..., True])  兩邊 columns 一樣</code></pre>
+<div class="box tip"><span class="label">💡 點解 DC 嘅 Weight 係 float64？</span>
+<p>DC 嘅 Weight 有 71 個 missing (215 − 144)。<code>NaN</code> 本身係 float，所以 pandas 要把成個 column 變 <code>float64</code> 先放得落 — 同上面 <code>s['Tue'] = np.nan</code> 令 Series 由 int64 變 float64 同一道理。</p></div>
+
+<h3>3.6 Exporting data: CSV vs Pickle</h3>
+<p>用 <code>DataFrame.to_csv()</code> 同 <code>DataFrame.to_pickle()</code> 儲存：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：CSV vs Pickle</span>
+<table>
+  <tr><th></th><th>CSV (<code>to_csv</code> / <code>read_csv</code>)</th><th>Pickle (<code>to_pickle</code> / <code>read_pickle</code>)</th></tr>
+  <tr><td>格式</td><td>Standard text format</td><td>Binary file</td></tr>
+  <tr><td>Readability</td><td>✓ 其他程式 / 工具都讀到、可預覽</td><td>✗ 唔可以預覽</td></tr>
+  <tr><td>保留 dtypes？</td><td>✗ column dtypes (Python / pandas 特有) 唔會保存，讀返嚟可能變</td><td>✓ identical DataFrame，dtypes <b>100% 還原</b></td></tr>
+  <tr><td>安全</td><td>—</td><td>⚠️ 只 load <b>trusted source</b> 嘅 pickle files</td></tr>
+</table></div>
+<pre><code>hero_dc.to_pickle(dir_path + 'hero_dc.pkl')
+hero_marvel.to_pickle(dir_path + 'hero_marvel.pkl')</code></pre>
+
+<h3>Lab Q3: Data import and export (Titanic)</h3>
+<pre><code>dir_path = './Datasets/week_4/'
+Titanic_dtype = {'PassengerId': 'string', 'Pclass': 'category', 'Name': 'string',
+                 'Sex': 'string', 'Age': 'string', 'Fare': 'category'}
+Titanic = pd.read_csv(dir_path + 'titanic.csv', dtype=Titanic_dtype)   # Step 1
+print(Titanic.dtypes)                                                  # Step 2
+Titanic.to_pickle(dir_path + 'Titanic.pkl')                            # Step 3
+print(pd.read_pickle(dir_path + 'Titanic.pkl').dtypes)                 # Step 4：同 Step 2 一樣
+Titanic.to_csv(dir_path + 'myTitanic.csv', index=False)                # Step 5
+print(pd.read_csv(dir_path + 'myTitanic.csv').dtypes)                  # Step 6：dtypes 變返推斷值</code></pre>
+<p><b>Step 7 observation</b>：Pickle 讀返嚟 dtypes 完全一樣 (string / category 保留)；CSV 讀返嚟 pandas 重新推斷 — 例如 <code>string</code> 變返 <code>object</code>，<code>category</code> 嘅 Pclass 變 <code>int64</code>，Fare / Age 變 <code>float64</code> (具體結果視乎數據)。原因：CSV 只係純文字，冇記錄 dtype 資訊。</p>
+<div class="box warn"><span class="label">⚠️ 小陷阱</span>
+<p><code>to_csv()</code> 預設會把 index 都寫入去，讀返時會多咗一個 <code>Unnamed: 0</code> column；加 <code>index=False</code> 可避免 (slide 冇提，但實務常見)。</p></div>
+
+<h2>4. Combining DataFrames: concat vs merge</h2>
+<p>兩種方法，視乎 DataFrames 係咪有<b>完全或部分相同嘅 columns / indices</b>。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Combining.png 同 Concat.png (PDF 第 21–22 頁，concat / merge 示意圖) 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+
+<h3>4.1 <code>pd.concat()</code></h3>
+<pre><code>pandas.concat(objs, axis=0, join='outer', ignore_index=False, keys=None,
+              levels=None, names=None, verify_integrity=False, sort=False, copy=True)</code></pre>
+<pre><code>df1 = pd.DataFrame({'account_id': [1, 2, 3, 4],
+                    'gender': ['female', 'male', 'female', 'male'],
+                    'age': [55, 25, 29, 39]})
+df2 = pd.DataFrame({'account_id': [4, 5, 6, 7],
+                    'gender': ['female', 'male', 'female', 'male'],
+                    'age': [19, 28, 14, 15]})
+
+pd.concat([df1, df2], axis=0)            # 上下疊 rows，保留原 index → 0,1,2,3,0,1,2,3
+pd.concat([df1, df2], ignore_index=True) # 上下疊，重新編 index → 0…7
+pd.concat([df1, df2], axis=1)            # 左右並排 columns (按 index 對齊) → 4 rows × 6 columns
+#    account_id  gender  age  account_id  gender  age
+# 0           1  female   55           4  female   19
+# ...</code></pre>
+<p><code>join</code> 參數 (default <code>'outer'</code>) 決定 <b>另一條 axis</b> 上 labels 唔一致時點處理：</p>
+<pre><code>a = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+b = pd.DataFrame({'B': [5, 6], 'C': [7, 8]})
+pd.concat([a, b])                 # outer：columns A, B, C；冇嘅位填 NaN
+pd.concat([a, b], join='inner')   # inner：只保留共同 column B</code></pre>
+<div class="box warn"><span class="label">⚠️ 留意</span>
+<p><code>account_id</code> 4 喺 df1 同 df2 都出現，但 concat <b>唔理內容</b>，只係機械式咁疊 — 結果有兩行 account_id = 4 (仲要 gender / age 唔同)。如果想按 account_id 配對，就要用 merge。</p></div>
+
+<h3>4.2 <code>pd.merge()</code></h3>
+<pre><code>pandas.merge(left, right, how='inner', on=None, left_on=None, right_on=None,
+             left_index=False, right_index=False, sort=False, suffixes=('_x', '_y'),
+             copy=True, indicator=False, validate=None)</code></pre>
+<table>
+  <tr><th>Param</th><th>意思</th></tr>
+  <tr><td><code>on</code></td><td>兩個 DataFrames 都有、名字相同嘅 key column。若 <code>on=None</code> 又唔係 merge on indexes，<b>default 用兩邊 columns 嘅交集</b>。</td></tr>
+  <tr><td><code>left_on</code></td><td>左 DataFrame 嘅 key column (當左右 key 名唔同時用)</td></tr>
+  <tr><td><code>right_on</code></td><td>右 DataFrame 嘅 key column</td></tr>
+  <tr><td><code>how</code></td><td>join type，default <code>'inner'</code></td></tr>
+  <tr><td><code>suffixes</code></td><td>兩邊有同名但非 key 嘅 columns 時加後綴，default <code>('_x', '_y')</code></td></tr>
+</table>
+<pre><code>left = pd.DataFrame({'col1': [1, 2, 3, 4, 5], 'col2': ['a', 'b', 'c', 'd', 'e']})
+right = pd.DataFrame({'col1': [3, 4, 5, 6, 7], 'col3': ['f', 'g', 'h', 'i', 'j']})
+right2 = pd.DataFrame({'col4': [3, 4, 5, 6, 7], 'col3': ['f', 'g', 'h', 'i', 'j']})
+
+pd.merge(left, right)        # 冇 on → 自動用共同 column col1；default inner
+#    col1 col2 col3
+# 0     3    c    f
+# 1     4    d    g
+# 2     5    e    h
+pd.merge(left, right2, left_on='col1', right_on='col4')   # key 名唔同
+#    col1 col2  col4 col3
+# 0     3    c     3    f
+# 1     4    d     4    g
+# 2     5    e     5    h</code></pre>
+
+<h3>4.3 <code>how</code>: inner / outer / left / right / cross</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：五種 how</span>
+<table>
+  <tr><th>how</th><th>Keys</th><th>SQL 對應</th><th>Key order</th><th>上例結果 (col1)</th></tr>
+  <tr><td><code>inner</code> (default)</td><td>兩邊 keys 嘅<b>交集</b></td><td>INNER JOIN</td><td>保留 left keys 次序</td><td>3, 4, 5 (3 rows)</td></tr>
+  <tr><td><code>outer</code></td><td>兩邊 keys 嘅<b>聯集</b></td><td>FULL OUTER JOIN</td><td>keys 按 lexicographical 排序</td><td>1–7 (7 rows)；1,2 嘅 col3 = NaN；6,7 嘅 col2 = NaN</td></tr>
+  <tr><td><code>left</code></td><td>只用 left 嘅 keys</td><td>LEFT OUTER JOIN</td><td>保留 left 次序</td><td>1–5 (5 rows)；1,2 嘅 col3 = NaN</td></tr>
+  <tr><td><code>right</code></td><td>只用 right 嘅 keys</td><td>RIGHT OUTER JOIN</td><td>保留 right 次序</td><td>3–7 (5 rows)；6,7 嘅 col2 = NaN</td></tr>
+  <tr><td><code>cross</code></td><td>Cartesian product</td><td>CROSS JOIN</td><td>保留 left 次序</td><td>5 × 5 = 25 rows；col1_x, col2, col1_y, col3</td></tr>
+</table></div>
+<pre><code>pd.merge(left, right, on='col1', how='inner')   # 同 default 一樣
+pd.merge(left, right, on='col1', how='outer')
+#    col1 col2 col3
+# 0     1    a  NaN
+# 1     2    b  NaN
+# 2     3    c    f
+# 3     4    d    g
+# 4     5    e    h
+# 5     6  NaN    i
+# 6     7  NaN    j
+pd.merge(left, right, on='col1', how='left')    # col1 = 1,2,3,4,5
+pd.merge(left, right, on='col1', how='right')   # col1 = 3,4,5,6,7
+pd.merge(left, right, how='cross')              # 25 rows；兩邊都有 col1 → 變 col1_x / col1_y</code></pre>
+<div class="box tip"><span class="label">💡 Cross join row 數</span>
+<p>Cross join row 數 = \( n_{left} \times n_{right} \)。所以 5 × 5 = 25。注意 cross 唔用 key，所以同名 column <code>col1</code> 兩份都保留，pandas 用 suffixes <code>_x</code>、<code>_y</code> 分辨。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p><code>pd.merge()</code> 直接對應 COM6002 SQL 嘅 <code>JOIN</code>：<code>pd.merge(left, right, on='col1', how='left')</code> ≈ <code>SELECT * FROM left LEFT JOIN right ON left.col1 = right.col1;</code>。<code>pd.concat(axis=0)</code> 就似 SQL 嘅 <code>UNION ALL</code>。Inner / outer 亦對應 Week 2 set 嘅 intersection (<code>&amp;</code>) / union。</p></div>
+
+<h3>Lab Q4: Data combining (superheroes)</h3>
+<pre><code># Q4.1 載入 pickle，沿 rows concat 並重新編 index
+hero_dc = pd.read_pickle(dir_path + 'hero_dc.pkl')
+hero_marvel = pd.read_pickle(dir_path + 'hero_marvel.pkl')
+hero_info = pd.concat([hero_dc, hero_marvel], ignore_index=True)
+# Q4.2
+hero_info.shape           # (603, 9)  = 215 + 388 rows
+# Q4.3
+hero_power = pd.read_csv(dir_path + 'superhero_powers.csv', dtype={'hero_names': 'string'})
+print(hero_info.columns)  # name, Gender, ..., Weight
+print(hero_power.columns) # hero_names, Agility, ..., Omniscient (168 個)
+# Q4.4 名稱 column 唔同名 → left_on / right_on；inner 只保留兩邊都有嘅 heroes
+hero_merged = pd.merge(hero_info, hero_power, left_on='name', right_on='hero_names', how='inner')
+hero_merged.head(2)       # 2 rows × 177 columns (9 + 168)
+# Q4.6
+hero_concat = pd.concat([hero_info, hero_power], axis=1, join='inner')
+print(f'there are {hero_merged.shape[0]} rows in hero_merged and {hero_concat.shape[0]} rows in hero_concat')
+# there are 537 rows in hero_merged and 603 rows in hero_concat</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：Q4.1 / Q4.5 / Q4.6 解釋</span>
+<ul>
+  <li><b>Q4.1 用 concat</b>：DC 同 Marvel 兩個 DataFrames 有<b>相同 columns</b>，只係唔同 heroes → 沿 rows 疊埋 (<code>axis=0</code>, <code>ignore_index=True</code>)。</li>
+  <li><b>Q4.5 (Q4.4 用 merge)</b>：hero_info 同 hero_power 係<b>唔同 columns</b>，要按「hero 名」呢個 key 將同一 hero 嘅資料放喺同一 row。concat 只按 index 位置對齊，唔會識配對名字，所以要用 merge (key 名唔同 → <code>left_on='name'</code>, <code>right_on='hero_names'</code>)。</li>
+  <li><b>Q4.6 點解 hero_merged 少啲 rows (537 vs 603)？</b> <code>concat(axis=1, join='inner')</code> 係按 <b>index</b> (0, 1, 2…) 對齊：hero_info index 0–602，hero_power index 0–666，交集係 0–602 → 603 rows — 但第 k 行嘅 info 同 power <b>未必係同一個 hero</b>！merge inner 係按<b>名字值</b>配對，只保留兩邊都有嘅 heroes (537 個)，所以較少但正確。</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ Notebook 入面嘅 bug</span>
+<p>Notebook 寫 <code>hero_merged.to_pickle("dir_path+hero.pkl")</code> — 成串喺引號入面，變咗字面檔名 <code>dir_path+hero.pkl</code> 存喺當前 folder，而唔係 <code>./Datasets/week_4/hero.pkl</code>。正確寫法：<code>hero_merged.to_pickle(dir_path + 'hero.pkl')</code>。(因為讀取時亦用同一錯字串，所以 notebook 仍然 work。)</p></div>
+
+<h2>5. Renaming columns</h2>
+<h3>5.1 String accessor <code>.str</code></h3>
+<p><code>hero.columns</code> 返回一個 Index object；<code>.str</code> 係 <b>string accessor</b>，令你可以對 Series / Index 嘅每個元素 (element-wise) 用 string methods。</p>
+<pre><code>hero = pd.read_pickle(dir_path + 'hero.pkl')
+hero.columns.str.upper()        # 'NAME', 'GENDER', 'EYE COLOR', ... 全大寫
+hero.columns.str.lower()        # 全小寫
+hero.columns.str.title()        # 每個字首字母大寫：'Eye Color'
+hero.columns.str.capitalize()   # 只係第一個字首字母大寫：'Eye color', 'Hero_names'
+hero.columns                    # ← 仍然係原本！上面全部只係返回新 Index，冇改原本
+hero.columns = hero.columns.str.lower()   # 要 assign 返先會更新</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<ul>
+  <li><b>直接 call <code>hero.columns.upper()</code> 或 <code>series.upper()</code> 係錯</b> — <code>upper()</code>/<code>lower()</code> 係 <i>string</i> 嘅 methods，Series / Index 冇；要經 <code>.str</code> accessor。</li>
+  <li><code>.str.upper()</code> 返回新 object，<b>要 assign 返 <code>hero.columns = ...</code></b> 先會改原 DataFrame。</li>
+  <li>同類 accessors：<code>.dt</code> (datetime)、<code>.cat</code> (categorical) — 之後會用到。</li>
+</ul></div>
+
+<h3>5.2 <code>DataFrame.rename()</code></h3>
+<pre><code>DataFrame.rename(mapper=None, *, index=None, columns=None, axis=None, copy=True, inplace=False, ...)</code></pre>
+<p><code>mapper</code> / <code>index</code> / <code>columns</code> 可以係 <b>dict</b> (舊名 → 新名) 或者一個 <b>function</b> (會 apply 落每個 label)。</p>
+<pre><code>hero = hero.rename(columns={'hero_names': 'hero names'})   # dict：只改指定 column
+hero = hero.rename(columns=str.upper)                      # function：所有 column 名大寫
+hero = hero.rename(mapper=str.lower, axis='columns')       # 等價：mapper + axis
+hero.columns = hero.columns.str.lower()
+hero.to_pickle(dir_path + 'hero.pkl')</code></pre>
+
+<h4>5.2.1 Lambda as mapper</h4>
+<pre><code>hero.rename(mapper=lambda x: x.lower(), axis='columns')   # 全小寫
+hero.rename(mapper=lambda x: x[:-1], axis='columns')      # 刪每個 column 名最後一個字元 → 'nam', 'gende', ...
+hero.rename(mapper=lambda x: x.upper(), axis='columns')   # 全大寫 ✓
+hero.rename(mapper=lambda x: x.upper, axis='columns')     # ✗ column 名變成 "&lt;built-in method upper of str object at 0x...&gt;"</code></pre>
+<p>注意：以上冇 assign 返 <code>hero = ...</code>，所以只係顯示結果，冇改到 <code>hero</code>。</p>
+
+<div class="box exam"><span class="label">⭐ Lab Q5：點解有啲 work 有啲唔 work？</span>
+<pre><code>hero.rename(mapper=lambda x: x.upper,   axis='columns')  # ✗ wrong
+hero.rename(mapper=lambda x: x.upper(), axis='columns')  # ✓ correct
+hero.rename(mapper=str.upper,           axis='columns')  # ✓ correct
+hero.rename(mapper=str.upper(),         axis='columns')  # ✗ wrong</code></pre>
+<p><code>mapper</code> 要嘅係<b>一個 function 本身</b> (pandas 會對每個 column 名 <code>x</code> 自己 call 佢)。</p>
+<ul>
+  <li><code>str.upper</code> (冇括號) = 傳入 function 本身 → pandas 對每個名 call <code>str.upper(x)</code> ✓。</li>
+  <li><code>str.upper()</code> (有括號) = <b>即刻 call</b>，但冇畀 string 佢 → TypeError (缺 argument)，根本傳唔到 function 入去 ✗。</li>
+  <li><code>lambda x: x.upper()</code> = 一個 function，body 入面 <b>call</b> <code>x.upper()</code>，返回大寫 string ✓。</li>
+  <li><code>lambda x: x.upper</code> = 一個 function，但 body 只係<b>攞 method object 而冇 call</b>，返回嘅係 “built-in method upper” 呢個 method 本身 → 新 column 名變成 method 嘅描述 ✗。</li>
+</ul>
+<p>一句總結：<b>傳 function 時唔加括號；喺 function body 入面要 call 時先加括號。</b> (同 Week 2 <code>help(list.append)</code> 唔加括號同一道理。)</p></div>
+
+<h2>6. Main take-aways</h2>
+<ul>
+  <li>Lambda functions</li>
+  <li>pandas package</li>
+  <li>DataFrame and Series structures</li>
+  <li>Reading and writing data (CSV, Excel, Pickle)</li>
+  <li>Data combining: difference between concat and merge</li>
+  <li>Columns renaming</li>
+</ul>
+<p><b>How to submit</b>：將題目 copy 去新 notebook 作答，交 question-answer-only notebook 嘅 PDF 版本去 Moodle，確保 code 同 output cells 清楚印出。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span>
+<p>Week 4 嘅 loading → combining → renaming 係 CRISP-DM「Prepare Data」嘅第一步，亦係 COM6004 Chapter 2 Data preprocessing (aggregation、integration) 嘅實作。下一講 Week 5 會開始處理本講見到嘅 missing values / 怪值 (例如 Weight = −99、NaN)。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. <code>s = pd.Series([10, 20, 30], index=['a', 'b', 'a'])</code>。<code>s['a']</code> 返回咩？<code>s.iloc[1]</code> 呢？</summary><p><code>s['a']</code> 返回一個 Series，包含兩個值 (a: 10, a: 30)，因為 label 'a' 重複。<code>s.iloc[1]</code> 用 position → 20。</p></details>
+<details class="q"><summary>Q2. <code>s = pd.Series([2, 4, 6, 8])</code>；<code>s[1] = np.nan</code> 之後 <code>s.mean()</code> 同 <code>s.dtype</code> 係咩？</summary><p>Mean = (2 + 6 + 8)/3 = 16/3 ≈ 5.33 (NaN 被 skip，分母變 3)。dtype 由 int64 變 float64，因為 NaN 係 float。</p></details>
+<details class="q"><summary>Q3. <code>pd.DataFrame([[1, 2, 3], [4, 5, 6]])</code> 同 <code>pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})</code> 嘅 shape 各係咩？</summary><p>第一個：list of lists，每個 inner list 一 row → (2, 3)。第二個：dict of lists，每個 key 一 column → (3, 2)。</p></details>
+<details class="q"><summary>Q4. 點解以下 DataFrame 全部係 NaN？<code>s = pd.Series([1, 2, 3]); pd.DataFrame({'v': s}, index=['x', 'y', 'z'])</code></summary><p>Series 有自己嘅 index 0, 1, 2；DataFrame 按 index label 對齊，'x','y','z' 喺 s 入面搵唔到，所以全填 NaN。應該 <code>pd.Series([1,2,3], index=['x','y','z'])</code>。</p></details>
+<details class="q"><summary>Q5. <code>df['city']</code> 同 <code>df[['city']]</code> 有咩分別？</summary><p>前者返回 Series (1D)；後者入面係 list of column labels，返回只有一個 column 嘅 DataFrame (2D)。</p></details>
+<details class="q"><summary>Q6. 你將一個有 <code>category</code> 同 <code>string</code> dtype 嘅 DataFrame 存做 CSV 再讀返，會發生咩？想完整保留 dtypes 應該點？</summary><p>CSV 唔儲存 dtype 資訊，讀返時 pandas 重新推斷：string → object，category → int64 / object 等。想 100% 保留就用 <code>to_pickle()</code> / <code>read_pickle()</code>，但 pickle 唔可預覽、只應開 trusted source。</p></details>
+<details class="q"><summary>Q7. A 有 key [1, 2, 3, 4]，B 有 key [3, 4, 5]。<code>pd.merge(A, B, on='key', how=?)</code> 喺 inner / outer / left / right / cross 各有幾多 rows？</summary><p>inner：{3, 4} → 2 rows；outer：{1, 2, 3, 4, 5} → 5 rows；left：4 rows；right：3 rows；cross：4 × 3 = 12 rows。(假設 keys 冇重複。)</p></details>
+<details class="q"><summary>Q8. DC (215 rows) 同 Marvel (388 rows) 有相同 columns，應該用 concat 定 merge 合併？寫出 code。</summary><p>用 concat 沿 rows 疊：<code>hero_info = pd.concat([hero_dc, hero_marvel], ignore_index=True)</code> → (603, 9)。merge 係用嚟按 key 將唔同 columns 嘅資料配對。</p></details>
+<details class="q"><summary>Q9. 寫 code 將 df 所有 column 名轉細楷並把空格換成底線 (例如 'Eye color' → 'eye_color')。</summary><p><code>df.columns = df.columns.str.lower().str.replace(' ', '_')</code>，或者 <code>df = df.rename(columns=lambda x: x.lower().replace(' ', '_'))</code>。記得 assign 返。</p></details>
+<details class="q"><summary>Q10. 點解 <code>rename(mapper=str.upper())</code> 錯，而 <code>rename(mapper=str.upper)</code> 啱？</summary><p><code>mapper</code> 需要一個 function 本身，由 pandas 對每個 label call。<code>str.upper</code> 係 function object ✓；<code>str.upper()</code> 會即刻執行 (而且冇 argument → TypeError)，傳入嘅唔係 function ✗。同理 <code>lambda x: x.upper()</code> ✓ 但 <code>lambda x: x.upper</code> 返回 method object 而唔係 string ✗。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><b>Series</b> = 1D labeled array (index + data)；<b>DataFrame</b> = 2D table，每個 column 係一個 Series。Constructor 同 class 同名：<code>pd.Series()</code>, <code>pd.DataFrame()</code>。</li>
+  <li>Series vs list：flexible index labels、element-wise ops (<code>s**2</code>)、較快。</li>
+  <li>Series：<code>s['new'] = v</code> 插入；<code>s['label']</code> 取值 (重複 label 返回多個)；position 用 <code>s.iloc[i]</code>；<code>mean()</code> skip NaN；NaN 令 int → float；missing 用 <code>np.nan</code> 唔好用 "NA"。</li>
+  <li>DataFrame：list of lists → rows；dict of lists → columns；Series 會按 index 對齊 (對唔上 → NaN)。</li>
+  <li>Attributes (冇括號)：<code>shape</code>, <code>columns</code>, <code>index</code>, <code>dtypes</code>；Methods：<code>head(n)</code>, <code>tail(n)</code>, <code>info()</code> (return None), <code>describe()</code>。</li>
+  <li><code>df['c']</code> → Series；<code>df[['c']]</code> → DataFrame。</li>
+  <li><code>read_csv(path, sep, header, index_col, usecols, dtype, parse_dates, na_values)</code>；path 唯一 required；<code>read_excel(path, sheet_name=...)</code> 要 openpyxl。</li>
+  <li>dtypes：int64, float64, object, bool, datetime64[ns], category (≠ Python int / float)。</li>
+  <li>CSV：可讀、通用、<b>唔保留 dtypes</b>；Pickle：binary、<b>100% 保留 dtypes</b>、只開 trusted source。</li>
+  <li><code>concat(objs, axis=0, join='outer', ignore_index=False)</code>：按 axis 疊、按 index 對齊、唔理內容。</li>
+  <li><code>merge(left, right, how='inner', on / left_on / right_on, suffixes=('_x','_y'))</code>：按 key 值配對 = SQL JOIN。inner 交集 · outer 聯集 · left / right 保留一邊 · cross 笛卡兒積 (n×m)。</li>
+  <li>Superhero：concat DC+Marvel → 603；merge inner on name → 537；concat axis=1 inner 按 index → 603 但配錯人。</li>
+  <li>Rename：<code>df.columns = df.columns.str.lower()</code> (要 assign)；<code>rename(columns={'old':'new'})</code>；<code>rename(columns=str.upper)</code>；<code>rename(mapper=lambda x: x.lower(), axis='columns')</code>。傳 function 唔加括號。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w3.html">← Week 3 Python basics II</a>
+  <a href="COM6001-w5.html">Week 5 Pandas Data Manipulation (II) →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

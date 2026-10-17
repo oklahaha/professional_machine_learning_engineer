@@ -9,14 +9,16 @@ share a build, a theme and a Docker image — and nothing else. `/` is a home pa
 
 - **PMLE** — `/pmle`: a responsive multiple-choice quiz for the **Google Professional Machine Learning
   Engineer** exam. The PDFs in `PMLE/` are its source exam dumps — reference material, not code.
-- **DSAI** — `/dsai` (a hub) with two modes over the MSc in Data Science and AI material in `DSAI/`:
-  `/dsai/flashcards` — **Anki-style spaced repetition** built from `DSAI/*.csv`; and `/dsai/quiz` —
-  **multiple choice** built from `DSAI/*.json`. `/flashcards` 308-redirects to `/dsai/flashcards`.
+- **DSAI** — `/dsai` (a hub) with three modes over the MSc in Data Science and AI material in `DSAI/`:
+  `/dsai/flashcards` — **Anki-style spaced repetition** built from `DSAI/*.csv`; `/dsai/quiz` —
+  **multiple choice** built from `DSAI/*.json`; and `/dsai/notes` — **revision notes**, one page per
+  lecture, built from `DSAI/revision-notes/*.html`. `/flashcards` 308-redirects to `/dsai/flashcards`.
 
 PMLE and DSAI share no data, no localStorage key and no components beyond `ModeSwitch` and `Tile`. A
 change to one is not expected to touch the other; if it does, that is a signal the abstraction is
-wrong, not a shortcut. Within DSAI the two modes *do* share `lib/dsai.ts` (unit derivation, course
-labels), `lib/deck.ts` (the course/unit filter) and `RichText` (inline `code` + KaTeX `$math$`).
+wrong, not a shortcut. Within DSAI the cards and quiz *do* share `lib/dsai.ts` (unit derivation, course
+labels), `lib/deck.ts` (the course/unit filter) and `RichText` (inline `code` + KaTeX `$math$`); the
+notes share none of those, only the `DSAI/` folder and the `ModeSwitch`.
 
 ## Commands (run inside `quiz-app/`)
 
@@ -29,6 +31,7 @@ npm run extract    # regenerate the base-285 data/questions.json (guarded; see b
 npm run validate   # structural integrity check of data/questions.json
 npm run cards      # rebuild data/cards.json from DSAI/*.csv (safe to re-run)
 npm run mcq        # rebuild data/dsai-questions.json from DSAI/*.json (safe to re-run; validates)
+npm run notes      # rebuild data/notes.json from DSAI/revision-notes/*.html (safe to re-run; validates)
 npm run validate:cards  # structural integrity check of data/cards.json
 npm test           # unit tests (node:test; Node strips the TS, no test deps)
 ```
@@ -253,6 +256,31 @@ and the `ModeSwitch` pill.
   dollar); `components/RichText.tsx` renders math with KaTeX (`throwOnError: false`, `trust` off).
   Used by both McqCard and Flashcard. All current formulas render without error — re-check after
   adding decks by looping `splitInline` + `katex.renderToString(…, {throwOnError: true})`.
+
+## DSAI revision notes (`/dsai/notes`)
+
+- **Data.** `DSAI/revision-notes/*.html` are static pages written to one template (copied from
+  `/home/ubuntu/DSAI/revision-notes/pages/`, where they were authored — re-copy and rebuild after
+  editing them there). `scripts/build-notes.mjs` (zero-dep) keeps only each page's `<main>` content
+  and writes `data/notes.json` — **26 pages**, 4 courses. Course code, course title and unit label come
+  from the page's `.crumb`; order is the file names sorted naturally (`m3` < `m3a` < `m3b`). It drops
+  the pages' topbar, pager and scripts, numbers the `<h2>`s `s1…`, rewrites a sibling link
+  (`COM6001-w3.html`) to `/dsai/notes/COM6001-w3`, and **hard-fails without writing** on a script,
+  inline handler, image, `javascript:` URL, any other relative link, or unbalanced block tags — the
+  body is injected with `dangerouslySetInnerHTML`.
+- **Server-only.** `lib/notes.ts` imports the ~800 KB bank; only the server pages may import it.
+  Every lecture is prerendered (`generateStaticParams`, `dynamicParams = false`), and math
+  (`$$…$$`, `\(…\)` — a lone `$` is prose) is typeset by KaTeX at build time via `renderMath`
+  (`lib/notes-math.ts`), skipping `<pre>`/`<code>`. No KaTeX CDN, no auto-render script.
+  `npm test` typesets every formula with `throwOnError: true`.
+- **Islands** (`components/NotesReader.tsx`): Exam only, Mark reviewed, the contents list. They share
+  one `useSyncExternalStore` over storage key **`dsai-notes-v1`** (`{version, done[], examOnly}`),
+  so the header toggle, the rail tick and the index's "n of m reviewed" agree within and across tabs.
+- **Exam only is pure CSS** (`.notes-prose` in `globals.css`): hide every top-level block of the body
+  that is not a heading or `.overview` and neither is nor contains `.exam`. So, as in the source
+  brief, content must stay a direct child of the body — no wrapper `<section>` around groups.
+- Callout colours keep the app's meanings: exam = amber, common mistake (`box warn`) = rose, tip =
+  iris, cross-course link = cyan. Green appears only on the "reviewed" tick, never in a callout.
 
 ## Working notes
 

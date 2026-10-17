@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 2 Data collection</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w2">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 2</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 2 · Source: 2-Data collection.pptx (42 slides)</p>
+<h1>Data Collection (Data Ingestion)</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>分辨 internal vs external data sources，以及各自的收集技術</li>
+    <li>比較 RESTful API 同 Streaming API（request-response vs push、stateless vs stateful）</li>
+    <li>理解 API 的實際問題：rate limiting、data availability、data quality</li>
+    <li>掌握 HTTP GET vs POST、headers（API key、content type）、response status codes</li>
+    <li>比較 Webhook 同 Pub/Sub (e.g., Apache Kafka)</li>
+    <li>理解 web scraping / crawling 的三種方法、挑戰（dynamic content、CAPTCHA、IP blocking、login）、automated browser (Selenium / Playwright)、anti-scraping evasion 同 robots.txt</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>RESTful vs Streaming 比較表（Simple / Stateless / One round / Client-initiated / header overhead vs Push-based / Persistent connection / Lower latency / Stateful / deltas）</li>
+    <li>GET vs POST 比較表，以及「點解 POST 較安全」——唔係因為 encryption，而係 URL 會被 log</li>
+    <li>HTTP status codes：2xx / 3xx / 4xx (400, 401, 403, 404) / 5xx (500, 503)</li>
+    <li>Pub/Sub vs Webhook 比較表（3 parties vs 2 parties、persistent、replayable、pull/push、scalability）</li>
+    <li>Web data 提取的 3 個 methods 及其 pros/cons；scraping challenges 同 robots.txt</li>
+  </ol>
+</div>
+
+<h2>1. Data sources：Internal vs External</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 2 "Roadmap" 係一張圖，文字擷取不到；請對照原 slide 第 2 頁。</p></div>
+<table>
+<tr><th>Internal data</th><th>External data</th></tr>
+<tr><td>Captured by internal systems, e.g., <b>Point-of-Sale System</b><br>Key techniques: Database <b>CRUD</b> (Create, Read, Update, Delete) operations（之後講 database 時詳談）</td>
+<td><b>Third-party API</b><br><b>Web scraping</b><br><b>External databases</b> — access to your business partners' databases<br>Others… e.g., monitoring some telegram groups for crypto trading prediction</td></tr>
+</table>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢一講就係 Week 1 data pipeline 的 <b>Ingestion Layer</b>：由不同 source 抽 raw data，放入 central storage。CRUD 對應 Week 4 SQL 的 <code>INSERT</code> / <code>SELECT</code> / <code>UPDATE</code> / <code>DELETE</code>。</p></div>
+
+<h2>2. Third-party API</h2>
+<p>例子情景：為 cryptocurrency trading analysis 拎數據。Data providers：<b>Binance</b>、<b>IntoTheBlock</b>、<b>Santiment</b>。</p>
+<h3>2.1 API characteristics：RESTful vs Streaming</h3>
+<ul>
+  <li><b>RESTful</b> — Most common type of API；A <b>request-response model</b>：你 send 一個 request，server 回傳 a single, complete response (done)。</li>
+  <li><b>Streaming</b> — For real-time data delivery：你 connect 到一條 data stream，server <b>pushes</b> data to you as soon as new information becomes available；<b>You need to stop the stream yourself</b>。</li>
+  <li>Other types：FIX (Financial Information eXchange) API, SOAP, GraphQL</li>
+</ul>
+<p>Binance 兩種都有：RESTful endpoint（REST API）同 Streaming endpoint（WebSocket streams）。</p>
+<h3>2.2 Paid vs free</h3>
+<p>有啲 API 要付費（例如 Sanbase，以 USD 計價，slide 7 截圖顯示收費方案，圖片內容擷取不到）。Free plan 通常限制功能或者冇最新數據（in-class exercise 提到：Latest data is NOT available using a free API key）。</p>
+
+<h2>3. Concerns in using APIs</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：使用 API 的三大問題</span>
+<ol>
+<li><b>Rate Limiting</b> — 每段時間只准 call 若干次（例如 X / Twitter API 的 rate limits）。超過就會被拒（常見 HTTP 429）。</li>
+<li><b>Data availability</b> — Not all data are provided via API。例子：Binance 的 News / Announcements 只喺網頁有，API 冇。</li>
+<li><b>Data quality</b> — 真實經驗：(a) 付費 provider 某隻細價 crypto 的歷史價格錯咗 10 倍；(b) 另一個付費 provider 的 sentiment data，喺 LUNA 崩盤事件之後仍然顯示 positive???!</li>
+</ol>
+</div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>「付費 = 準確」係錯的。即使係付費 API，都要做 sanity check（例如同另一來源對比價格），呢個就係 Week 1 講的 <b>Veracity</b>。</p></div>
+
+<h2>4. Networking basics</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10、11 用時序圖說明 RESTful 同 Streaming 的網絡交握過程，圖片內容擷取不到；請對照原 slide 第 10–11 頁。以下根據 slide 文字解釋。</p></div>
+<ul>
+  <li><b>RESTful</b>：Before you send your request and your data, you need to go through a <b>handshaking process</b>（preparation steps，例如 TCP/TLS 連線建立），然後先係 your request 同 your response。每個 request 都要重新經歷呢啲步驟。</li>
+  <li><b>Streaming</b>：都需要一啲 preparation steps 去建立 stream，但之後 <b>connection is maintained</b>，所有之後的 messages 可以由 server 直接傳俾 client（或反方向），唔使再 handshake。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：RESTful vs Streaming</span>
+<table>
+<tr><th>RESTful</th><th>Streaming</th></tr>
+<tr><td><b>Simple</b>（睇 example codes 感受一下）</td><td><b>More complex</b></td></tr>
+<tr><td><b>Stateless</b> — each request is independent</td><td><b>Stateful</b> — usually, the messages are <b>deltas</b>（只傳「變咗乜」）</td></tr>
+<tr><td><b>One round (only)</b> — one request, one response</td><td><b>Persistent Connection</b> — connection is kept, multiple messages</td></tr>
+<tr><td><b>Initiated by the client</b></td><td><b>Push-based model</b> — server proactively sends data to client</td></tr>
+<tr><td><b>Repeats HTTP header overhead per request</b></td><td><b>Lower latency</b>（冇重複 handshake / header 的 overhead）</td></tr>
+</table>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>RESTful 似打電話問：「BTC 而家幾錢？」——問完收線，下次再問要再撥號（handshake）。Streaming 似開住條電話線，對方一有價格變動就即刻講俾你聽，而且只講「升咗 0.5」（delta），所以你要自己記住上一個價（stateful）。如果你中途漏聽一句，你手上的「state」就錯咗——呢個就係 stateful 較 complex 的原因。</p></div>
+<p>Worked example：假設每次 REST request 的 handshake + header overhead 約 100 ms，你想每秒拎 10 次價格 → 每秒有 1,000 ms 花喺 overhead，根本做唔到；Streaming 只 handshake 一次，之後每個 update 幾 ms 就到。</p>
+
+<h2>5. HTTP requests：GET vs POST</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：GET vs POST</span>
+<table>
+<tr><th></th><th>GET</th><th>POST</th></tr>
+<tr><td>Intended purpose</td><td>Retrieve data</td><td>Send data to server</td></tr>
+<tr><td>Parameter location</td><td>In URL</td><td>In request body</td></tr>
+<tr><td>Security</td><td>(Slightly) Less secure</td><td>(Slightly) More secure</td></tr>
+<tr><td>Size limit</td><td>Limited (based on browser)</td><td>No limit</td></tr>
+</table>
+<p>In short, they use different formats to compose the request message to the server.</p>
+</div>
+<h3>5.1 GET example（slide 14）</h3>
+<pre><code>import requests
+
+params = {
+    "symbols": '["BTCUSDT","ETHUSDT"]',
+}
+response = requests.get("https://api.binance.com/api/v3/ticker/price", params=params)
+print(response.status_code)   # 200 代表成功
+print(response.json())        # 例如 [{'symbol': 'BTCUSDT', 'price': '...'}, ...]</code></pre>
+<p><code>requests</code> 會自動將 params encode 入 URL：<br>
+<code>https://api.binance.com/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%5D</code><br>
+（<code>%5B</code> = <code>[</code>、<code>%22</code> = <code>"</code>、<code>%2C</code> = <code>,</code>）。因為參數喺 URL，呢條 link 直接貼入 browser 都 work。</p>
+<h3>5.2 POST example</h3>
+<p>The parameters are NOT in the URL，而係放喺 request body（slide 15 截圖，圖片內容擷取不到）。示意：</p>
+<pre><code>import requests
+
+# 參數放喺 body（JSON），唔會出現喺 URL
+payload = {"symbol": "BTCUSDT", "interval": "1h"}
+r = requests.post("https://example.com/api/query", json=payload)
+print(r.status_code, r.text)</code></pre>
+
+<h3>5.3 Why is POST considered more secure?</h3>
+<div class="box exam"><span class="label">⭐ 考試重點（經典問題）</span>
+<p><b>NOT because of encryption</b>：加唔加密取決於用 HTTP（no encryption）定 HTTPS（with encryption），GET 同 POST 都可以行 HTTPS。</p>
+<p>真正原因：<b>The URL is logged in many places</b>，例如 shown on the browser、bookmark、browser developer console（仲有 server log、proxy log）。將 parameters（maybe your API key）放喺 URL 係 not desired。POST 的參數喺 body，唔會咁容易留低記錄。</p>
+</div>
+
+<h3>5.4 HTTP headers</h3>
+<p>你的 GET / POST request 可以喺 <b>headers</b> 提供額外資訊。Data collection 常見用途：</p>
+<ul>
+  <li><b>Set your API key in your header</b> — 令 server authenticate 你係邊個（具體 header 名睇 API documentation）</li>
+  <li><b>Content type settings</b> — 話俾 server 知 body 係乜 format，例如 <code>application/json</code>、<code>application/xml</code></li>
+  <li><b>Client / server information</b> — Which browser? Which OS? Device information?（即 <code>User-Agent</code>，之後 anti-scraping 會再講）</li>
+</ul>
+<pre><code>import requests
+
+headers = {
+    "X-CMC_PRO_API_KEY": "你的API key",     # CoinMarketCap 的 API key header（in-class exercise）
+    "Accept": "application/json",
+}
+r = requests.get(
+    "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
+    headers=headers, params={"symbol": "BTC,ETH"})
+if r.status_code == 200:
+    data = r.json()
+    for sym in ("BTC", "ETH"):
+        print(sym, data["data"][sym][0]["quote"]["USD"]["price"])
+else:
+    print("Error", r.status_code, r.text)</code></pre>
+
+<h3>5.5 HTTP Response status codes</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Status codes</span>
+<table>
+<tr><th>Class</th><th>意思</th><th>常見 code</th></tr>
+<tr><td>2xx</td><td>Success</td><td><b>200 OK</b>（最常見）</td></tr>
+<tr><td>3xx</td><td>Redirection</td><td>—</td></tr>
+<tr><td>4xx</td><td><b>Client Error</b>（你個 request 有問題）</td><td>400 Bad Request；401 Unauthorized；403 Forbidden；404 Not Found</td></tr>
+<tr><td>5xx</td><td><b>Server Error</b>（對方 server 有問題）</td><td>500 Internal Server Error；503 Service Unavailable</td></tr>
+</table>
+</div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p><b>401 Unauthorized</b> = 未認證（冇 / 錯 API key，「你係邊個？」）；<b>403 Forbidden</b> = 知你係邊個，但你冇權限（例如 free key 想拎付費數據）。4xx 要改自己個 request；5xx 通常係 retry 或者等對方修好。</p></div>
+
+<h3>5.6 Python packages for API</h3>
+<p>有啲 provider 提供 custom package，進一步簡化 API 使用：<b>OpenAI</b> (<code>openai</code>)、<b>Google API</b>（Gmail、Google Drive：<code>google-api-python-client</code>）、<b>Santiment</b> (<code>sanpy</code>)。</p>
+
+<h2>6. Webhook</h2>
+<p><b>Push model</b>：The data source proactively sends data as soon as an event happens——data provider 主動將資料 send 去你指定的 <b>listener (server)</b>。</p>
+<ul>
+  <li><b>Alchemy</b> — 拎 blockchain 數據；設定 (1) 你想收咩 data (2) 你 server 的 location（URL）去收（slide 21 截圖）</li>
+  <li><b>WhatsApp</b> — 有新 event（例如新 message）時通知你</li>
+</ul>
+<pre><code># 一個最簡單的 webhook listener（Flask）：provider 有新 event 就 POST 過嚟
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route("/webhook", methods=["POST"])
+def receive():
+    event = request.get_json()     # provider 推送的資料
+    print("New event:", event)
+    return "", 200                 # 回 200 OK，表示收到
+
+app.run(port=8000)</code></pre>
+
+<h2>7. Pub/Sub systems (e.g., Apache Kafka)</h2>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 22（Pub/Sub broker 架構圖）同 slide 23（Gmail 用 Pub/Sub 讀取內容的例子）係圖片，文字擷取不到；請對照原 slide。</p></div>
+<p><b>Publish-Subscribe Concept</b> 的 Mechanism：</p>
+<ul>
+  <li><b>Producers</b> push event records to a <b>topic</b></li>
+  <li><b>Consumers</b> subscribe to topics</li>
+  <li>When a topic has a new message, each consumer gets the message</li>
+</ul>
+<p>Properties：</p>
+<ul>
+  <li>Producers do not know how many consumers have subscribed the topics（解耦）</li>
+  <li>The messages are <b>persistent</b>（All messages are stored on disk）and <b>replayable</b>（Consumers can read historical messages）</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Pub/Sub vs Webhook</span>
+<table>
+<tr><th></th><th>Pub/Sub</th><th>Webhook</th></tr>
+<tr><td>Architecture</td><td>3 parties (producer – broker – consumer)</td><td>2 parties (source – destination)</td></tr>
+<tr><td>Data Persistence</td><td>Persistent</td><td>Usually lost</td></tr>
+<tr><td>Data Replayability</td><td>Yes</td><td>No</td></tr>
+<tr><td>Model</td><td>Pull or push</td><td>Push-only</td></tr>
+<tr><td>Scalability</td><td><b>Higher</b> (Producer sends once to broker; fan-out is handled by distributed cluster)</td><td><b>Lower</b> (Source must manage individual HTTP POST calls to every destination)</td></tr>
+</table>
+</div>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>原 slide 25 表格的 Scalability 一行，"Lower" 寫喺 Pub/Sub 欄、"Higher" 寫喺 Webhook 欄，但括號內的解釋明顯係：Webhook 要逐個 destination 發 POST → scalability 較低；Pub/Sub 只 send 一次俾 broker、由 cluster 做 fan-out → 較高。上表按解釋內容排列；溫習時以解釋的邏輯為準，如有疑問請向講師確認。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Webhook = 速遞員直接送貨到你屋企門口，你唔喺度（server down）就冇咗。Pub/Sub = 速遞送去一個智能櫃（broker），貨會存住（persistent），你幾時去拎都得，甚至可以翻睇以前的貨（replayable）；一千個人訂同一份報紙，速遞員都只係送一次去智能櫃。</p></div>
+
+<h2>8. Web crawling / scraping</h2>
+<p>Website are for human to read；好多網站上的 data 冇 (official) API（例如 Wikipedia 的內容）。Objective：<b>Use a program to read and extract the data on the website</b>。</p>
+<h3>8.1 Web data</h3>
+<ul>
+  <li>Data on the website are NOT pure text：係 <b>HTML / JavaScript / CSS</b></li>
+  <li>可以用 Chrome developer console 睇 source code（Press <b>F12</b>）</li>
+  <li><b>HTML</b> = HyperText Markup Language：為 web browser 顯示而設計的文件語言；用 <b>"tags"</b> structure content；HTML is a text file；images data are provided in external files</li>
+</ul>
+<h3>8.2 Reading a website：三個方法</h3>
+<p>Challenge：How to extract the data on the web?（課堂 notebook：test_web.ipynb）</p>
+<ol>
+  <li><b>Method 1</b>：Manually read the HTML structure and map the data for automatic data extraction</li>
+  <li><b>Method 2</b>：Convert the entire webpage to a pure text version（using <b>Beautiful Soup</b>）</li>
+  <li><b>Method 3</b>：Use a visual enabled LLM to read, understand and extract data from the screencap of the website</li>
+</ol>
+<pre><code>import requests
+from bs4 import BeautifulSoup
+
+html = requests.get("https://en.wikipedia.org/wiki/Bitcoin",
+                    headers={"User-Agent": "Mozilla/5.0"}).text
+soup = BeautifulSoup(html, "html.parser")
+
+# Method 1：睇清楚 HTML 結構，指定 tag / class 抽取 → structured data
+infobox = soup.find("table", class_="infobox")
+for row in infobox.find_all("tr"):
+    th, td = row.find("th"), row.find("td")
+    if th and td:
+        print(th.get_text(strip=True), "=>", td.get_text(" ", strip=True))
+
+# Method 2：成頁轉做純文字 → unstructured text（generic，但結構冇咗）
+text = soup.get_text("\n", strip=True)
+print(text[:500])</code></pre>
+<h3>8.3 Crawling 整個網站</h3>
+<p>有時唔止讀一頁，而係讀晒成個網站（例如 HSU 網站所有頁面）。Example handling：</p>
+<ul>
+  <li>Extract the links，如果 links are on the <b>same domain</b>，visit them as well</li>
+  <li><b>Avoid visiting the same link</b> too（否則會兜圈）</li>
+  <li>Popular tool：<b>Scrapy</b></li>
+</ul>
+<pre><code># 簡化版 crawler：BFS + visited set
+from urllib.parse import urljoin, urlparse
+import requests
+from bs4 import BeautifulSoup
+from collections import deque
+
+start = "https://www.hsu.edu.hk/"
+domain = urlparse(start).netloc
+visited, queue = set(), deque([start])
+while queue and len(visited) &lt; 50:          # 限制頁數，示範用
+    url = queue.popleft()
+    if url in visited:                       # 避免重複訪問
+        continue
+    visited.add(url)
+    soup = BeautifulSoup(requests.get(url, timeout=10).text, "html.parser")
+    for a in soup.find_all("a", href=True):
+        link = urljoin(url, a["href"]).split("#")[0]
+        if urlparse(link).netloc == domain:  # 只跟同一個 domain
+            queue.append(link)
+print(len(visited), "pages")</code></pre>
+
+<h3>8.4 Challenges</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Web scraping 四大挑戰</span>
+<ul>
+<li><b>Dynamic Content</b> — Contents are loaded dynamically（JavaScript）after the initial page has loaded；parse initial HTML 會 miss 呢啲內容</li>
+<li><b>CAPTCHAs</b> — Automated security measures that block programmatic access</li>
+<li><b>IP Blocking and Rate Limiting</b> — 讀得太密會被 block</li>
+<li><b>Login required</b> — 內容要 login 後先見到</li>
+</ul>
+</div>
+
+<h2>9. Automated web browser：Selenium / Playwright</h2>
+<p>Popular Python packages：<b>Selenium</b> / <b>Playwright</b>——A bot to browse the Internet，<b>able to access information even after login</b>，亦可以處理 dynamic content（因為真係行一個 browser，JavaScript 會執行）。</p>
+<p>例子：<b>Binance announcements</b> only available on the web → 用途：monitor coming <b>delisting events</b>（slide 34 有截圖示範）。</p>
+<p><b>Mechanism</b>：Browsers provide native automation capabilities（對 web application 的 automated testing 好重要）；Selenium/Playwright provides API (in Python) for using the browsers' automation capabilities。Other usages：web automation、form filling。</p>
+<pre><code># Playwright 示意：打開 Binance announcement 頁，等 JavaScript 載入後讀標題
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+    page.goto("https://www.binance.com/en/support/announcement/list/48")
+    page.wait_for_timeout(3000)          # 等 dynamic content 載入
+    for t in page.locator("a").all_inner_texts()[:20]:
+        if "Delist" in t:
+            print(t)
+    browser.close()</code></pre>
+
+<h2>10. Comparisons between the three methods</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：三種提取方法比較</span>
+<table>
+<tr><th></th><th>Method 1: Manual mapping of HTML structure</th><th>Method 2: Whole page → pure text</th><th>Method 3: Visual-enabled LLM</th></tr>
+<tr><td>Pros</td><td><b>Most accurate</b>；provide <b>structured data</b>；easy to process in the future</td><td><b>More generic</b>（任何頁都用得）；often used in web browsing function of text-only LLM</td><td>A new approach（e.g., OpenAI Operator）；<b>capture data beyond text</b>；prevent the HTML format parsing problems</td></tr>
+<tr><td>Cons</td><td>When the website changes its structure, <b>update of the web crawler is needed</b></td><td>Provide <b>unstructured data</b>；clarity of the extracted data may be limited</td><td>AI may not be very reliable（depends on how good your LLM is）；<b>Expensive</b> — each data extraction is an LLM call</td></tr>
+</table>
+</div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 36、37 用截圖示範 LLM 讀網頁 screenshot 抽數據，圖片內容擷取不到。</p></div>
+<p>Worked example（成本估算）：假設每次 LLM call 約 USD 0.01，每日監察 1,000 個網頁、每頁每小時一次 → 1,000 × 24 × 0.01 = USD 240/日。Method 1 寫好 parser 後幾乎零成本——呢個就係 "Expensive" 的意思。</p>
+
+<h2>11. Anti-scraping evasion</h2>
+<p>有啲網站會偵測 request 係人定 bot，然後 block：</p>
+<ul>
+  <li><b>User-Agent</b>：browser 每個 request 都會 send 一串 string 識別自己；Python / Selenium request 預設冇呢個 header → Solution：<b>Add it on your own</b></li>
+  <li><b>Reaction time between "clicks"</b>：bot 撳得太快太規律 → Solution：<b>Adding some random wait time between clicks</b></li>
+  <li>More advanced settings：Cookies, local storage, …</li>
+</ul>
+<pre><code>import random, time, requests
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0 Safari/537.36"}
+for url in ["https://example.com/p1", "https://example.com/p2"]:
+    r = requests.get(url, headers=headers)
+    time.sleep(random.uniform(1, 3))   # 隨機等候，似人類行為，亦減少被 rate limit</code></pre>
+<p><b>CAPTCHAs</b>：有好多種，基本上可以 modelled as a <b>machine learning problem</b>（讀完呢個 Master 你應該識 train 呢類 model）；市面亦有 existing products 專門 solve CAPTCHAs。</p>
+
+<h2>12. Ethical concerns &amp; robots.txt</h2>
+<p>Is web crawling ethical? Case study：一間新聞媒體喺網站出新聞，另一間公司 crawl 晒佢所有文章再放喺自己網站——明顯有版權 / 商業道德問題。</p>
+<p><span class="tag exam">Exam</span><b>robots.txt — the voluntary protocol</b>：A plain text file，tell bots which parts of the site they are or are not allowed to access（例如 <code>https://www.google.com/robots.txt</code>）。重點係 <b>voluntary</b>：佢冇技術上阻止你，靠 crawler 自律遵守。</p>
+<pre><code># robots.txt 例子
+User-agent: *
+Disallow: /search
+Allow: /search/about
+
+# Python 檢查是否允許
+from urllib.robotparser import RobotFileParser
+rp = RobotFileParser("https://www.google.com/robots.txt"); rp.read()
+print(rp.can_fetch("*", "https://www.google.com/search?q=btc"))   # False</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 41 有一張配圖，文字擷取不到。</p></div>
+
+<h2>13. In-class participation exercise</h2>
+<ul>
+  <li>Task 1：Apply for a free API key on coinmarketcap.com；download and run <code>test_api_key.ipynb</code></li>
+  <li>Task 2：讀 CoinMarketCap quotes/latest documentation，寫 code print Bitcoin 同 Ethereum 的 latest price（參考 §5.4 的 code）</li>
+  <li>Task 3：讀 Santiment documentation，用 API 搵 Bitcoin 的 sentiment data（Santiment 用 <b>GraphQL</b> API）</li>
+  <li>Notes：Latest data is NOT available using a free API key；may use vibe coding；2 marks class participation（Submit on Moodle）</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 比較 RESTful API 同 Streaming API（至少 4 點）。</summary><p>RESTful：simple、stateless（每個 request 獨立）、one request one response、由 client 發起、每個 request 重複 HTTP header / handshake overhead。Streaming：push-based（server 主動推）、persistent connection（多個 messages）、lower latency、stateful（messages 通常係 deltas）、more complex、要自己停 stream。</p></details>
+<details class="q"><summary>Q2. 「POST 比 GET 安全，因為 POST 會加密。」對唔對？</summary><p>錯。加密取決於 HTTP vs HTTPS，GET 同 POST 都可以用 HTTPS。POST 較安全係因為參數喺 request body；GET 參數喺 URL，而 URL 會被 browser 顯示、bookmark、developer console（及 server logs）記錄，API key 放 URL 容易洩漏。</p></details>
+<details class="q"><summary>Q3. 你 call API 收到 401、403、404、503，各代表乜？應該點處理？</summary><p>401 Unauthorized：未認證 → 檢查 / 加入 API key header。403 Forbidden：冇權限 → 可能要升級 plan。404 Not Found：endpoint / resource 唔存在 → 檢查 URL。503 Service Unavailable：server 暫時唔得 → 稍後 retry。4xx 係 client error，5xx 係 server error。</p></details>
+<details class="q"><summary>Q4. 寫 Python code 用 GET 拎 Binance BTCUSDT 同 ETHUSDT 價格，並說明參數最終喺邊度。</summary><p><code>requests.get("https://api.binance.com/api/v3/ticker/price", params={"symbols": '["BTCUSDT","ETHUSDT"]'})</code>。參數被 URL-encode 後放喺 URL query string：<code>?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%5D</code>，所以喺 browser 都可以直接開。</p></details>
+<details class="q"><summary>Q5. 比較 Pub/Sub 同 Webhook（architecture、persistence、replay、model、scalability）。</summary><p>Pub/Sub：3 parties（producer–broker–consumer）、persistent（存 disk）、replayable、pull or push、scalability 較高（producer 只 send 一次俾 broker，fan-out 由 cluster 處理）。Webhook：2 parties（source–destination）、data usually lost、不可 replay、push-only、scalability 較低（source 要逐個 destination 發 HTTP POST）。</p></details>
+<details class="q"><summary>Q6. 一個網站的價格表係由 JavaScript 喺頁面載入後先顯示，用 requests + BeautifulSoup 會出咩問題？點解決？</summary><p>Dynamic content：requests 只拎到 initial HTML，JavaScript 未執行，價格表唔喺入面。解決：用 automated browser（Selenium / Playwright）真正行 browser，等內容載入後先抽取；亦可處理 login。</p></details>
+<details class="q"><summary>Q7. Method 1（manual HTML mapping）同 Method 3（visual LLM）各有咩優缺點？</summary><p>Method 1：最準、structured data、日後易處理；但網站改結構就要更新 crawler。Method 3：可捕捉文字以外的資料、避開 HTML parsing 問題；但 AI 未必可靠（視乎 LLM 質素），而且每次抽取都係一個 LLM call，好貴。</p></details>
+<details class="q"><summary>Q8. 列出兩種 anti-scraping 偵測方法同對應的 evasion，並解釋 robots.txt 的性質。</summary><p>(1) 檢查 User-Agent header（Python 預設冇）→ 自己加 User-Agent。(2) 檢查 clicks 之間的反應時間 → 加 random wait time。進階：cookies、local storage。robots.txt 係 plain text file，告訴 bots 邊啲部分准 / 唔准訪問；係 voluntary protocol，靠自律遵守。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Internal（POS, CRUD）vs External（third-party API, web scraping, partners' DB, others）</li>
+<li>REST：request-response, simple, stateless, one round, client-initiated, header overhead each time</li>
+<li>Streaming：push, persistent connection, lower latency, stateful (deltas), complex, 自己停</li>
+<li>Other APIs：FIX, SOAP, GraphQL；Paid vs free</li>
+<li>API concerns：Rate limiting / Data availability / Data quality（付費都可以錯）</li>
+<li>GET：retrieve, params in URL, slightly less secure, size limited；POST：send, params in body, slightly more secure, no limit</li>
+<li>POST 安全唔係因為加密（HTTPS 兩者都得），而係 URL 會被 log</li>
+<li>Headers：API key、Content-Type、User-Agent / client info</li>
+<li>2xx 200 OK；3xx redirect；4xx client (400/401/403/404)；5xx server (500/503)</li>
+<li>Webhook：push to your listener；Pub/Sub：producer → topic (broker, e.g., Kafka) → consumers；persistent + replayable</li>
+<li>Web data = HTML/JS/CSS；F12；Methods：(1) map HTML (2) to pure text (Beautiful Soup) (3) visual LLM</li>
+<li>Crawling：same domain links, avoid revisits, Scrapy</li>
+<li>Challenges：dynamic content, CAPTCHAs, IP blocking/rate limiting, login → Selenium / Playwright</li>
+<li>Evasion：User-Agent, random waits, cookies；CAPTCHA = ML problem；robots.txt = voluntary</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w1.html">← Week 1 Introduction</a>
+  <a href="COM6002-w3.html">Week 3 RDBMS →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

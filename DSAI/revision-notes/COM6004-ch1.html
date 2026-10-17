@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6004 · Chapter 1 Introduction</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6004-ch1">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6004 Data Mining › Chapter 1</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6004 · Chapter 1 · Source: COM6004_Chapter_1_Introduction.pptx (35 slides) · Textbook: Tan, Steinbach, Karpatne, Kumar, <i>Introduction to Data Mining</i> 2nd ed.</p>
+<h1>Introduction to Data Mining</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>解釋點解今日需要 Data Mining（commercial viewpoint 同 scientific viewpoint）。</li>
+    <li>背得出 Data Mining 嘅兩個經典定義，以及佢源自邊幾個領域（machine learning/AI、pattern recognition、statistics、database systems）。</li>
+    <li>分辨 <b>Prediction methods</b> 同 <b>Description methods</b>，以及四大 Data Mining tasks：Predictive Modeling（Classification / Regression）、Clustering、Association Rules、Anomaly Detection。</li>
+    <li>每個 task 識講一個應用例子（fraud detection、churn prediction、market segmentation、document clustering、market-basket analysis…）。</li>
+    <li>列出 Data Mining 嘅技術挑戰（Scalability、High Dimensionality…）同社會挑戰（Privacy…）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>Data Mining 定義：<i>"Non-trivial extraction of implicit, previously unknown and potentially useful information from data"</i>。</li>
+    <li>Prediction vs Description methods；四大 tasks 各屬邊類。</li>
+    <li>Classification vs Regression：target 係 categorical 定 continuous。</li>
+    <li>Clustering 目標：<b>intra-cluster distances minimized、inter-cluster distances maximized</b>。</li>
+    <li>六大 Challenges：Scalability、High Dimensionality、Heterogeneous &amp; Complex Data、Data Quality、Data Ownership &amp; Distribution、Non-traditional Analysis。</li>
+  </ol>
+</div>
+
+<h2>1. 點解要 Data Mining？(Why Data Mining)</h2>
+<p>Slide 4 嘅主題係 <b>"Large-scale Data is Everywhere!"</b>：因為 data generation 同 collection 技術進步，commercial 同 scientific databases 都出現爆炸式增長。例子包括 E-Commerce、Social Networking (Twitter)、Sensor Networks、Traffic Patterns、Cyber Security、Computational Simulations。</p>
+<p>Slide 提出一個「新口號」(<b>New mantra</b>)：<i>Gather whatever data you can whenever and wherever possible.</i> 背後嘅期望 (<b>Expectations</b>)：收集返嚟嘅 data 將來會有價值——可能係為原本目的，亦可能係<b>一個當初未諗到嘅目的</b> (a purpose not envisioned)。呢點好重要：Data Mining 好多時就係喺「為其他目的收集」嘅 data 入面搵新知識。</p>
+
+<h3>1.1 Commercial Viewpoint (Slide 5)</h3>
+<ul>
+  <li><b>大量 data 被收集同儲存 (warehoused)</b>：Web data（Google 有 petabytes 級 web data；Facebook 有 billions of active users）、百貨公司 / 超市 / e-commerce 購買紀錄（Amazon 每日處理 millions of visits）、Bank / Credit Card transactions。</li>
+  <li><b>電腦越嚟越平、越嚟越強</b>，令分析大量 data 變得可行。</li>
+  <li><b>競爭壓力大</b>：要提供更好、更 customized 嘅服務先有優勢，例如 Customer Relationship Management (CRM)。</li>
+</ul>
+
+<h3>1.2 Scientific Viewpoint (Slide 6)</h3>
+<ul>
+  <li>Data 以極高速度收集同儲存：衛星 remote sensors（NASA EOSDIS 每年存 petabytes 級 earth science data）、望遠鏡 sky survey data、high-throughput biological data（gene expression）、scientific simulations（幾個鐘就產生 terabytes）。</li>
+  <li>Data Mining 幫科學家：(1) <b>automated analysis of massive datasets</b>；(2) <b>hypothesis formation</b>（由 data 提出假設，再用實驗驗證）。</li>
+  <li>Slide 圖片例子：fMRI Data from Brain、Sky Survey Data、Gene Expression Data、Surface Temperature of Earth。</li>
+</ul>
+
+<h3>1.3 機會 (Slides 7–8)</h3>
+<p>Slide 7「Great opportunities to improve productivity in all walks of life」主要係圖片。Slide 8 列出可以解決嘅社會大問題：改善 health care 同減低成本、尋找 alternative / green energy、預測 climate change 影響、透過提高農業產量減少飢餓同貧窮。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 7 只有圖片（各行各業應用嘅插圖），文字擷取不到；請對照原 slide 第 7 頁。</p></div>
+
+<h2>2. 咩係 Data Mining？(Definition &amp; Origins)</h2>
+<p><span class="tag exam">Exam</span>Slide 9 列出兩個定義（"Many Definitions"），建議原文背：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Data Mining 定義</span>
+<ol>
+  <li><i>"Non-trivial extraction of <b>implicit</b>, <b>previously unknown</b> and <b>potentially useful</b> information from data."</i></li>
+  <li><i>"Exploration &amp; analysis, by <b>automatic or semi-automatic</b> means, of <b>large quantities</b> of data in order to discover <b>meaningful patterns</b>."</i></li>
+</ol>
+<p>關鍵字：non-trivial、implicit、previously unknown、potentially useful、automatic / semi-automatic、large quantities、meaningful patterns。</p></div>
+
+<div class="box tip"><span class="label">💡 直覺理解：咩唔算 Data Mining？</span>
+<p>「Non-trivial」同「previously unknown」排除咗普通查詢。例如喺 database 用 SQL 查「張三嘅電話號碼」或者「上個月總銷售額」——答案係<b>已知結構入面直接攞</b>，唔係新發現，所以唔算 Data Mining。相反，發現「買尿片嘅人好可能同時買啤酒」就係由 data 中搵出隱藏 (implicit) 又有用嘅 pattern。</p></div>
+
+<h3>2.1 Origins of Data Mining (Slide 10)</h3>
+<p>Data Mining 吸收咗四個領域嘅 ideas：<b>machine learning / AI</b>、<b>pattern recognition</b>、<b>statistics</b>、<b>database systems</b>。點解唔直接用傳統技術？因為現代 data 係：</p>
+<table>
+<tr><th>特徵</th><th>意思 / 對傳統方法嘅問題</th></tr>
+<tr><td>Large-scale</td><td>Data 太大，傳統統計方法（例如要將全部 data 放入 memory）處理唔到。</td></tr>
+<tr><td>High dimensional</td><td>Attributes 數以百計甚至千計（例如 gene expression），好多方法喺高維度失效。</td></tr>
+<tr><td>Heterogeneous</td><td>多種類型 data 混合（數字、文字、圖片、graph）。</td></tr>
+<tr><td>Complex</td><td>有結構嘅 data，例如 time series、spatial data、DNA sequence。</td></tr>
+<tr><td>Distributed</td><td>Data 分散喺唔同地方 / 機構，唔可以簡單集中。</td></tr>
+</table>
+<p>Slide 亦強調：Data Mining 係新興 <b>data science and data-driven discovery</b> 嘅關鍵組成部分。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6002 Big Data Management 講嘅 4 V's（Volume、Velocity、Variety、Veracity）同呢度嘅 Large-scale / Heterogeneous / Distributed 幾乎一一對應；COM6005 Statistical Modeling 就係 Data Mining 嘅 "statistics" 根源。</p></div>
+
+<h2>3. Data Mining Tasks：Prediction vs Description</h2>
+<p><span class="tag exam">Exam</span>Slide 11（出自 Fayyad et al., 1996）將 tasks 分兩大類：</p>
+<table>
+<tr><th></th><th>Prediction Methods</th><th>Description Methods</th></tr>
+<tr><td>定義</td><td>Use some variables to <b>predict unknown or future values</b> of other variables.</td><td>Find <b>human-interpretable patterns</b> that describe the data.</td></tr>
+<tr><td>有冇 target / label</td><td>有（例如 class attribute）— supervised</td><td>通常冇 — unsupervised</td></tr>
+<tr><td>例子 tasks</td><td>Classification、Regression、（Anomaly Detection 常被歸入）</td><td>Clustering、Association Rules、（Anomaly Detection）</td></tr>
+</table>
+<p>Slide 12 用一幅圖展示四大 tasks 圍繞住 Data：<b>Predictive Modeling</b>、<b>Clustering</b>、<b>Association Rules</b>、<b>Anomaly Detection</b>（圖中有 "Milk" 呢個 association 例子）。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 12 嘅四大 tasks 示意圖（包括一個數據表同各 task 對應位置）係圖片，文字擷取不到；請對照原 slide 第 12 頁。</p></div>
+
+<div class="box exam"><span class="label">⭐ 考試重點：四大 tasks 一覽</span>
+<table>
+<tr><th>Task</th><th>類別</th><th>一句定義</th><th>例子</th></tr>
+<tr><td>Classification</td><td>Predictive</td><td>為 <b>categorical</b> class attribute 建 model</td><td>Fraud detection、churn prediction</td></tr>
+<tr><td>Regression</td><td>Predictive</td><td>預測 <b>continuous</b> 值</td><td>由廣告開支預測銷售額</td></tr>
+<tr><td>Clustering</td><td>Descriptive</td><td>將相似 objects 分組</td><td>Market segmentation、document clustering</td></tr>
+<tr><td>Association Rules</td><td>Descriptive</td><td>搵 items 之間嘅 dependency rules</td><td>{Diaper, Milk} → {Beer}</td></tr>
+<tr><td>Anomaly Detection</td><td>（兩者皆可）</td><td>搵同大部分 data 明顯唔同嘅 objects</td><td>Credit card fraud、network intrusion</td></tr>
+</table></div>
+
+<h2>4. Predictive Modeling: Classification</h2>
+<p>Slide 13 定義：<b>Find a model for class attribute as a function of the values of other attributes.</b> 例子係一個預測 credit worthiness（信貸可信度）嘅 model。</p>
+<p>Slide 14 展示 Classification 嘅流程：一個 <b>Training Set</b>（有 categorical、categorical、quantitative attributes 同一個 <b>class</b> 欄）→ <b>Learn Classifier</b> → 得到 <b>Model</b> → 將 Model 應用落 <b>Test Set</b>（class 未知）去預測。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 13–14 嘅數據表（credit worthiness 例子、training / test set 表格）係嵌入物件 / 圖片，擷取不到具體數值；請對照原 slide 第 13–14 頁。</p></div>
+
+<div class="box tip"><span class="label">💡 直覺理解：Training vs Test</span>
+<p>想像你溫書：Training set 就係有答案嘅 past paper，你由佢學識規律（model）；Test set 就係真考試，你冇答案，要靠學到嘅規律作答。如果你只係「背晒 past paper 答案」（overfitting），去到真考試就會失手——呢個概念會喺 Chapter 4B 詳細講。</p></div>
+
+<h3>4.1 Examples of Classification Task (Slide 15)</h3>
+<ul>
+  <li>將 credit card transactions 分類為 legitimate 或 fraudulent</li>
+  <li>用衛星 data 分類 land covers（water bodies、urban areas、forests…）</li>
+  <li>將新聞分類為 finance、weather、entertainment、sports 等</li>
+  <li>識別 cyberspace 入面嘅 intruders</li>
+  <li>預測 tumor cells 係 benign 定 malignant</li>
+  <li>將蛋白質 secondary structures 分類為 alpha-helix、beta-sheet 或 random coil</li>
+</ul>
+
+<h3>4.2 Application 1: Fraud Detection (Slide 16)</h3>
+<p><b>Goal</b>：預測 credit card transactions 入面嘅 fraudulent cases。</p>
+<p><b>Approach</b>（留意步驟，呢個係典型 classification pipeline）：</p>
+<ol>
+  <li>用 credit card transactions 同 account-holder 資料做 <b>attributes</b>（幾時買、買咩、幾準時還款等）。</li>
+  <li>將過去嘅 transactions 標記為 fraud 或 fair → 呢個就係 <b>class attribute</b>。</li>
+  <li>為 transactions 嘅 class <b>learn a model</b>。</li>
+  <li>用呢個 model 觀察某 account 嘅 transactions 去 <b>detect fraud</b>。</li>
+</ol>
+
+<h3>4.3 Application 2: Churn Prediction (Slide 17)</h3>
+<p>Slide 標題係 "Churn prediction for telephone customers"，內容（出自 Berry &amp; Linoff, 1997）：</p>
+<p><b>Goal</b>：透過鎖定「可能會買新手機產品」嘅客戶，減低郵寄 (mailing) 成本。</p>
+<p><b>Approach</b>：</p>
+<ol>
+  <li>用以前推出過嘅類似產品嘅 data——我哋知道邊啲客戶買咗、邊啲冇買。呢個 <b>{buy, don't buy}</b> 決定就係 class attribute。</li>
+  <li>收集客戶嘅 demographic、lifestyle、company-interaction 資料（業務類型、住邊、收入幾多等）。</li>
+  <li>用呢啲資料做 input attributes 去 learn 一個 classifier model。</li>
+</ol>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>注意 slide 17 標題寫 "Churn prediction"，但內容其實係 <b>direct marketing</b>（預測會唔會「買」新產品）。兩者本質一樣都係 binary classification：一個係 {churn, stay}，一個係 {buy, don't buy}。考試答呢題時，重點係講出 <b>class attribute 係咩</b>、<b>input attributes 係咩</b>、<b>用歷史 data 學 model</b>。</p></div>
+
+<h2>5. Regression</h2>
+<p>Slide 18 定義：<b>Predict a value of a given continuous valued variable based on the values of other variables, assuming a linear or nonlinear model of dependency.</b> 喺 statistics 同 neural network 領域被廣泛研究。</p>
+<p>例子：</p>
+<ul>
+  <li>根據 advertising expenditure 預測新產品嘅 sales amounts</li>
+  <li>用 temperature、humidity、air pressure 等預測 wind velocities</li>
+  <li>Stock market indices 嘅 time series prediction</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Classification vs Regression</span>
+<table>
+<tr><th></th><th>Classification</th><th>Regression</th></tr>
+<tr><td>Target variable</td><td>Categorical（discrete class labels）</td><td>Continuous（實數值）</td></tr>
+<tr><td>輸出例子</td><td>fraud / fair；spam / non-spam</td><td>銷售額 $1.23M；風速 12.5 m/s</td></tr>
+<tr><td>同屬</td><td colspan="2">Predictive Modeling（supervised，要有 labelled training data）</td></tr>
+</table></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6005 Statistical Modeling 後期會教 Linear Regression（continuous target）同 Logistic Regression（雖然叫 regression，其實係做 binary <b>classification</b>）。COM6004 Chapter 4 會詳細講 Decision Tree、KNN、Naïve Bayes、SVM 等 classifiers。</p></div>
+
+<h2>6. Clustering</h2>
+<p><span class="tag exam">Exam</span>Slide 19 定義：<b>Finding groups of objects such that the objects in a group will be similar (or related) to one another and different from (or unrelated to) the objects in other groups.</b></p>
+<ul>
+  <li><b>Intra-cluster distances are minimized</b>（同一組入面嘅點要近）</li>
+  <li><b>Inter-cluster distances are maximized</b>（唔同組之間要遠）</li>
+</ul>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p><b>Intra</b> = 內部（within），<b>Inter</b> = 之間（between）。考試好多人調轉。記法：<i>Inter</i>national = 國與國之間。</p></div>
+
+<h3>6.1 Applications of Cluster Analysis (Slide 20)</h3>
+<ul>
+  <li><b>Understanding</b>：為 targeted marketing 做 customer profiling；將相關文件分組方便瀏覽；將功能相似嘅 genes 同 proteins 分組；將價格波動相似嘅 stocks 分組。</li>
+  <li><b>Summarization</b>：減少大 data sets 嘅 size（用 cluster 代表一大堆點）。</li>
+  <li>圖片例子：用 <b>K-means</b> 將 Sea Surface Temperature (SST) 同 Net Primary Production (NPP) 分成反映南北半球嘅 clusters（Courtesy: Michael Eisen 嘅 gene expression 熱圖亦有展示）。</li>
+</ul>
+
+<h3>6.2 Application 1: Market Segmentation (Slide 21)</h3>
+<p><b>Goal</b>：將市場細分成唔同客戶子集，每個子集都可以成為一個 market target，用獨特嘅 marketing mix 去接觸。</p>
+<p><b>Approach</b>：</p>
+<ol>
+  <li>收集客戶嘅 geographical 同 lifestyle 相關 attributes。</li>
+  <li>搵出相似客戶嘅 clusters。</li>
+  <li>透過觀察同一 cluster 內客戶 vs 唔同 clusters 客戶嘅 <b>buying patterns</b>，衡量 clustering 質素。</li>
+</ol>
+
+<h3>6.3 Application 2: Document Clustering (Slide 22)</h3>
+<p><b>Goal</b>：根據文件入面出現嘅重要 terms，搵出彼此相似嘅文件群組。</p>
+<p><b>Approach</b>：搵出每份文件常出現嘅 terms → 根據唔同 terms 嘅 frequencies 建立 <b>similarity measure</b> → 用佢嚟 cluster。Slide 例子係 Enron email dataset。</p>
+<div class="box link"><span class="label">🔗 Chapter 內連繫</span><p>Document data 會表示成 term vector，相似度通常用 <b>Cosine Similarity</b>——Chapter 2 有完整計算例子。Clustering 演算法（K-means、Hierarchical、DBSCAN）喺 Chapter 5 詳細講。</p></div>
+
+<h2>7. Association Rule Discovery</h2>
+<p>Slide 23 定義：</p>
+<ul>
+  <li>Given a set of records each of which contain some number of items from a given collection;</li>
+  <li>Produce <b>dependency rules</b> which will predict occurrence of an item based on occurrences of other items.</li>
+</ul>
+<p>例如 transaction data（每行係一張單買咗咩），發現嘅 rules：</p>
+<pre><code>{Milk} --&gt; {Coke}
+{Diaper, Milk} --&gt; {Beer}</code></pre>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 23 嘅 transaction 表（TID 同 Items）係嵌入表格 / 圖片，未能擷取；請對照原 slide 第 23 頁。</p></div>
+
+<h3>7.1 Applications (Slide 24)</h3>
+<ul>
+  <li><b>Market-basket analysis</b>：rules 用於 sales promotion、shelf management、inventory management。</li>
+  <li><b>Medical Informatics</b>：搵出同某啲疾病相關嘅病人 symptoms 同 test results 組合。</li>
+</ul>
+
+<h3>7.2 Example 1: Supermarket Shelf Management (Slide 25)</h3>
+<p><b>Goal</b>：搵出被足夠多客戶一齊買嘅 items。<b>Approach</b>：處理 barcode scanners 收集嘅 point-of-sale data，搵 items 之間嘅 dependencies。經典 rule：<i>If a customer buys diaper and milk, then he is very likely to buy beer.</i></p>
+
+<h3>7.3 Example 2: Marketing and Sales Promotion (Slide 26)</h3>
+<p><span class="tag exam">Exam</span>假設發現 rule <code>{Bagels, … } --&gt; {Potato Chips}</code>。Rule 左邊叫 <b>antecedent</b>，右邊叫 <b>consequent</b>：</p>
+<table>
+<tr><th>睇法</th><th>用途</th></tr>
+<tr><td>Potato Chips 做 <b>consequent</b></td><td>可以用嚟決定應該做咩去<b>推高 Potato Chips 銷量</b>。</td></tr>
+<tr><td>Bagels 喺 <b>antecedent</b></td><td>可以睇吓如果商店<b>停售 Bagels</b>，邊啲產品會受影響。</td></tr>
+<tr><td>Bagels 喺 antecedent <b>同時</b> Potato Chips 喺 consequent</td><td>可以睇應該將咩產品同 Bagels 一齊賣，去<b>促進 Potato Chips 銷售</b>。</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Rule <code>X → Y</code> 唔係「因果」，只係「共同出現」(co-occurrence)。買 diaper 唔會「導致」你買 beer；可能係「被老婆叫去買尿片嘅爸爸順手買啤酒」呢個隱藏原因。所以 association rules 用嚟做 promotion、擺貨架好有用，但唔好過度解讀為 causation。</p></div>
+
+<h2>8. Anomaly Detection</h2>
+<p>Slide 12 將 Anomaly Detection 列為四大 tasks 之一（本 chapter 冇獨立 slide 詳細講）。概念上：搵出同其他 data <b>顯著唔同</b> (significant deviations from normal behavior) 嘅 objects。典型應用：credit card fraud detection、network intrusion detection。Chapter 2 講 Outliers 時會再提到：outliers 有時係要清走嘅 noise，有時就係分析目標本身（Case 2: Outliers are the goal of our analysis）。</p>
+
+<h2>9. Applications of Data Mining (Section 1.2)</h2>
+<p>Slide 28：雖然 big data 對 privacy 同 security 有疑慮，但 big data 有潛力令社會變得更好。一般嚟講，big data technology 同 analytics 幫助：</p>
+<ul>
+  <li><b>Better understanding the problems</b>（更了解問題）</li>
+  <li><b>Providing evidence-based solutions</b>（提供有證據支持嘅方案）</li>
+  <li><b>Reducing costs</b>（降低成本）</li>
+</ul>
+<table>
+<tr><th>領域</th><th>Slide 內容重點</th><th>例子</th></tr>
+<tr><td>Business (Slide 29)</td><td>建立更完整嘅 customer profile，分成細分 preference segments；作更 informed 嘅 marketing decisions，向較可能 convert 嘅人推廣。</td><td>Netflix、Amazon、Facebook</td></tr>
+<tr><td>Healthcare (Slide 30)</td><td>IBM 預測 2020 年前 patient mortality 減少 20%；醫生可考慮所有資源再作決定；分析過往 trials、trends、病人 lifestyle、history、genetics。</td><td>Evidence-based personalized treatment、genome sequencing、forecast demand for medication</td></tr>
+<tr><td>Safety (Slide 31)</td><td>Smart city 涵蓋水、能源、通訊、房屋、交通；big data 協助 safety、crime prediction、disaster management。</td><td>2010 年 Haiti earthquake：企業、緊急服務、政府同市民協作；<b>data quality 對分配有限救援資源至關重要</b>。</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 32 "Social Impact" 只有一張圖片，文字擷取不到；請對照原 slide 第 32 頁。</p></div>
+
+<h2>10. Challenges of Data Mining</h2>
+<p><span class="tag exam">Exam</span>Slide 33 列出六個技術挑戰，屬典型「列舉 + 解釋」題：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：六大 Challenges</span>
+<table>
+<tr><th>Challenge</th><th>解釋（slide 只列名稱，以下為補充說明）</th></tr>
+<tr><td><b>Scalability</b></td><td>Data 去到 GB / TB / PB，演算法要可擴展（例如用 sampling、parallel / distributed computing、out-of-core 演算法）。</td></tr>
+<tr><td><b>High Dimensionality</b></td><td>Attributes 好多（例如數千個 genes），計算量急增，亦會出現 curse of dimensionality（Chapter 2）。</td></tr>
+<tr><td><b>Heterogeneous and Complex Data</b></td><td>Data 類型混雜（文字、圖片、graph、time series、DNA），傳統方法只處理同類型 attributes。</td></tr>
+<tr><td><b>Data Quality</b></td><td>Noise、outliers、missing values、duplicate data、wrong / fake data（Chapter 2）。"Garbage in, garbage out"。</td></tr>
+<tr><td><b>Data Ownership and Distribution</b></td><td>Data 分散喺唔同機構 / 地點，涉及擁有權、通訊成本、安全問題。</td></tr>
+<tr><td><b>Non-traditional Analysis</b></td><td>傳統統計係「先有 hypothesis 再收 data 驗證」；Data Mining 要喺機會性收集 (opportunistic) 嘅 data 上自動產生同評估大量 hypotheses。</td></tr>
+</table></div>
+
+<h3>10.1 Social Challenges (Slide 34)</h3>
+<ul>
+  <li><b>Privacy Preservation</b>：保護個人私隱。</li>
+  <li><b>Unethical actions based on interpretations</b>：根據分析結果作出不道德行為。</li>
+  <li><b>Personal data brokerage</b>：個人資料被買賣。</li>
+  <li><b>Data discrimination and inaccuracy</b>：data 有偏差或錯誤，導致歧視性決定。</li>
+  <li><b>Few legal protections exist for the involved individuals</b>：當事人得到嘅法律保障好少。</li>
+</ul>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>考試如果問「Challenges of Data Mining」，通常指 slide 33 嘅<b>技術</b>挑戰（Scalability 等六項）；如果問「Social challenges」先答 slide 34 嘅 privacy 等。兩組唔好撈亂。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 寫出 slide 上 Data Mining 嘅兩個定義，並指出當中三個關鍵字。</summary>
+<p>(1) "Non-trivial extraction of implicit, previously unknown and potentially useful information from data." (2) "Exploration &amp; analysis, by automatic or semi-automatic means, of large quantities of data in order to discover meaningful patterns." 關鍵字例如：non-trivial、previously unknown、potentially useful、automatic / semi-automatic、large quantities、meaningful patterns。</p></details>
+<details class="q"><summary>Q2. 以下邊啲係 Data Mining、邊啲唔係？(a) 用 SQL 查某客戶地址；(b) 由購物紀錄發現經常一齊買嘅產品；(c) 計公司上月總收入；(d) 將客戶分成幾個消費習慣相似嘅群組。</summary>
+<p>(a) 唔係——直接查已知資料，trivial。(b) 係——Association Rule Discovery。(c) 唔係——簡單 aggregation / reporting。(d) 係——Clustering（market segmentation）。</p></details>
+<details class="q"><summary>Q3. Prediction methods 同 Description methods 有咩分別？各舉兩個 tasks。</summary>
+<p>Prediction：用某啲 variables 預測其他 variables 嘅未知或將來值，例如 Classification、Regression。Description：搵出人類可理解、描述 data 嘅 patterns，例如 Clustering、Association Rules。</p></details>
+<details class="q"><summary>Q4. 「預測明日恒指收市點數」同「預測明日恒指升定跌」分別屬咩 task？</summary>
+<p>收市點數係 continuous → <b>Regression</b>（slide 18 例子：time series prediction of stock market indices）。升 / 跌係 categorical → <b>Classification</b>。</p></details>
+<details class="q"><summary>Q5. 用 Fraud Detection 為例，描述 classification 嘅 approach 四個步驟。</summary>
+<p>(1) 用 credit card transactions 同 account-holder 資料（幾時買、買咩、幾準時還款）做 attributes；(2) 將過往 transactions 標記為 fraud / fair，成為 class attribute；(3) learn 一個 model；(4) 用 model 觀察 account 上嘅 transactions 去偵測 fraud。</p></details>
+<details class="q"><summary>Q6. Clustering 嘅目標用 intra / inter-cluster distance 點樣描述？</summary>
+<p>Intra-cluster distances are minimized（組內點互相接近），inter-cluster distances are maximized（唔同組之間距離大）。</p></details>
+<details class="q"><summary>Q7. 發現 rule {Bagels, …} → {Potato Chips}，商店可以點樣利用？</summary>
+<p>Potato Chips 做 consequent：研究點樣推高佢銷量；Bagels 喺 antecedent：評估停售 Bagels 會影響邊啲產品；兩者一齊睇：決定同 Bagels 一齊賣咩去促進 Potato Chips 銷售。</p></details>
+<details class="q"><summary>Q8. 列出 Data Mining 嘅六個技術挑戰，並解釋其中兩個。</summary>
+<p>Scalability、High Dimensionality、Heterogeneous and Complex Data、Data Quality、Data Ownership and Distribution、Non-traditional Analysis。例如 Scalability：data 量極大，演算法要能有效處理 TB 級 data；Data Quality：noise、missing values、duplicates 等會令 model 出錯（例如 loan model 錯誤拒絕好客戶）。</p></details>
+<details class="q"><summary>Q9. 點解傳統分析技術未必適合今日嘅 data？(Origins slide)</summary>
+<p>因為 data 係 large-scale、high dimensional、heterogeneous、complex 同 distributed；Data Mining 因此結合 machine learning / AI、pattern recognition、statistics 同 database systems 嘅 ideas。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>Why</b>：commercial（web / transaction data 大量、電腦平、競爭 → CRM）；scientific（衛星、望遠鏡、gene data；automated analysis + hypothesis formation）。</li>
+<li><b>Definition</b>：non-trivial extraction of implicit, previously unknown, potentially useful information；automatic / semi-automatic discovery of meaningful patterns in large data。</li>
+<li><b>Origins</b>：ML/AI + pattern recognition + statistics + database systems；data 係 large-scale, high-dimensional, heterogeneous, complex, distributed。</li>
+<li><b>Prediction</b>（predict unknown / future values）：Classification（categorical target）、Regression（continuous target）。</li>
+<li><b>Description</b>（human-interpretable patterns）：Clustering、Association Rules。另有 Anomaly Detection。</li>
+<li><b>Classification</b>：training set → learn classifier → model → apply to test set。例：fraud detection、churn / buy prediction、tumor、news、land cover。</li>
+<li><b>Clustering</b>：intra-cluster distance ↓、inter-cluster distance ↑；用途 understanding + summarization；例：market segmentation、document clustering。</li>
+<li><b>Association rules</b>：{Diaper, Milk} → {Beer}；antecedent / consequent；market-basket、medical informatics。</li>
+<li><b>Applications</b>：Business、Healthcare、Safety（better understanding、evidence-based solutions、reducing costs）。</li>
+<li><b>Challenges</b>：Scalability、High Dimensionality、Heterogeneous &amp; Complex Data、Data Quality、Data Ownership &amp; Distribution、Non-traditional Analysis。</li>
+<li><b>Social challenges</b>：privacy、unethical actions、data brokerage、discrimination / inaccuracy、few legal protections。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="../index.html">← 返回目錄</a>
+  <a href="COM6004-ch2.html">Chapter 2 Data →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

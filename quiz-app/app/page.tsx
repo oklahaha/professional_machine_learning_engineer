@@ -40,7 +40,7 @@ export default function Home() {
           glyph="◆"
           title="Data Science & AI"
           subtitle="MSc coursework"
-          blurb="Spaced-repetition flashcards and multiple-choice questions, filterable by course and lecture."
+          blurb="Spaced-repetition flashcards, multiple-choice questions and a revision page for every lecture, filterable by course."
           stats={[
             { label: "flashcards", value: cardCount },
             { label: "questions", value: mcqCount },

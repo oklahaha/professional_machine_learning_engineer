@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6004 · Chapter 5 Cluster Analysis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6004-ch5">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6004 Data Mining › Chapter 5</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6004 · Chapter 5 · Source: COM6004_Chapter_5_Cluster_Analysis.pptx (94 slides) · Cluster Analysis, K-means, Hierarchical Clustering, Cluster Validity, DBSCAN (optional)</p>
+<h1>Cluster Analysis: K-means, Hierarchical &amp; DBSCAN</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>定義 cluster analysis；分辨 partitional vs hierarchical clusterings，以及 exclusive / fuzzy / partial / heterogeneous 等 distinctions。</li>
+    <li>認識四種 cluster types：well-separated、center-based、contiguity-based、density-based。</li>
+    <li><b>識手計 K-means</b>（assign → update centroid → repeat）同 <b>SSE</b>；理解 initial centroids 問題、K-means++、K-means 嘅 limitations 同 pre/post-processing。</li>
+    <li><b>識手做 agglomerative hierarchical clustering</b>（MIN / MAX / Group Average），畫 dendrogram，理解各自優缺點同 time / space complexity。</li>
+    <li>用 internal measures 評估 clusters：correlation、similarity matrix、SSE（elbow）、cohesion &amp; separation（SSE / SSB）、<b>Silhouette coefficient</b>。</li>
+    <li>DBSCAN（optional）：core / border / noise points、algorithm、優缺點、點揀 Eps 同 MinPts。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>K-means 手計 iterations + SSE \( = \sum_i \sum_{x\in C_i} \text{dist}^2(m_i, x) \)。</li>
+    <li>Agglomerative clustering 用 MIN / MAX / Group Average 更新 proximity matrix 同畫 dendrogram。</li>
+    <li>Silhouette coefficient \( s = (b - a)/\max(a, b) \) 計算同解讀。</li>
+    <li>K-means limitations（differing sizes、densities、non-globular shapes、outliers）同 initial centroids 問題（P = K!/K<sup>K</sup>，K = 10 時 0.00036）、K-means++。</li>
+    <li>MIN（處理 non-elliptical shapes，但對 noise 敏感）vs MAX（較唔受 noise 影響，但會打散大 cluster、偏向 globular）vs Group Average（折衷）。</li>
+  </ol>
+</div>
+
+<h2>1. What is Cluster Analysis?</h2>
+<p><span class="tag exam">Exam</span>Slide 4：<b>Finding groups of objects such that the objects in a group will be similar (or related) to one another and different from (or unrelated to) the objects in other groups.</b></p>
+<ul>
+<li><b>Intra-cluster distances are minimized</b></li>
+<li><b>Inter-cluster distances are maximized</b></li>
+</ul>
+<p><b>Applications (slide 5)</b>：</p>
+<ul>
+<li><b>Understanding</b>：Group related documents for browsing、group genes and proteins that have similar functionality、group stocks with similar price fluctuations。</li>
+<li><b>Summarization</b>：Reduce the size of large data sets（例：Clustering precipitation in Australia）。</li>
+</ul>
+<p><b>Notion of a Cluster can be Ambiguous (slide 6)</b>：同一組點可以睇成 <b>Two Clusters、Four Clusters 或 Six Clusters</b>——"How many clusters?" 冇唯一答案，視乎 granularity 同應用。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Clustering 係 <b>unsupervised</b>（冇 class label），Chapter 4 Classification 係 <b>supervised</b>。Chapter 1 已介紹 market segmentation、document clustering；Chapter 2 嘅 distance / similarity measures 係 clustering 嘅基礎；Chapter 2 discretization 亦可用 K-means 搵 breaks。</p></div>
+
+<h2>2. Types of Clusterings</h2>
+<p>Slide 7：A <b>clustering</b> is a set of clusters。重要區分：</p>
+<table>
+<tr><th></th><th>Partitional Clustering</th><th>Hierarchical Clustering</th></tr>
+<tr><td>定義</td><td>A division of data objects into <b>non-overlapping subsets</b> (clusters) such that each data object is in <b>exactly one subset</b></td><td>A set of <b>nested clusters</b> organized as a <b>hierarchical tree</b></td></tr>
+<tr><td>表示 (slides 8–9)</td><td>平面上一組分開嘅 groups</td><td><b>Dendrogram</b>（traditional：binary tree；non-traditional：一個 node 可有多個 children）</td></tr>
+<tr><td>例子演算法</td><td>K-means、DBSCAN</td><td>Agglomerative（MIN、MAX、Group Average）、Divisive</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 8–9 嘅 partitional clustering 圖同 traditional / non-traditional hierarchical clustering 及 dendrograms 係圖片，請對照原 slide。</p></div>
+
+<h3>2.1 Other Distinctions Between Sets of Clusters (Slide 10)</h3>
+<table>
+<tr><th>Distinction</th><th>說明</th></tr>
+<tr><td><b>Exclusive vs non-exclusive</b></td><td>Non-exclusive clusterings：points may belong to <b>multiple clusters</b>（可以代表 multiple classes 或 'border' points）。</td></tr>
+<tr><td><b>Fuzzy vs non-fuzzy</b></td><td>Fuzzy clustering：一個 point 以 0 至 1 嘅 weight 屬於<b>每個</b> cluster；<b>weights must sum to 1</b>。Probabilistic clustering 有類似特性。</td></tr>
+<tr><td><b>Partial vs complete</b></td><td>有時只想 cluster 部分 data（例如唔理 noise）。</td></tr>
+<tr><td><b>Heterogeneous vs homogeneous</b></td><td>Clusters 嘅 sizes、shapes、densities 可以差好遠。</td></tr>
+</table>
+
+<h2>3. Types of Clusters</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：四種 cluster 定義 (Slides 11–15)</span>
+<table>
+<tr><th>Type</th><th>Slide 定義</th><th>Slide 圖例</th></tr>
+<tr><td><b>Well-separated</b></td><td>A cluster is a set of points such that any point in a cluster is closer (or more similar) to <b>every other point in the cluster</b> than to any point not in the cluster.</td><td>3 well-separated clusters</td></tr>
+<tr><td><b>Center-based</b></td><td>An object in a cluster is closer to the <b>"center" of a cluster</b> than to the center of any other cluster. Center 通常係 <b>centroid</b>（cluster 所有點嘅平均）或 <b>medoid</b>（最 "representative" 嘅實際點）。</td><td>4 center-based clusters</td></tr>
+<tr><td><b>Contiguity-based</b>（Nearest neighbor / Transitive）</td><td>A point in a cluster is closer to <b>one or more other points</b> in the cluster than to any point not in the cluster.</td><td>8 contiguous clusters</td></tr>
+<tr><td><b>Density-based</b></td><td>A cluster is a <b>dense region of points</b>, separated by low-density regions from other regions of high density. Used when the clusters are irregular or intertwined, and when noise and outliers are present.</td><td>6 density-based clusters</td></tr>
+</table></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Well-separated 最嚴格（要比所有外面點近過所有內部點）。Center-based 係 K-means 嘅假設（圓形 / globular clusters）。Contiguity 好似「手拉手」嘅鏈條——只要同鄰居近就算同組（MIN / single link 嘅 idea）。Density-based 係 DBSCAN 嘅 idea：密集區就係 cluster，稀疏區係分界或者 noise。</p></div>
+
+<h3>3.1 Characteristics of the Input Data Are Important (Slide 16)</h3>
+<ul>
+<li><b>Type of proximity or density measure</b>：central to clustering，視乎 data 同 application。</li>
+<li>影響 proximity / density 嘅 data characteristics：<b>Dimensionality</b>、<b>Sparseness</b>（curse of dimensionality）、<b>Attribute type</b>、<b>Special relationships in the data</b>（例如 autocorrelation）、<b>Distribution of the data</b>。</li>
+<li><b>Noise and Outliers</b>：often interfere with the operation of the clustering algorithm。</li>
+</ul>
+<p>Slide 17：本 chapter 主要講 <b>K-means clustering</b> 同 <b>Hierarchical clustering</b>（另附 DBSCAN optional）。</p>
+
+<h2>4. K-means Clustering</h2>
+<p>Slide 19：</p>
+<ul>
+<li><b>Partitional clustering approach</b></li>
+<li><b>Number of clusters, K, must be specified</b></li>
+<li>Each cluster is associated with a <b>centroid</b> (center point)</li>
+<li>Each point is assigned to the cluster with the <b>closest centroid</b></li>
+<li>The basic algorithm is very simple：</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Basic K-means Algorithm</span>
+<pre><code>1: Select K points as the initial centroids.
+2: repeat
+3:     Form K clusters by assigning all points to the closest centroid.
+4:     Recompute the centroid of each cluster.
+5: until The centroids don't change</code></pre></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 19 嘅 algorithm 框同 slides 20–21 嘅 K-means iteration 動畫圖係圖片；上面 algorithm 係教科書標準版本，請對照原 slide。</p></div>
+
+<h3>4.1 K-means Details (Slide 22)</h3>
+<ul>
+<li>Initial centroids are often <b>chosen randomly</b> → <b>clusters produced vary from one run to another</b>。</li>
+<li>Centroid is (typically) the <b>mean</b> of the points in the cluster。</li>
+<li>'Closeness' is measured by Euclidean distance, cosine similarity, correlation, etc.</li>
+<li>K-means will <b>converge</b> for common similarity measures mentioned above。</li>
+<li>Most of the convergence happens in the <b>first few iterations</b>；stopping condition 常改為 'Until relatively few points change clusters'。</li>
+<li><span class="tag exam">Exam</span><b>Complexity is O(n × K × I × d)</b>：n = number of points，K = number of clusters，I = number of iterations，d = number of attributes。</li>
+</ul>
+
+<h3>4.2 Worked example：1-D K-means（自擬）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：手計 K-means</span>
+<p>Points：2, 3, 4, 10, 11, 12, 20, 25, 30；K = 2；initial centroids c₁ = 2，c₂ = 12。</p>
+<p><b>Iteration 1</b>：assign 去最近 centroid：</p>
+<ul>
+<li>C₁ (c=2)：{2, 3, 4}（例如 4：|4−2| = 2 &lt; |4−12| = 8）</li>
+<li>C₂ (c=12)：{10, 11, 12, 20, 25, 30}（例如 10：|10−2| = 8 &gt; |10−12| = 2）</li>
+<li>Update：c₁ = (2+3+4)/3 = <b>3</b>；c₂ = (10+11+12+20+25+30)/6 = 108/6 = <b>18</b></li>
+</ul>
+<p><b>Iteration 2</b>（c₁ = 3, c₂ = 18）：</p>
+<ul>
+<li>10：|10−3| = 7 &lt; |10−18| = 8 → C₁；11：8 &gt; 7 → C₂</li>
+<li>C₁ = {2, 3, 4, 10}；C₂ = {11, 12, 20, 25, 30}</li>
+<li>Update：c₁ = 19/4 = <b>4.75</b>；c₂ = 98/5 = <b>19.6</b></li>
+</ul>
+<p><b>Iteration 3</b>（c₁ = 4.75, c₂ = 19.6）：</p>
+<ul>
+<li>11：|11−4.75| = 6.25 &lt; 8.6 → C₁；12：7.25 &lt; 7.6 → C₁</li>
+<li>C₁ = {2, 3, 4, 10, 11, 12}；C₂ = {20, 25, 30}</li>
+<li>Update：c₁ = 42/6 = <b>7</b>；c₂ = 75/3 = <b>25</b></li>
+</ul>
+<p><b>Iteration 4</b>（c₁ = 7, c₂ = 25）：assignment 冇變 → centroids 冇變 → <b>converged</b>。</p>
+<p><b>SSE</b> = C₁：(2−7)² + (3−7)² + (4−7)² + (10−7)² + (11−7)² + (12−7)² = 25+16+9+9+16+25 = 100；C₂：(20−25)² + 0 + (30−25)² = 50 → <b>SSE = 150</b>。</p>
+<p>每次 iteration 嘅 SSE（用 update 後 centroid 計）：348 → 307.95 → 150，<b>單調下降</b>。</p></div>
+<pre><code>import numpy as np
+from sklearn.cluster import KMeans
+X = np.array([2, 3, 4, 10, 11, 12, 20, 25, 30]).reshape(-1, 1)
+km = KMeans(n_clusters=2, init=np.array([[2], [12]]), n_init=1).fit(X)
+km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code></pre>
+
+<h3>4.3 Evaluating K-means Clusters: SSE (Slide 23)</h3>
+<p>Most common measure is <b>Sum of Squared Error (SSE)</b>：每個 point 嘅 error = 佢同最近 cluster（centroid）嘅距離；將 errors 平方再加總：</p>
+<div class="formula">$$ SSE = \sum_{i=1}^{K} \sum_{x \in C_i} \text{dist}^2(m_i, x) $$</div>
+<p>\(x\) 係 cluster \(C_i\) 入面嘅 data point，\(m_i\) 係 cluster \(C_i\) 嘅 representative point。可以證明令 SSE 最細嘅 \(m_i\) 就係 cluster 嘅 <b>center (mean)</b>。</p>
+<ul>
+<li>Given two sets of clusters, we <b>prefer the one with the smallest error</b>。</li>
+<li><span class="tag exam">Exam</span>One easy way to reduce SSE is to <b>increase K</b>（K = n 時 SSE = 0！所以唔可以單靠 SSE 揀 K）。</li>
+<li>A <b>good clustering with smaller K can have a lower SSE</b> than a poor clustering with higher K。</li>
+</ul>
+<p>Slide 24 "Two different K-means Clusterings"：同一組 original points，可以得到 <b>Optimal Clustering</b> 或 <b>Sub-optimal Clustering</b>——取決於 initial centroids。</p>
+
+<h3>4.4 Importance of Choosing Initial Centroids (Slides 25–31)</h3>
+<p>Slides 25–26 圖示：好嘅 initial centroids 幾個 iterations 就搵到 optimal；差嘅 initial centroids 會卡喺 sub-optimal（local minimum）。</p>
+<p><span class="tag exam">Exam</span>Slide 27：如果有 K 個 'real' clusters，揀到每個 cluster 各一個 initial centroid 嘅機會好細，K 越大越細。如果每個 cluster 大小都係 n：</p>
+<div class="formula">$$ P = \frac{\text{number of ways to select one centroid from each cluster}}{\text{number of ways to select } K \text{ centroids}} = \frac{K!\,n^K}{(Kn)^K} = \frac{K!}{K^K} $$</div>
+<p>例如 <b>K = 10</b>：P = 10!/10<sup>10</sup> = 3,628,800 / 10,000,000,000 = <b>0.00036</b>。（K = 3：3!/27 = 0.222；K = 5：120/3125 = 0.0384。）</p>
+<p>有時 initial centroids 會自己 readjust 去「正確」位置，有時唔會。<b>Five pairs of clusters</b> 例子（10 clusters，slides 28–31）：</p>
+<ul>
+<li>Slides 28–29：Starting with <b>two initial centroids in one cluster of each pair</b> of clusters → 每對 clusters 有兩個 centroids，結果可以正確分開。</li>
+<li>Slides 30–31：Starting with some pairs of clusters having <b>three</b> initial centroids, while others have only <b>one</b> → 有一個 centroid 嘅嗰對 clusters 會被合併成一個，有三個 centroids 嘅會將一個 cluster 錯誤切開。</li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 20–21、24–31 嘅 K-means iteration 圖、optimal / sub-optimal clustering 同 10-cluster 例子全部係圖片，請對照原 slide。</p></div>
+
+<h3>4.5 Solutions to Initial Centroids Problem (Slide 32)</h3>
+<ul>
+<li><b>Multiple runs</b>：有幫助，但 probability is not on your side（K 大時要好多次）；揀 SSE 最細嗰次。</li>
+<li><b>Sample and use hierarchical clustering</b> to determine initial centroids。</li>
+<li><b>Generate a larger number of clusters</b> and then perform a hierarchical clustering（merging the clusters）。</li>
+<li><b>Select more than k initial centroids</b> and then select among these initial centroids（e.g., select most widely separated）。</li>
+<li>Use some strategy to select the k initial centroids：<b>K-means++</b> is a robust way of doing this selection。</li>
+</ul>
+
+<h3>4.6 K-means++ (Slide 33)</h3>
+<p>比 random initialization 慢，但 <b>very consistently produces better results in terms of SSE</b>；保證 approximation ratio <b>O(log k)</b> in expectation。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：K-means++ 步驟</span>
+<ol>
+<li>Select an initial point at random to be the first centroid。</li>
+<li>For k − 1 steps：
+  <ul>
+  <li>For each of the N points \(x_i\)，搵佢同目前已選 centroids \(C_1, \dots, C_j\) 嘅 <b>minimum squared distance</b>：\( d(x_i) = \min_j \|x_i - C_j\|^2 \)。</li>
+  <li>Randomly select a new centroid by choosing a point with <b>probability proportional to</b> \( d(x_i) / \sum_i d(x_i) \)。</li>
+  </ul></li>
+<li>End For</li>
+</ol></div>
+<div class="box tip"><span class="label">💡 Worked example（自擬）</span>
+<p>Points：0, 1, 5, 6, 10。第一個 centroid 隨機揀咗 0。</p>
+<p>Squared distance to nearest centroid：0, 1, 25, 36, 100 → 總和 162。</p>
+<p>揀第二個 centroid 嘅概率：0 → 0；1 → 1/162 = 0.006；5 → 25/162 = 0.154；6 → 36/162 = 0.222；10 → 100/162 = <b>0.617</b>。</p>
+<p>即係越遠嘅點越大機會被揀，令 centroids 自然分散，但仍有隨機性（唔會一定揀 outlier）。</p></div>
+
+<h3>4.7 Limitations of K-means (Slides 34–40)</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：K-means limitations</span>
+<p>K-means has problems when clusters are of differing：</p>
+<ul>
+<li><b>Sizes</b>（slide 35：大 cluster 被切開，部分分去細 cluster）</li>
+<li><b>Densities</b>（slide 36：密嘅細 clusters 同疏嘅大 cluster 被錯誤劃分）</li>
+<li><b>Non-globular shapes</b>（slide 37：例如兩個半月形 / 環形，K-means 只會切成兩半圓）</li>
+</ul>
+<p>K-means has problems when the data contains <b>outliers</b>（mean 被拉走；SSE 用平方，outlier 影響更大）。One possible solution is to <b>remove outliers before clustering</b>。</p></div>
+<p><b>Overcoming K-means Limitations (slides 38–40)</b>：One solution is to <b>find a large number of clusters</b> such that each of them represents a part of a natural cluster. But these small clusters need to be <b>put together in a post-processing step</b>.</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>K-means 用 centroid + Euclidean distance，等於假設每個 cluster 係「大小相若嘅圓球」，而 cluster 之間嘅分界係兩個 centroids 嘅垂直平分線。任何違反呢個假設嘅情況（大細唔同、密度唔同、形狀唔係圓）都會出錯。</p></div>
+
+<h3>4.8 Pre-processing and Post-processing (Slide 41)</h3>
+<table>
+<tr><th>Pre-processing</th><th>Post-processing</th></tr>
+<tr><td>
+<ul><li><b>Normalize the data</b>（attributes scale 唔同會令 distance 偏向某 attribute）</li>
+<li><b>Eliminate outliers</b></li></ul></td>
+<td>
+<ul><li>Eliminate <b>small clusters</b> that may represent outliers</li>
+<li><b>Split 'loose' clusters</b>, i.e., clusters with relatively <b>high SSE</b></li>
+<li><b>Merge clusters</b> that are 'close' and that have relatively <b>low SSE</b></li></ul></td></tr>
+</table>
+
+<h2>5. Hierarchical Clustering</h2>
+<p>Slide 43：Produces a set of <b>nested clusters</b> organized as a hierarchical tree；can be visualized as a <b>dendrogram</b>——a tree like diagram that records the sequences of merges or splits（y 軸係 merge 時嘅距離）。</p>
+<p><b>Strengths (slide 44)</b>：</p>
+<ul>
+<li><b>Do not have to assume any particular number of clusters</b>：any desired number of clusters can be obtained by <b>'cutting' the dendrogram</b> at the proper level。</li>
+<li>They may correspond to <b>meaningful taxonomies</b>：例如 biological sciences 嘅 animal kingdom（slide notes：Vertebrates → Mammals（Primates、Rodents、Carnivores）、Birds、Reptiles、Fish；Invertebrates → Arthropods、Mollusks、Annelids）。</li>
+</ul>
+
+<h3>5.1 Agglomerative vs Divisive (Slide 45)</h3>
+<table>
+<tr><th>Agglomerative（bottom-up）</th><th>Divisive（top-down）</th></tr>
+<tr><td>Start with the points as <b>individual clusters</b>；at each step, <b>merge the closest pair</b> of clusters until only one cluster (or k clusters) left</td>
+<td>Start with <b>one, all-inclusive cluster</b>；at each step, <b>split a cluster</b> until each cluster contains an individual point (or there are k clusters)</td></tr>
+</table>
+<p>Traditional hierarchical algorithms use a <b>similarity or distance matrix</b>，merge or split <b>one cluster at a time</b>。</p>
+
+<h3>5.2 Agglomerative Clustering Algorithm (Slides 46–50)</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Algorithm</span>
+<pre><code>1. Compute the proximity matrix
+2. Let each data point be a cluster
+3. Repeat
+4.     Merge the two closest clusters
+5.     Update the proximity matrix
+6. Until only a single cluster remains</code></pre>
+<p><b>Key operation is the computation of the proximity of two clusters</b>：different approaches to defining the distance between clusters distinguish the different algorithms。</p></div>
+<p>Slides 47–50：Starting situation（每點一個 cluster + proximity matrix）→ intermediate situation（clusters C1…C5）→ 要 merge 最近嘅 C2 同 C5 → merge 後問題："<b>How do we update the proximity matrix?</b>"（C2 ∪ C5 嗰行 / 列要重新計）。</p>
+
+<h3>5.3 How to Define Inter-Cluster Distance (Slides 51–55)</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：四種定義</span>
+<table>
+<tr><th>方法</th><th>定義</th><th>公式</th></tr>
+<tr><td><b>MIN</b> (Single Link)</td><td>兩個 clusters 中<b>最近</b>嗰對點嘅距離（determined by one pair of points, i.e., by one link in the proximity graph）</td><td>\( d(C_i, C_j) = \min_{p \in C_i, q \in C_j} d(p, q) \)</td></tr>
+<tr><td><b>MAX</b> (Complete Linkage)</td><td>兩個 clusters 中<b>最遠</b>嗰對點嘅距離（determined by all pairs of points）</td><td>\( d(C_i, C_j) = \max_{p \in C_i, q \in C_j} d(p, q) \)</td></tr>
+<tr><td><b>Group Average</b></td><td>兩 clusters 之間所有 pairwise proximity 嘅<b>平均</b></td><td>\( d(C_i, C_j) = \dfrac{\sum_{p \in C_i}\sum_{q \in C_j} d(p, q)}{|C_i| \times |C_j|} \)</td></tr>
+<tr><td><b>Distance Between Centroids</b></td><td>兩個 centroids 之間嘅距離</td><td>\( d(C_i, C_j) = d(m_i, m_j) \)</td></tr>
+</table></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 56–65 嘅六點例子（點坐標、distance matrix、nested clusters 圖同 dendrograms for MIN / MAX / Group Average）係圖片，擷取不到具體數值；以下 worked example 用自擬 distance matrix。</p></div>
+
+<h3>5.4 Worked example：MIN / MAX / Group Average（自擬）</h3>
+<p>五點 a–e 嘅 distance matrix：</p>
+<table>
+<tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th></tr>
+<tr><th>a</th><td>0</td><td>2</td><td>6</td><td>10</td><td>9</td></tr>
+<tr><th>b</th><td>2</td><td>0</td><td>5</td><td>9</td><td>8</td></tr>
+<tr><th>c</th><td>6</td><td>5</td><td>0</td><td>4</td><td>5</td></tr>
+<tr><th>d</th><td>10</td><td>9</td><td>4</td><td>0</td><td>3</td></tr>
+<tr><th>e</th><td>9</td><td>8</td><td>5</td><td>3</td><td>0</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點：逐步 merge</span>
+<p><b>Step 1（三種方法都一樣）</b>：最細距離 d(a, b) = 2 → merge {a, b} at height <b>2</b>。</p>
+<p><b>Step 2</b>：更新 {a,b} 同其他點：</p>
+<ul>
+<li>MIN：d({ab}, c) = min(6, 5) = 5；d({ab}, d) = min(10, 9) = 9；d({ab}, e) = min(9, 8) = 8</li>
+<li>MAX：d({ab}, c) = max(6, 5) = 6；d({ab}, d) = 10；d({ab}, e) = 9</li>
+<li>Avg：d({ab}, c) = 5.5；d({ab}, d) = 9.5；d({ab}, e) = 8.5</li>
+</ul>
+<p>剩低最細係 d(d, e) = 3 → merge {d, e} at height <b>3</b>（三種方法都係）。</p>
+<p><b>Step 3</b>：而家 clusters = {a,b}, c, {d,e}：</p>
+<table>
+<tr><th></th><th>d(c, {de})</th><th>d({ab}, c)</th><th>d({ab}, {de})</th><th>Merge</th></tr>
+<tr><td>MIN</td><td>min(4, 5) = <b>4</b></td><td>5</td><td>min(10,9,9,8) = 8</td><td>c + {d,e} at <b>4</b></td></tr>
+<tr><td>MAX</td><td>max(4, 5) = <b>5</b></td><td>6</td><td>max(10,9,9,8) = 10</td><td>c + {d,e} at <b>5</b></td></tr>
+<tr><td>Avg</td><td>(4+5)/2 = <b>4.5</b></td><td>5.5</td><td>(10+9+9+8)/4 = 9</td><td>c + {d,e} at <b>4.5</b></td></tr>
+</table>
+<p><b>Step 4</b>：最後 merge {a,b} 同 {c,d,e}：</p>
+<ul>
+<li>MIN：min(6, 10, 9, 5, 9, 8) = <b>5</b></li>
+<li>MAX：max(…) = <b>10</b></li>
+<li>Avg：(6+10+9+5+9+8)/6 = 47/6 = <b>7.83</b></li>
+</ul>
+<p><b>Dendrogram（MIN）</b>：a–b @2，d–e @3，c–{de} @4，{ab}–{cde} @5。<br>
+<b>Dendrogram（MAX）</b>：a–b @2，d–e @3，c–{de} @5，{ab}–{cde} @10。<br>
+如果 cut 成 2 clusters：三種方法都得 {a, b} 同 {c, d, e}。</p></div>
+<pre><code>MIN dendrogram（高度 = merge 距離）
+ 5 ┤       ┌─────┴─────┐
+ 4 ┤       │        ┌──┴──┐
+ 3 ┤       │        │   ┌─┴─┐
+ 2 ┤    ┌──┴──┐     │   │   │
+   └────a─────b─────c───d───e──</code></pre>
+<pre><code>from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.spatial.distance import squareform
+D = [[0,2,6,10,9],[2,0,5,9,8],[6,5,0,4,5],[10,9,4,0,3],[9,8,5,3,0]]
+for m in ["single", "complete", "average"]:      # MIN, MAX, Group Average
+    print(m, linkage(squareform(D), method=m))
+dendrogram(linkage(squareform(D), "single"), labels=list("abcde"))</code></pre>
+
+<h3>5.5 MIN (Single Link): Strength &amp; Limitations (Slides 56–59)</h3>
+<ul>
+<li><b>Strength</b>：<b>Can handle non-elliptical shapes</b>（slide 58：six clusters，可以沿住鏈狀 / 彎曲形狀連埋一齊）。</li>
+<li><b>Limitation</b>：<b>Sensitive to noise</b>（slide 59：noise points 可以喺兩個 clusters 之間「搭橋」，令佢哋被 chain 埋一齊——chaining effect）。</li>
+</ul>
+<h3>5.6 MAX (Complete Linkage): Strength &amp; Limitations (Slides 60–63)</h3>
+<ul>
+<li><b>Strength</b>：<b>Less susceptible to noise</b>（slide 62）。</li>
+<li><b>Limitations</b>：<b>Tends to break large clusters</b>；<b>Biased towards globular clusters</b>（slide 63）。</li>
+</ul>
+<h3>5.7 Group Average (Slides 64–66)</h3>
+<ul>
+<li>Proximity of two clusters is the <b>average of pairwise proximity</b> between points in the two clusters。</li>
+<li>Need to use <b>average connectivity for scalability</b> since <b>total proximity favors large clusters</b>（所以要除以 \(|C_i| \times |C_j|\)）。</li>
+<li><b>Compromise between Single and Complete Link</b>。</li>
+<li>Strengths：<b>Less susceptible to noise and outliers</b>。Limitations：<b>Biased towards globular clusters</b>。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：比較表</span>
+<table>
+<tr><th>Linkage</th><th>Strength</th><th>Limitation</th></tr>
+<tr><td>MIN (single)</td><td>Non-elliptical shapes</td><td>Sensitive to noise &amp; outliers (chaining)</td></tr>
+<tr><td>MAX (complete)</td><td>Less susceptible to noise</td><td>Breaks large clusters；biased towards globular</td></tr>
+<tr><td>Group Average</td><td>Less susceptible to noise &amp; outliers（折衷）</td><td>Biased towards globular</td></tr>
+</table></div>
+
+<h3>5.8 Time and Space Requirements (Slide 67)</h3>
+<ul>
+<li><b>O(N²) space</b> since it uses the proximity matrix（N = number of points）。</li>
+<li><b>O(N³) time</b> in many cases：there are N steps and at each step the size N² proximity matrix must be updated and searched。</li>
+<li>Complexity can be reduced to <b>O(N² log(N))</b> time with some cleverness。</li>
+</ul>
+<p>對比 K-means 嘅 O(n·K·I·d)，hierarchical clustering 對大 data sets 慢好多。</p>
+
+<h3>5.9 Problems and Limitations (Slide 68)</h3>
+<ul>
+<li><b>Once a decision is made to combine two clusters, it cannot be undone</b>（greedy）。</li>
+<li><b>No global objective function is directly minimized</b>（唔似 K-means minimize SSE）。</li>
+<li>Different schemes have problems with one or more of：sensitivity to noise and outliers；difficulty handling clusters of different sizes and non-globular shapes；breaking large clusters。</li>
+</ul>
+
+<h2>6. Cluster Validity</h2>
+<p>Slide 70：Supervised classification 有 accuracy、precision、recall 等 measures。Cluster analysis 嘅對應問題係：點樣評估 clusters 嘅 "goodness"？但 <b>"clusters are in the eye of the beholder"!</b> 咁點解仲要評估？</p>
+<ul>
+<li><b>To avoid finding patterns in noise</b>（K-means 喺 random data 上都會「搵到」K 個 clusters！）</li>
+<li>To compare clustering algorithms</li>
+<li>To compare two sets of clusters</li>
+<li>To compare two clusters</li>
+</ul>
+<h3>6.1 Different Aspects of Cluster Validation (Slide 71)</h3>
+<ol>
+<li>Determining the <b>clustering tendency</b> of a set of data, i.e., distinguishing whether non-random structure actually exists in the data。</li>
+<li>Comparing the results of a cluster analysis to <b>externally known results</b>, e.g., to externally given class labels（external index）。</li>
+<li>Evaluating how well the results of a cluster analysis fit the data <b>without reference to external information</b>（use only the data → internal index）。</li>
+<li>Comparing the results of two different sets of cluster analyses to determine which is better。</li>
+<li>Determining the <b>'correct' number of clusters</b>。</li>
+</ol>
+<p>For 2, 3, and 4, we can further distinguish whether we want to evaluate the <b>entire clustering</b> or just <b>individual clusters</b>。</p>
+
+<h3>6.2 Measures of Cluster Validity Via Correlation (Slides 72–73)</h3>
+<p>兩個 matrices：</p>
+<ul>
+<li><b>Proximity Matrix</b></li>
+<li><b>Ideal Similarity Matrix</b>：每個 data point 一行一列；entry = <b>1</b> if the pair belongs to the <b>same cluster</b>，<b>0</b> if different clusters。</li>
+</ul>
+<p>計兩個 matrices 嘅 <b>correlation</b>。因為 matrices 係 symmetric，只需要計 <b>n(n − 1)/2</b> 個 entries。<b>High correlation</b> 表示同一 cluster 嘅點互相接近。<b>Not a good measure for some density or contiguity-based clusters.</b></p>
+<div class="box warn"><span class="label">⚠️ 留意符號</span><p>如果用 <b>distance</b> matrix（而唔係 similarity），好 clustering 嘅 correlation 會係<b>負數</b>（同 cluster → ideal = 1 而 distance 細）。教科書例子（slide 73）兩個 data sets 嘅 correlation 分別約 −0.92（清晰 clusters）同 −0.58（random data）——數字以 slide 圖為準。</p></div>
+
+<h3>6.3 Using Similarity Matrix for Cluster Validation (Slides 74–76)</h3>
+<p><b>Order the similarity matrix with respect to cluster labels and inspect visually.</b> 好嘅 clustering 會見到對角線上有清晰嘅高相似度方塊。<b>Clusters in random data are not so crisp</b>（slides 75–76：DBSCAN、K-means、Complete Link 喺 random data 上嘅方塊都模糊）。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 73–78、80–81、83 嘅 similarity matrix 圖、SSE curves、histogram 同 cohesion / separation 圖係圖片，請對照原 slide。</p></div>
+
+<h3>6.4 Internal Measures: SSE (Slides 77–78)</h3>
+<p><b>Internal Index</b>：used to measure the goodness of a clustering structure <b>without respect to external information</b>，例如 SSE。</p>
+<ul>
+<li>SSE is good for <b>comparing two clusterings or two clusters</b>（average SSE）。</li>
+<li>Can also be used to <b>estimate the number of clusters</b>：畫 SSE vs K 曲線，搵 "knee / elbow"（SSE 急跌之後變平嘅位置）。</li>
+<li>Clusters in more complicated figures aren't well separated（slide 78：SSE curve for a more complicated data set，elbow 未必明顯）。</li>
+</ul>
+<pre><code>sse = [KMeans(n_clusters=k, n_init=10, random_state=0).fit(X).inertia_ for k in range(1, 11)]
+plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 elbow</code></pre>
+
+<h3>6.5 Framework for Cluster Validity (Slides 79–81)</h3>
+<ul>
+<li>Need a framework to interpret any measure：例如 evaluation measure = 10，係 good、fair 定 poor？</li>
+<li><b>Statistics provide a framework</b>：The more "atypical" a clustering result is, the more likely it represents valid structure in the data。</li>
+<li>將 index 值同 random data / random clusterings 嘅 index 值比較；if the value of the index is <b>unlikely</b>, then the cluster results are valid。（較複雜、較難理解。）</li>
+<li>比較兩組 cluster analyses 時 framework 較唔需要，但仍有「兩個 index 值嘅差是否 significant」嘅問題。</li>
+</ul>
+<p><b>Statistical Framework for SSE (slide 80)</b>：例子：compare SSE of <b>0.005</b> against three clusters in random data。Histogram 顯示 500 組 random data（每組 100 點，x、y 分佈於 0.2–0.8）分成 3 clusters 嘅 SSE——random data 嘅 SSE 遠大於 0.005，所以 SSE = 0.005 嘅 clustering 好 "atypical" → 代表真實結構。</p>
+<p><b>Statistical Framework for Correlation (slide 81)</b>：同樣將 ideal similarity / proximity matrix 嘅 correlation 同 random data 比較。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個「同 random data 比較，睇結果有幾 unlikely」嘅思路就係 COM6005 hypothesis testing 嘅 p-value 概念：null hypothesis = data 冇 cluster 結構；如果觀察到嘅 SSE 喺 null distribution 下極罕見，就 reject null。</p></div>
+
+<h3>6.6 Internal Measures: Cohesion and Separation (Slides 82–84)</h3>
+<ul>
+<li><b>Cluster Cohesion</b>：measures how closely related are objects in a cluster（例：SSE）。</li>
+<li><b>Cluster Separation</b>：measure how distinct or well-separated a cluster is from other clusters（例：squared error between clusters）。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：SSE (WSS) 同 SSB (BSS)</span>
+<p>Cohesion is measured by the <b>within cluster sum of squares (SSE)</b>：</p>
+<div class="formula">$$ SSE = WSS = \sum_i \sum_{x \in C_i} (x - m_i)^2 $$</div>
+<p>Separation is measured by the <b>between cluster sum of squares</b>：</p>
+<div class="formula">$$ SSB = BSS = \sum_i |C_i|\,(m - m_i)^2 $$</div>
+<p>\(|C_i|\) 係 cluster i 嘅 size，\(m_i\) 係 cluster centroid，\(m\) 係全部 data 嘅 overall mean。<b>SSE + SSB = 常數</b>（Total Sum of Squares, TSS）。</p>
+<p><b>Worked example</b>（一維 points 1, 2, 4, 5；overall mean m = 3）：</p>
+<ul>
+<li><b>K = 1</b>：SSE = (1−3)² + (2−3)² + (4−3)² + (5−3)² = 4+1+1+4 = <b>10</b>；SSB = 4 × (3−3)² = <b>0</b>；Total = 10</li>
+<li><b>K = 2</b>：clusters {1, 2}（m₁ = 1.5）同 {4, 5}（m₂ = 4.5）：SSE = 0.25+0.25+0.25+0.25 = <b>1</b>；SSB = 2(3−1.5)² + 2(4.5−3)² = 4.5 + 4.5 = <b>9</b>；Total = 10 ✓</li>
+</ul>
+<p>好嘅 clustering：SSE 細（cohesion 高）、SSB 大（separation 高）。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 82 嘅 SSE / SSB 公式同 slide 83 嘅數值例子係圖片；上面公式同例子係教科書標準內容（slide 文字 "Where |Ci| is the size of cluster i" 與之吻合），請對照原 slide。</p></div>
+<p><b>Proximity graph based approach (slide 84)</b>：Cluster cohesion is the <b>sum of the weight of all links within a cluster</b>；cluster separation is the <b>sum of the weights between nodes in the cluster and nodes outside the cluster</b>。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>SSE + SSB = TSS 同 COM6005 ANOVA / regression 嘅 SST = SSW + SSB（或 SSE + SSR）係同一個分解。</p></div>
+
+<h3>6.7 Internal Measures: Silhouette Coefficient (Slide 85)</h3>
+<p>Silhouette coefficient <b>combines ideas of both cohesion and separation</b>，可以用於 individual points、clusters 同 clusterings。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Silhouette 計法</span>
+<p>對一個 individual point \(i\)：</p>
+<ul>
+<li><b>a</b> = average distance of \(i\) to the points <b>in its cluster</b>（cohesion）</li>
+<li><b>b</b> = min (average distance of \(i\) to points <b>in another cluster</b>)（對每個其他 cluster 計平均距離，取最細）</li>
+</ul>
+<div class="formula">$$ s = \frac{b - a}{\max(a, b)} $$</div>
+<p>Typically between 0 and 1；<b>the closer to 1 the better</b>（理論範圍 −1 至 1；負數表示該點可能分錯 cluster）。可以計一個 cluster 或成個 clustering 嘅 <b>average silhouette coefficient</b>。</p></div>
+<div class="box tip"><span class="label">💡 Worked example（用 §5.4 distance matrix，clustering = {a, b}、{c, d, e}）</span>
+<p><b>Point a</b>：a = d(a, b) = 2；b = avg(d(a,c), d(a,d), d(a,e)) = (6+10+9)/3 = 8.33；s = (8.33 − 2)/8.33 = <b>0.76</b></p>
+<p><b>Point c</b>：a = avg(d(c,d), d(c,e)) = (4+5)/2 = 4.5；b = avg(d(c,a), d(c,b)) = (6+5)/2 = 5.5；s = (5.5 − 4.5)/5.5 = <b>0.18</b>（c 喺兩個 clusters 之間，silhouette 低）</p>
+<p><b>Point d</b>：a = (4+3)/2 = 3.5；b = (10+9)/2 = 9.5；s = 6/9.5 = <b>0.63</b></p>
+<p>如果某點 a &gt; b（離自己 cluster 比另一 cluster 更遠），s 會係負數 → 應考慮重新分配。</p></div>
+<pre><code>from sklearn.metrics import silhouette_score, silhouette_samples
+silhouette_samples(D, labels=[0,0,1,1,1], metric="precomputed")   # 每點 s
+silhouette_score(X, km.labels_)                                     # 整體平均</code></pre>
+
+<h2>7. Density Based Clustering: DBSCAN (Optional)</h2>
+<p>Slide 86：Clusters are <b>regions of high density</b> that are separated from one another by regions of low density。</p>
+<div class="box exam"><span class="label">⭐ 考試重點（optional 部分仍可能考概念）：DBSCAN 定義 (Slide 87)</span>
+<ul>
+<li><b>Density</b> = number of points within a specified radius (<b>Eps</b>)</li>
+<li><b>Core point</b>：has at least a specified number of points (<b>MinPts</b>) within Eps（<b>counts the point itself</b>）；these are points at the interior of a cluster</li>
+<li><b>Border point</b>：is <b>not a core point</b>, but is <b>in the neighborhood of a core point</b></li>
+<li><b>Noise point</b>：any point that is <b>not a core point or a border point</b></li>
+</ul></div>
+<p>Slides 88–89 例子圖：MinPts = 7 示意；Eps = 10, MinPts = 4 時 original points 被標記為 core、border、noise。</p>
+
+<h3>7.1 DBSCAN Algorithm (Slide 90)</h3>
+<p>Form clusters using core points, and assign border points to one of its neighboring clusters：</p>
+<ol>
+<li>Label all points as core, border, or noise points。</li>
+<li>Eliminate noise points。</li>
+<li>Put an edge between all core points within a distance Eps of each other。</li>
+<li>Make each group of connected core points into a separate cluster。</li>
+<li>Assign each border point to one of the clusters of its associated core points。</li>
+</ol>
+<div class="box tip"><span class="label">💡 Worked example（自擬，一維）</span>
+<p>Points：1, 2, 3, 4, 8, 9, 20；Eps = 1.5，MinPts = 3（包括自己）。</p>
+<ul>
+<li>1：Eps 內有 {1, 2} = 2 點 → 唔係 core；但 2 係 core 且 |1−2| ≤ 1.5 → <b>border</b></li>
+<li>2：{1, 2, 3} = 3 → <b>core</b></li>
+<li>3：{2, 3, 4} = 3 → <b>core</b></li>
+<li>4：{3, 4} = 2 → 唔係 core；鄰近 core 3 → <b>border</b></li>
+<li>8：{8, 9} = 2；9：{8, 9} = 2；兩者都唔係 core，亦冇 core 鄰居 → <b>noise</b></li>
+<li>20：{20} → <b>noise</b></li>
+</ul>
+<p>Core 2 同 3 距離 1 ≤ Eps → 連埋做一個 cluster；border 1、4 加入 → Cluster = {1, 2, 3, 4}；Noise = {8, 9, 20}。<br>如果 MinPts 改為 2，8 同 9 都會變 core，形成第二個 cluster {8, 9}——結果對參數好敏感。</p></div>
+
+<h3>7.2 When DBSCAN Works / Does NOT Work Well (Slides 91–92)</h3>
+<table>
+<tr><th>Works well</th><th>Does NOT work well</th></tr>
+<tr><td>
+<ul><li><b>Can handle clusters of different shapes and sizes</b></li>
+<li><b>Resistant to noise</b></li></ul></td>
+<td>
+<ul><li><b>Varying densities</b>（slide 92：MinPts = 4，Eps = 9.92 vs 9.75 結果差好遠——一個 Eps 唔能夠同時適合密同疏嘅 clusters）</li>
+<li><b>High-dimensional data</b>（curse of dimensionality 令 density 定義失效）</li></ul></td></tr>
+</table>
+
+<h3>7.3 Determining Eps and MinPts (Slide 93)</h3>
+<ul>
+<li>Idea：for points in a cluster, their <b>k-th nearest neighbors are at close distance</b>；<b>noise points have the k-th nearest neighbor at farther distance</b>。</li>
+<li>So, <b>plot sorted distance of every point to its k-th nearest neighbor</b>（k-distance plot）；曲線急升嘅 "knee" 位置就係 Eps 嘅好選擇，k 就做 MinPts。</li>
+</ul>
+<pre><code>from sklearn.neighbors import NearestNeighbors
+from sklearn.cluster import DBSCAN
+k = 4
+dist, _ = NearestNeighbors(n_neighbors=k).fit(X).kneighbors(X)
+plt.plot(np.sort(dist[:, -1]))                  # k-distance plot，搵 knee → Eps
+labels = DBSCAN(eps=1.5, min_samples=3).fit_predict(np.array([1,2,3,4,8,9,20]).reshape(-1,1))
+# labels: [0 0 0 0 -1 -1 -1]   (-1 = noise)</code></pre>
+
+<div class="box exam"><span class="label">⭐ 考試重點：三種方法總比較</span>
+<table>
+<tr><th></th><th>K-means</th><th>Agglomerative Hierarchical</th><th>DBSCAN</th></tr>
+<tr><td>Type</td><td>Partitional, center-based</td><td>Hierarchical (nested)</td><td>Partitional, density-based</td></tr>
+<tr><td>要預設</td><td>K</td><td>唔使（cut dendrogram）；要揀 linkage</td><td>Eps、MinPts</td></tr>
+<tr><td>Shapes</td><td>Globular only</td><td>MIN：任意；MAX / Avg：globular</td><td>任意形狀同大小</td></tr>
+<tr><td>Noise / outliers</td><td>敏感</td><td>MIN 敏感；MAX / Avg 較 robust</td><td>Resistant（標記為 noise）</td></tr>
+<tr><td>Complexity</td><td>O(n·K·I·d)</td><td>O(N²) space，O(N³) time</td><td>（教科書：O(N²)，有 index 可更快）</td></tr>
+<tr><td>主要弱點</td><td>Initial centroids、sizes、densities、shapes</td><td>Merge 唔可以 undo；冇 global objective</td><td>Varying densities、high-dimensional</td></tr>
+</table></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Points：1, 2, 6, 7, 8, 15；K = 2；initial centroids 1 同 8。做 K-means 直到收斂，並計最終 SSE。</summary>
+<p>Iter 1：C₁ = {1, 2}（2：|2−1| = 1 &lt; 6），C₂ = {6, 7, 8, 15}（6：5 &gt; 2）→ c₁ = 1.5，c₂ = 36/4 = 9。<br>Iter 2：6：|6−1.5| = 4.5 &gt; |6−9| = 3 → C₂；assignments 冇變 → converged。<br>SSE = (1−1.5)² + (2−1.5)² + (6−9)² + (7−9)² + (8−9)² + (15−9)² = 0.25 + 0.25 + 9 + 4 + 1 + 36 = <b>50.5</b>。<br>（如果 K = 3 用 {1,2}、{6,7,8}、{15}，SSE = 0.5 + 2 + 0 = 2.5，明顯好啲——15 係 outlier 拉走咗 centroid。）</p></details>
+<details class="q"><summary>Q2. 點解唔可以揀令 SSE 最細嘅 K？應該點揀？</summary>
+<p>因為 SSE 隨 K 增加而下降，K = n 時 SSE = 0，所以「最細 SSE」永遠揀最大 K。應用 SSE vs K 曲線搵 elbow / knee，或用 silhouette coefficient、或同 random data 比較（statistical framework）。</p></details>
+<details class="q"><summary>Q3. 有 5 個大小相同嘅真實 clusters，隨機揀 5 個 initial centroids，每個 cluster 剛好一個嘅概率係幾多？</summary>
+<p>P = K!/K<sup>K</sup> = 5!/5⁵ = 120/3125 = <b>0.0384</b>。（K = 10 時只有 0.00036。）</p></details>
+<details class="q"><summary>Q4. Distance matrix（p1–p4）：d12 = 1, d13 = 4, d14 = 5, d23 = 3, d24 = 6, d34 = 2。用 MIN 同 MAX 做 agglomerative clustering，寫出每步 merge 嘅高度。</summary>
+<p>Step 1：merge {p1, p2} @1。<br>
+MIN：d({12}, 3) = min(4, 3) = 3；d({12}, 4) = min(5, 6) = 5；d(3, 4) = 2 → merge {p3, p4} @2；最後 d({12}, {34}) = min(4, 5, 3, 6) = 3 → @3。<br>
+MAX：d({12}, 3) = 4；d({12}, 4) = 6；d(3, 4) = 2 → merge {p3, p4} @2；最後 max(4, 5, 3, 6) = 6 → @6。<br>
+Group Average 最後一步 = (4+5+3+6)/4 = 4.5。</p></details>
+<details class="q"><summary>Q5. 比較 MIN 同 MAX linkage 嘅優缺點。</summary>
+<p>MIN：可以處理 non-elliptical shapes，但對 noise / outliers 敏感（chaining effect）。MAX：較唔受 noise 影響，但傾向打散大 clusters，同偏向 globular clusters。Group Average 係兩者折衷（less susceptible to noise，但 biased towards globular）。</p></details>
+<details class="q"><summary>Q6. 用 Q4 嘅 distance matrix，clustering = {p1, p2}、{p3, p4}。計 p2 同 p3 嘅 silhouette coefficient。</summary>
+<p>p2：a = d(p2, p1) = 1；b = avg(d23, d24) = (3 + 6)/2 = 4.5；s = (4.5 − 1)/4.5 = <b>0.778</b>。<br>p3：a = d(p3, p4) = 2；b = avg(d31, d32) = (4 + 3)/2 = 3.5；s = (3.5 − 2)/3.5 = <b>0.429</b>。</p></details>
+<details class="q"><summary>Q7. 一維 points 2, 4, 10, 12，clusters {2, 4} 同 {10, 12}。計 SSE、SSB 同 total，並驗證 SSE + SSB = TSS。</summary>
+<p>Overall mean = 7；m₁ = 3，m₂ = 11。SSE = 1+1+1+1 = <b>4</b>；SSB = 2(7−3)² + 2(11−7)² = 32 + 32 = <b>64</b>；TSS = 25+9+9+25 = 68 = 4 + 64 ✓。</p></details>
+<details class="q"><summary>Q8. DBSCAN：定義 core、border、noise point。點解 DBSCAN 處理唔到 varying densities？</summary>
+<p>Core：Eps 半徑內（包括自己）有 ≥ MinPts 點；Border：唔係 core 但喺某 core point 嘅 Eps neighborhood 內；Noise：既唔係 core 亦唔係 border。因為成個 data set 只用一組 Eps / MinPts：Eps 細到可以分開密 clusters 時，疏 cluster 嘅點會變 noise；Eps 大到可以容納疏 cluster 時，相鄰嘅密 clusters 會被合併。</p></details>
+<details class="q"><summary>Q9. 列出 K-means 嘅 pre-processing 同 post-processing 步驟。</summary>
+<p>Pre：normalize the data；eliminate outliers。Post：eliminate small clusters（可能係 outliers）；split loose clusters（high SSE）；merge close clusters with relatively low SSE。</p></details>
+<details class="q"><summary>Q10. Hierarchical clustering 嘅 space 同 time complexity？有咩主要限制？</summary>
+<p>O(N²) space（proximity matrix）；O(N³) time（N 步，每步更新 / 搜尋 N² matrix），聰明實作可減到 O(N² log N)。限制：merge 決定唔可以 undo；冇直接 minimize global objective function；唔同 linkage 有 noise 敏感、處理唔到唔同大小 / non-globular、打散大 cluster 等問題。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>Cluster analysis</b>：組內相似（intra ↓）、組間唔同（inter ↑）；用途 understanding、summarization；cluster 數目 ambiguous。</li>
+<li><b>Partitional</b>（non-overlapping，每點一個 cluster）vs <b>Hierarchical</b>（nested，dendrogram）；exclusive / non-exclusive、fuzzy（weights sum to 1）、partial / complete、heterogeneous / homogeneous。</li>
+<li><b>Cluster types</b>：well-separated、center-based（centroid / medoid）、contiguity-based（transitive）、density-based（irregular + noise）。</li>
+<li><b>K-means</b>：揀 K 個 initial centroids → assign to closest → recompute mean → repeat until no change。O(n·K·I·d)。Random init → 每次結果唔同。</li>
+<li><b>SSE</b> = ΣΣ dist²(mᵢ, x)；mean 令 SSE 最細；增加 K 一定減 SSE。</li>
+<li><b>Initial centroids</b>：P(每 cluster 一個) = K!/K<sup>K</sup>（K = 10 → 0.00036）；solutions：multiple runs、hierarchical on sample、多啲 clusters 再 merge、揀多過 k 再揀 widely separated、<b>K-means++</b>（prob ∝ D(x)²，O(log k)）。</li>
+<li><b>K-means limitations</b>：differing sizes、densities、non-globular shapes、outliers → 用多啲 clusters 再 post-process merge；pre（normalize、remove outliers）、post（remove small、split high-SSE、merge close low-SSE）。</li>
+<li><b>Hierarchical</b>：唔使預設 K（cut dendrogram）、可對應 taxonomy；agglomerative（merge closest）vs divisive（split）。</li>
+<li><b>Linkage</b>：MIN（closest pair；non-elliptical ✓、noise ✗）、MAX（farthest pair；noise ✓、breaks large、globular bias）、Group Average（Σd/(|Cᵢ||Cⱼ|)；折衷）、Centroid distance。</li>
+<li><b>Complexity</b>：O(N²) space、O(N³) time（可到 O(N² log N)）；merge 唔可以 undo、冇 global objective。</li>
+<li><b>Validity</b>：避免喺 noise 搵 pattern；aspects：clustering tendency、external labels、internal（只用 data）、比較兩組、揀 K。</li>
+<li><b>Correlation</b>：ideal similarity matrix（同 cluster = 1）vs proximity matrix，計 n(n−1)/2 entries；唔適合 density / contiguity clusters。<b>Similarity matrix</b> 按 label 排序睇方塊；random data 唔 crisp。</li>
+<li><b>SSE vs K</b> 搵 elbow；<b>statistical framework</b>：同 random data 嘅 index 分佈比較（SSE 0.005 例子）。</li>
+<li><b>Cohesion</b> = SSE (WSS)；<b>Separation</b> = SSB = Σ|Cᵢ|(m − mᵢ)²；SSE + SSB = 常數（1,2,4,5 例：K=1 → 10 + 0；K=2 → 1 + 9）。</li>
+<li><b>Silhouette</b>：a = 同 cluster 平均距離；b = 最近其他 cluster 嘅平均距離；s = (b − a)/max(a, b)；越近 1 越好。</li>
+<li><b>DBSCAN</b>：Eps、MinPts（包括自己）；core / border / noise；連接 Eps 內嘅 core points 成 clusters，border 歸附近 core 嘅 cluster；✓ 任意形狀大小、resistant to noise；✗ varying densities、high-dimensional；k-distance plot 揀 Eps。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6004-ch4b.html">← Chapter 4B Classification (II)</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -29,7 +29,7 @@
   <h3>🎯 本講重點 (Learning outcomes)</h3>
   <ul>
     <li>理解 relation (table) 同 join 的概念</li>
-    <li>用 Big O notation 分析成本（O(1), O(lg n), O(n), O(n²)），識 Big O rules 同 best / worst / average case</li>
+    <li>用 Big O notation 分析成本（\(O(1)\), \(O(\lg n)\), \(O(n)\), \(O(n^2)\)），識 Big O rules 同 best / worst / average case</li>
     <li>掌握 B tree 同 B+ tree 的結構、point search、range query 同成本；index 的 overhead；query plan 同 query optimizer</li>
     <li>認識其他 index：R-tree、HNSW、Inverted index</li>
     <li>理解 transaction、concurrency control（serial execution、locks、Two-Phase Locking、deadlock、rollback / cascading rollback）</li>
@@ -37,7 +37,7 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>B+ tree：結構特點（pointers 只喺 leaf、separator、sibling pointer、balanced）、search 同 range query 步驟、O(lg n) search &amp; update</li>
+    <li>B+ tree：結構特點（pointers 只喺 leaf、separator、sibling pointer、balanced）、search 同 range query 步驟、\(O(\lg n)\) search &amp; update</li>
     <li>Two-Phase Locking (2PL)：growing / shrinking phase、readlock / writelock conflict table、deadlock = precedence graph 有 cycle</li>
     <li>Log-based recovery：undo incomplete、redo committed；用 log 計 recovery 後的 database 值</li>
     <li>Blocking vs fuzzy checkpoints；scan backward 去到邊度停</li>
@@ -77,14 +77,14 @@
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 的四個 Big O 例子</span>
 <table>
 <tr><th>Example</th><th>Task</th><th>Complexity</th></tr>
-<tr><td>1</td><td>For each student, mark his/her assignment</td><td><b>O(n)</b> — workload grows linearly with n</td></tr>
-<tr><td>2</td><td>每個學生寫 peer evaluation 俾每個其他學生，老師 mark 晒所有報告</td><td><b>O(n²)</b> — n(n−1) 份報告</td></tr>
-<tr><td>3</td><td>Knock-out tournament：每兩個 player 比賽，贏的留低；同時進行的比賽叫一個 round</td><td>Rounds = <b>O(lg n)</b>；Games = <b>O(n)</b>（剛好 n−1 場）</td></tr>
-<tr><td>4</td><td>Find any ONE student in the class</td><td><b>O(1)</b> — constant time regardless of n</td></tr>
+<tr><td>1</td><td>For each student, mark his/her assignment</td><td><b>\(O(n)\)</b> — workload grows linearly with n</td></tr>
+<tr><td>2</td><td>每個學生寫 peer evaluation 俾每個其他學生，老師 mark 晒所有報告</td><td><b>\(O(n^2)\)</b> — \( n(n-1) \) 份報告</td></tr>
+<tr><td>3</td><td>Knock-out tournament：每兩個 player 比賽，贏的留低；同時進行的比賽叫一個 round</td><td>Rounds = <b>\(O(\lg n)\)</b>；Games = <b>\(O(n)\)</b>（剛好 \( n-1 \) 場）</td></tr>
+<tr><td>4</td><td>Find any ONE student in the class</td><td><b>\(O(1)\)</b> — constant time regardless of n</td></tr>
 </table>
 <p>Note：<b>lg</b> is binary log (base 2)；<b>log</b> is base 10。</p>
 </div>
-<p>Worked example（Example 3）：n = 16 players → round 1: 8 games, round 2: 4, round 3: 2, round 4: 1 → 4 rounds = lg 16；games = 8+4+2+1 = 15 = n−1。</p>
+<p>Worked example（Example 3）：\( n = 16 \) players → round 1: 8 games, round 2: 4, round 3: 2, round 4: 1 → 4 rounds = \( \lg 16 \)；games = \( 8+4+2+1 = 15 = n-1 \)。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 有一張 tournament 圖，文字擷取不到。</p></div>
 
 <h3>2.2 Big O rules</h3>
@@ -92,12 +92,12 @@
 <ul>
 <li>\( 3n^2 + 4n + 100 \Rightarrow O(n^2) \)：We only care about the <b>highest order term</b>；We don't care about the <b>coefficient</b></li>
 <li>We usually consider the <b>average case</b> or the <b>worst case</b></li>
-<li>例子：逐個學生搵 Tom，搵到就停 → Best case O(1)（第一個就係）；Worst case O(n)；Average O(n)（平均要查一半，n/2 仍然係 O(n)）</li>
+<li>例子：逐個學生搵 Tom，搵到就停 → Best case \(O(1)\)（第一個就係）；Worst case \(O(n)\)；Average \(O(n)\)（平均要查一半，\( n/2 \) 仍然係 \(O(n)\)）</li>
 </ul>
 </div>
 
 <h2>3. Index on RDBMS：B tree</h2>
-<p>Common method：<b>B tree (and its variants)</b>（Bayer et al., 1972）。不同版本概念相近，細節有別；本科講 B tree 同 B+ tree。<span class="tag exam">Exam</span>Cost complexity of search：<b>O(lg n)</b>。</p>
+<p>Common method：<b>B tree (and its variants)</b>（Bayer et al., 1972）。不同版本概念相近，細節有別；本科講 B tree 同 B+ tree。<span class="tag exam">Exam</span>Cost complexity of search：<b>\(O(\lg n)\)</b>。</p>
 <p>以 IG 為例：\( \log_{10}(3\times10^9) = 9.38 \)（slide 數字）；用 binary log，\( \lg(3\times 10^9) \approx 31.5 \)。即係由 30 秒 linear scan 變成大約幾十步——幾乎即時。</p>
 <h3>3.1 Structure of B tree（slide 13）</h3>
 <pre><code>                    [ 11 ]                      ← Root node
@@ -108,7 +108,7 @@
 <p>Key properties：<b>Items on the left are all smaller；items on the right are all larger</b>。Note：There could be multiple records for each value。喺 B tree，每個 node（包括 root 同 non-leaf）的值本身都係 data。</p>
 <p><b>Example: Finding 15</b>：15 &gt; 11 → go right → 喺 [15 | 20] 搵到，Bingo!（未去到 leaf 已經搵到）<br>
 <b>Example: Finding 22</b>：22 &gt; 11 → right；22 &gt; 20 → right；leaf [21 23] 冇 22 → 22 does not exist。</p>
-<p><b>Cost analysis</b>：Best scenario O(1)（例如搵 11，root 就係）；Worst scenario O(lg n)（slide 寫 O(ln(n))，同一個 order）——n 係 distinct values 數目（≤ records 數）。</p>
+<p><b>Cost analysis</b>：Best scenario \(O(1)\)（例如搵 11，root 就係）；Worst scenario \(O(\lg n)\)（slide 寫 \(O(\ln(n))\)，同一個 order）——n 係 distinct values 數目（≤ records 數）。</p>
 
 <h2>4. B+ tree</h2>
 <pre><code>                    [ 13 ]
@@ -134,7 +134,7 @@
 <div class="box tip"><span class="label">💡 點解 range query 用 B+ tree？</span><p>B tree 的值散落喺唔同 level，range query 要上上落落咁 traverse。B+ tree 所有值都喺 leaf，而且 leaf 已排序 + 有 sibling pointer，搵到起點之後只需要「向右行」，好似喺一本已排序的電話簿揭頁。</p></div>
 <h3>4.2 Other key characteristics</h3>
 <ul>
-<li><span class="tag exam">Exam</span><b>The update cost is also O(lg n)</b>。對比：Binary tree（a well-known data structure）has a linear update cost（樹可以變得唔平衡，worst case 似一條 linked list）</li>
+<li><span class="tag exam">Exam</span><b>The update cost is also \(O(\lg n)\)</b>。對比：Binary tree（a well-known data structure）has a linear update cost（樹可以變得唔平衡，worst case 似一條 linked list）</li>
 <li><b>Balanced tree</b>：由 root 去任何 leaf 的 path length 都一樣</li>
 <li>B / B+ tree is for <b>one-dimensional search</b>；可以將多個 attributes 合成一個 attribute（composite key）再用 B+ tree</li>
 <li>可以用 USFCA 的 B+ tree visualization 睇 maintenance 同 search 動畫</li>
@@ -183,7 +183,7 @@
 <h2>6. Other indices</h2>
 <table>
 <tr><th>Index</th><th>用途</th><th>重點</th></tr>
-<tr><td><b>R-tree</b> (Guttman, SIGMOD 1984)</td><td>Multi-dimensional spatial query：Find the object closest to me；objects within 1km</td><td>Worst case：Search O(n)、Update O(n)</td></tr>
+<tr><td><b>R-tree</b> (Guttman, SIGMOD 1984)</td><td>Multi-dimensional spatial query：Find the object closest to me；objects within 1km</td><td>Worst case：Search \(O(n)\)、Update \(O(n)\)</td></tr>
 <tr><td><b>HNSW</b> (Hierarchical Navigable Small World, Malkov et al. 2016)</td><td>Top-k <b>cosine similarity</b> search on a <b>vector database</b>（approximate nearest neighbor）</td><td>Example application：<b>RAG in LLM</b></td></tr>
 <tr><td><b>Inverted index</b></td><td>Full-text (keyword-based) search</td><td>The reverse of a document-to-term mapping</td></tr>
 </table>
@@ -204,7 +204,7 @@
 <h3>8.1 Why concurrent execution?</h3>
 <p>多部 ATM 同時 access central database。如果唔支援 concurrent execution：電腦一次只做一個 transaction → 所有人排隊用一部 ATM，連銀行職員都要等。</p>
 <h3>8.2 The ATM example（slides 37–47）</h3>
-<p>Initial：X = 100，Y = 100。ATM 1 的 transaction：X = X + 100, Y = Y − 100。ATM 2：Y = Y + 100, X = X − 100。（每次 update 要等 database 回 "OK"，因為 network 可能 drop message；長時間收唔到 OK 就 resend。）</p>
+<p>Initial：\( X = 100 \)，\( Y = 100 \)。ATM 1 的 transaction：\( X = X + 100 \), \( Y = Y - 100 \)。ATM 2：\( Y = Y + 100 \), \( X = X - 100 \)。（每次 update 要等 database 回 "OK"，因為 network 可能 drop message；長時間收唔到 OK 就 resend。）</p>
 <table>
 <tr><th>Step</th><th>Action</th><th>X</th><th>Y</th></tr>
 <tr><td>1</td><td>ATM 2 reads Y → 100；ATM 1 reads X → 100</td><td>100</td><td>100</td></tr>
@@ -215,11 +215,11 @@
 <tr><td>6</td><td>ATM 2 reads X → 200</td><td>200</td><td>0</td></tr>
 <tr><td>7</td><td>ATM 2: Update X to 100</td><td>100</td><td>0</td></tr>
 </table>
-<p><b>Something wrong?</b> Final X = 100, Y = 0。正確應該係兩個轉帳互相抵銷：X = 100, Y = 100。ATM 2 對 Y 的 +100 被 ATM 1 覆蓋咗（lost update），總金額由 200 變 100。</p>
+<p><b>Something wrong?</b> Final \( X = 100 \), \( Y = 0 \)。正確應該係兩個轉帳互相抵銷：\( X = 100 \), \( Y = 100 \)。ATM 2 對 Y 的 +100 被 ATM 1 覆蓋咗（lost update），總金額由 200 變 100。</p>
 <h3>8.3 Correct execution = Serial execution</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：Definition of a correct execution</span>
 <p>Assumption：each transaction is itself correct（brings the DB from a consistent state to another consistent state）。<b>Serial execution</b>：transactions executed one by one → <b>serial execution is correct</b>。不同 serial order 可以有不同結果，但 <b>都算正確</b>。</p>
-<p>例子：X = 1000；T1：X increases by 1%；T2：X decreases by 100。</p>
+<p>例子：\( X = 1000 \)；T1：X increases by 1%；T2：X decreases by 100。</p>
 <ul><li>T1 then T2：1000 → 1010 → <b>910</b></li><li>T2 then T1：1000 → 900 → <b>909</b></li></ul>
 <p>910 同 909 都係 correct results。</p>
 </div>
@@ -309,10 +309,10 @@ Initial database: A=0 B=0 C=0 M=0 N=0 P=0 X=0 Y=0 Z=0</code></pre>
 <div class="box exam"><span class="label">⭐ 考試重點：Recovery actions</span>
 <p><b>Undo incomplete transactions；Redo committed transactions</b></p>
 <ul>
-<li>T3 committed → <b>redo</b>：X = 12, Y = 10, Z = 8</li>
-<li>T1、T2 冇 commit → <b>undo</b>：A = 0, B = 0, M = 0</li>
+<li>T3 committed → <b>redo</b>：\( X = 12 \), \( Y = 10 \), \( Z = 8 \)</li>
+<li>T1、T2 冇 commit → <b>undo</b>：\( A = 0 \), \( B = 0 \), \( M = 0 \)</li>
 </ul>
-<p>Recovery 後：<b>A=0, B=0, C=0, M=0, N=0, P=0, X=12, Y=10, Z=8</b>。</p>
+<p>Recovery 後：<b>\( A=0, B=0, C=0, M=0, N=0, P=0, X=12, Y=10, Z=8 \)</b>。</p>
 </div>
 <h3>9.3 Recovery algorithm</h3>
 <p>由 log 尾開始，<b>scan the log backwards</b> 搵出 incomplete 同 completed transactions。Q：When do we stop? 要確保所有 completed transactions 都搵到 → <b>scan until the starting point of the log</b>——即成個 log！（如果 log 由 30 年前開始？！）→ 需要 checkpoints。</p>
@@ -323,7 +323,7 @@ Initial database: A=0 B=0 C=0 M=0 N=0 P=0 X=0 Y=0 Z=0</code></pre>
 <tr><th></th><th>Blocking checkpoint</th><th>Fuzzy checkpoint (Non-blocking)</th></tr>
 <tr><td>做法</td><td><b>Stop all the updates</b> to the database，create a snapshot</td><td><b>Do NOT stop</b> the updates；create a snapshot <b>and keep records about what transactions are running</b></td></tr>
 <tr><td>Recovery</td><td>只需 scan 到最近的 checkpoint</td><td>Scan 到最近 checkpoint，再追查 checkpoint 記錄中仍在 running 的 transactions</td></tr>
-<tr><td>缺點</td><td>做 checkpoint 時 database 要停</td><td>Worst case recovery cost O(n)（scan 到第一條 log），但實際上幾乎唔會發生——除非 log 好短或者 transaction 長得離譜</td></tr>
+<tr><td>缺點</td><td>做 checkpoint 時 database 要停</td><td>Worst case recovery cost \(O(n)\)（scan 到第一條 log），但實際上幾乎唔會發生——除非 log 好短或者 transaction 長得離譜</td></tr>
 </table>
 </div>
 <h3>10.1 Fuzzy checkpoint example（slides 73–77）</h3>
@@ -367,7 +367,7 @@ T5, X, 10
 <li><b>T2</b>：checkpoint 103 後見到 "T2 commit" → committed → <b>redo</b> T2, B, 30。T2 喺 checkpoint 前的 action（T2, X, 15；T2, A, 10）本應 redo，但 <b>as this action is before the checkpoint, the update is always on the harddisk</b>，唔需要真係 redo</li>
 <li><b>T5</b>、<b>T6</b>：冇 commit → <b>undo</b>（T5, X, 10；T6, Z, 50；T5, Z, 30）。T5 喺 checkpoint 102–103 之間開始，所以要 scan 返去 T5 的 start 先可以停（slide 79 "We stop here"）</li>
 </ul>
-<p>Recovery 後（假設 undo 有 before values 可用）：X = 15（T2），Y = 5（T3），Z = 70（T4），A = 10，B = 30。</p>
+<p>Recovery 後（假設 undo 有 before values 可用）：\( X = 15 \)（T2），\( Y = 5 \)（T3），\( Z = 70 \)（T4），\( A = 10 \)，\( B = 30 \)。</p>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Undo 需要知道 <b>舊值</b>。如果 log 只記新值（例如 "T5, Z, 30"），就要靠 before-after logging（"Z, 70, 30"）先知 undo 去返 70。呢個就係 slide 66 講 before-after values「more straightforward recovery」的原因。</p></div>
 
 <h2>11. ACID property of database</h2>
@@ -375,7 +375,7 @@ T5, X, 10
 <table>
 <tr><th>Property</th><th>Definition (slide)</th><th>由乜機制保證</th></tr>
 <tr><td><b>A</b>tomicity</td><td>Transaction is handled in an "all-or-nothing" manner：either the entire transaction is done, or none is done</td><td>Log + undo / rollback</td></tr>
-<tr><td><b>C</b>onsistency</td><td>Any transaction will bring the database from one valid state to another。例：X = X − 50, Y = Y + 50；Before X=100, Y=100 → After X=50, Y=150（總和 200 不變）</td><td>Transaction 本身正確 + 其他三個 property</td></tr>
+<tr><td><b>C</b>onsistency</td><td>Any transaction will bring the database from one valid state to another。例：\( X = X - 50 \), \( Y = Y + 50 \)；Before \( X=100, Y=100 \) → After \( X=50, Y=150 \)（總和 200 不變）</td><td>Transaction 本身正確 + 其他三個 property</td></tr>
 <tr><td><b>I</b>solation</td><td>It appears like transactions are executed independently</td><td>Concurrency control（2PL 等），效果等同 serial execution</td></tr>
 <tr><td><b>D</b>urability</td><td>Once a transaction is committed, its effect stays in the database forever</td><td>Log + redo、checkpoints</td></tr>
 </table>
@@ -383,26 +383,26 @@ T5, X, 10
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 1 File-based 的缺點正正對應 ACID：Lack of Atomic Transactions ↔ Atomicity；No Concurrency Control ↔ Isolation。Week 5 會講 OLTP 要求 ACID compliance，而 OLAP 就唔一定需要 strong consistency。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 一個演算法成本係 \(5n^3 + 2n^2\log n + 1000\)，Big O 係乜？Knock-out tournament 有 64 個 players，要幾多 rounds、幾多 games？</summary><p>O(n³)（只取最高次項、忽略係數）。Rounds = lg 64 = 6；Games = n − 1 = 63（O(n)）。</p></details>
+<details class="q"><summary>Q1. 一個演算法成本係 \(5n^3 + 2n^2\log n + 1000\)，Big O 係乜？Knock-out tournament 有 64 個 players，要幾多 rounds、幾多 games？</summary><p>\(O(n^3)\)（只取最高次項、忽略係數）。Rounds = \( \lg 64 = 6 \)；Games = \( n - 1 = 63 \)（\(O(n)\)）。</p></details>
 <details class="q"><summary>Q2. 用 slide 17 的 B+ tree（root 13；[5|9]、[17|20]；leaves 1 3 / 5 7 / 9 11 / 13 15 / 17 19 / 21 23），寫出 range query 6–14 的步驟同 visit 了幾多個 nodes。</summary><p>6 &lt; 13 → left；5 ≤ 6 &lt; 9 → middle child → leaf [5 7]，攞 7。Sibling → [9 11]：9, 11；sibling → [13 15]：13（15 &gt; 14，停）。結果 7, 9, 11, 13。Visited：root, [5|9], [5 7], [9 11], [13 15] = 5 nodes（喺 [13 15] 已見到 15 &gt; 14，唔使再去下一個 sibling）。</p></details>
-<details class="q"><summary>Q3. B tree 同 B+ tree 有咩分別？點解 B+ tree 更適合 range query？</summary><p>B+ tree：record pointers 只喺 leaf level；non-leaf values 只係 separators（左 &lt;，右 ≥，可以唔存在於 DB）；leaf 之間有 sibling pointers。B tree 每個 node 的值都係 data，搜尋可以喺 non-leaf 停（best case O(1)）。Range query 用 B+ tree 只要搵到起點 leaf，再沿 sibling pointers 向右掃，唔使上落 traverse。兩者 search 同 update 都係 O(lg n)，都係 balanced。</p></details>
+<details class="q"><summary>Q3. B tree 同 B+ tree 有咩分別？點解 B+ tree 更適合 range query？</summary><p>B+ tree：record pointers 只喺 leaf level；non-leaf values 只係 separators（左 &lt;，右 ≥，可以唔存在於 DB）；leaf 之間有 sibling pointers。B tree 每個 node 的值都係 data，搜尋可以喺 non-leaf 停（best case \(O(1)\)）。Range query 用 B+ tree 只要搵到起點 leaf，再沿 sibling pointers 向右掃，唔使上落 traverse。兩者 search 同 update 都係 \(O(\lg n)\)，都係 balanced。</p></details>
 <details class="q"><summary>Q4. 要搵「COM6104 攞 A 的學生」，列出四個 query plan，邊個最有效率？Index 有咩代價？</summary><p>(1) 全表 scan；(2) 用 module code index 再 check grade；(3) 用 grade index 再 check module；(4) 用 composite index (module code, grade) 直接搵——最有效率，冇多餘 records。代價：額外空間（只存 pointers，比 records 細）同每次更新資料的 maintenance effort；值唔值得視乎 usage。Query optimizer 會根據 statistics 揀 plan，但複雜 query 唔好倚賴佢。</p></details>
 <details class="q"><summary>Q5. 喺 2PL 下，T1 持有 Writelock(x)。T2 申請 Readlock(x)、T3 申請 Readlock(y)（冇人持有 y 的 lock），結果點？一個 transaction 放咗 lock 之後可唔可以再攞新 lock？</summary><p>T2 被拒（readlock 同 writelock conflict）→ wait 或 rollback。T3 成功。2PL 下一旦開始 release（shrinking phase）就唔可以再攞新 lock。</p></details>
 <details class="q"><summary>Q6. Wait-for graph 有 edges：T1→T2、T2→T3、T3→T1、T4→T1。有冇 deadlock？點解決？</summary><p>有，T1→T2→T3→T1 形成 cycle。解決：揀 cycle 入面一個 transaction（例如 T3）rollback、undo 佢的 actions、稍後 retry；如有其他 transaction 讀過佢寫的值，要 cascading rollback。T4 只係等緊，唔喺 cycle。</p></details>
-<details class="q"><summary>Q7. Log：T1 / T1,A,5 / T2 / T2,B,7 / T1 commit / T3 / T3,A,9 / T2,C,4 / crash。Initial 全部係 0。Recovery 後 A、B、C 係幾多？</summary><p>T1 committed → redo A = 5。T2、T3 冇 commit → undo：B = 0、C = 0、A 嘅 T3 update 撤回 → A = 5（T1 的值）。結果 A = 5, B = 0, C = 0。</p></details>
-<details class="q"><summary>Q8. Fuzzy checkpoint 103 記錄 running：T2, T5。Scan backwards 時，喺 checkpoint 102（running: T2, T3, T4）需唔需要追 T3、T4？Worst-case recovery cost 係幾多？</summary><p>唔使追 T3、T4：佢哋喺 checkpoint 103 已唔喺 running list，即已完成並包含喺 checkpoint image。只需追 T2、T5（T2 視乎有冇見到 commit）。Worst case O(n)（scan 到第一條 log），但實際極少發生。</p></details>
+<details class="q"><summary>Q7. Log：T1 / T1,A,5 / T2 / T2,B,7 / T1 commit / T3 / T3,A,9 / T2,C,4 / crash。Initial 全部係 0。Recovery 後 A、B、C 係幾多？</summary><p>T1 committed → redo \( A = 5 \)。T2、T3 冇 commit → undo：\( B = 0 \)、\( C = 0 \)、A 嘅 T3 update 撤回 → \( A = 5 \)（T1 的值）。結果 \( A = 5, B = 0, C = 0 \)。</p></details>
+<details class="q"><summary>Q8. Fuzzy checkpoint 103 記錄 running：T2, T5。Scan backwards 時，喺 checkpoint 102（running: T2, T3, T4）需唔需要追 T3、T4？Worst-case recovery cost 係幾多？</summary><p>唔使追 T3、T4：佢哋喺 checkpoint 103 已唔喺 running list，即已完成並包含喺 checkpoint image。只需追 T2、T5（T2 視乎有冇見到 commit）。Worst case \(O(n)\)（scan 到第一條 log），但實際極少發生。</p></details>
 <details class="q"><summary>Q9. 解釋 ACID，並說明 ATM lost-update 例子違反咗邊個 property。</summary><p>Atomicity（all-or-nothing）、Consistency（valid state → valid state）、Isolation（好似獨立執行）、Durability（commit 後永久）。ATM 例子 interleaving 令 Y 的 +100 被覆蓋，結果唔等於任何 serial execution → 違反 Isolation（亦令 Consistency 破壞：總額由 200 變 100）。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li>Table = relation；join tables 搵跨表資料</li>
-<li>Big O：只取最高次項、忽略係數；看 average / worst case；lg = log₂</li>
-<li>O(1) 搵任何一個；O(lg n) tournament rounds / B tree search；O(n) 逐個 mark；O(n²) peer review</li>
-<li>B tree：左細右大；值喺所有 level；best O(1)，worst O(lg n)</li>
+<li>Big O：只取最高次項、忽略係數；看 average / worst case；\( \lg = \log_2 \)</li>
+<li>\(O(1)\) 搵任何一個；\(O(\lg n)\) tournament rounds / B tree search；\(O(n)\) 逐個 mark；\(O(n^2)\) peer review</li>
+<li>B tree：左細右大；值喺所有 level；best \(O(1)\)，worst \(O(\lg n)\)</li>
 <li>B+ tree：pointers 只喺 leaf；non-leaf = separators（左 &lt;，右 ≥）；sibling pointers；range query = 搵起點 + 行 siblings</li>
-<li>B/B+ tree：balanced；search &amp; update O(lg n)（binary tree update linear）；one-dimensional</li>
+<li>B/B+ tree：balanced；search &amp; update \(O(\lg n)\)（binary tree update linear）；one-dimensional</li>
 <li>Multiple / composite indices；overhead = space (pointers) + maintenance；Query plan / optimizer（用 statistics；唔好完全依賴）</li>
-<li>R-tree（spatial，worst O(n)）；HNSW（vector cosine top-k，RAG）；Inverted index（full-text）</li>
+<li>R-tree（spatial，worst \(O(n)\)）；HNSW（vector cosine top-k，RAG）；Inverted index（full-text）</li>
 <li>Transaction = all or nothing；begin … commit</li>
 <li>Correct = equivalent to serial execution；不同 serial order 結果唔同都算正確（910 / 909）</li>
 <li>Locks：R–R OK；R–W、W–W conflict；writelock = upgraded readlock</li>
@@ -410,7 +410,7 @@ T5, X, 10
 <li>Conflict → wait 或 rollback；deadlock = wait-for graph 有 cycle；cascading rollback</li>
 <li>Log-based recovery：write log before DB；log 有 start、commit、updates（before-after 或 delta）</li>
 <li>Recovery：undo incomplete, redo committed；scan backwards</li>
-<li>Blocking checkpoint（停 update）vs Fuzzy（不停，記 running transactions；worst O(n)）</li>
+<li>Blocking checkpoint（停 update）vs Fuzzy（不停，記 running transactions；worst \(O(n)\)）</li>
 <li>ACID：Atomicity / Consistency / Isolation / Durability</li>
 </ul></div>
 

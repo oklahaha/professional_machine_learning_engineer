@@ -37,10 +37,10 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>K-means 手計 iterations + SSE \( = \sum_i \sum_{x\in C_i} \text{dist}^2(m_i, x) \)。</li>
+    <li>K-means 手計 iterations + \( SSE = \sum_i \sum_{x\in C_i} \text{dist}^2(m_i, x) \)。</li>
     <li>Agglomerative clustering 用 MIN / MAX / Group Average 更新 proximity matrix 同畫 dendrogram。</li>
     <li>Silhouette coefficient \( s = (b - a)/\max(a, b) \) 計算同解讀。</li>
-    <li>K-means limitations（differing sizes、densities、non-globular shapes、outliers）同 initial centroids 問題（P = K!/K<sup>K</sup>，K = 10 時 0.00036）、K-means++。</li>
+    <li>K-means limitations（differing sizes、densities、non-globular shapes、outliers）同 initial centroids 問題（\( P = K!/K^K \)，\( K = 10 \) 時 0.00036）、K-means++。</li>
     <li>MIN（處理 non-elliptical shapes，但對 noise 敏感）vs MAX（較唔受 noise 影響，但會打散大 cluster、偏向 globular）vs Group Average（折衷）。</li>
   </ol>
 </div>
@@ -121,32 +121,32 @@
 <li>'Closeness' is measured by Euclidean distance, cosine similarity, correlation, etc.</li>
 <li>K-means will <b>converge</b> for common similarity measures mentioned above。</li>
 <li>Most of the convergence happens in the <b>first few iterations</b>；stopping condition 常改為 'Until relatively few points change clusters'。</li>
-<li><span class="tag exam">Exam</span><b>Complexity is O(n × K × I × d)</b>：n = number of points，K = number of clusters，I = number of iterations，d = number of attributes。</li>
+<li><span class="tag exam">Exam</span><b>Complexity is \( O(n \times K \times I \times d) \)</b>：n = number of points，K = number of clusters，I = number of iterations，d = number of attributes。</li>
 </ul>
 
 <h3>4.2 Worked example：1-D K-means（自擬）</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：手計 K-means</span>
-<p>Points：2, 3, 4, 10, 11, 12, 20, 25, 30；K = 2；initial centroids c₁ = 2，c₂ = 12。</p>
+<p>Points：2, 3, 4, 10, 11, 12, 20, 25, 30；\( K = 2 \)；initial centroids \(c_1 = 2\)，\(c_2 = 12\)。</p>
 <p><b>Iteration 1</b>：assign 去最近 centroid：</p>
 <ul>
-<li>C₁ (c=2)：{2, 3, 4}（例如 4：|4−2| = 2 &lt; |4−12| = 8）</li>
-<li>C₂ (c=12)：{10, 11, 12, 20, 25, 30}（例如 10：|10−2| = 8 &gt; |10−12| = 2）</li>
-<li>Update：c₁ = (2+3+4)/3 = <b>3</b>；c₂ = (10+11+12+20+25+30)/6 = 108/6 = <b>18</b></li>
+<li>\(C_1\) (\( c = 2 \))：{2, 3, 4}（例如 4：|4−2| = 2 &lt; |4−12| = 8）</li>
+<li>\(C_2\) (\( c = 12 \))：{10, 11, 12, 20, 25, 30}（例如 10：|10−2| = 8 &gt; |10−12| = 2）</li>
+<li>Update：\( c_1 = (2+3+4)/3 = \) <b>3</b>；\( c_2 = (10+11+12+20+25+30)/6 = 108/6 = \) <b>18</b></li>
 </ul>
-<p><b>Iteration 2</b>（c₁ = 3, c₂ = 18）：</p>
+<p><b>Iteration 2</b>（\(c_1 = 3\), \(c_2 = 18\)）：</p>
 <ul>
-<li>10：|10−3| = 7 &lt; |10−18| = 8 → C₁；11：8 &gt; 7 → C₂</li>
-<li>C₁ = {2, 3, 4, 10}；C₂ = {11, 12, 20, 25, 30}</li>
-<li>Update：c₁ = 19/4 = <b>4.75</b>；c₂ = 98/5 = <b>19.6</b></li>
+<li>10：|10−3| = 7 &lt; |10−18| = 8 → \(C_1\)；11：8 &gt; 7 → \(C_2\)</li>
+<li>\( C_1 = \{2, 3, 4, 10\} \)；\( C_2 = \{11, 12, 20, 25, 30\} \)</li>
+<li>Update：\( c_1 = 19/4 = \) <b>4.75</b>；\( c_2 = 98/5 = \) <b>19.6</b></li>
 </ul>
-<p><b>Iteration 3</b>（c₁ = 4.75, c₂ = 19.6）：</p>
+<p><b>Iteration 3</b>（\(c_1 = 4.75\), \(c_2 = 19.6\)）：</p>
 <ul>
-<li>11：|11−4.75| = 6.25 &lt; 8.6 → C₁；12：7.25 &lt; 7.6 → C₁</li>
-<li>C₁ = {2, 3, 4, 10, 11, 12}；C₂ = {20, 25, 30}</li>
-<li>Update：c₁ = 42/6 = <b>7</b>；c₂ = 75/3 = <b>25</b></li>
+<li>11：|11−4.75| = 6.25 &lt; 8.6 → \(C_1\)；12：7.25 &lt; 7.6 → \(C_1\)</li>
+<li>\( C_1 = \{2, 3, 4, 10, 11, 12\} \)；\( C_2 = \{20, 25, 30\} \)</li>
+<li>Update：\( c_1 = 42/6 = \) <b>7</b>；\( c_2 = 75/3 = \) <b>25</b></li>
 </ul>
-<p><b>Iteration 4</b>（c₁ = 7, c₂ = 25）：assignment 冇變 → centroids 冇變 → <b>converged</b>。</p>
-<p><b>SSE</b> = C₁：(2−7)² + (3−7)² + (4−7)² + (10−7)² + (11−7)² + (12−7)² = 25+16+9+9+16+25 = 100；C₂：(20−25)² + 0 + (30−25)² = 50 → <b>SSE = 150</b>。</p>
+<p><b>Iteration 4</b>（\(c_1 = 7\), \(c_2 = 25\)）：assignment 冇變 → centroids 冇變 → <b>converged</b>。</p>
+<p><b>SSE</b> = \( C_1 \)：\( (2-7)^2 + (3-7)^2 + (4-7)^2 + (10-7)^2 + (11-7)^2 + (12-7)^2 = 25+16+9+9+16+25 = 100 \)；\( C_2 \)：\( (20-25)^2 + 0 + (30-25)^2 = 50 \) → <b>\( SSE = 150 \)</b>。</p>
 <p>每次 iteration 嘅 SSE（用 update 後 centroid 計）：348 → 307.95 → 150，<b>單調下降</b>。</p></div>
 <pre><code>import numpy as np
 from sklearn.cluster import KMeans
@@ -160,7 +160,7 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <p>\(x\) 係 cluster \(C_i\) 入面嘅 data point，\(m_i\) 係 cluster \(C_i\) 嘅 representative point。可以證明令 SSE 最細嘅 \(m_i\) 就係 cluster 嘅 <b>center (mean)</b>。</p>
 <ul>
 <li>Given two sets of clusters, we <b>prefer the one with the smallest error</b>。</li>
-<li><span class="tag exam">Exam</span>One easy way to reduce SSE is to <b>increase K</b>（K = n 時 SSE = 0！所以唔可以單靠 SSE 揀 K）。</li>
+<li><span class="tag exam">Exam</span>One easy way to reduce SSE is to <b>increase K</b>（\( K = n \) 時 \( SSE = 0 \)！所以唔可以單靠 SSE 揀 K）。</li>
 <li>A <b>good clustering with smaller K can have a lower SSE</b> than a poor clustering with higher K。</li>
 </ul>
 <p>Slide 24 "Two different K-means Clusterings"：同一組 original points，可以得到 <b>Optimal Clustering</b> 或 <b>Sub-optimal Clustering</b>——取決於 initial centroids。</p>
@@ -169,7 +169,7 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <p>Slides 25–26 圖示：好嘅 initial centroids 幾個 iterations 就搵到 optimal；差嘅 initial centroids 會卡喺 sub-optimal（local minimum）。</p>
 <p><span class="tag exam">Exam</span>Slide 27：如果有 K 個 'real' clusters，揀到每個 cluster 各一個 initial centroid 嘅機會好細，K 越大越細。如果每個 cluster 大小都係 n：</p>
 <div class="formula">$$ P = \frac{\text{number of ways to select one centroid from each cluster}}{\text{number of ways to select } K \text{ centroids}} = \frac{K!\,n^K}{(Kn)^K} = \frac{K!}{K^K} $$</div>
-<p>例如 <b>K = 10</b>：P = 10!/10<sup>10</sup> = 3,628,800 / 10,000,000,000 = <b>0.00036</b>。（K = 3：3!/27 = 0.222；K = 5：120/3125 = 0.0384。）</p>
+<p>例如 <b>\( K = 10 \)</b>：\( P = 10!/10^{10} = 3{,}628{,}800 / 10{,}000{,}000{,}000 = \) <b>0.00036</b>。（\( K = 3 \)：3!/27 = 0.222；\( K = 5 \)：120/3125 = 0.0384。）</p>
 <p>有時 initial centroids 會自己 readjust 去「正確」位置，有時唔會。<b>Five pairs of clusters</b> 例子（10 clusters，slides 28–31）：</p>
 <ul>
 <li>Slides 28–29：Starting with <b>two initial centroids in one cluster of each pair</b> of clusters → 每對 clusters 有兩個 centroids，結果可以正確分開。</li>
@@ -187,11 +187,11 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 </ul>
 
 <h3>4.6 K-means++ (Slide 33)</h3>
-<p>比 random initialization 慢，但 <b>very consistently produces better results in terms of SSE</b>；保證 approximation ratio <b>O(log k)</b> in expectation。</p>
+<p>比 random initialization 慢，但 <b>very consistently produces better results in terms of SSE</b>；保證 approximation ratio <b>\( O(\log k) \)</b> in expectation。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：K-means++ 步驟</span>
 <ol>
 <li>Select an initial point at random to be the first centroid。</li>
-<li>For k − 1 steps：
+<li>For \( k - 1 \) steps：
   <ul>
   <li>For each of the N points \(x_i\)，搵佢同目前已選 centroids \(C_1, \dots, C_j\) 嘅 <b>minimum squared distance</b>：\( d(x_i) = \min_j \|x_i - C_j\|^2 \)。</li>
   <li>Randomly select a new centroid by choosing a point with <b>probability proportional to</b> \( d(x_i) / \sum_i d(x_i) \)。</li>
@@ -277,17 +277,17 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <tr><th>e</th><td>9</td><td>8</td><td>5</td><td>3</td><td>0</td></tr>
 </table>
 <div class="box exam"><span class="label">⭐ 考試重點：逐步 merge</span>
-<p><b>Step 1（三種方法都一樣）</b>：最細距離 d(a, b) = 2 → merge {a, b} at height <b>2</b>。</p>
+<p><b>Step 1（三種方法都一樣）</b>：最細距離 \( d(a, b) = 2 \) → merge {a, b} at height <b>2</b>。</p>
 <p><b>Step 2</b>：更新 {a,b} 同其他點：</p>
 <ul>
-<li>MIN：d({ab}, c) = min(6, 5) = 5；d({ab}, d) = min(10, 9) = 9；d({ab}, e) = min(9, 8) = 8</li>
-<li>MAX：d({ab}, c) = max(6, 5) = 6；d({ab}, d) = 10；d({ab}, e) = 9</li>
-<li>Avg：d({ab}, c) = 5.5；d({ab}, d) = 9.5；d({ab}, e) = 8.5</li>
+<li>MIN：\( d(\{ab\}, c) = \min(6, 5) = 5 \)；\( d(\{ab\}, d) = \min(10, 9) = 9 \)；\( d(\{ab\}, e) = \min(9, 8) = 8 \)</li>
+<li>MAX：\( d(\{ab\}, c) = \max(6, 5) = 6 \)；\( d(\{ab\}, d) = 10 \)；\( d(\{ab\}, e) = 9 \)</li>
+<li>Avg：\( d(\{ab\}, c) = 5.5 \)；\( d(\{ab\}, d) = 9.5 \)；\( d(\{ab\}, e) = 8.5 \)</li>
 </ul>
-<p>剩低最細係 d(d, e) = 3 → merge {d, e} at height <b>3</b>（三種方法都係）。</p>
+<p>剩低最細係 \( d(d, e) = 3 \) → merge {d, e} at height <b>3</b>（三種方法都係）。</p>
 <p><b>Step 3</b>：而家 clusters = {a,b}, c, {d,e}：</p>
 <table>
-<tr><th></th><th>d(c, {de})</th><th>d({ab}, c)</th><th>d({ab}, {de})</th><th>Merge</th></tr>
+<tr><th></th><th>\( d(c, \{de\}) \)</th><th>\( d(\{ab\}, c) \)</th><th>\( d(\{ab\}, \{de\}) \)</th><th>Merge</th></tr>
 <tr><td>MIN</td><td>min(4, 5) = <b>4</b></td><td>5</td><td>min(10,9,9,8) = 8</td><td>c + {d,e} at <b>4</b></td></tr>
 <tr><td>MAX</td><td>max(4, 5) = <b>5</b></td><td>6</td><td>max(10,9,9,8) = 10</td><td>c + {d,e} at <b>5</b></td></tr>
 <tr><td>Avg</td><td>(4+5)/2 = <b>4.5</b></td><td>5.5</td><td>(10+9+9+8)/4 = 9</td><td>c + {d,e} at <b>4.5</b></td></tr>
@@ -341,11 +341,11 @@ dendrogram(linkage(squareform(D), "single"), labels=list("abcde"))</code></pre>
 
 <h3>5.8 Time and Space Requirements (Slide 67)</h3>
 <ul>
-<li><b>O(N²) space</b> since it uses the proximity matrix（N = number of points）。</li>
-<li><b>O(N³) time</b> in many cases：there are N steps and at each step the size N² proximity matrix must be updated and searched。</li>
-<li>Complexity can be reduced to <b>O(N² log(N))</b> time with some cleverness。</li>
+<li><b>\(O(N^2)\) space</b> since it uses the proximity matrix（N = number of points）。</li>
+<li><b>\(O(N^3)\) time</b> in many cases：there are N steps and at each step the size \(N^2\) proximity matrix must be updated and searched。</li>
+<li>Complexity can be reduced to <b>\(O(N^2 \log(N))\)</b> time with some cleverness。</li>
 </ul>
-<p>對比 K-means 嘅 O(n·K·I·d)，hierarchical clustering 對大 data sets 慢好多。</p>
+<p>對比 K-means 嘅 \(O(n\cdot K\cdot I\cdot d)\)，hierarchical clustering 對大 data sets 慢好多。</p>
 
 <h3>5.9 Problems and Limitations (Slide 68)</h3>
 <ul>
@@ -378,7 +378,7 @@ dendrogram(linkage(squareform(D), "single"), labels=list("abcde"))</code></pre>
 <li><b>Proximity Matrix</b></li>
 <li><b>Ideal Similarity Matrix</b>：每個 data point 一行一列；entry = <b>1</b> if the pair belongs to the <b>same cluster</b>，<b>0</b> if different clusters。</li>
 </ul>
-<p>計兩個 matrices 嘅 <b>correlation</b>。因為 matrices 係 symmetric，只需要計 <b>n(n − 1)/2</b> 個 entries。<b>High correlation</b> 表示同一 cluster 嘅點互相接近。<b>Not a good measure for some density or contiguity-based clusters.</b></p>
+<p>計兩個 matrices 嘅 <b>correlation</b>。因為 matrices 係 symmetric，只需要計 <b>\( n(n-1)/2 \)</b> 個 entries。<b>High correlation</b> 表示同一 cluster 嘅點互相接近。<b>Not a good measure for some density or contiguity-based clusters.</b></p>
 <div class="box warn"><span class="label">⚠️ 留意符號</span><p>如果用 <b>distance</b> matrix（而唔係 similarity），好 clustering 嘅 correlation 會係<b>負數</b>（同 cluster → ideal = 1 而 distance 細）。教科書例子（slide 73）兩個 data sets 嘅 correlation 分別約 −0.92（清晰 clusters）同 −0.58（random data）——數字以 slide 圖為準。</p></div>
 
 <h3>6.3 Using Similarity Matrix for Cluster Validation (Slides 74–76)</h3>
@@ -402,7 +402,7 @@ plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 el
 <li>將 index 值同 random data / random clusterings 嘅 index 值比較；if the value of the index is <b>unlikely</b>, then the cluster results are valid。（較複雜、較難理解。）</li>
 <li>比較兩組 cluster analyses 時 framework 較唔需要，但仍有「兩個 index 值嘅差是否 significant」嘅問題。</li>
 </ul>
-<p><b>Statistical Framework for SSE (slide 80)</b>：例子：compare SSE of <b>0.005</b> against three clusters in random data。Histogram 顯示 500 組 random data（每組 100 點，x、y 分佈於 0.2–0.8）分成 3 clusters 嘅 SSE——random data 嘅 SSE 遠大於 0.005，所以 SSE = 0.005 嘅 clustering 好 "atypical" → 代表真實結構。</p>
+<p><b>Statistical Framework for SSE (slide 80)</b>：例子：compare SSE of <b>0.005</b> against three clusters in random data。Histogram 顯示 500 組 random data（每組 100 點，x、y 分佈於 0.2–0.8）分成 3 clusters 嘅 SSE——random data 嘅 SSE 遠大於 0.005，所以 \( SSE = 0.005 \) 嘅 clustering 好 "atypical" → 代表真實結構。</p>
 <p><b>Statistical Framework for Correlation (slide 81)</b>：同樣將 ideal similarity / proximity matrix 嘅 correlation 同 random data 比較。</p>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個「同 random data 比較，睇結果有幾 unlikely」嘅思路就係 COM6005 hypothesis testing 嘅 p-value 概念：null hypothesis = data 冇 cluster 結構；如果觀察到嘅 SSE 喺 null distribution 下極罕見，就 reject null。</p></div>
 
@@ -416,16 +416,16 @@ plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 el
 <div class="formula">$$ SSE = WSS = \sum_i \sum_{x \in C_i} (x - m_i)^2 $$</div>
 <p>Separation is measured by the <b>between cluster sum of squares</b>：</p>
 <div class="formula">$$ SSB = BSS = \sum_i |C_i|\,(m - m_i)^2 $$</div>
-<p>\(|C_i|\) 係 cluster i 嘅 size，\(m_i\) 係 cluster centroid，\(m\) 係全部 data 嘅 overall mean。<b>SSE + SSB = 常數</b>（Total Sum of Squares, TSS）。</p>
-<p><b>Worked example</b>（一維 points 1, 2, 4, 5；overall mean m = 3）：</p>
+<p>\(|C_i|\) 係 cluster \( i \) 嘅 size，\(m_i\) 係 cluster centroid，\(m\) 係全部 data 嘅 overall mean。<b>\( SSE + SSB = \) 常數</b>（Total Sum of Squares, TSS）。</p>
+<p><b>Worked example</b>（一維 points 1, 2, 4, 5；overall mean \( m = 3 \)）：</p>
 <ul>
-<li><b>K = 1</b>：SSE = (1−3)² + (2−3)² + (4−3)² + (5−3)² = 4+1+1+4 = <b>10</b>；SSB = 4 × (3−3)² = <b>0</b>；Total = 10</li>
-<li><b>K = 2</b>：clusters {1, 2}（m₁ = 1.5）同 {4, 5}（m₂ = 4.5）：SSE = 0.25+0.25+0.25+0.25 = <b>1</b>；SSB = 2(3−1.5)² + 2(4.5−3)² = 4.5 + 4.5 = <b>9</b>；Total = 10 ✓</li>
+<li><b>\( K = 1 \)</b>：\( SSE = (1-3)^2 + (2-3)^2 + (4-3)^2 + (5-3)^2 = 4+1+1+4 = \) <b>10</b>；\( SSB = 4 \times (3-3)^2 = \) <b>0</b>；Total = 10</li>
+<li><b>\( K = 2 \)</b>：clusters {1, 2}（\(m_1 = 1.5\)）同 {4, 5}（\(m_2 = 4.5\)）：\( SSE = 0.25+0.25+0.25+0.25 = \) <b>1</b>；\( SSB = 2(3-1.5)^2 + 2(4.5-3)^2 = 4.5 + 4.5 = \) <b>9</b>；Total = 10 ✓</li>
 </ul>
 <p>好嘅 clustering：SSE 細（cohesion 高）、SSB 大（separation 高）。</p></div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 82 嘅 SSE / SSB 公式同 slide 83 嘅數值例子係圖片；上面公式同例子係教科書標準內容（slide 文字 "Where |Ci| is the size of cluster i" 與之吻合），請對照原 slide。</p></div>
 <p><b>Proximity graph based approach (slide 84)</b>：Cluster cohesion is the <b>sum of the weight of all links within a cluster</b>；cluster separation is the <b>sum of the weights between nodes in the cluster and nodes outside the cluster</b>。</p>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>SSE + SSB = TSS 同 COM6005 ANOVA / regression 嘅 SST = SSW + SSB（或 SSE + SSR）係同一個分解。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>\( SSE + SSB = TSS \) 同 COM6005 ANOVA / regression 嘅 \( SST = SSW + SSB \)（或 \( SSE + SSR \)）係同一個分解。</p></div>
 
 <h3>6.7 Internal Measures: Silhouette Coefficient (Slide 85)</h3>
 <p>Silhouette coefficient <b>combines ideas of both cohesion and separation</b>，可以用於 individual points、clusters 同 clusterings。</p>
@@ -438,10 +438,10 @@ plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 el
 <div class="formula">$$ s = \frac{b - a}{\max(a, b)} $$</div>
 <p>Typically between 0 and 1；<b>the closer to 1 the better</b>（理論範圍 −1 至 1；負數表示該點可能分錯 cluster）。可以計一個 cluster 或成個 clustering 嘅 <b>average silhouette coefficient</b>。</p></div>
 <div class="box tip"><span class="label">💡 Worked example（用 §5.4 distance matrix，clustering = {a, b}、{c, d, e}）</span>
-<p><b>Point a</b>：a = d(a, b) = 2；b = avg(d(a,c), d(a,d), d(a,e)) = (6+10+9)/3 = 8.33；s = (8.33 − 2)/8.33 = <b>0.76</b></p>
-<p><b>Point c</b>：a = avg(d(c,d), d(c,e)) = (4+5)/2 = 4.5；b = avg(d(c,a), d(c,b)) = (6+5)/2 = 5.5；s = (5.5 − 4.5)/5.5 = <b>0.18</b>（c 喺兩個 clusters 之間，silhouette 低）</p>
-<p><b>Point d</b>：a = (4+3)/2 = 3.5；b = (10+9)/2 = 9.5；s = 6/9.5 = <b>0.63</b></p>
-<p>如果某點 a &gt; b（離自己 cluster 比另一 cluster 更遠），s 會係負數 → 應考慮重新分配。</p></div>
+<p><b>Point a</b>：\( a = d(a, b) = 2 \)；\( b = \text{avg}(d(a,c), d(a,d), d(a,e)) = (6+10+9)/3 = 8.33 \)；\( s = (8.33 - 2)/8.33 = \) <b>0.76</b></p>
+<p><b>Point c</b>：\( a = \text{avg}(d(c,d), d(c,e)) = (4+5)/2 = 4.5 \)；\( b = \text{avg}(d(c,a), d(c,b)) = (6+5)/2 = 5.5 \)；\( s = (5.5 - 4.5)/5.5 = \) <b>0.18</b>（c 喺兩個 clusters 之間，silhouette 低）</p>
+<p><b>Point d</b>：\( a = (4+3)/2 = 3.5 \)；\( b = (10+9)/2 = 9.5 \)；\( s = 6/9.5 = \) <b>0.63</b></p>
+<p>如果某點 \( a &gt; b \)（離自己 cluster 比另一 cluster 更遠），s 會係負數 → 應考慮重新分配。</p></div>
 <pre><code>from sklearn.metrics import silhouette_score, silhouette_samples
 silhouette_samples(D, labels=[0,0,1,1,1], metric="precomputed")   # 每點 s
 silhouette_score(X, km.labels_)                                     # 整體平均</code></pre>
@@ -509,52 +509,52 @@ labels = DBSCAN(eps=1.5, min_samples=3).fit_predict(np.array([1,2,3,4,8,9,20]).r
 <tr><td>要預設</td><td>K</td><td>唔使（cut dendrogram）；要揀 linkage</td><td>Eps、MinPts</td></tr>
 <tr><td>Shapes</td><td>Globular only</td><td>MIN：任意；MAX / Avg：globular</td><td>任意形狀同大小</td></tr>
 <tr><td>Noise / outliers</td><td>敏感</td><td>MIN 敏感；MAX / Avg 較 robust</td><td>Resistant（標記為 noise）</td></tr>
-<tr><td>Complexity</td><td>O(n·K·I·d)</td><td>O(N²) space，O(N³) time</td><td>（教科書：O(N²)，有 index 可更快）</td></tr>
+<tr><td>Complexity</td><td>\(O(n\cdot K\cdot I\cdot d)\)</td><td>\(O(N^2)\) space，\(O(N^3)\) time</td><td>（教科書：\(O(N^2)\)，有 index 可更快）</td></tr>
 <tr><td>主要弱點</td><td>Initial centroids、sizes、densities、shapes</td><td>Merge 唔可以 undo；冇 global objective</td><td>Varying densities、high-dimensional</td></tr>
 </table></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. Points：1, 2, 6, 7, 8, 15；K = 2；initial centroids 1 同 8。做 K-means 直到收斂，並計最終 SSE。</summary>
-<p>Iter 1：C₁ = {1, 2}（2：|2−1| = 1 &lt; 6），C₂ = {6, 7, 8, 15}（6：5 &gt; 2）→ c₁ = 1.5，c₂ = 36/4 = 9。<br>Iter 2：6：|6−1.5| = 4.5 &gt; |6−9| = 3 → C₂；assignments 冇變 → converged。<br>SSE = (1−1.5)² + (2−1.5)² + (6−9)² + (7−9)² + (8−9)² + (15−9)² = 0.25 + 0.25 + 9 + 4 + 1 + 36 = <b>50.5</b>。<br>（如果 K = 3 用 {1,2}、{6,7,8}、{15}，SSE = 0.5 + 2 + 0 = 2.5，明顯好啲——15 係 outlier 拉走咗 centroid。）</p></details>
+<details class="q"><summary>Q1. Points：1, 2, 6, 7, 8, 15；\( K = 2 \)；initial centroids 1 同 8。做 K-means 直到收斂，並計最終 SSE。</summary>
+<p>Iter 1：\( C_1 = \{1, 2\} \)（2：|2−1| = 1 &lt; 6），\( C_2 = \{6, 7, 8, 15\} \)（6：5 &gt; 2）→ \(c_1 = 1.5\)，\(c_2 = 36/4 = 9\)。<br>Iter 2：6：|6−1.5| = 4.5 &gt; |6−9| = 3 → \(C_2\)；assignments 冇變 → converged。<br>\( SSE = (1-1.5)^2 + (2-1.5)^2 + (6-9)^2 + (7-9)^2 + (8-9)^2 + (15-9)^2 = 0.25 + 0.25 + 9 + 4 + 1 + 36 = \) <b>50.5</b>。<br>（如果 \( K = 3 \) 用 {1,2}、{6,7,8}、{15}，\( SSE = 0.5 + 2 + 0 = 2.5 \)，明顯好啲——15 係 outlier 拉走咗 centroid。）</p></details>
 <details class="q"><summary>Q2. 點解唔可以揀令 SSE 最細嘅 K？應該點揀？</summary>
-<p>因為 SSE 隨 K 增加而下降，K = n 時 SSE = 0，所以「最細 SSE」永遠揀最大 K。應用 SSE vs K 曲線搵 elbow / knee，或用 silhouette coefficient、或同 random data 比較（statistical framework）。</p></details>
+<p>因為 SSE 隨 K 增加而下降，\( K = n \) 時 \( SSE = 0 \)，所以「最細 SSE」永遠揀最大 K。應用 SSE vs K 曲線搵 elbow / knee，或用 silhouette coefficient、或同 random data 比較（statistical framework）。</p></details>
 <details class="q"><summary>Q3. 有 5 個大小相同嘅真實 clusters，隨機揀 5 個 initial centroids，每個 cluster 剛好一個嘅概率係幾多？</summary>
-<p>P = K!/K<sup>K</sup> = 5!/5⁵ = 120/3125 = <b>0.0384</b>。（K = 10 時只有 0.00036。）</p></details>
-<details class="q"><summary>Q4. Distance matrix（p1–p4）：d12 = 1, d13 = 4, d14 = 5, d23 = 3, d24 = 6, d34 = 2。用 MIN 同 MAX 做 agglomerative clustering，寫出每步 merge 嘅高度。</summary>
+<p>\( P = K!/K^K = 5!/5^5 = 120/3125 = \) <b>0.0384</b>。（\( K = 10 \) 時只有 0.00036。）</p></details>
+<details class="q"><summary>Q4. Distance matrix（\( p_1 \)–\( p_4 \)）：\( d_{12} = 1 \), \( d_{13} = 4 \), \( d_{14} = 5 \), \( d_{23} = 3 \), \( d_{24} = 6 \), \( d_{34} = 2 \)。用 MIN 同 MAX 做 agglomerative clustering，寫出每步 merge 嘅高度。</summary>
 <p>Step 1：merge {p1, p2} @1。<br>
-MIN：d({12}, 3) = min(4, 3) = 3；d({12}, 4) = min(5, 6) = 5；d(3, 4) = 2 → merge {p3, p4} @2；最後 d({12}, {34}) = min(4, 5, 3, 6) = 3 → @3。<br>
-MAX：d({12}, 3) = 4；d({12}, 4) = 6；d(3, 4) = 2 → merge {p3, p4} @2；最後 max(4, 5, 3, 6) = 6 → @6。<br>
+MIN：\( d(\{12\}, 3) = \min(4, 3) = 3 \)；\( d(\{12\}, 4) = \min(5, 6) = 5 \)；\( d(3, 4) = 2 \) → merge {p3, p4} @2；最後 \( d(\{12\}, \{34\}) = \min(4, 5, 3, 6) = 3 \) → @3。<br>
+MAX：\( d(\{12\}, 3) = 4 \)；\( d(\{12\}, 4) = 6 \)；\( d(3, 4) = 2 \) → merge {p3, p4} @2；最後 max(4, 5, 3, 6) = 6 → @6。<br>
 Group Average 最後一步 = (4+5+3+6)/4 = 4.5。</p></details>
 <details class="q"><summary>Q5. 比較 MIN 同 MAX linkage 嘅優缺點。</summary>
 <p>MIN：可以處理 non-elliptical shapes，但對 noise / outliers 敏感（chaining effect）。MAX：較唔受 noise 影響，但傾向打散大 clusters，同偏向 globular clusters。Group Average 係兩者折衷（less susceptible to noise，但 biased towards globular）。</p></details>
 <details class="q"><summary>Q6. 用 Q4 嘅 distance matrix，clustering = {p1, p2}、{p3, p4}。計 p2 同 p3 嘅 silhouette coefficient。</summary>
-<p>p2：a = d(p2, p1) = 1；b = avg(d23, d24) = (3 + 6)/2 = 4.5；s = (4.5 − 1)/4.5 = <b>0.778</b>。<br>p3：a = d(p3, p4) = 2；b = avg(d31, d32) = (4 + 3)/2 = 3.5；s = (3.5 − 2)/3.5 = <b>0.429</b>。</p></details>
-<details class="q"><summary>Q7. 一維 points 2, 4, 10, 12，clusters {2, 4} 同 {10, 12}。計 SSE、SSB 同 total，並驗證 SSE + SSB = TSS。</summary>
-<p>Overall mean = 7；m₁ = 3，m₂ = 11。SSE = 1+1+1+1 = <b>4</b>；SSB = 2(7−3)² + 2(11−7)² = 32 + 32 = <b>64</b>；TSS = 25+9+9+25 = 68 = 4 + 64 ✓。</p></details>
+<p>p2：\( a = d(p_2, p_1) = 1 \)；\( b = \text{avg}(d_{23}, d_{24}) = (3 + 6)/2 = 4.5 \)；\( s = (4.5 - 1)/4.5 = \) <b>0.778</b>。<br>p3：\( a = d(p_3, p_4) = 2 \)；\( b = \text{avg}(d_{31}, d_{32}) = (4 + 3)/2 = 3.5 \)；\( s = (3.5 - 2)/3.5 = \) <b>0.429</b>。</p></details>
+<details class="q"><summary>Q7. 一維 points 2, 4, 10, 12，clusters {2, 4} 同 {10, 12}。計 SSE、SSB 同 total，並驗證 \( SSE + SSB = TSS \)。</summary>
+<p>Overall mean = 7；\(m_1 = 3\)，\(m_2 = 11\)。\( SSE = 1+1+1+1 = \) <b>4</b>；\( SSB = 2(7-3)^2 + 2(11-7)^2 = 32 + 32 = \) <b>64</b>；\( TSS = 25+9+9+25 = 68 = 4 + 64 \) ✓。</p></details>
 <details class="q"><summary>Q8. DBSCAN：定義 core、border、noise point。點解 DBSCAN 處理唔到 varying densities？</summary>
 <p>Core：Eps 半徑內（包括自己）有 ≥ MinPts 點；Border：唔係 core 但喺某 core point 嘅 Eps neighborhood 內；Noise：既唔係 core 亦唔係 border。因為成個 data set 只用一組 Eps / MinPts：Eps 細到可以分開密 clusters 時，疏 cluster 嘅點會變 noise；Eps 大到可以容納疏 cluster 時，相鄰嘅密 clusters 會被合併。</p></details>
 <details class="q"><summary>Q9. 列出 K-means 嘅 pre-processing 同 post-processing 步驟。</summary>
 <p>Pre：normalize the data；eliminate outliers。Post：eliminate small clusters（可能係 outliers）；split loose clusters（high SSE）；merge close clusters with relatively low SSE。</p></details>
 <details class="q"><summary>Q10. Hierarchical clustering 嘅 space 同 time complexity？有咩主要限制？</summary>
-<p>O(N²) space（proximity matrix）；O(N³) time（N 步，每步更新 / 搜尋 N² matrix），聰明實作可減到 O(N² log N)。限制：merge 決定唔可以 undo；冇直接 minimize global objective function；唔同 linkage 有 noise 敏感、處理唔到唔同大小 / non-globular、打散大 cluster 等問題。</p></details>
+<p>\(O(N^2)\) space（proximity matrix）；\(O(N^3)\) time（N 步，每步更新 / 搜尋 \(N^2\) matrix），聰明實作可減到 \(O(N^2 \log N)\)。限制：merge 決定唔可以 undo；冇直接 minimize global objective function；唔同 linkage 有 noise 敏感、處理唔到唔同大小 / non-globular、打散大 cluster 等問題。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li><b>Cluster analysis</b>：組內相似（intra ↓）、組間唔同（inter ↑）；用途 understanding、summarization；cluster 數目 ambiguous。</li>
 <li><b>Partitional</b>（non-overlapping，每點一個 cluster）vs <b>Hierarchical</b>（nested，dendrogram）；exclusive / non-exclusive、fuzzy（weights sum to 1）、partial / complete、heterogeneous / homogeneous。</li>
 <li><b>Cluster types</b>：well-separated、center-based（centroid / medoid）、contiguity-based（transitive）、density-based（irregular + noise）。</li>
-<li><b>K-means</b>：揀 K 個 initial centroids → assign to closest → recompute mean → repeat until no change。O(n·K·I·d)。Random init → 每次結果唔同。</li>
-<li><b>SSE</b> = ΣΣ dist²(mᵢ, x)；mean 令 SSE 最細；增加 K 一定減 SSE。</li>
-<li><b>Initial centroids</b>：P(每 cluster 一個) = K!/K<sup>K</sup>（K = 10 → 0.00036）；solutions：multiple runs、hierarchical on sample、多啲 clusters 再 merge、揀多過 k 再揀 widely separated、<b>K-means++</b>（prob ∝ D(x)²，O(log k)）。</li>
+<li><b>K-means</b>：揀 K 個 initial centroids → assign to closest → recompute mean → repeat until no change。\(O(n\cdot K\cdot I\cdot d)\)。Random init → 每次結果唔同。</li>
+<li><b>SSE</b> = \( \sum\sum \text{dist}^2(m_i, x) \)；mean 令 SSE 最細；增加 K 一定減 SSE。</li>
+<li><b>Initial centroids</b>：P(每 cluster 一個) = \( K!/K^K \)（\( K = 10 \) → 0.00036）；solutions：multiple runs、hierarchical on sample、多啲 clusters 再 merge、揀多過 k 再揀 widely separated、<b>K-means++</b>（prob \( \propto D(x)^2 \)，\( O(\log k) \)）。</li>
 <li><b>K-means limitations</b>：differing sizes、densities、non-globular shapes、outliers → 用多啲 clusters 再 post-process merge；pre（normalize、remove outliers）、post（remove small、split high-SSE、merge close low-SSE）。</li>
 <li><b>Hierarchical</b>：唔使預設 K（cut dendrogram）、可對應 taxonomy；agglomerative（merge closest）vs divisive（split）。</li>
-<li><b>Linkage</b>：MIN（closest pair；non-elliptical ✓、noise ✗）、MAX（farthest pair；noise ✓、breaks large、globular bias）、Group Average（Σd/(|Cᵢ||Cⱼ|)；折衷）、Centroid distance。</li>
-<li><b>Complexity</b>：O(N²) space、O(N³) time（可到 O(N² log N)）；merge 唔可以 undo、冇 global objective。</li>
+<li><b>Linkage</b>：MIN（closest pair；non-elliptical ✓、noise ✗）、MAX（farthest pair；noise ✓、breaks large、globular bias）、Group Average（\( \sum d / (|C_i||C_j|) \)；折衷）、Centroid distance。</li>
+<li><b>Complexity</b>：\(O(N^2)\) space、\(O(N^3)\) time（可到 \(O(N^2 \log N)\)）；merge 唔可以 undo、冇 global objective。</li>
 <li><b>Validity</b>：避免喺 noise 搵 pattern；aspects：clustering tendency、external labels、internal（只用 data）、比較兩組、揀 K。</li>
-<li><b>Correlation</b>：ideal similarity matrix（同 cluster = 1）vs proximity matrix，計 n(n−1)/2 entries；唔適合 density / contiguity clusters。<b>Similarity matrix</b> 按 label 排序睇方塊；random data 唔 crisp。</li>
+<li><b>Correlation</b>：ideal similarity matrix（同 cluster = 1）vs proximity matrix，計 \( n(n-1)/2 \) entries；唔適合 density / contiguity clusters。<b>Similarity matrix</b> 按 label 排序睇方塊；random data 唔 crisp。</li>
 <li><b>SSE vs K</b> 搵 elbow；<b>statistical framework</b>：同 random data 嘅 index 分佈比較（SSE 0.005 例子）。</li>
-<li><b>Cohesion</b> = SSE (WSS)；<b>Separation</b> = SSB = Σ|Cᵢ|(m − mᵢ)²；SSE + SSB = 常數（1,2,4,5 例：K=1 → 10 + 0；K=2 → 1 + 9）。</li>
-<li><b>Silhouette</b>：a = 同 cluster 平均距離；b = 最近其他 cluster 嘅平均距離；s = (b − a)/max(a, b)；越近 1 越好。</li>
+<li><b>Cohesion</b> = SSE (WSS)；<b>Separation</b> = \( SSB = \sum |C_i|(m - m_i)^2 \)；\( SSE + SSB = \) 常數（1,2,4,5 例：\( K=1 \) → 10 + 0；\( K=2 \) → 1 + 9）。</li>
+<li><b>Silhouette</b>：a = 同 cluster 平均距離；b = 最近其他 cluster 嘅平均距離；\( s = (b - a)/\max(a, b) \)；越近 1 越好。</li>
 <li><b>DBSCAN</b>：Eps、MinPts（包括自己）；core / border / noise；連接 Eps 內嘅 core points 成 clusters，border 歸附近 core 嘅 cluster；✓ 任意形狀大小、resistant to noise；✗ varying densities、high-dimensional；k-distance plot 揀 Eps。</li>
 </ul></div>
 

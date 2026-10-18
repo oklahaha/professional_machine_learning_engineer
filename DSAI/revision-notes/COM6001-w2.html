@@ -417,7 +417,7 @@ print(my_list.append(0))   # None  ← append 只係 in-place 修改 list，冇 
   <li>PEP 8：snake_case (var / func)、PascalCase (class)、UPPER_SNAKE_CASE (const)、4 spaces。</li>
   <li>Types：<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code> (<code>True</code>/<code>False</code> 大寫)；<code>type()</code> 睇類型；casting <code>int()</code>/<code>float()</code>/<code>str()</code>。</li>
   <li>Variable = reference；<code>is</code> 比較同一 object，<code>==</code> 比較值；名唔可以數字開頭、有空格；case sensitive；避免 keywords。</li>
-  <li>Index：0…N−1 / −1…−N。Slicing <code>[start:stop:step]</code>：stop 唔包含；defaults 0 / 盡頭(含) / 1；step 負 → 由尾向頭；方向錯 → <code>''</code>。</li>
+  <li>Index：\( 0 \dots N-1 \) / \( -1 \dots -N \)。Slicing <code>[start:stop:step]</code>：stop 唔包含；defaults 0 / 盡頭(含) / 1；step 負 → 由尾向頭；方向錯 → <code>''</code>。</li>
   <li>String：<code>+</code> 連接、<code>\n</code> 換行、<code>.find()</code> (搵唔到 −1)、<code>.upper()</code>、<code>.lower()</code>、<code>f"{expr}"</code>。</li>
   <li>List <code>[]</code> mutable · Tuple <code>()</code> immutable (data integrity) · Set <code>{}</code> unique, <code>-</code> difference, <code>&amp;</code> intersection, <code>.add()</code> · Dict <code>{k: v}</code>, <code>d[k] = v</code> 插入, <code>d[k]</code> 取值。</li>
   <li>List：<code>.sort()</code>, <code>.append()</code> (return None), <code>.pop(i)</code> (remove &amp; return，default 最後)；<code>len/max/min</code>。</li>

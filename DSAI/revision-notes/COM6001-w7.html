@@ -35,7 +35,7 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>IQR = Q3 − Q1；Upper bound = Q3 + 1.5×IQR；Lower bound = Q1 − 1.5×IQR；超出即 potential outlier。識由 <code>quantile(0.25)</code>、<code>quantile(0.75)</code> 計同數 outliers。</li>
+    <li>\( IQR = Q_3 - Q_1 \)；\( \text{Upper bound} = Q_3 + 1.5 \times IQR \)；\( \text{Lower bound} = Q_1 - 1.5 \times IQR \)；超出即 potential outlier。識由 <code>quantile(0.25)</code>、<code>quantile(0.75)</code> 計同數 outliers。</li>
     <li>Capping：<code>df.loc[df[col] &gt; p99, col] = p99</code>——保留 data points 但限制極端值。</li>
     <li>Nominal（無次序：red/green）→ one-hot（<code>get_dummies</code>）；Ordinal（有次序：High/Mid/Low）→ ordinal encoding（<code>OrdinalEncoder(categories=[...])</code>，default 跟字母排序）。</li>
     <li><code>pd.cut(bins=N)</code> 將<b>值域</b>切成等寬區間（每組人數可以好唔平均）；<code>pd.qcut(q=M)</code> 按 <b>quantiles</b> 切成人數相近嘅組。Salary 例子：cut → 16/2/1/1；qcut → 5/5/5/5。</li>
@@ -119,13 +119,13 @@ df.describe().T
 #    count  mean       std   min    25%   50%    75%   max
 # 0   20.0  56.8  27.740527  0.0  44.75  55.0  82.25  99.0</code></pre>
 <div class="box exam"><span class="label">⭐ Worked example：pandas 點計 percentile（linear interpolation）</span>
-<p>n = 20，位置 = \( (n-1) \times p \)（由 0 開始數）：</p>
+<p>\( n = 20 \)，位置 = \( (n-1) \times p \)（由 0 開始數）：</p>
 <ul>
   <li>25%：\( 19 \times 0.25 = 4.75 \) → 第 4 個 (44) 同第 5 個 (45) 之間 → \( 44 + 0.75 \times (45-44) = 44.75 \) ✔</li>
   <li>50%：\( 19 \times 0.5 = 9.5 \) → 52 同 58 之間 → \( 52 + 0.5 \times 6 = 55.0 \) ✔</li>
   <li>75%：\( 19 \times 0.75 = 14.25 \) → 82 同 83 之間 → \( 82 + 0.25 \times 1 = 82.25 \) ✔</li>
 </ul>
-<p>IQR = 82.25 − 44.75 = 37.5；1.5×IQR = 56.25 → Upper = 138.5、Lower = −11.5。所有值都喺 0–99 之內 → <b>冇 outliers</b>。</p></div>
+<p>\( IQR = 82.25 - 44.75 = 37.5 \)；\( 1.5 \times IQR = 56.25 \) → Upper = 138.5、Lower = −11.5。所有值都喺 0–99 之內 → <b>冇 outliers</b>。</p></div>
 
 <h3>1.3 wdi_imp 嘅 describe 同「normalized distance」</h3>
 <pre><code>des_wdi = wdi_imp.describe()
@@ -198,7 +198,7 @@ large_outliers = wdi_imp[wdi_imp['atms_per_100000'] &gt; upper_bound]
 len(large_outliers)                 # 15
 # 全部 outliers（一行）：((wdi_imp['atms_per_100000'] &gt; upper_bound) | (wdi_imp['atms_per_100000'] &lt; lower_bound)).sum()</code></pre>
 <p>驗算：\( IQR = 64.2137 - 11.8947 = 52.3190 \)；\( 1.5 \times 52.3190 = 78.4785 \)；Upper = \( 64.2137 + 78.4785 = 142.692 \) ✔；Lower = \( 11.8947 - 78.4785 = -66.584 \) ✔。Lower bound 係負數而 ATM 數冇可能負，所以只有 large outliers。</p>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul><li>寫成 <code>quantile(25)</code>——參數要喺 [0,1]，應為 <code>quantile(0.25)</code>。</li><li>將 1.5 乘錯對象：係 <b>1.5 × IQR</b> 加落 Q3，唔係 1.5 × Q3。</li><li>Lower bound 用 Q3、upper bound 用 Q1 調轉咗。</li></ul></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul><li>寫成 <code>quantile(25)</code>——參數要喺 [0,1]，應為 <code>quantile(0.25)</code>。</li><li>將 1.5 乘錯對象：係 <b>\( 1.5 \times IQR \)</b> 加落 \( Q_3 \)，唔係 \( 1.5 \times Q_3 \)。</li><li>Lower bound 用 Q3、upper bound 用 Q1 調轉咗。</li></ul></div>
 
 <h2>3. Treating the outliers by capping</h2>
 <p>IQR 方法搵到 15 個超出範圍嘅值（共 217 個國家/地區）——全部當 outliers drop 走就太多。改為睇 <b>99th percentile</b>（99% 嘅值細過佢），揀出真正極端嘅：</p>
@@ -457,7 +457,7 @@ df['size'] = enc.transform(df[['size']])
 </table>
 <p>Cyclic encoding 例子：方向有 \(K=4\) 個，第 \(k\) 個（East=0, South=1, West=2, North=3）：</p>
 <div class="formula">$$ x_{\sin} = \sin\!\left(\frac{2\pi k}{K}\right), \quad x_{\cos} = \cos\!\left(\frac{2\pi k}{K}\right) $$</div>
-<p>咁 North（k=3）同 East（k=0）喺 (sin, cos) 平面上係相鄰，而唔係「相差 3」。同樣適用於 month（K=12）、hour（K=24）。</p>
+<p>咁 North（\( k=3 \)）同 East（\( k=0 \)）喺 (sin, cos) 平面上係相鄰，而唔係「相差 3」。同樣適用於 month（\( K=12 \)）、hour（\( K=24 \)）。</p>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 2 嘅 attribute types（nominal / ordinal / interval / ratio）就係決定 encoding 嘅依據；COM6004 Classification 嘅大部分 algorithms（同 COM6005 logistic regression）都要求 numeric input，所以 one-hot / ordinal encoding 係 modelling 前必經步驟。</p></div>
 
 <h2>6. Feature transformation：numerical → categorical（Binning）</h2>
@@ -583,7 +583,7 @@ air_quality.to_pickle(path + 'air_quality.pkl')</code></pre>
 </ul>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 某 column：Q1 = 20，Q3 = 50。計 IQR 同 outlier bounds。值 −30、100、120 邊啲係 outliers？</summary><p>IQR = 50 − 20 = 30；1.5×IQR = 45。Upper = 50 + 45 = <b>95</b>；Lower = 20 − 45 = <b>−25</b>。−30 &lt; −25 → outlier；100 &gt; 95 → outlier；120 → outlier。三個都係。</p></details>
+<details class="q"><summary>Q1. 某 column：\( Q_1 = 20 \)，\( Q_3 = 50 \)。計 IQR 同 outlier bounds。值 −30、100、120 邊啲係 outliers？</summary><p>\( IQR = 50 - 20 = 30 \)；\( 1.5 \times IQR = 45 \)。Upper = 50 + 45 = <b>95</b>；Lower = 20 − 45 = <b>−25</b>。−30 &lt; −25 → outlier；100 &gt; 95 → outlier；120 → outlier。三個都係。</p></details>
 <details class="q"><summary>Q2. 寫 code：將 <code>df['income']</code> 高過 95th percentile 嘅值 cap 喺 95th percentile，並確認之後冇值高過佢。</summary><pre><code>p95 = df['income'].quantile(0.95)
 df.loc[df['income'] &gt; p95, 'income'] = p95
 (df['income'] &gt; p95).sum()    # 0</code></pre></details>
@@ -601,8 +601,8 @@ df['days_since_2020'] = (df['date_time'] - pd.Timestamp('2020-01-01')) / pd.Time
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
   <li>Outlier：distinct from most others；成因：rare cases（keep）、measurement/input errors、mix-up of sources/categories。</li>
-  <li>偵測：<code>describe()</code>（range、max vs 75%）、<code>quantile(p)</code>（p ∈ [0,1]）、IQR、<code>hist(bins=N, figsize=...)</code>、<code>boxplot(column=...)</code>。</li>
-  <li>IQR = Q3 − Q1；bounds = Q3 + 1.5·IQR、Q1 − 1.5·IQR；數：<code>(s &gt; upper).sum()</code>。</li>
+  <li>偵測：<code>describe()</code>（range、max vs 75%）、<code>quantile(p)</code>（\( p \in [0,1] \)）、IQR、<code>hist(bins=N, figsize=...)</code>、<code>boxplot(column=...)</code>。</li>
+  <li>\( IQR = Q_3 - Q_1 \)；bounds = \( Q_3 + 1.5 \cdot IQR \)、\( Q_1 - 1.5 \cdot IQR \)；數：<code>(s &gt; upper).sum()</code>。</li>
   <li>Capping：<code>df.loc[df[c] &gt; p99, c] = p99</code>（p99 = <code>quantile(0.99)</code>）。</li>
   <li>Advice：plot → keep/drop/cap → normal 用 mean+SD；skewed/outliers 用 five-number summary。</li>
   <li>datetime classes：date、time、datetime、timedelta、tzinfo、timezone；MAXYEAR 9999、MINYEAR 1。</li>

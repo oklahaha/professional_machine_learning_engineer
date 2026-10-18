@@ -35,10 +35,10 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>Summary 表（slide 8）：Binomial = successes in n trials（n, p）；Geometric = trials until 1st success（p）；Poisson = events in an interval（λ）。</li>
+    <li>Summary 表（slide 8）：Binomial = successes in n trials（n, p）；Geometric = trials until 1st success（p）；Poisson = events in an interval（\(\lambda\)）。</li>
     <li>Binomial PMF：\( \binom{n}{k}p^k(1-p)^{n-k} \)；Scenario 3：15 次擲硬幣得 8 個 head = 0.1964。</li>
-    <li>Geometric PMF：\( (1-p)^{k-1}p \)；Scenario 2：80% 命中率，第 3 次先第一次入 = 0.0320；籃球 p = 0.4 第 4 次 = 0.0864。</li>
-    <li>Poisson PMF：\( \lambda^k e^{-\lambda}/k! \)；Scenario 1：λ = 4.5，剛好 6 個 call = 0.1281。</li>
+    <li>Geometric PMF：\( (1-p)^{k-1}p \)；Scenario 2：80% 命中率，第 3 次先第一次入 = 0.0320；籃球 \( p = 0.4 \) 第 4 次 = 0.0864。</li>
+    <li>Poisson PMF：\( \lambda^k e^{-\lambda}/k! \)；Scenario 1：\(\lambda = 4.5\)，剛好 6 個 call = 0.1281。</li>
     <li>scipy 寫法：<code>poisson.pmf(6,4.5)</code>、<code>geom.pmf(3,0.8)</code>、<code>binom.pmf(8,15,0.5)</code>。</li>
   </ol>
 </div>
@@ -49,14 +49,14 @@
 <li><b>What it measures</b>：The number of successes (X) out of a <b>fixed total number</b> of independent trials (n).</li>
 <li><b>Key parameters</b>：n = number of trials；p = probability of success on any given trial.</li>
 <li><b>Core conditions</b>：Each trial has <b>only two outcomes</b>, the probability p is <b>constant</b>, and all trials are <b>independent</b>.</li>
-<li><b>Example</b>：Flipping a coin 10 times and counting the exact k number of heads (X = k)，X 可以係 0, 1, 2, …, 10。</li>
+<li><b>Example</b>：Flipping a coin 10 times and counting the exact k number of heads (\( X = k \))，X 可以係 0, 1, 2, …, 10。</li>
 </ul></div>
 <div class="formula">$$ P(X=k) = \binom{n}{k} p^k (1-p)^{n-k}, \qquad \binom{n}{k} = \frac{n!}{k!(n-k)!}, \qquad k \in \{0,1,\dots,n\} $$</div>
 <p>每部分嘅意思（slide 9）：</p>
 <ul>
 <li>\( \binom{n}{k} \)（Combination）：由 n 次 trials 揀邊 k 次成功嘅方法數。</li>
 <li>\( p^k \)：k 次成功嘅 probability。</li>
-<li>\( (1-p)^{n-k} \)：其餘 n − k 次失敗嘅 probability。</li>
+<li>\( (1-p)^{n-k} \)：其餘 \( n - k \) 次失敗嘅 probability。</li>
 </ul>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>想像 10 次擲硬幣，「HHTHT…」任何一個特定序列（有 k 個 H）嘅機率都係 \( p^k(1-p)^{n-k} \)；而有 k 個 H 嘅序列有 \( \binom{n}{k} \) 個，所以相乘。</p></div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 3、5、7 係 Wikipedia 上 Binomial / Geometric / Poisson distribution 嘅公式截圖（infobox），文字擷取不到；公式本身已喺 slide 9 列出，本頁已收錄。</p></div>
@@ -71,15 +71,15 @@
 </ul></div>
 <div class="formula">$$ P(X=k) = (1-p)^{k-1}\, p, \qquad k \in \{1,2,3,\dots\} $$</div>
 <ul>
-<li>\( (1-p)^{k-1} \)：頭 k − 1 次連續失敗。</li>
+<li>\( (1-p)^{k-1} \)：頭 \( k - 1 \) 次連續失敗。</li>
 <li>\( p \)：第 k 次（最後一次）成功。</li>
 </ul>
 <div class="box exam"><span class="label">⭐ Slide 4 例子：籃球第 4 次先第一次入</span>
-<p>p = 0.4。Prob(X = 4) → 頭 3 次失敗，第 4 次成功：</p>
+<p>\( p = 0.4 \)。\( \text{Prob}(X = 4) \) → 頭 3 次失敗，第 4 次成功：</p>
 <div class="formula">$$ P(X=4) = (1-0.4)^3 \times 0.4 = 0.216 \times 0.4 = 0.0864 $$</div></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span>
 <ul>
-<li>指數係 <b>k − 1</b>（唔係 k）：第 k 次成功之前只有 k − 1 次失敗。</li>
+<li>指數係 <b>\( k - 1 \)</b>（唔係 k）：第 k 次成功之前只有 \( k - 1 \) 次失敗。</li>
 <li>本課（同 <code>scipy.stats.geom</code>）用嘅定義係「總 trial 數」，k 由 <b>1</b> 開始。有啲書用「失敗次數」定義（由 0 開始），公式會變成 \( (1-p)^k p \)，小心題目寫法。</li>
 </ul></div>
 
@@ -87,13 +87,13 @@
 <div class="box exam"><span class="label">⭐ 定義（slide 6）</span>
 <ul>
 <li><b>What it measures</b>：The number of times a discrete event occurs over a <b>fixed period of time or space</b>.</li>
-<li><b>Key parameter</b>：λ (lambda) = the <b>average rate</b> of occurrence in that interval.</li>
+<li><b>Key parameter</b>：\(\lambda\) (lambda) = the <b>average rate</b> of occurrence in that interval.</li>
 <li><b>Core conditions</b>：Events occur independently, the average rate is constant, and two events cannot happen at the exact same instant.</li>
 <li><b>Example</b>：Counting the number of emails you receive in an hour.</li>
 </ul></div>
 <div class="formula">$$ P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}, \qquad k\in\{0,1,2,\dots\} $$</div>
-<p>λ = 時段內平均次數；e ≈ 2.71828（Euler's constant）；k! = k 嘅 factorial。</p>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>λ 一定要配合題目嘅時段：如果「平均每分鐘 4.5 個 call」而題目問「2 分鐘內」，就要用 λ = 9。Poisson 冇上限（k 可以去到無限），Binomial 最多 n。</p></div>
+<p>\(\lambda\) = 時段內平均次數；\( e \approx 2.71828 \)（Euler's constant）；\( k! \) = k 嘅 factorial。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>\(\lambda\) 一定要配合題目嘅時段：如果「平均每分鐘 4.5 個 call」而題目問「2 分鐘內」，就要用 \(\lambda = 9\)。Poisson 冇上限（k 可以去到無限），Binomial 最多 n。</p></div>
 
 <h2>4. Summary：三個 distribution 點分？</h2>
 <div class="box exam"><span class="label">⭐ Summary 表（slide 8）</span>
@@ -101,8 +101,8 @@
 <tr><th>Feature</th><th>Binomial</th><th>Geometric</th><th>Poisson</th></tr>
 <tr><td><b>What is counted?</b></td><td>Number of successes in n trials</td><td>Number of trials until 1st success</td><td>Number of events in an interval</td></tr>
 <tr><td><b>Fixed limit?</b></td><td>Fixed number of trials (n)</td><td>No fixed limit (stops at success)</td><td>Fixed interval of time/space</td></tr>
-<tr><td><b>Main Parameters</b></td><td>n and p</td><td>p</td><td>λ (lambda)</td></tr>
-<tr><td><b>Range of X</b>（slide 9）</td><td>0, 1, …, n</td><td>1, 2, 3, …</td><td>0, 1, 2, …</td></tr>
+<tr><td><b>Main Parameters</b></td><td>n and p</td><td>p</td><td>\(\lambda\) (lambda)</td></tr>
+<tr><td><b>Range of X</b>（slide 9）</td><td>\( 0, 1, \dots, n \)</td><td>1, 2, 3, …</td><td>0, 1, 2, …</td></tr>
 <tr><td><b>PMF</b></td><td>\( \binom{n}{k}p^k(1-p)^{n-k} \)</td><td>\( (1-p)^{k-1}p \)</td><td>\( \lambda^k e^{-\lambda}/k! \)</td></tr>
 <tr><td><b>scipy</b></td><td><code>stats.binom.pmf(k, n, p)</code></td><td><code>stats.geom.pmf(k, p)</code></td><td><code>stats.poisson.pmf(k, mu)</code></td></tr>
 </table></div>
@@ -110,9 +110,9 @@
 <ul>
 <li>題目有「<b>n 次中有 k 次</b>」→ Binomial。</li>
 <li>題目有「<b>直到第一次</b>」、「第 k 次<b>先</b>成功」→ Geometric。</li>
-<li>題目有「<b>平均每（小時／分鐘／平方米）</b>λ 次」，冇 n → Poisson。</li>
+<li>題目有「<b>平均每（小時／分鐘／平方米）</b>\(\lambda\) 次」，冇 n → Poisson。</li>
 </ul>
-<p>補充（slides 冇列，但常用）：Binomial mean = np、variance = np(1−p)；Geometric mean = 1/p；Poisson mean = variance = λ。Module 2c 嘅 approximation 會用到 np 同 np(1−p)。</p></div>
+<p>補充（slides 冇列，但常用）：Binomial \( \text{mean} = np \)、\( \text{variance} = np(1-p) \)；Geometric \( \text{mean} = 1/p \)；Poisson \( \text{mean} = \text{variance} = \lambda \)。Module 2c 嘅 approximation 會用到 \( np \) 同 \( np(1-p) \)。</p></div>
 
 <h2>5. Worked examples（slides 10–15）</h2>
 <p>Slide 10 三個 scenario：</p>
@@ -123,17 +123,17 @@
 </ol>
 
 <div class="box exam"><span class="label">⭐ Solution 1：Poisson（slide 11）</span>
-<p><b>Why</b>：counting independent events (calls) in a fixed interval of time (1 minute) given an average rate λ = 4.5。</p>
+<p><b>Why</b>：counting independent events (calls) in a fixed interval of time (1 minute) given an average rate \(\lambda = 4.5\)。</p>
 <div class="formula">$$ P(X=6) = \frac{4.5^6\, e^{-4.5}}{6!} = \frac{8303.77 \times 0.0111}{720} \approx 0.1281 $$</div>
 <p><b>Result</b>：12.81% chance the center receives exactly 6 calls in the next minute.</p></div>
 
 <div class="box exam"><span class="label">⭐ Solution 2：Geometric（slide 12）</span>
-<p><b>Why</b>：independent trials with constant success rate p = 0.80 until the <b>very first success</b> on the 3rd attempt (x = 3)。</p>
+<p><b>Why</b>：independent trials with constant success rate \( p = 0.80 \) until the <b>very first success</b> on the 3rd attempt (\( x = 3 \))。</p>
 <div class="formula">$$ P(X=3) = (1-0.80)^{3-1}\times 0.80 = (0.20)^2 \times 0.80 = 0.04 \times 0.80 = 0.0320 $$</div>
 <p><b>Result</b>：3.20% chance the first successful shot happens exactly on the third try.</p></div>
 
 <div class="box exam"><span class="label">⭐ Solution 3：Binomial（slide 13）</span>
-<p><b>Why</b>：fixed number of independent trials (n = 15), constant p = 0.50, specific number of successes (k = 8)。</p>
+<p><b>Why</b>：fixed number of independent trials (\( n = 15 \)), constant \( p = 0.50 \), specific number of successes (\( k = 8 \))。</p>
 <div class="formula">$$ P(X=8) = \binom{15}{8}(0.5)^8(1-0.5)^{15-8} = 6435 \times 0.003906 \times 0.0078125 \approx 0.1964 $$</div>
 <p><b>Result</b>：19.64% chance of exactly 8 heads out of 15 flips.</p></div>
 
@@ -154,30 +154,30 @@ print(f"Scenario 3 - Probability: {prob3:.4f}")   # 0.1964</code></pre>
 <h3>5.2 延伸練習：「至少／最多」要用 CDF</h3>
 <div class="box tip"><span class="label">💡 Worked examples（補充）</span>
 <ul>
-<li>Scenario 1 延伸：最多 2 個 call：\( P(X\le 2) = e^{-4.5}(1 + 4.5 + \frac{4.5^2}{2}) = 0.01111 \times 15.625 \approx 0.1736 \)（<code>stats.poisson.cdf(2, 4.5)</code>）；至少 3 個 = 1 − 0.1736 = 0.8264。</li>
+<li>Scenario 1 延伸：最多 2 個 call：\( P(X\le 2) = e^{-4.5}(1 + 4.5 + \frac{4.5^2}{2}) = 0.01111 \times 15.625 \approx 0.1736 \)（<code>stats.poisson.cdf(2, 4.5)</code>）；至少 3 個 \( = 1 - 0.1736 = 0.8264 \)。</li>
 <li>Scenario 2 延伸：3 球內入到第一球：\( P(X\le 3) = 1-(0.2)^3 = 0.992 \)（<code>stats.geom.cdf(3, 0.8)</code>）。</li>
 <li>Scenario 3 延伸：至少 1 個 head：\( 1 - P(X=0) = 1 - 0.5^{15} \approx 0.99997 \)。</li>
 </ul></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Binomial 係 Logistic regression（Module 1 提到用嚟做 classification）背後嘅 distribution：每個觀測值係一次 Bernoulli trial（Yes/No）。COM6004 Classification 評估 accuracy 時，test set 上「答啱幾多個」亦可以當 Binomial 去理解。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 一間店平均每小時有 3 個客投訴。求某一小時冇人投訴嘅 probability。</summary><p>Poisson，λ = 3：\( P(X=0) = e^{-3} \approx 0.0498 \)。Python：<code>stats.poisson.pmf(0, 3)</code>。</p></details>
-<details class="q"><summary>Q2. 一條選擇題有 4 個選項，學生亂估 10 題。求剛好答啱 3 題嘅 probability。</summary><p>Binomial，n = 10，p = 0.25：\( \binom{10}{3}(0.25)^3(0.75)^7 = 120 \times 0.015625 \times 0.13348 \approx 0.2503 \)。</p></details>
-<details class="q"><summary>Q3. 某人每次打電話搵到客服嘅機會係 0.3。求佢第 5 次先第一次接通嘅 probability。</summary><p>Geometric，p = 0.3，k = 5：\( (0.7)^4 \times 0.3 = 0.2401 \times 0.3 = 0.07203 \)。</p></details>
+<details class="q"><summary>Q1. 一間店平均每小時有 3 個客投訴。求某一小時冇人投訴嘅 probability。</summary><p>Poisson，\(\lambda = 3\)：\( P(X=0) = e^{-3} \approx 0.0498 \)。Python：<code>stats.poisson.pmf(0, 3)</code>。</p></details>
+<details class="q"><summary>Q2. 一條選擇題有 4 個選項，學生亂估 10 題。求剛好答啱 3 題嘅 probability。</summary><p>Binomial，\( n = 10 \)，\( p = 0.25 \)：\( \binom{10}{3}(0.25)^3(0.75)^7 = 120 \times 0.015625 \times 0.13348 \approx 0.2503 \)。</p></details>
+<details class="q"><summary>Q3. 某人每次打電話搵到客服嘅機會係 0.3。求佢第 5 次先第一次接通嘅 probability。</summary><p>Geometric，\( p = 0.3 \)，\( k = 5 \)：\( (0.7)^4 \times 0.3 = 0.2401 \times 0.3 = 0.07203 \)。</p></details>
 <details class="q"><summary>Q4. 擲公平骰子直至出 6。求第 2 次就出 6 嘅 probability。</summary><p>\( (5/6)^1 \times 1/6 = 5/36 \approx 0.1389 \)。</p></details>
-<details class="q"><summary>Q5. 某網站平均每分鐘 2 次 visit，求 3 分鐘內剛好 5 次 visit 嘅 probability。</summary><p>3 分鐘 → λ = 6：\( 6^5 e^{-6}/5! = 7776 \times 0.002479/120 \approx 0.1606 \)。</p></details>
+<details class="q"><summary>Q5. 某網站平均每分鐘 2 次 visit，求 3 分鐘內剛好 5 次 visit 嘅 probability。</summary><p>3 分鐘 → \(\lambda = 6\)：\( 6^5 e^{-6}/5! = 7776 \times 0.002479/120 \approx 0.1606 \)。</p></details>
 <details class="q"><summary>Q6. 以下邊個唔符合 Binomial 條件？(a) 由一副牌唔放返咁抽 5 張，數有幾多張紅心 (b) 擲 20 次硬幣數 head</summary><p>(a) 唔符合：唔放返 → 每次 p 會變，trials 唔 independent（應該用 hypergeometric）。(b) 符合。</p></details>
 <details class="q"><summary>Q7. 寫出 Scenario 1–3 嘅 scipy code，並講出 “k” 喺每個 function 係邊個 argument。</summary><p><code>stats.poisson.pmf(6, 4.5)</code>、<code>stats.geom.pmf(3, 0.8)</code>、<code>stats.binom.pmf(8, 15, 0.5)</code>；k 一律係第一個 argument。</p></details>
-<details class="q"><summary>Q8. Binomial(n = 15, p = 0.5)：求 P(X ≥ 14)。</summary><p>\( P(14) + P(15) = [\binom{15}{14} + 1]/2^{15} = 16/32768 \approx 0.000488 \)。Python：<code>1 - stats.binom.cdf(13, 15, 0.5)</code>。</p></details>
+<details class="q"><summary>Q8. \( \text{Binomial}(n = 15, p = 0.5) \)：求 \( P(X \ge 14) \)。</summary><p>\( P(14) + P(15) = [\binom{15}{14} + 1]/2^{15} = 16/32768 \approx 0.000488 \)。Python：<code>1 - stats.binom.cdf(13, 15, 0.5)</code>。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li><b>Binomial(n, p)</b>：n 次 independent trials 中成功次數；兩個結果、p 固定。\( P(X=k)=\binom{n}{k}p^k(1-p)^{n-k} \)，k = 0..n。</li>
-<li><b>Geometric(p)</b>：直到第一次成功嘅 trial 數。\( P(X=k)=(1-p)^{k-1}p \)，k = 1, 2, …</li>
-<li><b>Poisson(λ)</b>：固定時間／空間內事件數。\( P(X=k)=\lambda^k e^{-\lambda}/k! \)，k = 0, 1, …；λ 要跟時段調整。</li>
-<li>Scenario 答案：Poisson(4.5) P(6) = 0.1281；Geom(0.8) P(3) = 0.0320；Binom(15, 0.5) P(8) = 0.1964；Geom(0.4) P(4) = 0.0864。</li>
-<li>scipy：<code>binom.pmf(k,n,p)</code>、<code>geom.pmf(k,p)</code>、<code>poisson.pmf(k,mu)</code>；累積用 <code>.cdf</code>；「至少」= 1 − cdf(k−1)。</li>
-<li>補充：Binomial mean np、var np(1−p)；Geometric mean 1/p；Poisson mean = var = λ。</li>
+<li><b>Binomial(n, p)</b>：n 次 independent trials 中成功次數；兩個結果、p 固定。\( P(X=k)=\binom{n}{k}p^k(1-p)^{n-k} \)，\( k = 0..n \)。</li>
+<li><b>Geometric(p)</b>：直到第一次成功嘅 trial 數。\( P(X=k)=(1-p)^{k-1}p \)，\( k = 1, 2, \dots \)</li>
+<li><b>Poisson(\(\lambda\))</b>：固定時間／空間內事件數。\( P(X=k)=\lambda^k e^{-\lambda}/k! \)，\( k = 0, 1, \dots \)；\(\lambda\) 要跟時段調整。</li>
+<li>Scenario 答案：Poisson(4.5) \( P(6) = 0.1281 \)；Geom(0.8) \( P(3) = 0.0320 \)；Binom(15, 0.5) \( P(8) = 0.1964 \)；Geom(0.4) \( P(4) = 0.0864 \)。</li>
+<li>scipy：<code>binom.pmf(k,n,p)</code>、<code>geom.pmf(k,p)</code>、<code>poisson.pmf(k,mu)</code>；累積用 <code>.cdf</code>；「至少」\( = 1 - \text{cdf}(k-1) \)。</li>
+<li>補充：Binomial mean \( np \)、var \( np(1-p) \)；Geometric mean \( 1/p \)；Poisson \( \text{mean} = \text{var} = \lambda \)。</li>
 </ul></div>
 
 <nav class="pager">

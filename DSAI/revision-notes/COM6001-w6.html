@@ -253,7 +253,7 @@ wdi.dropna(axis=1, thresh=300)   # column 要有 ≥300 non-null 先保留 → 1
 <pre><code>wdi.nunique()['country_name']             # 217 個國家/地區
 wdi.dropna().nunique()['country_name']    # 只剩 115 個！year 亦只剩 1 個值
 print(f'There are {100*(wdi.shape[0] - wdi.dropna().shape[0])/wdi.shape[0]}% of the rows were dropped')</code></pre>
-<div class="box warn"><span class="label">⚠️ 輸出與數字不一致</span><p>Notebook 印出「35.20%」，但用上面數字計：\( (446-117)/446 \approx 73.8\% \)。35.2% 對應 157 行（446 × 0.352 ≈ 157），估計係 cell 亂序執行時 <code>wdi</code> 處於另一個狀態。考試以公式為準：<b>dropped % = (rows before − rows after) / rows before × 100</b>。重點係：<code>dropna()</code> 一刀切會失去大量資料（國家數由 217 跌到 115）。</p></div>
+<div class="box warn"><span class="label">⚠️ 輸出與數字不一致</span><p>Notebook 印出「35.20%」，但用上面數字計：\( (446-117)/446 \approx 73.8\% \)。35.2% 對應 157 行（446 × 0.352 ≈ 157），估計係 cell 亂序執行時 <code>wdi</code> 處於另一個狀態。考試以公式為準：<b>\( \text{dropped \%} = (\text{rows before} - \text{rows after}) / \text{rows before} \times 100 \)</b>。重點係：<code>dropna()</code> 一刀切會失去大量資料（國家數由 217 跌到 115）。</p></div>
 
 <h3>5.3 Q4（homework）：dropna 練習</h3>
 <pre><code>import pandas as pd
@@ -499,7 +499,7 @@ print(df_titanic['Embarked'].isna().sum())                            # 0</code>
 </ul>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 一個 DataFrame 有 10 columns。<code>df.dropna(thresh=7)</code> 會 drop 咩 rows？</summary><p>保留 non-null ≥ 7 嘅 rows，即 missing ≤ 10 − 7 = 3。所以會 drop <b>有 4 個或以上 missing values</b> 嘅 rows。</p></details>
+<details class="q"><summary>Q1. 一個 DataFrame 有 10 columns。<code>df.dropna(thresh=7)</code> 會 drop 咩 rows？</summary><p>保留 \( \text{non-null} \ge 7 \) 嘅 rows，即 \( \text{missing} \le 10 - 7 = 3 \)。所以會 drop <b>有 4 個或以上 missing values</b> 嘅 rows。</p></details>
 <details class="q"><summary>Q2. 點樣判斷 column <code>city</code> 同 <code>city_code</code> 係咪 one-to-one mapped？寫 code 同判斷準則。</summary><pre><code>n_comb = df[['city', 'city_code']].value_counts().shape[0]
 n_city, n_code = df['city'].nunique(), df['city_code'].nunique()
 n_comb == n_city == n_code     # True → one-to-one</code></pre><p>如果組合數大過任何一邊嘅 unique 數，代表有一個值對應多個值，唔係 one-to-one。</p></details>

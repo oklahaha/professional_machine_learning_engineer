@@ -36,7 +36,7 @@
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>Mean 對 outliers 敏感 → 用 median 或 trimmed mean；variance / sd 亦對 outliers 敏感 → 用 IQR、AAD、MAD 等。</li>
-    <li>Percentile 定義：p-th percentile \(x_p\) 令 p% 嘅 observed values 細過 \(x_p\)；median = 50th percentile。</li>
+    <li>Percentile 定義：\( p \)-th percentile \(x_p\) 令 \( p\% \) 嘅 observed values 細過 \(x_p\)；median = 50th percentile。</li>
     <li>Box plot 嘅組成：median、25th / 75th percentiles（box）、whiskers、outliers；用嚟比較 attributes。</li>
     <li>Histogram 形狀受 bins 數目影響；scatter plot array 總結多對 attributes 關係。</li>
     <li>Parallel coordinates：每個 object 係一條線；attributes 排序影響能否睇到 groupings；matrix plot 要先 standardize。</li>
@@ -67,21 +67,21 @@
 <h3>2.2 Percentiles (Slide 8)</h3>
 <p>對 continuous data，<b>percentile</b> 更有用。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Percentile 定義</span>
-<p>Given an ordinal or continuous attribute \(x\) and a number \(p\) between 0 and 100, the <b>p-th percentile</b> is a value \(x_p\) of \(x\) such that <b>p% of the observed values of \(x\) are less than \(x_p\)</b>.</p>
+<p>Given an ordinal or continuous attribute \(x\) and a number \(p\) between 0 and 100, the <b>\( p \)-th percentile</b> is a value \(x_p\) of \(x\) such that <b>\( p\% \) of the observed values of \(x\) are less than \(x_p\)</b>.</p>
 <p>例如 50th percentile 係 \(x_{50\%}\)，令 50% 嘅值細過佢 → 即 <b>median</b>。25th / 75th percentiles 叫 first / third quartile (Q1 / Q3)。</p></div>
 <p>注意：percentile 只需要 <b>order</b>，所以 ordinal attribute 都可以計（但 nominal 唔得）。</p>
 
 <h3>2.3 Measures of Location: Mean and Median (Slide 9)</h3>
 <div class="formula">$$ \text{mean}(x) = \bar{x} = \frac{1}{m}\sum_{i=1}^{m} x_i $$</div>
 <div class="formula">$$ \text{median}(x) = \begin{cases} x_{(r+1)} &amp; \text{if } m = 2r+1 \text{ (odd)} \\ \tfrac{1}{2}\left(x_{(r)} + x_{(r+1)}\right) &amp; \text{if } m = 2r \text{ (even)} \end{cases} $$</div>
-<p>其中 \(x_{(i)}\) 係排序後第 i 個值。</p>
+<p>其中 \(x_{(i)}\) 係排序後第 \( i \) 個值。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 嘅 mean / median 公式係圖片；上面係教科書標準公式，請對照原 slide 第 9 頁。</p></div>
-<p><span class="tag exam">Exam</span><b>The mean is very sensitive to outliers.</b> 所以亦常用 <b>median</b> 或 <b>trimmed mean</b>（先去掉頭尾各 p/2 % 嘅極端值再計 mean）。</p>
+<p><span class="tag exam">Exam</span><b>The mean is very sensitive to outliers.</b> 所以亦常用 <b>median</b> 或 <b>trimmed mean</b>（先去掉頭尾各 \( p/2\,\% \) 嘅極端值再計 mean）。</p>
 <div class="box tip"><span class="label">💡 Worked example</span>
-<p>Data（月薪，千元）：12, 14, 15, 15, 16, 18, 20, 22, 25, 200（m = 10）</p>
+<p>Data（月薪，千元）：12, 14, 15, 15, 16, 18, 20, 22, 25, 200（\( m = 10 \)）</p>
 <ul>
-<li>Mean = (12+14+15+15+16+18+20+22+25+200)/10 = 357/10 = <b>35.7</b>（被 200 嚴重拉高）</li>
-<li>Median（m 偶數）= (16 + 18)/2 = <b>17</b></li>
+<li>\( \text{Mean} = (12+14+15+15+16+18+20+22+25+200)/10 = 357/10 = \) <b>35.7</b>（被 200 嚴重拉高）</li>
+<li>Median（\( m \) 偶數）\( = (16 + 18)/2 = \) <b>17</b></li>
 <li>20% trimmed mean：去掉最細 10%（12）同最大 10%（200）→ (14+15+15+16+18+20+22+25)/8 = 145/8 = <b>18.125</b></li>
 <li>Mode = <b>15</b></li>
 </ul>
@@ -89,7 +89,7 @@
 
 <h3>2.4 Measures of Spread: Range and Variance (Slide 10)</h3>
 <ul>
-<li><b>Range</b> = max − min。</li>
+<li><b>Range</b> \( = \max - \min \)。</li>
 <li><b>Variance</b> \(s_x^2\) 或 <b>standard deviation</b> \(s_x\) 係最常用嘅 spread 量度：</li>
 </ul>
 <div class="formula">$$ \text{variance}(x) = s_x^2 = \frac{1}{m-1}\sum_{i=1}^{m}(x_i - \bar{x})^2 $$</div>
@@ -97,11 +97,11 @@
 <div class="formula">$$ \text{AAD}(x) = \frac{1}{m}\sum_{i=1}^{m}|x_i-\bar{x}|, \quad \text{MAD}(x) = \text{median}\big(\{|x_1-\bar{x}|,\dots,|x_m-\bar{x}|\}\big), \quad \text{IQR}(x) = x_{75\%} - x_{25\%} $$</div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10 嘅 variance 公式同「other measures」公式係圖片 / 嵌入物件；上面 AAD (absolute average deviation)、MAD (median absolute deviation)、IQR (interquartile range) 係教科書標準內容，請對照原 slide 第 10 頁確認 slide 實際列出邊幾個。</p></div>
 <div class="box tip"><span class="label">💡 Worked example（延續）</span>
-<p>Data：2, 4, 4, 5, 7, 8（m = 6）。Mean = 30/6 = 5。</p>
+<p>Data：2, 4, 4, 5, 7, 8（\( m = 6 \)）。\( \text{Mean} = 30/6 = 5 \)。</p>
 <p>Deviations：−3, −1, −1, 0, 2, 3 → squares 9, 1, 1, 0, 4, 9 → sum = 24。</p>
-<p>Variance = 24/(6 − 1) = <b>4.8</b>；sd = \(\sqrt{4.8}\) = <b>2.191</b>；Range = 8 − 2 = <b>6</b>；AAD = (3+1+1+0+2+3)/6 = <b>1.667</b>。</p>
+<p>\( \text{Variance} = 24/(6 - 1) = \) <b>4.8</b>；\( \text{sd} = \sqrt{4.8} = \) <b>2.191</b>；\( \text{Range} = 8 - 2 = \) <b>6</b>；\( AAD = (3+1+1+0+2+3)/6 = \) <b>1.667</b>。</p>
 <p>如果將 8 改做 80：range 變 78，variance 大增，但 IQR 幾乎唔變 → IQR 係 robust measure。</p></div>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Sample variance 分母係 <b>m − 1</b>（唔係 m）。pandas <code>Series.var()</code> 預設 ddof=1（m − 1），numpy <code>np.var()</code> 預設 ddof=0（m）——兩者答案會唔同！</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Sample variance 分母係 <b>\( m - 1 \)</b>（唔係 \( m \)）。pandas <code>Series.var()</code> 預設 ddof=1（\( m - 1 \)），numpy <code>np.var()</code> 預設 ddof=0（\( m \)）——兩者答案會唔同！</p></div>
 <pre><code>import pandas as pd
 x = pd.Series([12, 14, 15, 15, 16, 18, 20, 22, 25, 200])
 x.mean(), x.median(), x.mode()[0]
@@ -166,14 +166,14 @@ iris["petal_width"].plot.hist(bins=20); plt.show()   # 形狀會唔同
 <tr><td>Box 底線</td><td>25th percentile (Q1)</td></tr>
 <tr><td>Box 入面條線</td><td>50th percentile (median)</td></tr>
 <tr><td>Box 頂線</td><td>75th percentile (Q3)；box 高度 = IQR</td></tr>
-<tr><td>Whiskers</td><td>延伸到 10th / 90th percentile（教科書版本），或常見軟件版本：Q1 − 1.5·IQR 至 Q3 + 1.5·IQR 範圍內嘅最遠值</td></tr>
+<tr><td>Whiskers</td><td>延伸到 10th / 90th percentile（教科書版本），或常見軟件版本：\( Q_1 - 1.5 \cdot IQR \) 至 \( Q_3 + 1.5 \cdot IQR \) 範圍內嘅最遠值</td></tr>
 <tr><td>獨立點</td><td>Outliers（whiskers 以外嘅值）</td></tr>
 </table>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 17 嘅 box plot 結構圖同 slide 18 嘅 Iris box plots 係圖片；上表係教科書標準結構，whisker 定義請以 slide 第 17 頁圖為準。</p></div>
 <p>Slide 18：<b>Box plots can be used to compare attributes</b>——將 Iris 四個 attributes 並排畫，即刻見到邊個 attribute 範圍大、中位數高、有冇 outliers。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Box plot 計算題型</span>
-<p>Data：1, 3, 4, 5, 6, 7, 8, 9, 30。Median = 6；Q1 = 4、Q3 = 8（用 pandas 預設 linear interpolation；如用「上下半數 data 嘅 median」方法會得 3.5 / 8.5，結論一樣）；IQR = 4。</p>
-<p>用 1.5·IQR 規則：lower fence = 4 − 6 = −2，upper fence = 8 + 6 = 14 → <b>30 係 outlier</b>，上 whisker 延伸到 9，下 whisker 到 1。</p></div>
+<p>Data：1, 3, 4, 5, 6, 7, 8, 9, 30。\( \text{Median} = 6 \)；\( Q_1 = 4 \)、\( Q_3 = 8 \)（用 pandas 預設 linear interpolation；如用「上下半數 data 嘅 median」方法會得 3.5 / 8.5，結論一樣）；\( IQR = 4 \)。</p>
+<p>用 \( 1.5 \cdot IQR \) 規則：\( \text{lower fence} = 4 - 6 = -2 \)，\( \text{upper fence} = 8 + 6 = 14 \) → <b>30 係 outlier</b>，上 whisker 延伸到 9，下 whisker 到 1。</p></div>
 <pre><code>iris.boxplot(column=["sepal_length", "sepal_width", "petal_length", "petal_width"])
 iris.boxplot(column="petal_length", by="species")   # 按 class 比較
 # R: boxplot(iris[, 1:4])</code></pre>
@@ -181,7 +181,7 @@ iris.boxplot(column="petal_length", by="species")   # 按 class 比較
 <h2>6. Scatter Plots</h2>
 <p>Slide 19：</p>
 <ul>
-<li><b>Attribute values determine the position</b>（x 軸一個 attribute，y 軸另一個）。</li>
+<li><b>Attribute values determine the position</b>（\( x \) 軸一個 attribute，\( y \) 軸另一個）。</li>
 <li>2D scatter plot 最常見，亦可以有 3D。</li>
 <li>可以用 marker 嘅 <b>size、shape、color</b> 顯示額外 attributes（例如用顏色代表 class）。</li>
 <li><b>Arrays of scatter plots</b>（scatter plot matrix）可以精簡地總結<b>幾對 attributes 之間嘅關係</b>。</li>
@@ -237,9 +237,9 @@ parallel_coordinates(iris, "species"); plt.show()
 <details class="q"><summary>Q1. Data exploration 嘅定義同兩個主要動機係咩？</summary>
 <p>定義：A preliminary exploration of the data to better understand its characteristics。動機：(1) 幫助揀適合嘅 preprocessing / analysis 工具；(2) 利用人類認 pattern 嘅能力（人可以認出 analysis tools 捕捉唔到嘅 patterns）。</p></details>
 <details class="q"><summary>Q2. Data：3, 5, 7, 8, 9, 11, 13, 100。計 mean、median、range，並講點解 median 較好。</summary>
-<p>Mean = 156/8 = <b>19.5</b>；Median = (8 + 9)/2 = <b>8.5</b>；Range = 100 − 3 = <b>97</b>。100 係 outlier，mean 被大幅拉高，而 median 唔受影響，更能代表典型值（slide 9：mean is very sensitive to outliers）。</p></details>
+<p>\( \text{Mean} = 156/8 = \) <b>19.5</b>；\( \text{Median} = (8 + 9)/2 = \) <b>8.5</b>；\( \text{Range} = 100 - 3 = \) <b>97</b>。100 係 outlier，mean 被大幅拉高，而 median 唔受影響，更能代表典型值（slide 9：mean is very sensitive to outliers）。</p></details>
 <details class="q"><summary>Q3. Data：4, 6, 8, 10, 12。計 sample variance 同 standard deviation。</summary>
-<p>Mean = 8；deviations² = 16, 4, 0, 4, 16 → 40；variance = 40/4 = <b>10</b>；sd = √10 = <b>3.162</b>。</p></details>
+<p>\( \text{Mean} = 8 \)；\( (x-\bar{x})^2 = 16, 4, 0, 4, 16 \) → 40；\( \text{variance} = 40/4 = \) <b>10</b>；\( \text{sd} = \sqrt{10} = \) <b>3.162</b>。</p></details>
 <details class="q"><summary>Q4. 解釋「the 80th percentile 係 65 分」嘅意思。對 nominal attribute 可以計 percentile 嗎？</summary>
 <p>代表 80% 嘅 observed values 細過 65 分。Nominal attribute 冇 order，所以唔可以計 percentile（只可以用 frequency / mode）。</p></details>
 <details class="q"><summary>Q5. 點解 histogram 嘅結論可能誤導？</summary>
@@ -256,9 +256,9 @@ parallel_coordinates(iris, "species"); plt.show()
 <li><b>Data exploration</b>：preliminary exploration to understand characteristics；動機：揀啱工具 + 利用人類 pattern recognition。</li>
 <li><b>Summary statistics</b>：frequency、location、spread；多數 single pass 計到。</li>
 <li><b>Frequency / mode</b>：categorical data 用。</li>
-<li><b>p-th percentile</b> \(x_p\)：p% 嘅值細過 \(x_p\)；median = 50th；IQR = Q3 − Q1。</li>
+<li><b>\( p \)-th percentile</b> \(x_p\)：\( p\% \) 嘅值細過 \(x_p\)；median = 50th；\( IQR = Q_3 - Q_1 \)。</li>
 <li><b>Mean</b> 對 outliers 敏感 → median / trimmed mean。</li>
-<li><b>Range</b> = max − min；<b>variance</b> \(s^2 = \frac{1}{m-1}\sum(x-\bar x)^2\)，亦對 outliers 敏感 → AAD、MAD、IQR。</li>
+<li><b>Range</b> \( = \max - \min \)；<b>variance</b> \(s^2 = \frac{1}{m-1}\sum(x-\bar x)^2\)，亦對 outliers 敏感 → AAD、MAD、IQR。</li>
 <li><b>Visualization</b>：轉成 visual / tabular format 以分析或報告；detect patterns、trends、outliers。</li>
 <li><b>Representation</b>：objects → points；attributes → position / color / size / shape。</li>
 <li><b>Selection</b>：減 attributes（dim. reduction 到 2–3 維或逐對）同 objects（sample 但保留 sparse 區）。</li>

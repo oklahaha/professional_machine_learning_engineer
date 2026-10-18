@@ -31,15 +31,15 @@
     <li>分辨 attribute 四種類型（Nominal / Ordinal / Interval / Ratio）同佢哋擁有嘅 properties；分辨 Discrete vs Continuous。</li>
     <li>認識各種 data set 類型（Record、Data Matrix、Document、Transaction、Graph、Ordered）。</li>
     <li>理解 Data Quality 問題：Noise、Outliers、Missing Values（MCAR / MAR / MNAR）、Duplicate Data。</li>
-    <li>識計 Euclidean / Minkowski（L1、L2、L∞）distance、SMC、Jaccard、Cosine similarity、Entropy、Mutual Information、combined similarity。</li>
+    <li>識計 Euclidean / Minkowski（\( L_1 \)、\( L_2 \)、\( L_\infty \)）distance、SMC、Jaccard、Cosine similarity、Entropy、Mutual Information、combined similarity。</li>
     <li>理解 distance 嘅 metric properties 同 Mahalanobis distance 嘅用途。</li>
     <li>掌握 Data Preprocessing：Aggregation、Sampling、Dimensionality Reduction（curse of dimensionality、PCA）、Feature Subset Selection、Discretization、Binarization、Attribute Transformation / Normalization。</li>
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>NOIR 四種 attribute types 同 properties（distinctness、order、differences、ratios），例如點解 Celsius 係 interval、Kelvin 係 ratio。</li>
-    <li>SMC vs Jaccard 計算（slide 44 例子：SMC = 0.7、JC = 0）同幾時用邊個。</li>
-    <li>Cosine similarity 計算（slide 45：cos = 0.3150）同 Minkowski distance（r = 1, 2, ∞）。</li>
+    <li>SMC vs Jaccard 計算（slide 44 例子：\( SMC = 0.7 \)、\( JC = 0 \)）同幾時用邊個。</li>
+    <li>Cosine similarity 計算（slide 45：\( \cos = 0.3150 \)）同 Minkowski distance（\( r = 1, 2, \infty \)）。</li>
     <li>Entropy \( H(X) = -\sum p_i \log_2 p_i \) 同 Mutual Information \( I(X;Y)=H(X)+H(Y)-H(X,Y) \) 嘅計算同解讀。</li>
     <li>Missing value 三種機制 MCAR / MAR / MNAR；Discretization（equal width / equal frequency / K-means / supervised）。</li>
   </ol>
@@ -123,7 +123,7 @@
 <tr><th>類型</th><th>子類 / 說明</th></tr>
 <tr><td><b>Record Data</b></td><td>由 records 組成，每個 record 有<b>固定一組</b> attributes（slide 14）。
   <ul>
-  <li><b>Data Matrix</b>（slide 15）：如果所有 objects 都有同一組 numeric attributes，可視為多維空間嘅點；用 <b>m × n matrix</b> 表示（m rows = objects，n columns = attributes）。</li>
+  <li><b>Data Matrix</b>（slide 15）：如果所有 objects 都有同一組 numeric attributes，可視為多維空間嘅點；用 <b>\( m \times n \) matrix</b> 表示（\( m \) rows = objects，\( n \) columns = attributes）。</li>
   <li><b>Document Data</b>（slide 16）：每份文件變成一個 <b>term vector</b>；每個 term 係一個 component（attribute）；值係該 term 喺文件出現嘅次數。</li>
   <li><b>Transaction Data</b>（slide 17）：每個 transaction 包含一組 items（例如一次購物買嘅產品）；可轉成 record data（每個 item 一欄 0/1）。</li>
   </ul></td></tr>
@@ -201,21 +201,21 @@ KNNImputer(n_neighbors=2).fit_transform(df)       # 用其他 attributes 相似�
 <p><b>Proximity</b> refers to a similarity or dissimilarity（兩者統稱）。</p>
 
 <h3>5.1 Simple Attributes (Slide 33)</h3>
-<p>對單一 attribute，兩個 objects x、y 嘅 similarity \(s\) 同 dissimilarity \(d\)（教科書標準表）：</p>
+<p>對單一 attribute，兩個 objects \( x \)、\( y \) 嘅 similarity \(s\) 同 dissimilarity \(d\)（教科書標準表）：</p>
 <table>
 <tr><th>Attribute Type</th><th>Dissimilarity</th><th>Similarity</th></tr>
 <tr><td>Nominal</td><td>\( d = 0 \) if \(x=y\); \(d=1\) if \(x\neq y\)</td><td>\( s = 1 \) if \(x=y\); \(s=0\) if \(x\neq y\)</td></tr>
-<tr><td>Ordinal</td><td>\( d = \frac{|x-y|}{n-1} \)（values 映射到整數 0 至 n−1）</td><td>\( s = 1 - d \)</td></tr>
+<tr><td>Ordinal</td><td>\( d = \frac{|x-y|}{n-1} \)（values 映射到整數 0 至 \( n-1 \)）</td><td>\( s = 1 - d \)</td></tr>
 <tr><td>Interval or Ratio</td><td>\( d = |x-y| \)</td><td>\( s=-d,\ s=\frac{1}{1+d},\ s=e^{-d},\ s = 1-\frac{d-\min d}{\max d-\min d} \)</td></tr>
 </table>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 33 嘅表格係圖片，上表係教科書 Table 2.7 嘅標準內容；請對照原 slide 第 33 頁確認。</p></div>
-<p>例：Ordinal attribute quality = {poor, fair, OK, good, wonderful} → {0,1,2,3,4}，n = 5。x = good (3)、y = fair (1)：\( d = |3-1|/4 = 0.5 \)，\( s = 0.5 \)。</p>
+<p>例：Ordinal attribute quality = {poor, fair, OK, good, wonderful} → {0,1,2,3,4}，\( n = 5 \)。\( x = \text{good} \) (3)、\( y = \text{fair} \) (1)：\( d = |3-1|/4 = 0.5 \)，\( s = 0.5 \)。</p>
 
 <h2>6. Distance Measures</h2>
 <h3>6.1 Euclidean Distance (Slides 34–35)</h3>
 <div class="formula">$$ d(\mathbf{x},\mathbf{y}) = \sqrt{\sum_{k=1}^{n} (x_k - y_k)^2} $$</div>
 <p>其中 \(n\) 係 dimensions（attributes）數目，\(x_k\)、\(y_k\) 係 objects \(\mathbf{x}\)、\(\mathbf{y}\) 嘅第 \(k\) 個 attributes。<b>Standardization is necessary, if scales differ.</b></p>
-<div class="box warn"><span class="label">⚠️ 常見錯誤：唔做 standardization</span><p>如果 x = (height 1.7 m, income 50000)、y = (height 1.5 m, income 50100)：Euclidean distance ≈ \(\sqrt{0.04 + 10000}\) ≈ 100，身高差異完全被 income 淹沒。所以 scales 唔同時要先 standardize（z-score）或 min-max normalize。Chapter 4A KNN 同 Chapter 5 K-means 都會再強調呢點。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤：唔做 standardization</span><p>如果 \( x = (\text{height } 1.7\text{ m}, \text{income } 50000) \)、\( y = (\text{height } 1.5\text{ m}, \text{income } 50100) \)：Euclidean distance \( \approx \sqrt{0.04 + 10000} \approx 100 \)，身高差異完全被 income 淹沒。所以 scales 唔同時要先 standardize（z-score）或 min-max normalize。Chapter 4A KNN 同 Chapter 5 K-means 都會再強調呢點。</p></div>
 
 <h3>6.2 Minkowski Distance (Slides 36–38)</h3>
 <p>Minkowski Distance 係 Euclidean Distance 嘅推廣 (generalization)：</p>
@@ -231,9 +231,9 @@ KNNImputer(n_neighbors=2).fit_transform(df)       # 用其他 attributes 相似�
 <p>注意：<b>唔好將 \(r\) 同 \(n\) 混淆</b>——所有呢啲 distances 都適用於任何 dimensions 數目 \(n\)。</p></div>
 
 <h3>6.3 Worked example：四點 distance matrices</h3>
-<p>Slide 35 同 38 用四點例子展示 distance matrix（圖片未能擷取）。以下用 4 點自行計算：p1 = (0, 2)、p2 = (2, 0)、p3 = (3, 1)、p4 = (5, 1)。</p>
-<p>例如 d(p1, p2)：差 = (2, −2)。L1 = 2 + 2 = 4；L2 = \(\sqrt{4+4} = 2.828\)；L∞ = max(2, 2) = 2。</p>
-<p>d(p1, p4)：差 = (5, −1)。L1 = 6；L2 = \(\sqrt{25+1} = 5.099\)；L∞ = 5。</p>
+<p>Slide 35 同 38 用四點例子展示 distance matrix（圖片未能擷取）。以下用 4 點自行計算：\( p_1 = (0, 2) \)、\( p_2 = (2, 0) \)、\( p_3 = (3, 1) \)、\( p_4 = (5, 1) \)。</p>
+<p>例如 \( d(p_1, p_2) \)：差 = (2, −2)。\( L_1 = 2 + 2 = 4 \)；\( L_2 = \sqrt{4+4} = 2.828 \)；\( L_\infty = \max(2, 2) = 2 \)。</p>
+<p>\( d(p_1, p_4) \)：差 = (5, −1)。\( L_1 = 6 \)；\( L_2 = \sqrt{25+1} = 5.099 \)；\( L_\infty = 5 \)。</p>
 <table>
 <tr><th>L1</th><th>p1</th><th>p2</th><th>p3</th><th>p4</th></tr>
 <tr><th>p1</th><td>0</td><td>4</td><td>4</td><td>6</td></tr>
@@ -255,7 +255,7 @@ KNNImputer(n_neighbors=2).fit_transform(df)       # 用其他 attributes 相似�
 <tr><th>p3</th><td>3</td><td>1</td><td>0</td><td>2</td></tr>
 <tr><th>p4</th><td>5</td><td>3</td><td>2</td><td>0</td></tr>
 </table>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>對同一對點，永遠有 \(L_\infty \le L_2 \le L_1\)。L1 好似喺曼哈頓街道「行格仔」；L2 係「直線飛過去」；L∞ 只睇「差得最多嗰個維度」（好似國際象棋嘅國王行步數）。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>對同一對點，永遠有 \(L_\infty \le L_2 \le L_1\)。\( L_1 \) 好似喺曼哈頓街道「行格仔」；\( L_2 \) 係「直線飛過去」；\( L_\infty \) 只睇「差得最多嗰個維度」（好似國際象棋嘅國王行步數）。</p></div>
 <pre><code>import numpy as np
 from scipy.spatial.distance import cdist
 P = np.array([[0, 2], [2, 0], [3, 1], [5, 1]])
@@ -267,7 +267,7 @@ print(cdist(P, P, "minkowski", p=3))</code></pre>
 <h3>6.4 Mahalanobis Distance (Slides 39–40)</h3>
 <div class="formula">$$ \text{mahalanobis}(\mathbf{x},\mathbf{y}) = (\mathbf{x}-\mathbf{y})^{T}\, \Sigma^{-1}\, (\mathbf{x}-\mathbf{y}) $$</div>
 <p>其中 \(\Sigma\) 係 data 嘅 <b>covariance matrix</b>（有啲版本會再開平方根）。佢考慮咗 attributes 之間嘅 <b>correlation</b> 同各自嘅 variance：沿住 data 分佈「長軸」方向嘅差距會被打折，沿「短軸」方向嘅差距會被放大。</p>
-<p>Slide 39 例子：圖中兩個紅點，<b>Euclidean distance 係 14.7，但 Mahalanobis distance 只係 6</b>——因為兩點雖然直線距離遠，但係沿住 data 嘅主要分佈方向排列，以 data 嘅分佈嚟講其實「唔算遠」。Slide 40 例子：Mahal(A, B) = 2.27、Mahal(A, C) = 2。</p>
+<p>Slide 39 例子：圖中兩個紅點，<b>Euclidean distance 係 14.7，但 Mahalanobis distance 只係 6</b>——因為兩點雖然直線距離遠，但係沿住 data 嘅主要分佈方向排列，以 data 嘅分佈嚟講其實「唔算遠」。Slide 40 例子：\( \text{Mahal}(A, B) = 2.27 \)、\( \text{Mahal}(A, C) = 2 \)。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 39 嘅公式同散點圖、slide 40 嘅 covariance matrix 同點 A、B、C 坐標均為圖片，擷取不到；上面公式係教科書標準形式，請對照原 slide 第 39–40 頁確認具體數字。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>如果 \(\Sigma\) 係 identity matrix（attributes 互不相關且 variance = 1），Mahalanobis distance 就退化成（平方）Euclidean distance。COM6005 嘅 z-score \( (x-\mu)/\sigma \) 就係一維版本嘅「以 standard deviation 為單位量距離」。</p></div>
 
@@ -280,21 +280,21 @@ print(cdist(P, P, "minkowski", p=3))</code></pre>
 <li><b>Triangle Inequality</b>：\( d(\mathbf{x},\mathbf{z}) \le d(\mathbf{x},\mathbf{y}) + d(\mathbf{y},\mathbf{z}) \)。</li>
 </ol>
 <p>滿足以上三條嘅 distance 叫做 <b>metric</b>。</p></div>
-<p>驗證 triangle inequality（用上面 L2 表）：d(p1, p4) = 5.099 ≤ d(p1, p3) + d(p3, p4) = 3.162 + 2 = 5.162 ✓。</p>
+<p>驗證 triangle inequality（用上面 L2 表）：\( d(p_1, p_4) = 5.099 \le d(p_1, p_3) + d(p_3, p_4) = 3.162 + 2 = 5.162 \) ✓。</p>
 
 <h3>6.6 Common Properties of a Similarity (Slide 42)</h3>
 <ol>
-<li>\( s(\mathbf{x},\mathbf{y}) = 1 \)（或 maximum similarity）only if \(\mathbf{x}=\mathbf{y}\)。<b>呢條唔一定成立</b>，例如 cosine：x = (1, 2) 同 y = (2, 4) 唔相等，但 cos = 1。</li>
+<li>\( s(\mathbf{x},\mathbf{y}) = 1 \)（或 maximum similarity）only if \(\mathbf{x}=\mathbf{y}\)。<b>呢條唔一定成立</b>，例如 cosine：\( x = (1, 2) \) 同 \( y = (2, 4) \) 唔相等，但 \( \cos = 1 \)。</li>
 <li><b>Symmetry</b>：\( s(\mathbf{x},\mathbf{y}) = s(\mathbf{y},\mathbf{x}) \) for all \(\mathbf{x},\mathbf{y}\)。</li>
 </ol>
 
 <h2>7. Similarity Between Binary Vectors: SMC vs Jaccard</h2>
-<p>Slide 43：當 objects x、y 只有 binary attributes，先數四個 quantities：</p>
+<p>Slide 43：當 objects \( x \)、\( y \) 只有 binary attributes，先數四個 quantities：</p>
 <ul>
-  <li>\(f_{01}\)：x 係 0、y 係 1 嘅 attributes 數目</li>
-  <li>\(f_{10}\)：x 係 1、y 係 0</li>
-  <li>\(f_{00}\)：x 係 0、y 係 0</li>
-  <li>\(f_{11}\)：x 係 1、y 係 1</li>
+  <li>\(f_{01}\)：\( x \) 係 0、\( y \) 係 1 嘅 attributes 數目</li>
+  <li>\(f_{10}\)：\( x \) 係 1、\( y \) 係 0</li>
+  <li>\(f_{00}\)：\( x \) 係 0、\( y \) 係 0</li>
+  <li>\(f_{11}\)：\( x \) 係 1、\( y \) 係 1</li>
 </ul>
 <div class="formula">$$ \text{SMC} = \frac{\text{number of matches}}{\text{number of attributes}} = \frac{f_{11}+f_{00}}{f_{01}+f_{10}+f_{11}+f_{00}} $$</div>
 <div class="formula">$$ \text{JC} = \frac{\text{number of 11 matches}}{\text{number of non-zero attributes}} = \frac{f_{11}}{f_{01}+f_{10}+f_{11}} $$</div>
@@ -303,10 +303,10 @@ print(cdist(P, P, "minkowski", p=3))</code></pre>
 <pre><code>x = 1 0 0 0 0 0 0 0 0 0
 y = 0 0 0 0 0 0 1 0 0 1</code></pre>
 <p>\(f_{01} = 2\)（位置 7、10），\(f_{10} = 1\)（位置 1），\(f_{00} = 7\)，\(f_{11} = 0\)。</p>
-<p>SMC = (0 + 7) / (2 + 1 + 0 + 7) = <b>0.7</b></p>
-<p>JC = 0 / (2 + 1 + 0) = <b>0</b></p></div>
-<div class="box tip"><span class="label">💡 直覺理解：幾時用 Jaccard？</span><p>想像 x、y 係兩個客戶喺超市 10,000 件貨品嘅購買紀錄（1 = 買過）。兩人各自只買咗幾件，冇一件相同；用 SMC 計會得到接近 1（因為絕大部分係「兩個都冇買」嘅 00 match），但呢啲 00 其實冇意義。Jaccard 忽略 \(f_{00}\)，只睇「至少一方有」嘅 attributes，所以適合 <b>asymmetric binary attributes</b>（1 比 0 重要，例如 transaction / document data）。SMC 適合 symmetric binary（例如 gender 編碼成 0/1，兩個值同等重要）。</p></div>
-<p>再練習：x = 1 1 0 1 0、y = 1 0 0 1 1 → \(f_{11}=2, f_{10}=1, f_{01}=1, f_{00}=1\)；SMC = 3/5 = 0.6；JC = 2/4 = 0.5。</p>
+<p>\( SMC = (0 + 7) / (2 + 1 + 0 + 7) = \) <b>0.7</b></p>
+<p>\( JC = 0 / (2 + 1 + 0) = \) <b>0</b></p></div>
+<div class="box tip"><span class="label">💡 直覺理解：幾時用 Jaccard？</span><p>想像 \( x \)、\( y \) 係兩個客戶喺超市 10,000 件貨品嘅購買紀錄（1 = 買過）。兩人各自只買咗幾件，冇一件相同；用 SMC 計會得到接近 1（因為絕大部分係「兩個都冇買」嘅 00 match），但呢啲 00 其實冇意義。Jaccard 忽略 \(f_{00}\)，只睇「至少一方有」嘅 attributes，所以適合 <b>asymmetric binary attributes</b>（1 比 0 重要，例如 transaction / document data）。SMC 適合 symmetric binary（例如 gender 編碼成 0/1，兩個值同等重要）。</p></div>
+<p>再練習：\( x = 1\ 1\ 0\ 1\ 0 \)、\( y = 1\ 0\ 0\ 1\ 1 \) → \(f_{11}=2, f_{10}=1, f_{01}=1, f_{00}=1\)；\( SMC = 3/5 = 0.6 \)；\( JC = 2/4 = 0.5 \)。</p>
 
 <h2>8. Cosine Similarity</h2>
 <p>Slide 45：如果 \(d_1\)、\(d_2\) 係兩個 document vectors：</p>
@@ -334,9 +334,9 @@ print(d1 @ d2 / (np.linalg.norm(d1) * np.linalg.norm(d2)))   # 0.3150</code></pr
 </ul>
 
 <h3>9.2 Entropy (Slides 47–50)</h3>
-<p>對一個有 \(n\) 個可能結果 \(x_1,\dots,x_n\)、概率 \(p_1,\dots,p_n\) 嘅 variable X：</p>
+<p>對一個有 \(n\) 個可能結果 \(x_1,\dots,x_n\)、概率 \(p_1,\dots,p_n\) 嘅 variable \( X \)：</p>
 <div class="formula">$$ H(X) = -\sum_{i=1}^{n} p_i \log_2 p_i $$</div>
-<p><span class="tag exam">Exam</span>Entropy 介乎 <b>0 同 \(\log_2 n\)</b>，單位係 <b>bits</b>：即平均需要幾多 bits 去表示 X 嘅一個 observation。所有結果機會均等時 entropy 最大（\(\log_2 n\)）；只有一個結果必然發生時 entropy = 0。（約定 \(0 \log_2 0 = 0\)）</p>
+<p><span class="tag exam">Exam</span>Entropy 介乎 <b>0 同 \(\log_2 n\)</b>，單位係 <b>bits</b>：即平均需要幾多 bits 去表示 \( X \) 嘅一個 observation。所有結果機會均等時 entropy 最大（\(\log_2 n\)）；只有一個結果必然發生時 entropy = 0。（約定 \(0 \log_2 0 = 0\)）</p>
 <p><b>Coin 例子 (slide 48)</b>：head 概率 \(p\)，tail 概率 \(q = 1-p\)：</p>
 <div class="formula">$$ H = -p\log_2 p - q\log_2 q $$</div>
 <ul>
@@ -364,10 +364,10 @@ print(d1 @ d2 / (np.linalg.norm(d1) * np.linalg.norm(d2)))   # 0.3150</code></pr
 <h3>9.3 Mutual Information (Slides 51–55)</h3>
 <p>Mutual Information = 一個 variable 提供關於另一個 variable 嘅 information：</p>
 <div class="formula">$$ I(X;Y) = H(X) + H(Y) - H(X,Y), \qquad H(X,Y) = -\sum_i\sum_j p_{ij}\log_2 p_{ij} $$</div>
-<p>\(H(X,Y)\) 係 joint entropy，\(p_{ij}\) 係 X 第 i 個值同 Y 第 j 個值<b>同時出現</b>嘅概率。Discrete variables 好易計。Discrete variables 嘅 maximum MI = \(\log_2(\min(n_X, n_Y))\)。</p>
+<p>\(H(X,Y)\) 係 joint entropy，\(p_{ij}\) 係 \( X \) 第 \( i \) 個值同 \( Y \) 第 \( j \) 個值<b>同時出現</b>嘅概率。Discrete variables 好易計。Discrete variables 嘅 maximum \( MI = \log_2(\min(n_X, n_Y)) \)。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 52 Student Status × Grade 例子</span>
-<p>H(Student Status)：Undergrad 45 (0.5184)、Grad 55 (0.4744) → <b>0.9928</b></p>
-<p>H(Grade)：A 35 (0.5301)、B 50 (0.5000)、C 15 (0.4105) → <b>1.4406</b></p>
+<p>\( H(\text{Student Status}) \)：Undergrad 45 (0.5184)、Grad 55 (0.4744) → <b>0.9928</b></p>
+<p>\( H(\text{Grade}) \)：A 35 (0.5301)、B 50 (0.5000)、C 15 (0.4105) → <b>1.4406</b></p>
 <table>
 <tr><th>Status</th><th>Grade</th><th>Count</th><th>p</th><th>\(-p\log_2 p\)</th></tr>
 <tr><td>Undergrad</td><td>A</td><td>5</td><td>0.05</td><td>0.2161</td></tr>
@@ -376,26 +376,26 @@ print(d1 @ d2 / (np.linalg.norm(d1) * np.linalg.norm(d2)))   # 0.3150</code></pr
 <tr><td>Grad</td><td>A</td><td>30</td><td>0.30</td><td>0.5211</td></tr>
 <tr><td>Grad</td><td>B</td><td>20</td><td>0.20</td><td>0.4644</td></tr>
 <tr><td>Grad</td><td>C</td><td>5</td><td>0.05</td><td>0.2161</td></tr>
-<tr><td colspan="4"><b>H(Status, Grade)</b></td><td><b>2.2710</b></td></tr>
+<tr><td colspan="4"><b>\( H(\text{Status}, \text{Grade}) \)</b></td><td><b>2.2710</b></td></tr>
 </table>
 <p>\(I = 0.9928 + 1.4406 - 2.2710 = \mathbf{0.1624}\)：有少少關係（Grad 學生拎 A 嘅比例較高）。</p></div>
-<p><b>Slide 53（完全依賴）</b>：Undergrad 50 / Grad 50；Grade A 50 / B 50；joint：Undergrad-A 50、Grad-B 50、其餘 0。H(Status) = 1、H(Grade) = 1、H(Status, Grade) = 1 → \(I = 1 + 1 - 1 = \mathbf{1}\)。知道 status 就完全知道 grade。（此時 \(I = H(X) = H(Y)\)，亦等於 maximum \(\log_2 \min(2,2) = 1\)。）</p>
-<p><b>Slide 54（獨立）</b>：四個組合各 25 → H(Status, Grade) = 2 → \(I = 1 + 1 - 2 = \mathbf{0}\)。兩者完全冇關係。</p>
+<p><b>Slide 53（完全依賴）</b>：Undergrad 50 / Grad 50；Grade A 50 / B 50；joint：Undergrad-A 50、Grad-B 50、其餘 0。\( H(\text{Status}) = 1 \)、\( H(\text{Grade}) = 1 \)、\( H(\text{Status}, \text{Grade}) = 1 \) → \(I = 1 + 1 - 1 = \mathbf{1}\)。知道 status 就完全知道 grade。（此時 \(I = H(X) = H(Y)\)，亦等於 maximum \(\log_2 \min(2,2) = 1\)。）</p>
+<p><b>Slide 54（獨立）</b>：四個組合各 25 → \( H(\text{Status}, \text{Grade}) = 2 \) → \(I = 1 + 1 - 2 = \mathbf{0}\)。兩者完全冇關係。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 55 Summary of Mutual Information</span>
 <table>
-<tr><th>Value of I(X; Y)</th><th>What it Means</th></tr>
-<tr><td>= 0</td><td>X and Y are independent. No relationship.</td></tr>
-<tr><td>&gt; 0</td><td>X and Y are dependent. The larger the value, the stronger the relationship.</td></tr>
-<tr><td>= H(X)</td><td>Knowing Y allows you to completely determine X.</td></tr>
-<tr><td>= H(Y)</td><td>Knowing X allows you to completely determine Y.</td></tr>
-<tr><td>≤ min{H(X), H(Y)}</td><td>The shared information is limited by the variable with the least information.</td></tr>
+<tr><th>Value of \( I(X; Y) \)</th><th>What it Means</th></tr>
+<tr><td>\( = 0 \)</td><td>\( X \) and \( Y \) are independent. No relationship.</td></tr>
+<tr><td>\( &gt; 0 \)</td><td>\( X \) and \( Y \) are dependent. The larger the value, the stronger the relationship.</td></tr>
+<tr><td>\( = H(X) \)</td><td>Knowing \( Y \) allows you to completely determine \( X \).</td></tr>
+<tr><td>\( = H(Y) \)</td><td>Knowing \( X \) allows you to completely determine \( Y \).</td></tr>
+<tr><td>\( \le \min\{H(X), H(Y)\} \)</td><td>The shared information is limited by the variable with the least information.</td></tr>
 </table></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>Entropy 會喺 Chapter 4A Decision Tree 再出現：用 entropy 量度 node impurity，而 <b>Information Gain</b> = 分割前 entropy − 分割後加權 entropy，本質上就係 class label 同 split attribute 之間嘅 mutual information。COM6005 嘅 Chi-square test of independence 同 MI = 0 都係測試「兩個 categorical variables 是否獨立」。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Entropy 會喺 Chapter 4A Decision Tree 再出現：用 entropy 量度 node impurity，而 <b>Information Gain</b> = 分割前 entropy − 分割後加權 entropy，本質上就係 class label 同 split attribute 之間嘅 mutual information。COM6005 嘅 Chi-square test of independence 同 \( MI = 0 \) 都係測試「兩個 categorical variables 是否獨立」。</p></div>
 
 <h3>9.4 Maximal Information Coefficient (MIC) (Slide 56)</h3>
 <p>出自 Reshef et al. (2011, <i>Science</i>)，將 mutual information 應用於<b>兩個 continuous variables</b>：</p>
 <ol>
-<li>考慮將 variables 分成 discrete categories 嘅所有可能 binnings，限制 \( n_X \times n_Y \le N^{0.6} \)（\(n_X\)、\(n_Y\) 係 X、Y 嘅 bins 數，N 係樣本數）。</li>
+<li>考慮將 variables 分成 discrete categories 嘅所有可能 binnings，限制 \( n_X \times n_Y \le N^{0.6} \)（\(n_X\)、\(n_Y\) 係 X、Y 嘅 bins 數，\( N \) 係樣本數）。</li>
 <li>計每個 binning 嘅 mutual information。</li>
 <li>用 \(\log_2(\min(n_X, n_Y))\) normalize（令結果喺 0 至 1）。</li>
 <li>取最高值。</li>
@@ -404,8 +404,8 @@ print(d1 @ d2 / (np.linalg.norm(d1) * np.linalg.norm(d2)))   # 0.3150</code></pr
 <h2>10. Combining Similarities (Slides 57–58)</h2>
 <p>當 attributes 類型各異但需要一個整體 similarity：</p>
 <ol>
-<li>對第 k 個 attribute 計一個喺 [0, 1] 嘅 similarity \(s_k(\mathbf{x},\mathbf{y})\)。</li>
-<li>定義 indicator \(\delta_k\)：<b>\(\delta_k = 0\)</b> 如果第 k 個 attribute 係 <b>asymmetric attribute 而兩個 objects 都係 0</b>，或者<b>其中一個 object 喺該 attribute 有 missing value</b>；否則 \(\delta_k = 1\)。</li>
+<li>對第 \( k \) 個 attribute 計一個喺 [0, 1] 嘅 similarity \(s_k(\mathbf{x},\mathbf{y})\)。</li>
+<li>定義 indicator \(\delta_k\)：<b>\(\delta_k = 0\)</b> 如果第 \( k \) 個 attribute 係 <b>asymmetric attribute 而兩個 objects 都係 0</b>，或者<b>其中一個 object 喺該 attribute 有 missing value</b>；否則 \(\delta_k = 1\)。</li>
 <li>計算：</li>
 </ol>
 <div class="formula">$$ \text{similarity}(\mathbf{x},\mathbf{y}) = \frac{\sum_{k=1}^{n} \delta_k\, s_k(\mathbf{x},\mathbf{y})}{\sum_{k=1}^{n} \delta_k} $$</div>
@@ -414,14 +414,14 @@ print(d1 @ d2 / (np.linalg.norm(d1) * np.linalg.norm(d2)))   # 0.3150</code></pr
 <p>亦可定義 weighted distance：\( d(\mathbf{x},\mathbf{y}) = \left(\sum_{k=1}^{n} w_k |x_k-y_k|^r\right)^{1/r} \)。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 57 嘅最終公式同 slide 58 嘅 weighted distance 公式係圖片；上面係教科書標準形式（slide 58 嘅 weighted similarity 公式有文字擷取，與上式一致）。</p></div>
 <div class="box tip"><span class="label">💡 Worked example（自擬）</span>
-<p>x = (Gender = M, Rating = high, Income = 50K, HasCar = 0)，y = (F, medium, 30K, 0)。Rating 係 ordinal {low, medium, high}→{0,1,2}；Income 範圍 20K–100K；HasCar 係 asymmetric binary。</p>
+<p>\( x = (\text{Gender} = \text{M}, \text{Rating} = \text{high}, \text{Income} = 50\text{K}, \text{HasCar} = 0) \)，\( y = (\text{F}, \text{medium}, 30\text{K}, 0) \)。Rating 係 ordinal {low, medium, high}→{0,1,2}；Income 範圍 20K–100K；HasCar 係 asymmetric binary。</p>
 <ul>
 <li>Gender（nominal）：唔同 → \(s_1 = 0\)，\(\delta_1 = 1\)</li>
 <li>Rating（ordinal）：\(d = |2-1|/2 = 0.5\) → \(s_2 = 0.5\)，\(\delta_2=1\)</li>
 <li>Income（ratio）：\(d = |50-30|/(100-20) = 0.25\) → \(s_3 = 0.75\)，\(\delta_3=1\)</li>
 <li>HasCar（asymmetric，兩個都 0）→ \(\delta_4 = 0\)（唔計）</li>
 </ul>
-<p>similarity = (0 + 0.5 + 0.75) / 3 = <b>0.4167</b>。</p></div>
+<p>\( \text{similarity} = (0 + 0.5 + 0.75) / 3 = \) <b>0.4167</b>。</p></div>
 
 <h2>11. Data Preprocessing (Section 2.3)</h2>
 <p>Slide 60 列出六種 preprocessing：<b>Aggregation、Sampling、Dimensionality Reduction、Feature subset selection、Discretization and Binarization、Attribute Transformation</b>。</p>
@@ -466,12 +466,12 @@ df.groupby("cls", group_keys=False).apply(lambda g: g.sample(frac=0.1))  # strat
 <p><span class="tag exam">Exam</span><b>When dimensionality increases, data becomes increasingly sparse in the space that it occupies.</b> Clustering 同 outlier detection 依賴嘅 <b>density 同 distance 定義變得冇咁有意義</b>。</p>
 <p>Slide 實驗：隨機產生 500 點，計任何兩點之間 max distance 同 min distance 嘅差（相對差）。隨住維度上升，呢個相對差趨向 0 → 「最近」同「最遠」嘅點距離差唔多，nearest neighbor 失去意義。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 68 嘅曲線圖（log 相對距離差 vs 維度）係圖片，請對照原 slide 第 68 頁。</p></div>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>喺 1 維 [0,1] 放 10 點已經幾密；2 維 [0,1]² 要 100 點先有同樣密度；10 維要 10<sup>10</sup> 點！維度一高，所有點都「孤零零」，距離都差唔多遠。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>喺 1 維 \( [0,1] \) 放 10 點已經幾密；2 維 \( [0,1]^2 \) 要 100 點先有同樣密度；10 維要 \( 10^{10} \) 點！維度一高，所有點都「孤零零」，距離都差唔多遠。</p></div>
 
 <h3>11.4 Dimensionality Reduction (Slides 69–70)</h3>
 <p><b>Purpose</b>：避免 curse of dimensionality；減少演算法所需時間同 memory；令 data 更易 visualize；可能幫助消除 irrelevant features 或減少 noise。</p>
 <p><b>Techniques</b>：Principal Components Analysis (<b>PCA</b>)、Singular Value Decomposition (SVD)、Factor Analysis、其他（supervised 同 non-linear techniques）。</p>
-<p><b>PCA</b>：Goal is to find a projection that captures the <b>largest amount of variation</b> in data。Slide 70 圖示 x1、x2 平面上一條方向 e（data 分佈最闊嘅方向），將點投影落 e 上就由 2 維變 1 維而保留最多 variance。詳細內容會喺最後一章講。</p>
+<p><b>PCA</b>：Goal is to find a projection that captures the <b>largest amount of variation</b> in data。Slide 70 圖示 \( x_1 \)、\( x_2 \) 平面上一條方向 \( e \)（data 分佈最闊嘅方向），將點投影落 \( e \) 上就由 2 維變 1 維而保留最多 variance。詳細內容會喺最後一章講。</p>
 
 <h3>11.5 Feature Subset Selection (Slide 71)</h3>
 <p>另一種減少 dimensionality 嘅方法（揀 subset，而唔係創造新 features）：</p>
@@ -498,16 +498,16 @@ df.groupby("cls", group_keys=False).apply(lambda g: g.sample(frac=0.1))  # strat
 <p><b>Discretization Without Using Class Labels（slides 76–79）</b>：data 有四組點同兩個 outliers（一維，加咗 random y 減少重疊）：</p>
 <table>
 <tr><th>方法</th><th>做法</th><th>優 / 缺點</th></tr>
-<tr><td><b>Equal interval width</b></td><td>將 range 平均分成 k 段（每段寬度相同）</td><td>簡單；但受 outliers 影響大，可能有 bins 幾乎冇點</td></tr>
+<tr><td><b>Equal interval width</b></td><td>將 range 平均分成 \( k \) 段（每段寬度相同）</td><td>簡單；但受 outliers 影響大，可能有 bins 幾乎冇點</td></tr>
 <tr><td><b>Equal frequency</b></td><td>每個 bin 有大約相同數目嘅點（用 percentiles）</td><td>唔怕 outliers；但可能將一個自然群組切開</td></tr>
 <tr><td><b>K-means</b></td><td>用 clustering 搵自然分組</td><td>通常最貼近 data 嘅自然結構</td></tr>
 </table>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 74–79 嘅 Iris 散點圖同三種 discretization 結果圖係圖片；請對照原 slide 睇切點位置。</p></div>
 <div class="box tip"><span class="label">💡 Worked example（自擬）</span>
 <p>Values：1, 2, 3, 4, 5, 10, 11, 12, 40, 50，分 3 bins。</p>
-<p><b>Equal width</b>：range = 50 − 1 = 49，寬度 49/3 ≈ 16.33 → [1, 17.33)、[17.33, 33.67)、[33.67, 50] → 各 bin 數目 8、<b>0</b>、2（中間 bin 空咗，outliers 拉闊咗 range）。</p>
+<p><b>Equal width</b>：\( \text{range} = 50 - 1 = 49 \)，寬度 \( 49/3 \approx 16.33 \) → [1, 17.33)、[17.33, 33.67)、[33.67, 50] → 各 bin 數目 8、<b>0</b>、2（中間 bin 空咗，outliers 拉闊咗 range）。</p>
 <p><b>Equal frequency</b>（每 bin 約 10/3 點；切點 = 33.3% 同 66.7% percentiles = 4 同 11，即 <code>pd.qcut</code> 結果）：{1, 2, 3, 4}、{5, 10, 11}、{12, 40, 50} → 將 {10, 11, 12} 呢個自然組切開咗，12 仲同 outliers 40、50 擺埋一齊。</p>
-<p><b>K-means (K=3)</b>：大概得到 {1–5}、{10–12}、{40, 50} → 最符合自然結構。</p></div>
+<p><b>K-means (\( K=3 \))</b>：大概得到 {1–5}、{10–12}、{40, 50} → 最符合自然結構。</p></div>
 <pre><code>import pandas as pd
 x = pd.Series([1, 2, 3, 4, 5, 10, 11, 12, 40, 50])
 pd.cut(x, bins=3)     # equal interval width
@@ -531,8 +531,8 @@ pd.qcut(x, q=3)       # equal frequency</code></pre>
 </ul>
 <div class="formula">$$ \text{z-score: } x' = \frac{x - \bar{x}}{s_x} \qquad \text{min-max: } x' = \frac{x - \min}{\max - \min} $$</div>
 <div class="box tip"><span class="label">💡 Worked example（自擬）</span>
-<p>x = 20, 30, 50, 100。Min-max → 0, 0.125, 0.375, 1。</p>
-<p>Mean = 50；sample s = \(\sqrt{(900+400+0+2500)/3} = \sqrt{1266.7} = 35.59\) → z = −0.843, −0.562, 0, 1.405。</p></div>
+<p>\( x = 20, 30, 50, 100 \)。Min-max → 0, 0.125, 0.375, 1。</p>
+<p>\( \text{Mean} = 50 \)；sample \( s = \sqrt{(900+400+0+2500)/3} = \sqrt{1266.7} = 35.59 \) → \( z = -0.843, -0.562, 0, 1.405 \)。</p></div>
 <pre><code>from sklearn.preprocessing import StandardScaler, MinMaxScaler
 StandardScaler().fit_transform(df[["height", "income"]])   # z-score（注意 sklearn 用 population sd, ddof=0）
 MinMaxScaler().fit_transform(df[["height", "income"]])</code></pre>
@@ -543,13 +543,13 @@ MinMaxScaler().fit_transform(df[["height", "income"]])</code></pre>
 <details class="q"><summary>Q2. 點解唔可以話 20°C 係 10°C 嘅兩倍熱？Kelvin 呢？</summary>
 <p>Celsius 嘅 0 點係人為設定（水嘅冰點），唔代表冇熱量，所以只係 interval：ratio 冇意義。換做 Kelvin：293.15 / 283.15 ≈ 1.035。Kelvin 有真正零點（絕對零度），所以係 ratio，比例有意義。</p></details>
 <details class="q"><summary>Q3. x = 0 1 1 0 0 1 0 0 0 1，y = 0 1 0 0 0 1 0 1 0 1。計 SMC 同 Jaccard。</summary>
-<p>逐位：pos2 11、pos3 10、pos6 11、pos8 01、pos10 11，其餘 00。f11 = 3、f10 = 1、f01 = 1、f00 = 5。SMC = (3 + 5)/10 = <b>0.8</b>；JC = 3/(1 + 1 + 3) = <b>0.6</b>。</p></details>
-<details class="q"><summary>Q4. d1 = (1, 0, 2, 3)，d2 = (2, 1, 0, 1)。計 cosine similarity、Euclidean、Manhattan 同 supremum distance。</summary>
-<p>dot = 2 + 0 + 0 + 3 = 5；‖d1‖ = √14 = 3.742；‖d2‖ = √6 = 2.449；cos = 5/9.165 = <b>0.546</b>。差 = (−1, −1, 2, 2)：L1 = <b>6</b>；L2 = √(1+1+4+4) = √10 = <b>3.162</b>；L∞ = <b>2</b>。</p></details>
+<p>逐位：pos2 11、pos3 10、pos6 11、pos8 01、pos10 11，其餘 00。\( f_{11} = 3 \)、\( f_{10} = 1 \)、\( f_{01} = 1 \)、\( f_{00} = 5 \)。\( SMC = (3 + 5)/10 = \) <b>0.8</b>；\( JC = 3/(1 + 1 + 3) = \) <b>0.6</b>。</p></details>
+<details class="q"><summary>Q4. \( d_1 = (1, 0, 2, 3) \)，\( d_2 = (2, 1, 0, 1) \)。計 cosine similarity、Euclidean、Manhattan 同 supremum distance。</summary>
+<p>\( d_1 \cdot d_2 = 2 + 0 + 0 + 3 = 5 \)；\( \|d_1\| = \sqrt{14} = 3.742 \)；\( \|d_2\| = \sqrt{6} = 2.449 \)；\( \cos = 5/9.165 = \) <b>0.546</b>。差 = (−1, −1, 2, 2)：\( L_1 = \) <b>6</b>；\( L_2 = \sqrt{1+1+4+4} = \sqrt{10} = \) <b>3.162</b>；\( L_\infty = \) <b>2</b>。</p></details>
 <details class="q"><summary>Q5. 一個 class 有 3 類，數目 8、4、4（共 16）。計 entropy 同 maximum entropy。</summary>
-<p>p = 0.5, 0.25, 0.25。H = −0.5 log₂0.5 − 2 × 0.25 log₂0.25 = 0.5 + 2 × 0.5 = <b>1.5 bits</b>。Max = log₂3 = <b>1.585</b>。</p></details>
-<details class="q"><summary>Q6. 若 H(X) = 1、H(Y) = 1.5、H(X,Y) = 2.1，計 I(X;Y) 並解讀。如果 I(X;Y) = H(X) 代表咩？</summary>
-<p>I = 1 + 1.5 − 2.1 = <b>0.4</b> &gt; 0，X、Y 有依賴關係。I(X;Y) = H(X) 代表知道 Y 就可以完全決定 X。I 最多係 min{H(X), H(Y)} = 1。</p></details>
+<p>\( p = 0.5, 0.25, 0.25 \)。\( H = -0.5 \log_2 0.5 - 2 \times 0.25 \log_2 0.25 = 0.5 + 2 \times 0.5 = \) <b>1.5 bits</b>。\( \text{Max} = \log_2 3 = \) <b>1.585</b>。</p></details>
+<details class="q"><summary>Q6. 若 \( H(X) = 1 \)、\( H(Y) = 1.5 \)、\( H(X,Y) = 2.1 \)，計 \( I(X;Y) \) 並解讀。如果 \( I(X;Y) = H(X) \) 代表咩？</summary>
+<p>\( I = 1 + 1.5 - 2.1 = \) <b>0.4</b> &gt; 0，\( X \)、\( Y \) 有依賴關係。\( I(X;Y) = H(X) \) 代表知道 \( Y \) 就可以完全決定 \( X \)。\( I \) 最多係 \( \min\{H(X), H(Y)\} = 1 \)。</p></details>
 <details class="q"><summary>Q7. 一個調查入面，抑鬱程度較嚴重嘅人較少填「抑鬱分數」嗰欄。呢個係 MCAR、MAR 定 MNAR？點解？</summary>
 <p><b>MNAR</b>：missingness 同缺失值本身（未觀察嘅抑鬱分數）有關，屬 informative / non-ignorable missingness，單靠 data 無法知道情況。如果缺失只同已觀察嘅 age 有關就係 MAR；完全隨機就係 MCAR。</p></details>
 <details class="q"><summary>Q8. 用 KNN 之前，attributes 分別係 height (1.5–1.8 m) 同 income ($10K–$1M)，應該做咩？點解？</summary>
@@ -562,19 +562,19 @@ MinMaxScaler().fit_transform(df[["height", "income"]])</code></pre>
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li><b>Object</b> = record / point / instance；<b>Attribute</b> = variable / field / feature / dimension。</li>
-<li><b>NOIR</b>：Nominal（=, ≠）→ Ordinal（+ order）→ Interval（+ differences）→ Ratio（+ ratios，有真零點）。°C/°F、dates = interval；Kelvin、length、counts、elapsed time = ratio。</li>
+<li><b>NOIR</b>：Nominal（\( =, \ne \)）→ Ordinal（+ order）→ Interval（+ differences）→ Ratio（+ ratios，有真零點）。°C/°F、dates = interval；Kelvin、length、counts、elapsed time = ratio。</li>
 <li>Discrete（finite / countably infinite；binary 係特例）vs Continuous（real numbers）。</li>
 <li>Data sets：Record（Data Matrix、Document、Transaction）、Graph（WWW、molecules）、Ordered（sequences、genomic、spatio-temporal）。Characteristics：dimensionality、sparsity、resolution、size。</li>
 <li>Data quality：noise（隨機扭曲）、outliers（可以係 noise 或目標）、missing（eliminate / estimate / ignore；MCAR 無偏、MAR 依其他變數有偏、MNAR 依未觀察值無法得知）、duplicates（合併來源時常見）。</li>
-<li>Minkowski \( (\sum|x_k-y_k|^r)^{1/r} \)：r=1 Manhattan（binary 時 = Hamming）、r=2 Euclidean、r→∞ supremum = max 差。Scales 唔同要 standardize。</li>
+<li>Minkowski \( (\sum|x_k-y_k|^r)^{1/r} \)：\( r=1 \) Manhattan（binary 時 = Hamming）、\( r=2 \) Euclidean、\( r \to \infty \) supremum = max 差。Scales 唔同要 standardize。</li>
 <li>Mahalanobis \( (\mathbf{x}-\mathbf{y})^T\Sigma^{-1}(\mathbf{x}-\mathbf{y}) \)：考慮 correlation（slide：Euclid 14.7 vs Mahal 6）。</li>
-<li>Metric：positive definiteness、symmetry、triangle inequality。Similarity：s=1 only if x=y（cosine 唔滿足）、symmetry。</li>
-<li>SMC = (f11+f00)/全部；JC = f11/(f01+f10+f11)（asymmetric binary 用 JC）。Slide 例：0.7 vs 0。</li>
-<li>Cosine = ⟨d1,d2⟩/(‖d1‖‖d2‖)；slide 例 = 5/(6.481×2.449) = 0.3150。</li>
-<li>Entropy \( H = -\sum p\log_2 p \)，0 ≤ H ≤ log₂n bits；fair coin 1、fair 4-sided die 2；hair color 例 1.1540。</li>
-<li>MI \( I = H(X)+H(Y)-H(X,Y) \)；0 = 獨立；≤ min{H(X),H(Y)}；max = log₂(min(nX,nY))。Slide 例：0.1624、1、0。MIC：binning（nX·nY ≤ N<sup>0.6</sup>）+ normalize + 取 max。</li>
-<li>Combined similarity = Σδₖsₖ/Σδₖ（δ=0：asymmetric 而 both 0，或 missing）；可加 weights ωₖ。</li>
-<li>Preprocessing：Aggregation（data reduction、change of scale、less variability）、Sampling（representative！SRS with/without replacement、stratified）、Curse of dimensionality、Dim. reduction（PCA = max variance projection、SVD、FA）、Feature subset selection（redundant / irrelevant）、Discretization（continuous → ordinal；equal width / equal frequency / K-means；unsupervised vs supervised）、Binarization（association analysis，asymmetric binary）、Attribute transformation（log、x<sup>k</sup>；normalization；standardization = (x−mean)/sd）。</li>
+<li>Metric：positive definiteness、symmetry、triangle inequality。Similarity：\( s=1 \) only if \( x=y \)（cosine 唔滿足）、symmetry。</li>
+<li>\( SMC = (f_{11}+f_{00}) \)/全部；\( JC = f_{11}/(f_{01}+f_{10}+f_{11}) \)（asymmetric binary 用 JC）。Slide 例：0.7 vs 0。</li>
+<li>Cosine = \( \langle d_1,d_2\rangle/(\|d_1\|\,\|d_2\|) \)；slide 例 = \( 5/(6.481 \times 2.449) = 0.3150 \)。</li>
+<li>Entropy \( H = -\sum p\log_2 p \)，\( 0 \le H \le \log_2 n \) bits；fair coin 1、fair 4-sided die 2；hair color 例 1.1540。</li>
+<li>MI \( I = H(X)+H(Y)-H(X,Y) \)；0 = 獨立；\( \le \min\{H(X),H(Y)\} \)；max = \( \log_2(\min(n_X,n_Y)) \)。Slide 例：0.1624、1、0。MIC：binning（\( n_X \cdot n_Y \le N^{0.6} \)）+ normalize + 取 max。</li>
+<li>Combined similarity = \( \sum\delta_k s_k / \sum\delta_k \)（\( \delta_k = 0 \)：asymmetric 而 both 0，或 missing）；可加 weights \(\omega_k\)。</li>
+<li>Preprocessing：Aggregation（data reduction、change of scale、less variability）、Sampling（representative！SRS with/without replacement、stratified）、Curse of dimensionality、Dim. reduction（PCA = max variance projection、SVD、FA）、Feature subset selection（redundant / irrelevant）、Discretization（continuous → ordinal；equal width / equal frequency / K-means；unsupervised vs supervised）、Binarization（association analysis，asymmetric binary）、Attribute transformation（log、\( x^k \)；normalization；standardization = \( (x - \text{mean})/\text{sd} \)）。</li>
 </ul></div>
 
 <nav class="pager">

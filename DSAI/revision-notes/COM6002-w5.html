@@ -220,8 +220,8 @@ SELECT StudentID, Name, Major, Grade FROM Enrol WHERE Major = 'DSAI' AND Grade =
 <li><b>Multi-threading</b></li>
 <li><b>Caching</b></li>
 </ul>
-<p>High computational speed for usual workload on modern hardware（<b>although the computation complexity is still O(n)</b>）。</p>
-<div class="box tip"><span class="label">💡 點解 columnar 快？</span><p>OLAP query 例如「計 Grade = A 的數目」只需要 Grade 一欄。Row-based 儲存要讀晒每行所有欄；columnar 只讀 Grade 欄，而一欄入面重複值多（A、B、F…）好易壓縮。但始終要掃晒 n 個值，所以仍然係 O(n)——只係常數細好多。</p></div>
+<p>High computational speed for usual workload on modern hardware（<b>although the computation complexity is still \(O(n)\)</b>）。</p>
+<div class="box tip"><span class="label">💡 點解 columnar 快？</span><p>OLAP query 例如「計 Grade = A 的數目」只需要 Grade 一欄。Row-based 儲存要讀晒每行所有欄；columnar 只讀 Grade 欄，而一欄入面重複值多（A、B、F…）好易壓縮。但始終要掃晒 n 個值，所以仍然係 \(O(n)\)——只係常數細好多。</p></div>
 
 <h2>8. Data cube in OLAP</h2>
 <p><b>Efficiency challenge</b>：如果有 billions of records，一個 query 可能要幾分鐘 / 幾粒鐘；user 每次有 follow-up query 都要等。<b>Idea</b>：Pre-compute the common intermediate components for answering all potential queries the user may ask。</p>
@@ -329,7 +329,7 @@ WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>
 <details class="q"><summary>Q6. 以下屬於邊種 OLAP action？(a) 加入 Year dimension 睇每年分佈 (b) 只睇 2025 年數據 (c) 由 "CS, F, 6" 跳去另一頁列出 6 個學生名 (d) 將 Major 合併成 School 層次</summary><p>(a) Drill-down（加 dimension）；(b) Slicing（filter）；(c) Drill-through；(d) Roll-up（concept hierarchy 向上）。</p></details>
 <details class="q"><summary>Q7. Data cube 的三個 assumptions 同兩個 limitations 係乜？Features Grade (A, B, F)、Major (DSAI, CS, Math)、Sex (M, F) 的 cube 最多有幾多 cells？</summary><p>Assumptions：知道 user 會 explore 的 features F；F 夠細；F 值組合數遠少於 database size。Limitations：新 feature 要重新建 cube；新數據要 maintenance 更新 cube，否則分析唔包括新數據。Cells = 3 × 3 × 2 = 18。</p></details>
 <details class="q"><summary>Q8. 寫 SQL 由 Enrol(StudentID, Grade, Major, Sex) 生成 data cube，再由 cube roll-up 到每個 Major 的總人數。</summary><p><code>CREATE TABLE Cube AS SELECT Grade, Major, Sex, COUNT(*) AS Count FROM Enrol GROUP BY Grade, Major, Sex;</code> 然後 <code>SELECT Major, SUM(Count) FROM Cube GROUP BY Major;</code>（要用 SUM(Count) 唔係 COUNT(*)。）</p></details>
-<details class="q"><summary>Q9. VertiPaq 有咩特點？佢同 data cube 比較有咩取捨？</summary><p>VertiPaq：in-memory、columnar、compression、multi-threading、caching；快但 complexity 仍 O(n)。對比 data cube：VertiPaq 係 native、可處理任何 query、唔使額外 storage 或準備時間，適合 general workload；data cube 對 anticipated queries 近乎即時，但要額外（少量）storage、只支援預計的 queries、建 cube 喺大 database 好慢、而且 Power BI 要外部 cube。</p></details>
+<details class="q"><summary>Q9. VertiPaq 有咩特點？佢同 data cube 比較有咩取捨？</summary><p>VertiPaq：in-memory、columnar、compression、multi-threading、caching；快但 complexity 仍 \(O(n)\)。對比 data cube：VertiPaq 係 native、可處理任何 query、唔使額外 storage 或準備時間，適合 general workload；data cube 對 anticipated queries 近乎即時，但要額外（少量）storage、只支援預計的 queries、建 cube 喺大 database 好慢、而且 Power BI 要外部 cube。</p></details>
 <details class="q"><summary>Q10. Power Query Merge Queries 中，A Left Anti Join B 會回傳乜？用 slide 例子答。</summary><p>只回傳喺 A 但唔喺 B 的 records：A = Module、B = Result，結果係 (COM6002, Database)——冇學生修的 module。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
@@ -343,7 +343,7 @@ WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>
 <li>Star：fewer joins、faster、more space；Snowflake：normalized dimensions、more joins、slower、less space；OLAP prefers star</li>
 <li>Normalization：minimize redundancy + improve integrity</li>
 <li>Roll-up（aggregate / 上 concept hierarchy / 減 dimension）↔ Drill-down；Drill-through（去明細頁）；Slicing（filter）；drill-down 同一 data，slicing 過濾 data</li>
-<li>VertiPaq：in-memory、columnar、compression、multi-threading、caching、仍 O(n)</li>
+<li>VertiPaq：in-memory、columnar、compression、multi-threading、caching、仍 \(O(n)\)</li>
 <li>Data cube：已知細 feature set F → 預先 GROUP BY；快；新 feature / 新 data 要重建；roll-up 用 SUM(Count)</li>
 <li>VertiPaq vs cube：native / any query / no prep vs external / anticipated only / extra small storage / build time</li>
 <li>Practical：Get data → Use first row as headers → New Source → Merge Queries（inner / left outer / full outer / left anti）→ Group by → visuals</li>

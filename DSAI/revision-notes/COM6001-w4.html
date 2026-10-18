@@ -188,7 +188,7 @@ print(df.describe())
 # 75%    2.5  5.5
 # max    3.0  6.0</code></pre>
 <div class="box tip"><span class="label">💡 點解 <code>print(df.info())</code> 最後有個 None？</span>
-<p>同 Week 2 Q7 一樣原理：<code>info()</code> 係直接 print summary，return value 係 <code>None</code>，外面再 <code>print()</code> 就印出 None。describe 嘅 25% / 50% / 75% 係 quartiles：A = [1,2,3]，25% = 1.5 (linear interpolation)、50% = median 2、std = 1 (sample std, n−1)。</p></div>
+<p>同 Week 2 Q7 一樣原理：<code>info()</code> 係直接 print summary，return value 係 <code>None</code>，外面再 <code>print()</code> 就印出 None。describe 嘅 25% / 50% / 75% 係 quartiles：A = [1,2,3]，25% = 1.5 (linear interpolation)、50% = median 2、std = 1 (sample std, \( n-1 \))。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span>
 <p><code>describe()</code> 嘅 mean、std、quartiles 正係 COM6005 Module 1 descriptive statistics；pandas 嘅 <code>std()</code> 預設用 sample standard deviation (分母 \( n-1 \))：</p>
 <div class="formula">$$ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2} $$</div>
@@ -510,7 +510,7 @@ hero.rename(mapper=str.upper(),         axis='columns')  # ✗ wrong</code></pre
   <li>dtypes：int64, float64, object, bool, datetime64[ns], category (≠ Python int / float)。</li>
   <li>CSV：可讀、通用、<b>唔保留 dtypes</b>；Pickle：binary、<b>100% 保留 dtypes</b>、只開 trusted source。</li>
   <li><code>concat(objs, axis=0, join='outer', ignore_index=False)</code>：按 axis 疊、按 index 對齊、唔理內容。</li>
-  <li><code>merge(left, right, how='inner', on / left_on / right_on, suffixes=('_x','_y'))</code>：按 key 值配對 = SQL JOIN。inner 交集 · outer 聯集 · left / right 保留一邊 · cross 笛卡兒積 (n×m)。</li>
+  <li><code>merge(left, right, how='inner', on / left_on / right_on, suffixes=('_x','_y'))</code>：按 key 值配對 = SQL JOIN。inner 交集 · outer 聯集 · left / right 保留一邊 · cross 笛卡兒積 (\( n \times m \))。</li>
   <li>Superhero：concat DC+Marvel → 603；merge inner on name → 537；concat axis=1 inner 按 index → 603 但配錯人。</li>
   <li>Rename：<code>df.columns = df.columns.str.lower()</code> (要 assign)；<code>rename(columns={'old':'new'})</code>；<code>rename(columns=str.upper)</code>；<code>rename(mapper=lambda x: x.lower(), axis='columns')</code>。傳 function 唔加括號。</li>
 </ul></div>

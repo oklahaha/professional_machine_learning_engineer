@@ -30,16 +30,16 @@
   <ul>
     <li>由 categorical data 整 one-way table（<code>value_counts</code>）同 two-way contingency table（<code>pd.crosstab</code>）；用 <code>pd.cut</code> 將 numerical 轉 categorical。</li>
     <li>用 stacked / side-by-side bar chart 視覺化 tabular data。</li>
-    <li><b>Chi-squared test for independence</b>：expected count \( E_{ij} = n_{i\cdot}n_{\cdot j}/n_{\cdot\cdot} \)、χ² statistic、df = (r − 1)(c − 1)、查 chi-square table、<code>stats.chi2_contingency</code>。</li>
-    <li><b>Chi-squared goodness-of-fit</b>：\( E_i \) 由 H0 嘅 distribution 計、df = K − 1、<code>stats.chisquare</code>。</li>
+    <li><b>Chi-squared test for independence</b>：expected count \( E_{ij} = n_{i\cdot}n_{\cdot j}/n_{\cdot\cdot} \)、\(\chi^2\) statistic、\( df = (r - 1)(c - 1) \)、查 chi-square table、<code>stats.chi2_contingency</code>。</li>
+    <li><b>Chi-squared goodness-of-fit</b>：\( E_i \) 由 \(H_0\) 嘅 distribution 計、\( df = K - 1 \)、<code>stats.chisquare</code>。</li>
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>Expected count：\( E_{ij} = \dfrac{\text{row total}\times\text{column total}}{\text{grand total}} \)；例：Local Math = 300 × 1000/1250 = 240。</li>
-    <li>\( \chi^2 = \sum\sum \dfrac{(n_{ij}-E_{ij})^2}{E_{ij}} \)；例子 χ² = 55.56 &gt; 5.991 → reject independence。</li>
-    <li>df：independence = (r − 1)(c − 1)；goodness-of-fit = K − 1。</li>
-    <li>查表：df = 2、α = 0.05 → 5.991 = <code>chi2.ppf(0.95, 2)</code>；df = 5 → 11.071。</li>
-    <li>Goodness-of-fit 朱古力例：E = 100/6 = 16.67，χ² = 8.36 &lt; 11.071，p = 0.1374 → do not reject（uniform）。</li>
+    <li>\( \chi^2 = \sum\sum \dfrac{(n_{ij}-E_{ij})^2}{E_{ij}} \)；例子 \(\chi^2 = 55.56 &gt; 5.991\) → reject independence。</li>
+    <li>df：independence = \( (r - 1)(c - 1) \)；goodness-of-fit = \( K - 1 \)。</li>
+    <li>查表：\( df = 2 \)、\(\alpha = 0.05\) → 5.991 = <code>chi2.ppf(0.95, 2)</code>；\( df = 5 \) → 11.071。</li>
+    <li>Goodness-of-fit 朱古力例：\( E = 100/6 = 16.67 \)，\(\chi^2 = 8.36 &lt; 11.071\)，\( p = 0.1374 \) → do not reject（uniform）。</li>
   </ol>
 </div>
 
@@ -104,9 +104,9 @@ plt.show()</code></pre>
 
 <h3>2.1 由 table 到 test（slide 9）</h3>
 <table>
-<tr><th>Table</th><th>問題</th><th>Test</th><th>H0 / H1</th></tr>
-<tr><td>One-way</td><td>Categorical data 有冇某個 distribution pattern（例如所有 categories equally likely）？</td><td><b>Chi-square goodness-of-fit</b></td><td>H0：符合指定 distribution；H1：唔符合</td></tr>
-<tr><td>Two-way</td><td>兩個 categorical variables 有冇關係？</td><td><b>Chi-square test for independence</b></td><td>H0：independent；H1：dependent</td></tr>
+<tr><th>Table</th><th>問題</th><th>Test</th><th>\(H_0 / H_1\)</th></tr>
+<tr><td>One-way</td><td>Categorical data 有冇某個 distribution pattern（例如所有 categories equally likely）？</td><td><b>Chi-square goodness-of-fit</b></td><td>\(H_0\)：符合指定 distribution；\(H_1\)：唔符合</td></tr>
+<tr><td>Two-way</td><td>兩個 categorical variables 有冇關係？</td><td><b>Chi-square test for independence</b></td><td>\(H_0\)：independent；\(H_1\)：dependent</td></tr>
 </table>
 
 <h2>3. Chi-squared test for independence</h2>
@@ -115,26 +115,26 @@ plt.show()</code></pre>
 <li><b>Situation</b>：兩欄 categorical data。</li>
 <li>X = origin（Local / Foreign）；Y = first subject choice（Math / Computer / Literature）。</li>
 <li><b>Question</b>：Is it evident that X and Y are related?</li>
-<li>H0：independent；H1：related / dependent。</li>
+<li>\(H_0\)：independent；\(H_1\)：related / dependent。</li>
 </ul>
 
 <h3>3.1 Observed 同 expected counts（slide 12）</h3>
 <table>
 <tr><th></th><th>Local</th><th>Foreign</th><th>Subtotals</th></tr>
-<tr><td>Math</td><td>250</td><td>50</td><td>300 = \( n_{Mat\cdot} \)</td></tr>
-<tr><td>Computer</td><td>400</td><td>50</td><td>450 = \( n_{Com\cdot} \)</td></tr>
-<tr><td>Literature</td><td>350</td><td>150</td><td>500 = \( n_{Lit\cdot} \)</td></tr>
-<tr><td>Subtotals</td><td>1000 = \( n_{\cdot Loc} \)</td><td>250 = \( n_{\cdot For} \)</td><td>1250 = \( n_{\cdot\cdot} \)</td></tr>
+<tr><td>Math</td><td>250</td><td>50</td><td>\( 300 = n_{Mat\cdot} \)</td></tr>
+<tr><td>Computer</td><td>400</td><td>50</td><td>\( 450 = n_{Com\cdot} \)</td></tr>
+<tr><td>Literature</td><td>350</td><td>150</td><td>\( 500 = n_{Lit\cdot} \)</td></tr>
+<tr><td>Subtotals</td><td>\( 1000 = n_{\cdot Loc} \)</td><td>\( 250 = n_{\cdot For} \)</td><td>\( 1250 = n_{\cdot\cdot} \)</td></tr>
 </table>
 <p><b>Idea</b>：如果冇 dependence，揀 Math 嘅 300 個學生應該按 Local : Foreign = 1000 : 250 嘅比例分配。Local 比例 = 1000/1250，所以 Expected Local Math = 300 × 1000/1250 = <b>240</b>。</p>
 <div class="formula">$$ E_{ij} = \frac{n_{i\cdot}\, n_{\cdot j}}{n_{\cdot\cdot}} = \frac{\text{row total}\times\text{column total}}{\text{grand total}} $$</div>
 <div class="formula">$$ \chi^2 = \sum_{i=1}^{r}\sum_{j=1}^{c}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} $$</div>
-<p>（slide 13）如果冇 dependence，\( n_{ij} \) 應該接近 \( E_{ij} \)。χ² 大過 critical value → dependence 證據強。Critical value 喺 chi-square table 查；建議用 p-value：p-value &lt; α → reject “H0：The two columns are independent”。</p>
+<p>（slide 13）如果冇 dependence，\( n_{ij} \) 應該接近 \( E_{ij} \)。\(\chi^2\) 大過 critical value → dependence 證據強。Critical value 喺 chi-square table 查；建議用 p-value：p-value &lt; \(\alpha\) → reject “\(H_0\)：The two columns are independent”。</p>
 
 <div class="box exam"><span class="label">⭐ Worked example：完整手計（5 步）</span>
 <ol>
-<li><b>Hypotheses</b>：H0：origin 同 subject choice independent；H1：dependent。</li>
-<li><b>α</b> = 0.05。</li>
+<li><b>Hypotheses</b>：\(H_0\)：origin 同 subject choice independent；\(H_1\)：dependent。</li>
+<li><b>\( \alpha = 0.05 \)</b>。</li>
 <li><b>Expected counts</b>：
 <table>
 <tr><th>E</th><th>Local</th><th>Foreign</th></tr>
@@ -145,30 +145,30 @@ plt.show()</code></pre>
 （檢查：每行、每欄 expected 總和 = observed 總和。）</li>
 <li><b>Test statistic</b>：
 <table>
-<tr><th>Cell</th><th>O</th><th>E</th><th>(O − E)²/E</th></tr>
+<tr><th>Cell</th><th>O</th><th>E</th><th>\( (O - E)^2/E \)</th></tr>
 <tr><td>Math, Local</td><td>250</td><td>240</td><td>100/240 = 0.417</td></tr>
 <tr><td>Math, Foreign</td><td>50</td><td>60</td><td>100/60 = 1.667</td></tr>
 <tr><td>Computer, Local</td><td>400</td><td>360</td><td>1600/360 = 4.444</td></tr>
 <tr><td>Computer, Foreign</td><td>50</td><td>90</td><td>1600/90 = 17.778</td></tr>
 <tr><td>Literature, Local</td><td>350</td><td>400</td><td>2500/400 = 6.25</td></tr>
 <tr><td>Literature, Foreign</td><td>150</td><td>100</td><td>2500/100 = 25</td></tr>
-<tr><td colspan="3"><b>χ²</b></td><td><b>55.56</b></td></tr>
+<tr><td colspan="3"><b>\(\chi^2\)</b></td><td><b>55.56</b></td></tr>
 </table></li>
-<li><b>Critical value</b>：df = (r − 1)(c − 1) = (3 − 1)(2 − 1) = 2；α = 0.05 → <b>5.991</b>。</li>
-<li><b>Decision</b>：55.56 &gt; 5.991（p = 8.6 × 10⁻¹³ &lt; 0.05）→ reject H0。結論：學生來源同主修科目選擇有關——外地生較多揀 Literature（150 vs 預期 100）、較少揀 Computer（50 vs 預期 90）。</li>
+<li><b>Critical value</b>：\( df = (r - 1)(c - 1) = (3 - 1)(2 - 1) = 2 \)；\(\alpha = 0.05\) → <b>5.991</b>。</li>
+<li><b>Decision</b>：55.56 &gt; 5.991（\( p = 8.6 \times 10^{-13} &lt; 0.05 \)）→ reject \(H_0\)。結論：學生來源同主修科目選擇有關——外地生較多揀 Literature（150 vs 預期 100）、較少揀 Computer（50 vs 預期 90）。</li>
 </ol></div>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>每格 \( (O-E)^2/E \) 係「意外程度」：差距越大、相對 expected 越大，貢獻越多。Foreign × Literature（25）同 Foreign × Computer（17.78）貢獻最大，即係 dependence 主要嚟自外地生嘅選科模式。</p></div>
 
 <h3>3.2 查 chi-square table（slides 14–15）</h3>
-<p>Slide 14 嘅 chi-square table：column = Upper Tail Areas (α)，row = Degrees of Freedom；圖中右尾陰影面積 = α，左邊 1 − α。圈住嘅值：df = 2、α = .05 → 5.991。</p>
+<p>Slide 14 嘅 chi-square table：column = Upper Tail Areas (\(\alpha\))，row = Degrees of Freedom；圖中右尾陰影面積 = \(\alpha\)，左邊 \(1 - \alpha\)。圈住嘅值：\( df = 2 \)、\( \alpha = .05 \) → 5.991。</p>
 <div class="box exam"><span class="label">⭐ 查表要點（slide 15）</span>
 <ul>
-<li>Degree of freedom ν（independence test）= (r − 1)(c − 1)。</li>
-<li>α：5%（較低標準 reject H0）或 1%（較高標準）。</li>
-<li>例：r = 3、c = 2 → df = 2；α = 5% → critical value = 5.991 = <code>scipy.stats.chi2.ppf(0.95, 2)</code>（chi-square distribution ν = 2 嘅 95% quantile）。</li>
+<li>Degree of freedom \(\nu\)（independence test）= \( (r - 1)(c - 1) \)。</li>
+<li>\(\alpha\)：5%（較低標準 reject \(H_0\)）或 1%（較高標準）。</li>
+<li>例：\( r = 3 \)、\( c = 2 \) → df = 2；\(\alpha = 5\%\) → critical value = 5.991 = <code>scipy.stats.chi2.ppf(0.95, 2)</code>（chi-square distribution \(\nu = 2\) 嘅 95% quantile）。</li>
 </ul>
 <table>
-<tr><th>df</th><th>α = .10</th><th>α = .05</th><th>α = .025</th><th>α = .01</th></tr>
+<tr><th>df</th><th>\( \alpha = .10 \)</th><th>\( \alpha = .05 \)</th><th>\( \alpha = .025 \)</th><th>\( \alpha = .01 \)</th></tr>
 <tr><td>1</td><td>2.706</td><td>3.841</td><td>5.024</td><td>6.635</td></tr>
 <tr><td>2</td><td>4.605</td><td>5.991</td><td>7.378</td><td>9.210</td></tr>
 <tr><td>3</td><td>6.251</td><td>7.815</td><td>9.348</td><td>11.345</td></tr>
@@ -178,10 +178,10 @@ plt.show()</code></pre>
 </table></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span>
 <ul>
-<li>Chi-square test 永遠係 <b>right-tailed</b>（χ² ≥ 0，越大越唔似 H0），唔需要 α/2。</li>
-<li>df 唔係 r × c − 1，係 (r − 1)(c − 1)；r、c 唔計 subtotal 行／欄。</li>
+<li>Chi-square test 永遠係 <b>right-tailed</b>（\(\chi^2 \ge 0\)，越大越唔似 \(H_0\)），唔需要 \(\alpha/2\)。</li>
+<li>df 唔係 \( r \times c - 1 \)，係 \( (r - 1)(c - 1) \)；r、c 唔計 subtotal 行／欄。</li>
 <li>一定要用 <b>counts（次數）</b>，唔可以用 percentage 代入公式。</li>
-<li>（補充）每格 expected count 最好 ≥ 5，否則 chi-square approximation 唔可靠——slide 4 嘅 10 筆 rating 數據 expected 只有 1.2–2.4，只適合示範 code。</li>
+<li>（補充）每格 expected count 最好 \( \ge 5 \)，否則 chi-square approximation 唔可靠——slide 4 嘅 10 筆 rating 數據 expected 只有 1.2–2.4，只適合示範 code。</li>
 </ul></div>
 
 <h3>3.3 Python（slides 16–18）</h3>
@@ -208,7 +208,7 @@ chi2.cdf(chi2, 2) &gt; 0.95       # cumulative prob 大過 95%
 <li><b>Situation</b>：一欄 categorical data。</li>
 <li><b>Example</b>：雜錦朱古力嘅顏色係咪均勻分佈（evenly distributed）？</li>
 <li><b>Question</b>：Is it evident that the distribution of (yellow, red, orange, brown, blue, green) is not even?</li>
-<li>H0：The distribution is even，即 (1/6, 1/6, 1/6, 1/6, 1/6, 1/6)。H1：The distribution is not even (uniformly distributed)。</li>
+<li>\(H_0\)：The distribution is even，即 (1/6, 1/6, 1/6, 1/6, 1/6, 1/6)。\(H_1\)：The distribution is not even (uniformly distributed)。</li>
 <li>Experiment：買一包嚟數。</li>
 </ul>
 <table>
@@ -219,22 +219,22 @@ chi2.cdf(chi2, 2) &gt; 0.95       # cumulative prob 大過 95%
 
 <div class="box exam"><span class="label">⭐ Worked example：朱古力顏色（slides 21–23）</span>
 <ol>
-<li><b>Hypotheses</b>：H0：6 種顏色各佔 1/6；H1：唔係均勻。</li>
-<li><b>α</b> = 0.05。</li>
+<li><b>Hypotheses</b>：\(H_0\)：6 種顏色各佔 1/6；\(H_1\)：唔係均勻。</li>
+<li><b>\( \alpha = 0.05 \)</b>。</li>
 <li><b>Expected</b>：uniform → 每色 \( E_i = 100/6 = 16.67 \)。</li>
 <li><b>Test statistic</b>：
 <table>
-<tr><th>Colour</th><th>O</th><th>E</th><th>(O − E)²/E</th></tr>
+<tr><th>Colour</th><th>O</th><th>E</th><th>\( (O - E)^2/E \)</th></tr>
 <tr><td>Yellow</td><td>20</td><td>16.67</td><td>0.667</td></tr>
 <tr><td>Red</td><td>13</td><td>16.67</td><td>0.807</td></tr>
 <tr><td>Orange</td><td>12</td><td>16.67</td><td>1.307</td></tr>
 <tr><td>Brown</td><td>12</td><td>16.67</td><td>1.307</td></tr>
 <tr><td>Blue</td><td>18</td><td>16.67</td><td>0.107</td></tr>
 <tr><td>Green</td><td>25</td><td>16.67</td><td>4.167</td></tr>
-<tr><td colspan="3"><b>χ²</b></td><td><b>8.36</b></td></tr>
+<tr><td colspan="3"><b>\(\chi^2\)</b></td><td><b>8.36</b></td></tr>
 </table></li>
-<li><b>Critical value</b>：df = K − 1 = 6 − 1 = 5；α = 0.05 → <b>11.071</b>（slide 22 圈住）。</li>
-<li><b>Decision</b>：8.36 &lt; 11.071（p-value = 0.1374 &gt; 0.05）→ H0 is <b>not rejected</b>。結論（slide 23）：We cannot statistically reject the null hypothesis that the distribution is uniform。</li>
+<li><b>Critical value</b>：\( df = K - 1 = 6 - 1 = 5 \)；\(\alpha = 0.05\) → <b>11.071</b>（slide 22 圈住）。</li>
+<li><b>Decision</b>：8.36 &lt; 11.071（p-value = 0.1374 &gt; 0.05）→ \(H_0\) is <b>not rejected</b>。結論（slide 23）：We cannot statistically reject the null hypothesis that the distribution is uniform。</li>
 </ol></div>
 <pre><code>from scipy import stats
 obs = [20, 13, 12, 12, 18, 25]
@@ -243,11 +243,11 @@ stats.chisquare(obs)                          # 預設 expected = 平均分配
 stats.chisquare(obs, f_exp=[100/6]*6)         # 明確指定 expected
 stats.chi2.ppf(0.95, 5)                       # 11.071
 1 - stats.chi2.cdf(8.36, 5)                   # p-value 0.1374</code></pre>
-<p>Slide 24：同樣三個等價 rule（df = 5）：<code>chi2 &gt; chi2.ppf(0.95, 5)</code> ⇔ <code>chi2.cdf(chi2, 5) &gt; 0.95</code> ⇔ <code>1 - chi2.cdf(chi2, 5) &lt; 0.05</code>；Python 用 <code>stats.chisquare()</code>。</p>
+<p>Slide 24：同樣三個等價 rule（\( df = 5 \)）：<code>chi2 &gt; chi2.ppf(0.95, 5)</code> ⇔ <code>chi2.cdf(chi2, 5) &gt; 0.95</code> ⇔ <code>1 - chi2.cdf(chi2, 5) &lt; 0.05</code>；Python 用 <code>stats.chisquare()</code>。</p>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span>
 <ul>
-<li>Goodness-of-fit df = <b>K − 1</b>（類別數 − 1），唔係 (r − 1)(c − 1)。</li>
-<li>H0 唔一定係 uniform：例如 H0 可以係 (0.3, 0.2, 0.2, 0.1, 0.1, 0.1)，咁 \( E_i = 100 \times p_i \)，要用 <code>f_exp=</code> 指定。</li>
+<li>Goodness-of-fit \( df = \) <b>\( K - 1 \)</b>（類別數 − 1），唔係 \( (r - 1)(c - 1) \)。</li>
+<li>\(H_0\) 唔一定係 uniform：例如 \(H_0\) 可以係 (0.3, 0.2, 0.2, 0.1, 0.1, 0.1)，咁 \( E_i = 100 \times p_i \)，要用 <code>f_exp=</code> 指定。</li>
 <li>“Not rejected” ≠ 「證明係 uniform」，只係冇足夠證據話唔係。</li>
 </ul></div>
 
@@ -256,37 +256,37 @@ stats.chi2.ppf(0.95, 5)                       # 11.071
 <table>
 <tr><th></th><th>Test for independence</th><th>Goodness-of-fit</th></tr>
 <tr><td>數據</td><td>兩欄 categorical（two-way table）</td><td>一欄 categorical（one-way table）</td></tr>
-<tr><td>H0</td><td>兩個 variables independent</td><td>數據符合指定 distribution（例如 uniform）</td></tr>
+<tr><td>\(H_0\)</td><td>兩個 variables independent</td><td>數據符合指定 distribution（例如 uniform）</td></tr>
 <tr><td>Expected</td><td>\( E_{ij} = n_{i\cdot}n_{\cdot j}/n_{\cdot\cdot} \)</td><td>\( E_i = n p_i \)</td></tr>
 <tr><td>Statistic</td><td>\( \sum\sum (n_{ij}-E_{ij})^2/E_{ij} \)</td><td>\( \sum (n_i-E_i)^2/E_i \)</td></tr>
-<tr><td>df</td><td>(r − 1)(c − 1)</td><td>K − 1</td></tr>
+<tr><td>df</td><td>\( (r - 1)(c - 1) \)</td><td>\( K - 1 \)</td></tr>
 <tr><td>Python</td><td><code>stats.chi2_contingency(table)</code></td><td><code>stats.chisquare(obs, f_exp)</code></td></tr>
-<tr><td>Slide 例子</td><td>Origin × Subject：χ² = 55.56，df = 2，crit 5.991 → reject</td><td>朱古力顏色：χ² = 8.36，df = 5，crit 11.071 → not reject</td></tr>
+<tr><td>Slide 例子</td><td>Origin × Subject：\(\chi^2 = 55.56\)，\( df = 2 \)，crit 5.991 → reject</td><td>朱古力顏色：\(\chi^2 = 8.36\)，\( df = 5 \)，crit 11.071 → not reject</td></tr>
 </table></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification 做 feature selection 時，可以用 chi-square test 揀同 class label 最有關（dependent）嘅 categorical attributes（例如 scikit-learn <code>SelectKBest(chi2)</code>）；COM6004 Chapter 2 嘅 correlation analysis for nominal data 亦係用 χ²。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification 做 feature selection 時，可以用 chi-square test 揀同 class label 最有關（dependent）嘅 categorical attributes（例如 scikit-learn <code>SelectKBest(chi2)</code>）；COM6004 Chapter 2 嘅 correlation analysis for nominal data 亦係用 \(\chi^2\)。</p></div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10 係「本地生 vs 外地生」嘅示意圖頁，冇額外文字；slides 2、19 係分節標題頁。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 2×2 table：男 吸煙 30、不吸煙 70；女 吸煙 20、不吸煙 80。求所有 expected counts。</summary><p>Row totals：男 100、女 100；column totals：吸煙 50、不吸煙 150；N = 200。E(男, 吸煙) = 100 × 50/200 = 25；E(男, 不吸煙) = 75；E(女, 吸煙) = 25；E(女, 不吸煙) = 75。</p></details>
-<details class="q"><summary>Q2. 繼續 Q1：計 χ²（不用 continuity correction），df = ?，α = 0.05 結論？</summary><p>(30−25)²/25 = 1；(70−75)²/75 = 0.333；(20−25)²/25 = 1；(80−75)²/75 = 0.333；χ² = 2.667。df = (2−1)(2−1) = 1，critical 3.841。2.667 &lt; 3.841 → do not reject：冇足夠證據顯示性別同吸煙有關。</p></details>
-<details class="q"><summary>Q3. 一個 4×3 contingency table 嘅 df 係幾多？α = 0.01 critical value？</summary><p>df = (4 − 1)(3 − 1) = 6；α = 0.01 → 16.812。</p></details>
-<details class="q"><summary>Q4. 骰子擲 60 次：1–6 點分別出現 8, 9, 12, 11, 6, 14 次。用 α = 0.05 檢驗骰子是否公平。</summary><p>E = 10。χ² = (4 + 1 + 4 + 1 + 16 + 16)/10 = 4.2。df = 5，critical 11.071。4.2 &lt; 11.071 → do not reject：冇證據顯示骰子唔公平。</p></details>
-<details class="q"><summary>Q5. 某品牌聲稱顏色比例係 Red 40%、Blue 30%、Green 30%。抽 200 粒：Red 95、Blue 50、Green 55。寫 expected 同 χ²。</summary><p>E = 80, 60, 60。χ² = 225/80 + 100/60 + 25/60 = 2.8125 + 1.6667 + 0.4167 = 4.896。df = 2，critical 5.991 → do not reject。Python：<code>stats.chisquare([95,50,55], f_exp=[80,60,60])</code>。</p></details>
-<details class="q"><summary>Q6. 寫出三個等價嘅 decision rule（df = 2，α = 0.05）。</summary><p><code>chi2 &gt; chi2.ppf(0.95, 2)</code>；<code>chi2.cdf(chi2, 2) &gt; 0.95</code>；<code>1 - chi2.cdf(chi2, 2) &lt; 0.05</code>。</p></details>
-<details class="q"><summary>Q7. <code>pd.cut([35, 55, 56], bins=[0, 35, 55, float('inf')], labels=["young","middle","senior"])</code> 結果係咩？</summary><p>young, middle, senior（bins 右閉：35 ∈ (0,35]，55 ∈ (35,55]，56 ∈ (55,∞)）。</p></details>
-<details class="q"><summary>Q8. 點解 chi-square test 唔分 one-tailed / two-tailed？</summary><p>χ² 係平方和，永遠 ≥ 0；任何方向嘅偏離（O &gt; E 或 O &lt; E）都會令 χ² 變大，所以 rejection region 只喺右尾。</p></details>
+<details class="q"><summary>Q1. 2×2 table：男 吸煙 30、不吸煙 70；女 吸煙 20、不吸煙 80。求所有 expected counts。</summary><p>Row totals：男 100、女 100；column totals：吸煙 50、不吸煙 150；\( N = 200 \)。E(男, 吸煙) = 100 × 50/200 = 25；E(男, 不吸煙) = 75；E(女, 吸煙) = 25；E(女, 不吸煙) = 75。</p></details>
+<details class="q"><summary>Q2. 繼續 Q1：計 \(\chi^2\)（不用 continuity correction），df = ?，\(\alpha = 0.05\) 結論？</summary><p>\( (30-25)^2/25 = 1 \)；\( (70-75)^2/75 = 0.333 \)；\( (20-25)^2/25 = 1 \)；\( (80-75)^2/75 = 0.333 \)；\(\chi^2 = 2.667\)。\( df = (2-1)(2-1) = 1 \)，critical 3.841。2.667 &lt; 3.841 → do not reject：冇足夠證據顯示性別同吸煙有關。</p></details>
+<details class="q"><summary>Q3. 一個 4×3 contingency table 嘅 df 係幾多？\(\alpha = 0.01\) critical value？</summary><p>\( df = (4 - 1)(3 - 1) = 6 \)；\(\alpha = 0.01\) → 16.812。</p></details>
+<details class="q"><summary>Q4. 骰子擲 60 次：1–6 點分別出現 8, 9, 12, 11, 6, 14 次。用 \(\alpha = 0.05\) 檢驗骰子是否公平。</summary><p>\( E = 10 \)。\( \chi^2 = (4 + 1 + 4 + 1 + 16 + 16)/10 = 4.2 \)。\( df = 5 \)，critical 11.071。4.2 &lt; 11.071 → do not reject：冇證據顯示骰子唔公平。</p></details>
+<details class="q"><summary>Q5. 某品牌聲稱顏色比例係 Red 40%、Blue 30%、Green 30%。抽 200 粒：Red 95、Blue 50、Green 55。寫 expected 同 \(\chi^2\)。</summary><p>\( E = 80, 60, 60 \)。\(\chi^2 = 225/80 + 100/60 + 25/60 = 2.8125 + 1.6667 + 0.4167 = 4.896\)。\( df = 2 \)，critical 5.991 → do not reject。Python：<code>stats.chisquare([95,50,55], f_exp=[80,60,60])</code>。</p></details>
+<details class="q"><summary>Q6. 寫出三個等價嘅 decision rule（df = 2，\(\alpha = 0.05\)）。</summary><p><code>chi2 &gt; chi2.ppf(0.95, 2)</code>；<code>chi2.cdf(chi2, 2) &gt; 0.95</code>；<code>1 - chi2.cdf(chi2, 2) &lt; 0.05</code>。</p></details>
+<details class="q"><summary>Q7. <code>pd.cut([35, 55, 56], bins=[0, 35, 55, float('inf')], labels=["young","middle","senior"])</code> 結果係咩？</summary><p>young, middle, senior（bins 右閉：\( 35 \in (0,35] \)，\( 55 \in (35,55] \)，\( 56 \in (55,\infty) \)）。</p></details>
+<details class="q"><summary>Q8. 點解 chi-square test 唔分 one-tailed / two-tailed？</summary><p>\(\chi^2\) 係平方和，永遠 \( \ge 0 \)；任何方向嘅偏離（\( O &gt; E \) 或 \( O &lt; E \)）都會令 \(\chi^2\) 變大，所以 rejection region 只喺右尾。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li>One-way table：<code>pd.Series(x).value_counts()</code>；two-way：<code>pd.crosstab(x, y)</code>；binning：<code>pd.cut(x, bins, labels)</code>（右閉）。</li>
 <li>Plot：<code>ft.T.plot(kind='bar'/'barh', stacked=True/False)</code>。</li>
-<li>Independence：H0 independent；\( E_{ij}=\frac{\text{row}\times\text{col}}{N} \)；df = (r − 1)(c − 1)；<code>chi2_contingency</code>。</li>
-<li>Goodness-of-fit：H0 指定 distribution；\( E_i = np_i \)；df = K − 1；<code>chisquare</code>。</li>
+<li>Independence：\(H_0\) independent；\( E_{ij}=\frac{\text{row}\times\text{col}}{N} \)；\( df = (r - 1)(c - 1) \)；<code>chi2_contingency</code>。</li>
+<li>Goodness-of-fit：\(H_0\) 指定 distribution；\( E_i = np_i \)；\( df = K - 1 \)；<code>chisquare</code>。</li>
 <li>\( \chi^2=\sum (O-E)^2/E \)；永遠 right-tailed；用 counts。</li>
-<li>Critical：df 1 → 3.841｜df 2 → 5.991｜df 5 → 11.071（α = 0.05）；<code>chi2.ppf(0.95, df)</code>。</li>
-<li>p-value = <code>1 - chi2.cdf(stat, df)</code>；p &lt; α → reject。</li>
-<li>例 1：Local/Foreign × Math/Computer/Lit：E = 240/60, 360/90, 400/100；χ² = 55.56 → reject（dependent）。</li>
-<li>例 2：朱古力 6 色：E = 16.67；χ² = 8.36、p = 0.1374 → not reject（uniform）。</li>
+<li>Critical：df 1 → 3.841｜df 2 → 5.991｜df 5 → 11.071（\(\alpha = 0.05\)）；<code>chi2.ppf(0.95, df)</code>。</li>
+<li>p-value = <code>1 - chi2.cdf(stat, df)</code>；\(p &lt; \alpha\) → reject。</li>
+<li>例 1：Local/Foreign × Math/Computer/Lit：\( E = 240/60, 360/90, 400/100 \)；\(\chi^2 = 55.56\) → reject（dependent）。</li>
+<li>例 2：朱古力 6 色：\( E = 16.67 \)；\(\chi^2 = 8.36\)、\( p = 0.1374 \) → not reject（uniform）。</li>
 </ul></div>
 
 <nav class="pager">

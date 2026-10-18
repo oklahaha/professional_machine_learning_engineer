@@ -32,15 +32,15 @@
     <li>理解 residual（\( e = y - \hat y \)）同點解 normal residual 代表 model 已經冇得再改善 mean prediction。</li>
     <li>分清 <code>norm.pdf</code>（density）、<code>norm.cdf</code>（probability）、<code>norm.ppf</code>（quantile）、<code>norm.rvs</code>（random）。</li>
     <li>用 simulation + histogram、QQ-plot、<code>stats.normaltest</code> 檢查數據係咪 normal。</li>
-    <li>Normal approximation to Binomial（np ≥ 10、n(1−p) ≥ 10；μ = np、σ² = np(1−p)）同 Poisson approximation to Binomial（n ≥ 50、p ≤ 0.1；λ = np）。</li>
+    <li>Normal approximation to Binomial（\( np \ge 10 \)、\( n(1-p) \ge 10 \)；\( \mu = np \)、\( \sigma^2 = np(1-p) \)）同 Poisson approximation to Binomial（\( n \ge 50 \)、\( p \le 0.1 \)；\( \lambda = np \)）。</li>
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>pdf → density；cdf → probability；ppf → quantile；rvs → random numbers（slide 6）。</li>
     <li>QQ-plot：如果數據 normal，點會貼近一條直線；亦用嚟檢查 regression residuals。</li>
-    <li><code>normaltest</code>：H0 = data comes from a normal distribution；p-value &gt; 0.05 → do not reject H0。</li>
-    <li>Normal approximation 條件同 parameters：np ≥ 10、n(1−p) ≥ 10；μ = np、σ² = np(1−p)。</li>
-    <li>Poisson approximation 條件同 parameter：n large、p small（n ≥ 50、p ≤ 0.1 或 np ≤ 10）；λ = np。</li>
+    <li><code>normaltest</code>：\(H_0\) = data comes from a normal distribution；p-value &gt; 0.05 → do not reject \(H_0\)。</li>
+    <li>Normal approximation 條件同 parameters：\( np \ge 10 \)、\( n(1-p) \ge 10 \)；\( \mu = np \)、\( \sigma^2 = np(1-p) \)。</li>
+    <li>Poisson approximation 條件同 parameter：n large、p small（\( n \ge 50 \)、\( p \le 0.1 \) 或 \( np \le 10 \)）；\( \lambda = np \)。</li>
   </ol>
 </div>
 
@@ -79,9 +79,9 @@ plt.tight_layout(); plt.show()</code></pre>
 <h2>3. scipy.stats.norm：pdf、cdf、ppf、rvs</h2>
 <div class="box exam"><span class="label">⭐ 四個 function（slide 6）</span>
 <table>
-<tr><th>Function</th><th>用途</th><th>例子（身高 N(170, 7²)）</th></tr>
+<tr><th>Function</th><th>用途</th><th>例子（身高 \( N(170, 7^2) \)）</th></tr>
 <tr><td><code>norm.pdf</code></td><td><b>density</b>（唔係直接嘅 probability，要積分先得 prob）</td><td><code>pdf(175)</code>：數值約喺 175 附近嘅 proportion（密度）</td></tr>
-<tr><td><code>norm.cdf</code></td><td><b>probability</b>（cumulative）</td><td><code>cdf(175)</code>：proportion of data ≤ 175</td></tr>
+<tr><td><code>norm.cdf</code></td><td><b>probability</b>（cumulative）</td><td><code>cdf(175)</code>：proportion of data \( \le 175 \)</td></tr>
 <tr><td><code>norm.ppf</code></td><td><b>quantile</b>（cdf 嘅反函數）</td><td><code>ppf(0.95)</code>：95% 嘅人矮過呢個高度</td></tr>
 <tr><td><code>norm.rvs</code></td><td><b>random</b> numbers（simulation）</td><td><code>rvs(170, 7, 1000)</code>：1000 個模擬身高</td></tr>
 </table></div>
@@ -89,14 +89,14 @@ plt.tight_layout(); plt.show()</code></pre>
 <h3>3.1 Standardization 同查表（補充，Module 3 會大量用）</h3>
 <div class="formula">$$ Z = \frac{X-\mu}{\sigma} \sim N(0,1), \qquad P(X\le x) = \Phi\!\left(\frac{x-\mu}{\sigma}\right) $$</div>
 <div class="box exam"><span class="label">⭐ Worked example</span>
-<p>身高 X ~ N(μ = 170, σ = 7)。求 P(X ≤ 177)、P(X &gt; 177)、P(166.5 ≤ X ≤ 173.5)。</p>
+<p>身高 \( X \sim N(\mu = 170, \sigma = 7) \)。求 \( P(X \le 177) \)、\( P(X &gt; 177) \)、\( P(166.5 \le X \le 173.5) \)。</p>
 <ol>
 <li>Standardize：\( z = (177-170)/7 = 1 \)</li>
-<li>查 standard normal table：\( \Phi(1) = 0.8413 \) → P(X ≤ 177) = 0.8413（<code>norm.cdf(177, 170, 7)</code>）</li>
-<li>P(X &gt; 177) = 1 − 0.8413 = 0.1587</li>
+<li>查 standard normal table：\( \Phi(1) = 0.8413 \) → \( P(X \le 177) = 0.8413 \)（<code>norm.cdf(177, 170, 7)</code>）</li>
+<li>\( P(X &gt; 177) = 1 - 0.8413 = 0.1587 \)</li>
 <li>\( z_1 = (166.5-170)/7 = -0.5,\ z_2 = (173.5-170)/7 = 0.5 \) → \( \Phi(0.5)-\Phi(-0.5) = 0.6915 - 0.3085 = 0.3829 \)</li>
 </ol>
-<p>反方向（quantile）：<code>norm.ppf(0.975)</code> = 1.96 → 97.5% 嘅 Z 值 ≤ 1.96，Module 3 嘅 95% CI 就用佢。</p></div>
+<p>反方向（quantile）：<code>norm.ppf(0.975)</code> = 1.96 → 97.5% 嘅 \( Z \) 值 \( \le 1.96 \)，Module 3 嘅 95% CI 就用佢。</p></div>
 
 <h2>4. Simulation of normal distribution</h2>
 <p>Slide 7：<b>Simulation</b> = 用電腦整一啲睇落似真實 normally-distributed data 嘅 random numbers。</p>
@@ -150,12 +150,12 @@ print(res.statistic)
 print(res.pvalue)</code></pre>
 <div class="box exam"><span class="label">⭐ 點寫結論（slide 13）</span>
 <ul>
-<li>H0：sample comes from a normal distribution；H1：not normal。</li>
+<li>\(H_0\)：sample comes from a normal distribution；\(H_1\)：not normal。</li>
 <li>p-value &gt; 0.05 → the null hypothesis is <b>not rejected</b>。</li>
 <li>“We do not find enough evidence to claim that the data is not from Normal distribution.”</li>
 <li>Weakly say：“The data can be considered to follow normal distribution.”</li>
 </ul></div>
-<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Not rejecting H0 ≠ proving H0。所以 slide 用「weakly say」：只能話「冇證據話佢唔係 normal」，唔可以話「證明咗係 normal」。呢個邏輯喺 Module 3 Hypothesis testing 會再出現。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Not rejecting \(H_0\) ≠ proving \(H_0\)。所以 slide 用「weakly say」：只能話「冇證據話佢唔係 normal」，唔可以話「證明咗係 normal」。呢個邏輯喺 Module 3 Hypothesis testing 會再出現。</p></div>
 
 <h2>7. Approximation</h2>
 <h3>7.1 Normal Approximation to the Binomial（slide 15）</h3>
@@ -167,12 +167,12 @@ print(res.pvalue)</code></pre>
 <li><b>Parameters</b>：\( \mu = np \)，\( \sigma^2 = np(1-p) \)。</li>
 </ul></div>
 <div class="box tip"><span class="label">💡 Worked example（補充）</span>
-<p>擲 100 次公平硬幣，求 head ≤ 55 次嘅 probability。</p>
+<p>擲 100 次公平硬幣，求 head \( \le 55 \) 次嘅 probability。</p>
 <ol>
-<li>檢查條件：np = 50 ≥ 10，n(1−p) = 50 ≥ 10 ✔</li>
-<li>μ = np = 50，σ² = 100 × 0.5 × 0.5 = 25 → σ = 5</li>
+<li>檢查條件：\( np = 50 \ge 10 \)，\( n(1-p) = 50 \ge 10 \) ✔</li>
+<li>\( \mu = np = 50 \)，\(\sigma^2 = 100 \times 0.5 \times 0.5 = 25\) → \(\sigma = 5\)</li>
 <li>\( z = (55-50)/5 = 1 \) → \( \Phi(1) = 0.8413 \)</li>
-<li>（進階：continuity correction 用 55.5 → z = 1.1 → 0.8643；真正 binomial 答案 = 0.8644，可見 correction 令 approximation 更準。）</li>
+<li>（進階：continuity correction 用 55.5 → \( z = 1.1 \) → 0.8643；真正 binomial 答案 = 0.8644，可見 correction 令 approximation 更準。）</li>
 </ol>
 <pre><code>from scipy import stats
 print(stats.binom.cdf(55, 100, 0.5))       # exact: 0.8644
@@ -190,40 +190,40 @@ print(stats.norm.cdf(55.5, 50, 5))         # with continuity correction: 0.8643<
 <div class="box tip"><span class="label">💡 Worked example（補充）</span>
 <p>一批 200 件產品，每件次貨率 1%。求冇次貨嘅 probability，同最多 2 件次貨嘅 probability。</p>
 <ol>
-<li>檢查：n = 200 ≥ 50，p = 0.01 ≤ 0.1 ✔ → λ = np = 2</li>
+<li>檢查：\( n = 200 \ge 50 \)，\( p = 0.01 \le 0.1 \) ✔ → \( \lambda = np = 2 \)</li>
 <li>\( P(X=0) \approx e^{-2} = 0.1353 \)（exact binomial：\( 0.99^{200} = 0.1340 \)）</li>
 <li>\( P(X\le 2) \approx e^{-2}(1 + 2 + 2^2/2) = 5e^{-2} = 0.6767 \)（exact：0.6767）</li>
 </ol></div>
 <table>
 <tr><th></th><th>Normal approx.</th><th>Poisson approx.</th></tr>
 <tr><td>幾時用</td><td>n 大、p 接近 0.5</td><td>n 大、p 細（rare events）</td></tr>
-<tr><td>Rule of thumb</td><td>np ≥ 10 且 n(1−p) ≥ 10</td><td>n ≥ 50 且 p ≤ 0.1（或 np ≤ 10）</td></tr>
-<tr><td>Parameters</td><td>μ = np，σ² = np(1−p)</td><td>λ = np</td></tr>
+<tr><td>Rule of thumb</td><td>\( np \ge 10 \) 且 \( n(1-p) \ge 10 \)</td><td>\( n \ge 50 \) 且 \( p \le 0.1 \)（或 \( np \le 10 \)）</td></tr>
+<tr><td>Parameters</td><td>\( \mu = np \)，\( \sigma^2 = np(1-p) \)</td><td>\( \lambda = np \)</td></tr>
 </table>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Normal approximation 用嘅係 σ²（variance）= np(1−p)，代入 <code>norm.cdf</code> 時要開方做 σ。例如 n = 100, p = 0.5 → σ = 5，唔係 25。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Normal approximation 用嘅係 \( \sigma^2 \)（variance）\( = np(1-p) \)，代入 <code>norm.cdf</code> 時要開方做 \(\sigma\)。例如 \( n = 100, p = 0.5 \) → \(\sigma = 5\)，唔係 25。</p></div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 9、14 係標題／示意圖頁（Quantile-quantile plot 問題頁、“Approximation”），只有圖片。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 寫出 <code>norm.pdf</code>、<code>norm.cdf</code>、<code>norm.ppf</code>、<code>norm.rvs</code> 各自代表咩。</summary><p>pdf = density；cdf = probability P(X ≤ x)；ppf = quantile（cdf 嘅反函數）；rvs = random numbers（simulation）。</p></details>
-<details class="q"><summary>Q2. X ~ N(60, 8²)。求 P(X &gt; 72) 同第 97.5 百分位數。</summary><p>z = (72 − 60)/8 = 1.5，Φ(1.5) = 0.9332 → P(X &gt; 72) = 0.0668。97.5th percentile = 60 + 1.96 × 8 = 75.68（<code>norm.ppf(0.975, 60, 8)</code>）。</p></details>
-<details class="q"><summary>Q3. <code>stats.normaltest</code> 得到 p-value = 0.32。點寫結論？</summary><p>p-value 0.32 &gt; α = 0.05 → do not reject H0。冇足夠證據話數據唔係 normal；可以 weakly say 數據可以視為 normal。</p></details>
+<details class="q"><summary>Q1. 寫出 <code>norm.pdf</code>、<code>norm.cdf</code>、<code>norm.ppf</code>、<code>norm.rvs</code> 各自代表咩。</summary><p>pdf = density；cdf = probability \( P(X \le x) \)；ppf = quantile（cdf 嘅反函數）；rvs = random numbers（simulation）。</p></details>
+<details class="q"><summary>Q2. \( X \sim N(60, 8^2) \)。求 \( P(X &gt; 72) \) 同第 97.5 百分位數。</summary><p>\( z = (72 - 60)/8 = 1.5 \)，\( \Phi(1.5) = 0.9332 \) → \( P(X &gt; 72) = 0.0668 \)。97.5th percentile \( = 60 + 1.96 \times 8 = 75.68 \)（<code>norm.ppf(0.975, 60, 8)</code>）。</p></details>
+<details class="q"><summary>Q3. <code>stats.normaltest</code> 得到 p-value = 0.32。點寫結論？</summary><p>p-value \(0.32 &gt; \alpha = 0.05\) → do not reject \(H_0\)。冇足夠證據話數據唔係 normal；可以 weakly say 數據可以視為 normal。</p></details>
 <details class="q"><summary>Q4. QQ-plot 啲點喺兩端明顯偏離直線（左下向下、右上向上）代表咩？</summary><p>兩邊 tails 比 normal 厚（heavy tails / outliers 多），數據唔太符合 normal。</p></details>
-<details class="q"><summary>Q5. Binomial(n = 40, p = 0.2)：可唔可以用 normal approximation？</summary><p>np = 8 &lt; 10 → 按 slide 嘅 rule of thumb（10）唔適合；如果用寬鬆標準（5），np = 8、n(1−p) = 32 都 ≥ 5 → 勉強可以。考試跟 slide：答唔適合（或說明兩種標準）。</p></details>
-<details class="q"><summary>Q6. n = 500、p = 0.004，求 P(X = 3) 嘅 Poisson approximation。</summary><p>λ = np = 2：\( P(X=3) \approx 2^3 e^{-2}/3! = 8 \times 0.1353/6 \approx 0.1804 \)。</p></details>
-<details class="q"><summary>Q7. 點解 residual 係 normal 而且 mean 0 代表 model 冇得再改善 mean prediction？</summary><p>因為 residual 只係純 random noise，冇系統性 pattern 可以再被 X 解釋；如果仲有 pattern（例如 mean ≠ 0 或跟 X 有關），代表 model 漏咗資訊。</p></details>
-<details class="q"><summary>Q8. 寫 code：模擬 1000 個 N(5, 2²)，畫 density histogram 並疊上理論曲線。</summary><p><code>x = norm.rvs(5, 2, 1000); plt.hist(x, bins='auto', density=True); g = np.linspace(-2, 12, 200); plt.plot(g, norm.pdf(g, 5, 2)); plt.show()</code></p></details>
+<details class="q"><summary>Q5. \( \text{Binomial}(n = 40, p = 0.2) \)：可唔可以用 normal approximation？</summary><p>\( np = 8 &lt; 10 \) → 按 slide 嘅 rule of thumb（10）唔適合；如果用寬鬆標準（5），\( np = 8 \)、\( n(1-p) = 32 \) 都 \( \ge 5 \) → 勉強可以。考試跟 slide：答唔適合（或說明兩種標準）。</p></details>
+<details class="q"><summary>Q6. \( n = 500 \)、\( p = 0.004 \)，求 P(X = 3) 嘅 Poisson approximation。</summary><p>\( \lambda = np = 2 \)：\( P(X=3) \approx 2^3 e^{-2}/3! = 8 \times 0.1353/6 \approx 0.1804 \)。</p></details>
+<details class="q"><summary>Q7. 點解 residual 係 normal 而且 mean 0 代表 model 冇得再改善 mean prediction？</summary><p>因為 residual 只係純 random noise，冇系統性 pattern 可以再被 X 解釋；如果仲有 pattern（例如 \( \text{mean} \ne 0 \) 或跟 X 有關），代表 model 漏咗資訊。</p></details>
+<details class="q"><summary>Q8. 寫 code：模擬 1000 個 \( N(5, 2^2) \)，畫 density histogram 並疊上理論曲線。</summary><p><code>x = norm.rvs(5, 2, 1000); plt.hist(x, bins='auto', density=True); g = np.linspace(-2, 12, 200); plt.plot(g, norm.pdf(g, 5, 2)); plt.show()</code></p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li>ECDF：<code>plt.hist(y, bins=50, cumulative=True, histtype='step')</code>（數據要冇 NA）。</li>
 <li>Residual \( e = y-\hat y \)；normal + mean 0 → random → model 冇得再改善 mean prediction；regression 理論建基於 normal error。</li>
 <li>pdf = density｜cdf = probability｜ppf = quantile｜rvs = random。預設 loc = 0、scale = 1（scale = SD）。</li>
-<li>\( Z=(X-\mu)/\sigma \)；Φ(1) = 0.8413、Φ(1.96) = 0.975、Φ(0) = 0.5。</li>
+<li>\( Z=(X-\mu)/\sigma \)；\(\Phi(1) = 0.8413\)、\(\Phi(1.96) = 0.975\)、\(\Phi(0) = 0.5\)。</li>
 <li>Histogram vs pdf：<code>density=True</code>。</li>
 <li>QQ-plot（<code>sm.qqplot(x, fit=True, line="45")</code>）：normal → 近直線；亦用嚟查 residuals。</li>
-<li><code>stats.normaltest</code>：H0 = normal；p &gt; 0.05 → not rejected → “weakly” normal。</li>
-<li>Normal approx. to Binomial：np ≥ 10、n(1−p) ≥ 10（或 5）；μ = np，σ² = np(1−p)。</li>
-<li>Poisson approx. to Binomial：n ≥ 50、p ≤ 0.1（或 np ≤ 10）；λ = np。</li>
+<li><code>stats.normaltest</code>：\(H_0\) = normal；p &gt; 0.05 → not rejected → “weakly” normal。</li>
+<li>Normal approx. to Binomial：\( np \ge 10 \)、\( n(1-p) \ge 10 \)（或 5）；\( \mu = np \)，\( \sigma^2 = np(1-p) \)。</li>
+<li>Poisson approx. to Binomial：\( n \ge 50 \)、\( p \le 0.1 \)（或 \( np \le 10 \)）；\( \lambda = np \)。</li>
 </ul></div>
 
 <nav class="pager">

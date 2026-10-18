@@ -37,10 +37,10 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>Confusion matrix (a = TP, b = FN, c = FP, d = TN) 同所有 metrics 公式；slides 46–50 嘅數字例子。</li>
+    <li>Confusion matrix \( (a = TP, b = FN, c = FP, d = TN) \) 同所有 metrics 公式；slides 46–50 嘅數字例子。</li>
     <li>Accuracy 喺 imbalanced data 會誤導（9990 vs 10 例子）。</li>
     <li>Cost matrix 計算（M1 accuracy 80% cost 3910 vs M2 accuracy 90% cost 4255）同 cost-sensitive decision（sick / healthy 例子）。</li>
-    <li>ROC：軸（TPR vs FPR）、特殊點 (0,0)、(1,1)、(0,1) ideal、diagonal = random；構建步驟；AUC = 1 ideal、0.5 random。</li>
+    <li>ROC：軸（TPR vs FPR）、特殊點 (0,0)、(1,1)、(0,1) ideal、diagonal = random；構建步驟；\( AUC = 1 \) ideal、0.5 random。</li>
     <li>Underfitting vs Overfitting 定義；validation set ≠ test set；k-fold CV 同 stratified CV。</li>
   </ol>
 </div>
@@ -126,42 +126,42 @@ X_tr, X_val, y_tr, y_val = train_test_split(X_tmp, y_tmp, test_size=0.25, random
 <table>
 <tr><th rowspan="2">ACTUAL CLASS</th><th colspan="2">PREDICTED CLASS</th></tr>
 <tr><th>Class = Yes</th><th>Class = No</th></tr>
-<tr><th>Class = Yes</th><td><b>a</b> (TP)</td><td><b>b</b> (FN)</td></tr>
-<tr><th>Class = No</th><td><b>c</b> (FP)</td><td><b>d</b> (TN)</td></tr>
+<tr><th>Class = Yes</th><td><b>\( a \)</b> (TP)</td><td><b>\( b \)</b> (FN)</td></tr>
+<tr><th>Class = No</th><td><b>\( c \)</b> (FP)</td><td><b>\( d \)</b> (TN)</td></tr>
 </table>
-<p>a: TP (true positive)、b: FN (false negative)、c: FP (false positive)、d: TN (true negative)。</p>
+<p>\( a \): TP (true positive)、\( b \): FN (false negative)、\( c \): FP (false positive)、\( d \): TN (true negative)。</p>
 <div class="formula">$$ \text{Accuracy} = \frac{a + d}{a + b + c + d} = \frac{TP + TN}{TP + TN + FP + FN}, \qquad \text{Error rate} = 1 - \text{Accuracy} $$</div></div>
 <div class="box tip"><span class="label">💡 記法</span><p>第二個字（Positive / Negative）= <b>model 預測</b>咩；第一個字（True / False）= 預測<b>啱定錯</b>。FP = 預測 Positive 但錯咗（實際係 No）；FN = 預測 Negative 但錯咗（實際係 Yes）。</p></div>
 
 <h3>5.1 Limitation of Accuracy (Slides 21, 44)</h3>
-<p><span class="tag exam">Exam</span>2-class problem：Class 0 有 <b>9990</b> 個，Class 1 有 <b>10</b> 個。如果 model 將所有嘢預測為 class 0，accuracy = 9990/10000 = <b>99.9%</b>——但 model <b>一個 class 1 都偵測唔到</b>，所以 accuracy 係 misleading。偵測 rare class 通常先係重點（frauds、intrusions、defects）。</p>
+<p><span class="tag exam">Exam</span>2-class problem：Class 0 有 <b>9990</b> 個，Class 1 有 <b>10</b> 個。如果 model 將所有嘢預測為 class 0，\( \text{accuracy} = 9990/10000 = \) <b>99.9%</b>——但 model <b>一個 class 1 都偵測唔到</b>，所以 accuracy 係 misleading。偵測 rare class 通常先係重點（frauds、intrusions、defects）。</p>
 <div class="box warn"><span class="label">⚠️ Slide 數字留意</span><p>Slide 44 寫 "Class 0 = 9990、Class 1 = 10" 但計算寫 "accuracy is 990/1000 = 99%"——數字前後唔一致（應該係 9990/10000 = 99.9%；或者如果係 990 vs 10 就係 99%）。考試照邏輯計：全部預測多數 class 嘅 accuracy = 多數 class 比例。結論一樣：accuracy 高但完全冇用。</p></div>
 
 <h2>6. Cost Matrix &amp; Cost of Classification</h2>
-<p>Slides 22, 52：<b>C(i|j)</b>：Cost of misclassifying class j example as class i（slide 22 記法，即 C(predicted | actual)）。Slide 52 表格用 <b>C(actual, predicted)</b> 排列：行 = ACTUAL，列 = PREDICTED。</p>
+<p>Slides 22, 52：<b>\( C(i \mid j) \)</b>：Cost of misclassifying class \( j \) example as class \( i \)（slide 22 記法，即 \( C(\text{predicted} \mid \text{actual}) \)）。Slide 52 表格用 <b>\( C(\text{actual}, \text{predicted}) \)</b> 排列：行 = ACTUAL，列 = PREDICTED。</p>
 <table>
 <tr><th rowspan="2">ACTUAL</th><th colspan="2">PREDICTED</th></tr>
 <tr><th>Yes</th><th>No</th></tr>
-<tr><th>Yes</th><td>C(Yes, Yes)</td><td>C(Yes, No)</td></tr>
-<tr><th>No</th><td>C(No, Yes)</td><td>C(No, No)</td></tr>
+<tr><th>Yes</th><td>\( C(\text{Yes}, \text{Yes}) \)</td><td>\( C(\text{Yes}, \text{No}) \)</td></tr>
+<tr><th>No</th><td>\( C(\text{No}, \text{Yes}) \)</td><td>\( C(\text{No}, \text{No}) \)</td></tr>
 </table>
-<p>總 cost = Σ（confusion matrix 每格 count × cost matrix 對應格 cost）。</p>
+<p>總 cost = \( \sum \)（confusion matrix 每格 count × cost matrix 對應格 cost）。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 53 Computing Cost of Classification</span>
-<p>Cost matrix：C(+,+) = −1、C(+,−) = 100、C(−,+) = 1、C(−,−) = 0（漏報一個 + 嘅代價 100，極貴）。</p>
+<p>Cost matrix：\( C(+,+) = -1 \)、\( C(+,-) = 100 \)、\( C(-,+) = 1 \)、\( C(-,-) = 0 \)（漏報一個 + 嘅代價 100，極貴）。</p>
 <table>
 <tr><th>Model M1</th><th>Pred +</th><th>Pred −</th></tr>
 <tr><th>Actual +</th><td>150</td><td>40</td></tr>
 <tr><th>Actual −</th><td>60</td><td>250</td></tr>
 </table>
-<p>Accuracy = (150 + 250)/500 = <b>80%</b>；Cost = 150(−1) + 40(100) + 60(1) + 250(0) = −150 + 4000 + 60 = <b>3910</b></p>
+<p>\( \text{Accuracy} = (150 + 250)/500 = \) <b>80%</b>；\( \text{Cost} = 150(-1) + 40(100) + 60(1) + 250(0) = -150 + 4000 + 60 = \) <b>3910</b></p>
 <table>
 <tr><th>Model M2</th><th>Pred +</th><th>Pred −</th></tr>
 <tr><th>Actual +</th><td>250</td><td>45</td></tr>
 <tr><th>Actual −</th><td>5</td><td>200</td></tr>
 </table>
-<p>Accuracy = (250 + 200)/500 = <b>90%</b>；Cost = 250(−1) + 45(100) + 5(1) + 200(0) = −250 + 4500 + 5 = <b>4255</b></p>
+<p>\( \text{Accuracy} = (250 + 200)/500 = \) <b>90%</b>；\( \text{Cost} = 250(-1) + 45(100) + 5(1) + 200(0) = -250 + 4500 + 5 = \) <b>4255</b></p>
 <p><b>結論</b>：M2 accuracy 較高，但 cost 較高（因為 FN 多咗，而 FN 好貴）→ 以 cost 計 <b>M1 較好</b>。Accuracy 同 cost 可以得出相反結論。</p></div>
-<p>Slide 24 "Cost vs Accuracy"：教科書指出如果 cost matrix 係對稱（C(Yes|No) = C(No|Yes) = q，C(Yes|Yes) = C(No|No) = p），咁 cost 同 accuracy 成線性關係，兩者排名一致；只有 cost 唔對稱時兩者先會分歧。</p>
+<p>Slide 24 "Cost vs Accuracy"：教科書指出如果 cost matrix 係對稱（\( C(\text{Yes} \mid \text{No}) = C(\text{No} \mid \text{Yes}) = q \)，\( C(\text{Yes} \mid \text{Yes}) = C(\text{No} \mid \text{No}) = p \)），咁 cost 同 accuracy 成線性關係，兩者排名一致；只有 cost 唔對稱時兩者先會分歧。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–24 係圖片（cost matrix、computing cost、cost vs accuracy 推導）；slide 24 嘅內容係根據教科書補充，請對照原 slide。Slide 53 嘅表格有文字，已完整收錄。</p></div>
 
 <h2>7. Precision, Recall, F-measure &amp; 其他 Measures</h2>
@@ -170,20 +170,20 @@ X_tr, X_val, y_tr, y_val = train_test_split(X_tmp, y_tmp, test_size=0.25, random
 <div class="formula">$$ \text{F-measure } (F) = \frac{2rp}{r + p} = \frac{2a}{2a + b + c} $$</div>
 <table>
 <tr><th>Measure</th><th>公式</th><th>意思</th></tr>
-<tr><td>TPR（Sensitivity, Recall）</td><td>TP / (TP + FN)</td><td>真正 Yes 之中搵到幾多</td></tr>
-<tr><td>TNR（Specificity）</td><td>TN / (TN + FP)</td><td>真正 No 之中正確判 No 幾多</td></tr>
-<tr><td>FPR = 1 − TNR</td><td>FP / (FP + TN)</td><td>假警報率（= α，Type I error）</td></tr>
-<tr><td>FNR = 1 − TPR</td><td>FN / (FN + TP)</td><td>漏報率（= β，Type II error）</td></tr>
-<tr><td>Precision</td><td>TP / (TP + FP)</td><td>預測 Yes 之中真係 Yes 幾多</td></tr>
+<tr><td>TPR（Sensitivity, Recall）</td><td>\( TP / (TP + FN) \)</td><td>真正 Yes 之中搵到幾多</td></tr>
+<tr><td>TNR（Specificity）</td><td>\( TN / (TN + FP) \)</td><td>真正 No 之中正確判 No 幾多</td></tr>
+<tr><td>\( FPR = 1 - TNR \)</td><td>\( FP / (FP + TN) \)</td><td>假警報率（= \(\alpha\)，Type I error）</td></tr>
+<tr><td>\( FNR = 1 - TPR \)</td><td>\( FN / (FN + TP) \)</td><td>漏報率（= \(\beta\)，Type II error）</td></tr>
+<tr><td>Precision</td><td>\( TP / (TP + FP) \)</td><td>預測 Yes 之中真係 Yes 幾多</td></tr>
 </table></div>
 <p>Slide 25 Cost-Sensitive Measures：</p>
 <ul>
-<li><b>Precision is biased towards C(Yes|Yes) &amp; C(Yes|No)</b>（只涉及「預測 Yes」嗰一列：TP 同 FP）</li>
-<li><b>Recall is biased towards C(Yes|Yes) &amp; C(No|Yes)</b>（只涉及「實際 Yes」嗰一行：TP 同 FN）</li>
-<li><b>F-measure is biased towards all except C(No|No)</b>（用 TP、FP、FN，唔理 TN）</li>
+<li><b>Precision is biased towards \( C(\text{Yes} \mid \text{Yes}) \) &amp; \( C(\text{Yes} \mid \text{No}) \)</b>（只涉及「預測 Yes」嗰一列：TP 同 FP）</li>
+<li><b>Recall is biased towards \( C(\text{Yes} \mid \text{Yes}) \) &amp; \( C(\text{No} \mid \text{Yes}) \)</b>（只涉及「實際 Yes」嗰一行：TP 同 FN）</li>
+<li><b>F-measure is biased towards all except \( C(\text{No} \mid \text{No}) \)</b>（用 TP、FP、FN，唔理 TN）</li>
 </ul>
-<p>教科書亦有 Weighted Accuracy = \(\frac{w_1 a + w_4 d}{w_1 a + w_2 b + w_3 c + w_4 d}\)。</p>
-<div class="box link"><span class="label">🔗 跨科連繫：Type I / II error (Slide 48)</span><p>Slide 48 將 confusion matrix 連去 COM6005 Hypothesis testing：\(\alpha\) = probability that we reject the null hypothesis when it is true → <b>Type I error / false positive (FP)</b>；\(\beta\) = probability that we accept the null hypothesis when it is false → <b>Type II error / false negative (FN)</b>。所以 FPR ≈ α，FNR ≈ β，TPR = 1 − β = <b>power</b>。</p></div>
+<p>教科書亦有 \( \text{Weighted Accuracy} = \frac{w_1 a + w_4 d}{w_1 a + w_2 b + w_3 c + w_4 d} \)。</p>
+<div class="box link"><span class="label">🔗 跨科連繫：Type I / II error (Slide 48)</span><p>Slide 48 將 confusion matrix 連去 COM6005 Hypothesis testing：\(\alpha\) = probability that we reject the null hypothesis when it is true → <b>Type I error / false positive (FP)</b>；\(\beta\) = probability that we accept the null hypothesis when it is false → <b>Type II error / false negative (FN)</b>。所以 \( FPR \approx \alpha \)，\( FNR \approx \beta \)，\( TPR = 1 - \beta = \) <b>power</b>。</p></div>
 
 <h3>7.1 Worked examples (Slides 46, 47, 49, 50)</h3>
 <p><b>Slide 46</b>（imbalanced：10 Yes vs 990 No）：</p>
@@ -207,7 +207,7 @@ X_tr, X_val, y_tr, y_val = train_test_split(X_tmp, y_tmp, test_size=0.25, random
 <tr><td>TP 25, FN 25, FP 25, TN 25</td><td>0.5</td><td>0.5</td><td>0.5</td><td>0.5</td></tr>
 <tr><td>TP 40, FN 10, FP 40, TN 10</td><td>0.8</td><td>0.8</td><td>0.5</td><td>0.5</td></tr>
 </table>
-<p>三個 model 都係 <b>TPR = FPR</b>，即喺 ROC 嘅 diagonal 上 → 同 <b>random guessing</b> 冇分別（只係「估 Yes」嘅比例唔同）。</p>
+<p>三個 model 都係 <b>\( TPR = FPR \)</b>，即喺 ROC 嘅 diagonal 上 → 同 <b>random guessing</b> 冇分別（只係「估 Yes」嘅比例唔同）。</p>
 <pre><code>from sklearn.metrics import confusion_matrix, classification_report, precision_score, recall_score, f1_score
 confusion_matrix(y_true, y_pred, labels=[1, 0])   # 排成 [[TP, FN], [FP, TN]]
 print(classification_report(y_true, y_pred))</code></pre>
@@ -219,12 +219,12 @@ print(classification_report(y_true, y_pred))</code></pre>
 <tr><th>Method</th><th>做法</th><th>優 / 缺</th></tr>
 <tr><td><b>Holdout</b></td><td>Reserve <b>2/3 for training and 1/3 for testing</b></td><td>簡單；但用少咗 data train，結果視乎點分</td></tr>
 <tr><td><b>Random subsampling</b></td><td><b>Repeated holdout</b>，取平均</td><td>減少隨機性；但某啲 records 可能從未被 test</td></tr>
-<tr><td><b>Cross validation (k-fold)</b></td><td>Partition data into <b>k disjoint subsets</b>；train on k − 1 partitions，test on the remaining one；重複 k 次，每個 subset 做一次 test</td><td>每個 record 都剛好被 test 一次；用晒 data</td></tr>
-<tr><td><b>Leave-one-out</b></td><td><b>k = n</b></td><td>最大化 training data；計算量最大</td></tr>
+<tr><td><b>Cross validation (k-fold)</b></td><td>Partition data into <b>\( k \) disjoint subsets</b>；train on \( k - 1 \) partitions，test on the remaining one；重複 \( k \) 次，每個 subset 做一次 test</td><td>每個 record 都剛好被 test 一次；用晒 data</td></tr>
+<tr><td><b>Leave-one-out</b></td><td><b>\( k = n \)</b></td><td>最大化 training data；計算量最大</td></tr>
 <tr><td><b>Repeated cross-validation</b></td><td>做幾次 cross-validation</td><td>Gives an estimate of the <b>variance</b> of the generalization error</td></tr>
 <tr><td><b>Stratified cross-validation</b></td><td>Guarantee the <b>same percentage of class labels</b> in training and test</td><td>Important when <b>classes are imbalanced and the sample is small</b></td></tr>
 </table></div>
-<div class="box tip"><span class="label">💡 3-fold CV 例子 (Slide 29)</span><p>Data 分 3 份 D1、D2、D3：Run 1 train D2 + D3、test D1；Run 2 train D1 + D3、test D2；Run 3 train D1 + D2、test D3。最終 error = 三次 test errors 嘅平均（或者將三次 confusion matrices 加埋再計）。例如三次 errors 係 0.10、0.15、0.11 → CV error = 0.12。</p></div>
+<div class="box tip"><span class="label">💡 3-fold CV 例子 (Slide 29)</span><p>Data 分 3 份 \( D_1 \)、\( D_2 \)、\( D_3 \)：Run 1 train \( D_2 + D_3 \)、test \( D_1 \)；Run 2 train \( D_1 + D_3 \)、test \( D_2 \)；Run 3 train \( D_1 + D_2 \)、test \( D_3 \)。最終 error = 三次 test errors 嘅平均（或者將三次 confusion matrices 加埋再計）。例如三次 errors 係 0.10、0.15、0.11 → CV error = 0.12。</p></div>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 27 嘅 learning curve 同 slide 29 嘅 3-fold CV 示意圖係圖片，請對照原 slide。</p></div>
 <pre><code>from sklearn.model_selection import cross_val_score, StratifiedKFold, LeaveOneOut, RepeatedStratifiedKFold
 cross_val_score(clf, X, y, cv=StratifiedKFold(n_splits=10, shuffle=True, random_state=0))
@@ -236,7 +236,7 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <ul>
 <li>1950s 為 signal detection theory 分析 noisy signals 而發展。</li>
 <li>一個圖像化方法，顯示 <b>detection rate 同 false alarm rate</b> 之間嘅 trade-off。</li>
-<li><span class="tag exam">Exam</span>ROC curve plots <b>True positive rate TPR (on the y-axis)</b> against <b>False positive rate FPR (on the x-axis)</b>。</li>
+<li><span class="tag exam">Exam</span>ROC curve plots <b>True positive rate TPR (on the \( y \)-axis)</b> against <b>False positive rate FPR (on the \( x \)-axis)</b>。</li>
 <li>一個 model 嘅 performance 係 ROC 上嘅一個點；<b>改變 classifier 嘅 threshold 會改變點嘅位置</b>。</li>
 </ul>
 <div class="box exam"><span class="label">⭐ 考試重點：ROC 特殊點 (Slide 33)，坐標寫法 (TPR, FPR)</span>
@@ -244,15 +244,15 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <tr><th>(TPR, FPR)</th><th>意思</th></tr>
 <tr><td>(0, 0)</td><td>Declare everything to be <b>negative</b> class</td></tr>
 <tr><td>(1, 1)</td><td>Declare everything to be <b>positive</b> class</td></tr>
-<tr><td>(1, 0)</td><td><b>Ideal</b>（TPR = 1、FPR = 0；圖上係左上角）</td></tr>
+<tr><td>(1, 0)</td><td><b>Ideal</b>（\( TPR = 1 \)、\( FPR = 0 \)；圖上係左上角）</td></tr>
 <tr><td>Diagonal line</td><td><b>Random guessing</b></td></tr>
 <tr><td>Below diagonal line</td><td>Prediction is opposite of the true class（將預測反轉就會變好）</td></tr>
 </table></div>
-<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Slide 33 用 <b>(TPR, FPR)</b> 次序寫坐標，所以 ideal 係 (1, 0)；但圖上 x 軸係 FPR、y 軸係 TPR，即圖上坐標 (FPR, TPR) = (0, 1) 左上角。考試寫清楚你用邊個次序。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Slide 33 用 <b>(TPR, FPR)</b> 次序寫坐標，所以 ideal 係 (1, 0)；但圖上 \( x \) 軸係 FPR、\( y \) 軸係 TPR，即圖上坐標 \( (FPR, TPR) = (0, 1) \) 左上角。考試寫清楚你用邊個次序。</p></div>
 
 <h3>9.1 Continuous-valued outputs (Slides 34–36)</h3>
 <p>要畫 ROC curve，classifier 必須產生 <b>continuous-valued output</b>（score），用嚟將 test records 由「最可能係 positive」排到「最唔可能」。好多 classifiers 只產生 discrete output（predicted class），但可以攞到 continuous outputs：Decision trees（leaf 入面 positive 比例）、rule-based classifiers、neural networks、Bayesian classifiers（posterior probability）、k-nearest neighbors（neighbors 中 positive 比例）、SVM（距離 hyperplane \(\mathbf{w}\cdot\mathbf{x}+b\)）。</p>
-<p>Slide 35：Decision tree 嘅 continuous-valued outputs（每個 leaf 嘅 class 比例）。Slide 36：一維 data 有兩個 classes，<b>x &gt; t 就分類為 positive</b>；喺某個 threshold t：<b>TPR = 0.5、FNR = 0.5、FPR = 0.12、TNR = 0.88</b>。t 向左移 → TPR 同 FPR 一齊上升。</p>
+<p>Slide 35：Decision tree 嘅 continuous-valued outputs（每個 leaf 嘅 class 比例）。Slide 36：一維 data 有兩個 classes，<b>\( x &gt; t \) 就分類為 positive</b>；喺某個 threshold \( t \)：<b>\( TPR = 0.5 \)、\( FNR = 0.5 \)、\( FPR = 0.12 \)、\( TNR = 0.88 \)</b>。\( t \) 向左移 → TPR 同 FPR 一齊上升。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 33、35–37、39 嘅 ROC 圖、decision tree 圖同 slide 39 嘅 score 表係圖片；以下 worked example 為自擬數字。</p></div>
 
 <h3>9.2 How to Construct an ROC Curve (Slides 38–39)</h3>
@@ -260,13 +260,13 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <ol>
 <li>Use a classifier that produces a continuous-valued <b>score</b> for each instance（越可能係 + class，score 越高）。</li>
 <li><b>Sort</b> the instances in <b>decreasing order</b> according to the score。</li>
-<li>Apply a <b>threshold at each unique value</b> of the score（score ≥ threshold → 預測 +）。</li>
+<li>Apply a <b>threshold at each unique value</b> of the score（\( \text{score} \ge \text{threshold} \) → 預測 +）。</li>
 <li>Count the number of TP, FP, TN, FN at each threshold。</li>
-<li>TPR = TP/(TP + FN)；FPR = FP/(FP + TN)；將每對 (FPR, TPR) 畫出並連線。</li>
+<li>\( TPR = TP/(TP + FN) \)；\( FPR = FP/(FP + TN) \)；將每對 \( (FPR, TPR) \) 畫出並連線。</li>
 </ol></div>
 <p><b>Worked example（自擬）</b>：10 個 instances（5 個 +、5 個 −）：</p>
 <table>
-<tr><th>Score</th><th>Class</th><th>Threshold ≥</th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>TPR</th><th>FPR</th></tr>
+<tr><th>Score</th><th>Class</th><th>Threshold \( \ge \)</th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>TPR</th><th>FPR</th></tr>
 <tr><td>0.95</td><td>+</td><td>0.95</td><td>1</td><td>0</td><td>4</td><td>5</td><td>0.2</td><td>0</td></tr>
 <tr><td>0.90</td><td>+</td><td>0.90</td><td>2</td><td>0</td><td>3</td><td>5</td><td>0.4</td><td>0</td></tr>
 <tr><td>0.85</td><td>−</td><td>0.85</td><td>2</td><td>1</td><td>3</td><td>4</td><td>0.4</td><td>0.2</td></tr>
@@ -278,9 +278,9 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <tr><td>0.30</td><td>+</td><td>0.30</td><td>5</td><td>4</td><td>0</td><td>1</td><td>1.0</td><td>0.8</td></tr>
 <tr><td>0.20</td><td>−</td><td>0.20</td><td>5</td><td>5</td><td>0</td><td>0</td><td>1.0</td><td>1.0</td></tr>
 </table>
-<p>加上起點 (FPR, TPR) = (0, 0)（threshold &gt; 0.95，全部預測 −）。連線：(0,0)→(0,0.2)→(0,0.4)→(0.2,0.4)→(0.2,0.6)→(0.4,0.6)→(0.4,0.8)→(0.6,0.8)→(0.8,0.8)→(0.8,1)→(1,1)。</p>
-<p><b>AUC</b>（梯形 / 長方形面積）：FPR 0–0.2 段 TPR = 0.4 → 0.08；0.2–0.4 段 TPR = 0.6 → 0.12；0.4–0.6 段 0.8 → 0.16；0.6–0.8 段 0.8 → 0.16；0.8–1 段 1.0 → 0.2。總和 = <b>0.72</b>。</p>
-<div class="box tip"><span class="label">💡 快速畫法</span><p>由 (0,0) 開始，按 score 由高到低逐個睇：遇到 + 就向上行 1/P（P = positive 總數），遇到 − 就向右行 1/N。Score 有 ties 時就斜行。AUC 亦等於「隨機揀一個 + 同一個 −，+ 嘅 score 高過 − 嘅概率」：呢度 25 對之中有 18 對 + 較高 → 18/25 = 0.72。</p></div>
+<p>加上起點 \( (FPR, TPR) = (0, 0) \)（\( \text{threshold} &gt; 0.95 \)，全部預測 −）。連線：(0,0)→(0,0.2)→(0,0.4)→(0.2,0.4)→(0.2,0.6)→(0.4,0.6)→(0.4,0.8)→(0.6,0.8)→(0.8,0.8)→(0.8,1)→(1,1)。</p>
+<p><b>AUC</b>（梯形 / 長方形面積）：FPR 0–0.2 段 \( TPR = 0.4 \) → 0.08；0.2–0.4 段 \( TPR = 0.6 \) → 0.12；0.4–0.6 段 0.8 → 0.16；0.6–0.8 段 0.8 → 0.16；0.8–1 段 1.0 → 0.2。總和 = <b>0.72</b>。</p>
+<div class="box tip"><span class="label">💡 快速畫法</span><p>由 (0,0) 開始，按 score 由高到低逐個睇：遇到 + 就向上行 \( 1/P \)（\( P \) = positive 總數），遇到 − 就向右行 \( 1/N \)。Score 有 ties 時就斜行。AUC 亦等於「隨機揀一個 + 同一個 −，+ 嘅 score 高過 − 嘅概率」：呢度 25 對之中有 18 對 + 較高 → 18/25 = 0.72。</p></div>
 
 <h3>9.3 Using ROC for Model Comparison (Slide 37)</h3>
 <ul>
@@ -310,25 +310,25 @@ roc_auc_score(y, s)   # 0.72</code></pre>
 </ol></div>
 
 <h3>10.2 Cost-Sensitive Classification (Slides 54–56)</h3>
-<p><b>Example：Bayesian classifier</b>。給定 test record x：計每個 class i 嘅 \(p(i \mid x)\)；decision rule：classify as class k if \(k = \arg\max_i p(i \mid x)\)。2-class 時：classify x as + if \(p(+|x) \gt p(-|x)\)。</p>
-<p>呢條 rule <b>implicitly assumes C(+|+) = C(−|−) = 0 and C(+|−) = C(−|+)</b>（即正確冇 cost、兩種錯誤 cost 一樣）。</p>
-<p><b>General decision rule</b>：classify test record x as class k if \( k = \arg\min_j \sum_i p(i \mid x)\, C(i, j) \)（揀 expected cost 最低嘅 class）。2-class：</p>
+<p><b>Example：Bayesian classifier</b>。給定 test record \( x \)：計每個 class \( i \) 嘅 \(p(i \mid x)\)；decision rule：classify as class \( k \) if \(k = \arg\max_i p(i \mid x)\)。2-class 時：classify \( x \) as + if \(p(+|x) \gt p(-|x)\)。</p>
+<p>呢條 rule <b>implicitly assumes \( C(+|+) = C(-|-) = 0 \) and \( C(+|-) = C(-|+) \)</b>（即正確冇 cost、兩種錯誤 cost 一樣）。</p>
+<p><b>General decision rule</b>：classify test record \( x \) as class \( k \) if \( k = \arg\min_j \sum_i p(i \mid x)\, C(i, j) \)（揀 expected cost 最低嘅 class）。2-class：</p>
 <div class="formula">$$ \text{Cost}(+) = p(+|x)\,C(+,+) + p(-|x)\,C(-,+) $$</div>
 <div class="formula">$$ \text{Cost}(-) = p(+|x)\,C(+,-) + p(-|x)\,C(-,-) $$</div>
-<p>Decision rule：classify x as + if Cost(+) &lt; Cost(−)。如果 C(+,+) = C(−,−) = 0：</p>
+<p>Decision rule：classify \( x \) as + if \( \text{Cost}(+) &lt; \text{Cost}(-) \)。如果 \( C(+,+) = C(-,-) = 0 \)：</p>
 <div class="formula">$$ \text{classify as + if } \; p(+|x) \gt \frac{C(-,+)}{C(-,+) + C(+,-)} $$</div>
-<p>（C(i, j) = 實際 class i 被預測為 j 嘅 cost。）</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 54–55 嘅 argmax / argmin 公式同最後 threshold 公式係圖片；上面係按 slide 文字 Cost(+)、Cost(−) 推導出嘅標準結果，請對照原 slide。</p></div>
+<p>（\( C(i, j) \) = 實際 class \( i \) 被預測為 \( j \) 嘅 cost。）</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 54–55 嘅 argmax / argmin 公式同最後 threshold 公式係圖片；上面係按 slide 文字 \( \text{Cost}(+) \)、\( \text{Cost}(-) \) 推導出嘅標準結果，請對照原 slide。</p></div>
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 56 Sick / Healthy 例子</span>
-<p>Given：p(sick | x) = 0.3，p(healthy | x) = 0.7；C(predict healthy | actually sick) = 100,000（missed diagnosis）；C(predict sick | actually healthy) = 1,000（false alarm）。</p>
+<p>Given：\( p(\text{sick} \mid x) = 0.3 \)，\( p(\text{healthy} \mid x) = 0.7 \)；\( C(\text{predict healthy} \mid \text{actually sick}) = 100{,}000 \)（missed diagnosis）；\( C(\text{predict sick} \mid \text{actually healthy}) = 1{,}000 \)（false alarm）。</p>
 <p><b>Standard Bayes decision</b>：0.3 &lt; 0.7 ⟹ Predict "healthy"。</p>
 <p><b>Cost-sensitive decision</b>：</p>
 <ul>
-<li>Expected cost of predicting sick = p(healthy | x) × 1,000 = 0.7 × 1,000 = <b>700</b></li>
-<li>Expected cost of predicting healthy = p(sick | x) × 100,000 = 0.3 × 100,000 = <b>30,000</b></li>
+<li>Expected cost of predicting sick \( = p(\text{healthy} \mid x) \times 1{,}000 = 0.7 \times 1{,}000 = \) <b>700</b></li>
+<li>Expected cost of predicting healthy \( = p(\text{sick} \mid x) \times 100{,}000 = 0.3 \times 100{,}000 = \) <b>30,000</b></li>
 </ul>
 <p>700 &lt; 30,000 ⟹ <b>Predict "sick" ✓</b></p>
-<p>用 threshold 公式：predict sick if p(sick | x) &gt; 1,000/(1,000 + 100,000) = <b>0.0099</b>。0.3 &gt; 0.0099 → sick。</p></div>
+<p>用 threshold 公式：predict sick if \( p(\text{sick} \mid x) &gt; 1{,}000/(1{,}000 + 100{,}000) = \) <b>0.0099</b>。0.3 &gt; 0.0099 → sick。</p></div>
 
 <h3>10.3 Sampling-based Approaches (Slide 57)</h3>
 <table>
@@ -346,20 +346,20 @@ down = resample(majority, replace=False, n_samples=len(minority), random_state=0
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 一個 model training error 2%、test error 25%；另一個 training error 20%、test error 22%。各屬咩情況？</summary>
 <p>第一個：training error 細但 test error 大 → <b>Overfitting</b>（model 太複雜）。第二個：兩者都大 → 傾向 <b>Underfitting</b>（model 太簡單）。可以用 validation set 揀中間複雜度、增加 training data，或 pruning。</p></details>
-<details class="q"><summary>Q2. Confusion matrix：TP = 30, FN = 20, FP = 10, TN = 940。計 Accuracy、Precision、Recall、F、FPR、Specificity。</summary>
-<p>Total = 1000。Accuracy = 970/1000 = <b>0.97</b>；Precision = 30/40 = <b>0.75</b>；Recall = 30/50 = <b>0.6</b>；F = 2(0.75)(0.6)/1.35 = <b>0.667</b>（或 2a/(2a+b+c) = 60/90）；FPR = 10/950 = <b>0.0105</b>；Specificity = 940/950 = <b>0.989</b>。</p></details>
-<details class="q"><summary>Q3. Cost matrix C(+,+)=0, C(+,−)=50, C(−,+)=5, C(−,−)=0。Model A：TP 80, FN 20, FP 100, TN 800；Model B：TP 95, FN 5, FP 300, TN 600。邊個 accuracy 高？邊個 cost 低？</summary>
-<p>A：accuracy = 880/1000 = 0.88；cost = 20×50 + 100×5 = 1000 + 500 = <b>1500</b>。<br>B：accuracy = 695/1000 = 0.695；cost = 5×50 + 300×5 = 250 + 1500 = <b>1750</b>。<br>A accuracy 較高而 cost 亦較低 → A 較好。（如果 C(+,−) 改做 100：A = 2500，B = 2000，就會變成 B 較平。）</p></details>
+<details class="q"><summary>Q2. Confusion matrix：\( TP = 30, FN = 20, FP = 10, TN = 940 \)。計 Accuracy、Precision、Recall、F、FPR、Specificity。</summary>
+<p>\( \text{Total} = 1000 \)。\( \text{Accuracy} = 970/1000 = \) <b>0.97</b>；\( \text{Precision} = 30/40 = \) <b>0.75</b>；\( \text{Recall} = 30/50 = \) <b>0.6</b>；\( F = 2(0.75)(0.6)/1.35 = \) <b>0.667</b>（或 \( 2a/(2a+b+c) = 60/90 \)）；\( FPR = 10/950 = \) <b>0.0105</b>；\( \text{Specificity} = 940/950 = \) <b>0.989</b>。</p></details>
+<details class="q"><summary>Q3. Cost matrix \( C(+,+)=0, C(+,-)=50, C(-,+)=5, C(-,-)=0 \)。Model A：TP 80, FN 20, FP 100, TN 800；Model B：TP 95, FN 5, FP 300, TN 600。邊個 accuracy 高？邊個 cost 低？</summary>
+<p>A：\( \text{accuracy} = 880/1000 = 0.88 \)；\( \text{cost} = 20 \times 50 + 100 \times 5 = 1000 + 500 = \) <b>1500</b>。<br>B：\( \text{accuracy} = 695/1000 = 0.695 \)；\( \text{cost} = 5 \times 50 + 300 \times 5 = 250 + 1500 = \) <b>1750</b>。<br>A accuracy 較高而 cost 亦較低 → A 較好。（如果 \( C(+,-) \) 改做 100：\( A = 2500 \)，\( B = 2000 \)，就會變成 B 較平。）</p></details>
 <details class="q"><summary>Q4. 解釋 holdout、k-fold CV、leave-one-out 同 stratified CV。數據得 200 records 而 positive 只有 10 個，應用邊個？</summary>
-<p>Holdout：2/3 train、1/3 test。k-fold：分 k 份，輪流用 1 份 test、k − 1 份 train。LOOCV：k = n。Stratified：確保每份 class 比例相同。細樣本 + imbalanced → 用 <b>stratified (repeated) k-fold CV</b>，否則某啲 folds 可能冇 positive。</p></details>
-<details class="q"><summary>Q5. ROC 上 (FPR, TPR) = (0, 0)、(1, 1)、(0, 1) 同對角線各代表咩？AUC = 0.5 代表咩？</summary>
-<p>(0,0)：全部預測 negative；(1,1)：全部預測 positive；(0,1)：ideal（slide 用 (TPR, FPR) 寫成 (1,0)）；對角線：random guessing。AUC = 0.5 = random guess；AUC = 1 = ideal。</p></details>
+<p>Holdout：2/3 train、1/3 test。k-fold：分 \( k \) 份，輪流用 1 份 test、\( k - 1 \) 份 train。LOOCV：\( k = n \)。Stratified：確保每份 class 比例相同。細樣本 + imbalanced → 用 <b>stratified (repeated) k-fold CV</b>，否則某啲 folds 可能冇 positive。</p></details>
+<details class="q"><summary>Q5. ROC 上 \( (FPR, TPR) = (0, 0) \)、(1, 1)、(0, 1) 同對角線各代表咩？\( AUC = 0.5 \) 代表咩？</summary>
+<p>(0,0)：全部預測 negative；(1,1)：全部預測 positive；(0,1)：ideal（slide 用 (TPR, FPR) 寫成 (1,0)）；對角線：random guessing。\( AUC = 0.5 \) = random guess；\( AUC = 1 \) = ideal。</p></details>
 <details class="q"><summary>Q6. Scores 同 labels：0.9(+), 0.8(−), 0.7(+), 0.6(+), 0.4(−), 0.3(−)。畫 ROC 嘅點並計 AUC。</summary>
-<p>P = 3, N = 3。Threshold ≥0.9：TP1 FP0 → (0, 0.333)；≥0.8：(0.333, 0.333)；≥0.7：(0.333, 0.667)；≥0.6：(0.333, 1)；≥0.4：(0.667, 1)；≥0.3：(1, 1)。加 (0,0)。AUC = 0.333×0.333 + 0.667×1 = 0.111 + 0.667 = <b>0.778</b>（= 9 對中 7 對 + 較高 = 7/9）。</p></details>
-<details class="q"><summary>Q7. p(fraud | x) = 0.05。漏報 fraud 嘅 cost = 2000，誤報 cost = 50，正確冇 cost。應該預測咩？</summary>
-<p>Cost(predict fraud) = p(normal|x) × 50 = 0.95 × 50 = 47.5；Cost(predict normal) = p(fraud|x) × 2000 = 0.05 × 2000 = 100。47.5 &lt; 100 → <b>predict fraud</b>。Threshold = 50/(50 + 2000) = 0.0244 &lt; 0.05。</p></details>
+<p>\( P = 3, N = 3 \)。Threshold \( \ge 0.9 \)：TP1 FP0 → (0, 0.333)；\( \ge 0.8 \)：(0.333, 0.333)；\( \ge 0.7 \)：(0.333, 0.667)；\( \ge 0.6 \)：(0.333, 1)；\( \ge 0.4 \)：(0.667, 1)；\( \ge 0.3 \)：(1, 1)。加 (0,0)。\( AUC = 0.333 \times 0.333 + 0.667 \times 1 = 0.111 + 0.667 = \) <b>0.778</b>（= 9 對中 7 對 + 較高 = 7/9）。</p></details>
+<details class="q"><summary>Q7. \( p(\text{fraud} \mid x) = 0.05 \)。漏報 fraud 嘅 cost = 2000，誤報 cost = 50，正確冇 cost。應該預測咩？</summary>
+<p>\( \text{Cost}(\text{predict fraud}) = p(\text{normal} \mid x) \times 50 = 0.95 \times 50 = 47.5 \)；\( \text{Cost}(\text{predict normal}) = p(\text{fraud} \mid x) \times 2000 = 0.05 \times 2000 = 100 \)。47.5 &lt; 100 → <b>predict fraud</b>。\( \text{Threshold} = 50/(50 + 2000) = 0.0244 &lt; 0.05 \)。</p></details>
 <details class="q"><summary>Q8. 點解 precision 會受 class imbalance 影響，但 TPR / FPR 唔會？用 slide 47 例子解釋。</summary>
-<p>TPR 只用實際 positive 嗰行（TP/(TP+FN)），FPR 只用實際 negative 嗰行（FP/(FP+TN)），各自係行內比例，唔受兩類相對數目影響。Precision = TP/(TP+FP) 混合咗兩行：negative 多 100 倍時 FP 亦多 100 倍（10 → 1000），precision 由 0.8 跌到 0.038，雖然 TPR = 0.8、FPR = 0.2 冇變。</p></details>
+<p>TPR 只用實際 positive 嗰行（\( TP/(TP+FN) \)），FPR 只用實際 negative 嗰行（\( FP/(FP+TN) \)），各自係行內比例，唔受兩類相對數目影響。\( \text{Precision} = TP/(TP+FP) \) 混合咗兩行：negative 多 100 倍時 FP 亦多 100 倍（10 → 1000），precision 由 0.8 跌到 0.038，雖然 \( TPR = 0.8 \)、\( FPR = 0.2 \) 冇變。</p></details>
 <details class="q"><summary>Q9. Validation set 同 test set 有咩分別？點解唔可以用 test set 揀 hyperparameters？</summary>
 <p>Validation set 由 training data 分出，用嚟估 generalization error、tune complexity / hyperparameters、model selection；test set 只喺最後評估一次。用 test set 揀 hyperparameters 會令 test set 間接參與 training，報告嘅 performance 過度樂觀，唔再係 unseen data 嘅公正估計。</p></details>
 
@@ -368,13 +368,13 @@ down = resample(majority, replace=False, n_samples=len(minority), random_state=0
 <li><b>Errors</b>：training (apparent)、test、generalization (expected error on same distribution)。</li>
 <li><b>Underfitting</b>：太簡單，train &amp; test error 都大；<b>Overfitting</b>：太複雜，train error 細 test error 大。更多 training data → 減少 train/test 差距。</li>
 <li><b>Model selection</b>：validation set（≠ test set；缺點：少咗 training data）、model complexity（Occam's Razor）、statistical bounds。</li>
-<li><b>Confusion matrix</b>：a = TP、b = FN、c = FP、d = TN（行 = actual，列 = predicted）。</li>
-<li>Accuracy = (a+d)/N；Precision = a/(a+c)；Recall = TPR = a/(a+b)；F = 2rp/(r+p) = 2a/(2a+b+c)；TNR = d/(c+d)；FPR = c/(c+d) = α (Type I)；FNR = b/(a+b) = β (Type II)。</li>
+<li><b>Confusion matrix</b>：\( a = TP \)、\( b = FN \)、\( c = FP \)、\( d = TN \)（行 = actual，列 = predicted）。</li>
+<li>\( \text{Accuracy} = (a+d)/N \)；\( \text{Precision} = a/(a+c) \)；\( \text{Recall} = TPR = a/(a+b) \)；\( F = 2rp/(r+p) = 2a/(2a+b+c) \)；\( TNR = d/(c+d) \)；\( FPR = c/(c+d) = \alpha \) (Type I)；\( FNR = b/(a+b) = \beta \) (Type II)。</li>
 <li><b>Accuracy misleading</b>：9990 vs 10，全估 0 → 99.9%。Precision 受 imbalance 影響，TPR / FPR 唔受。</li>
-<li><b>Cost</b> = Σ count × cost；M1 (80%, 3910) 好過 M2 (90%, 4255)。Precision 偏向 C(Y|Y)、C(Y|N)；Recall 偏向 C(Y|Y)、C(N|Y)；F 除 C(N|N) 外全部。</li>
-<li><b>Evaluation</b>：holdout (2/3 : 1/3)、random subsampling (repeated holdout)、k-fold CV、LOOCV (k = n)、repeated CV（估 variance）、stratified CV（imbalanced + 細樣本）。</li>
-<li><b>ROC</b>：y = TPR、x = FPR；(TPR,FPR)=(0,0) 全 −、(1,1) 全 +、(1,0) ideal；diagonal random；below = 反轉。要 continuous scores；sort desc → 每個 unique score 做 threshold → 計 TPR/FPR。AUC：1 ideal、0.5 random；曲線交叉時 M1 好喺細 FPR、M2 好喺大 FPR。</li>
-<li><b>Imbalance handling</b>：class-based ordering、cost-sensitive (predict + if p(+|x) &gt; C(−,+)/(C(−,+)+C(+,−)))、sampling (under-sample majority / over-sample rare)。</li>
+<li><b>Cost</b> \( = \sum \text{count} \times \text{cost} \)；M1 (80%, 3910) 好過 M2 (90%, 4255)。Precision 偏向 \( C(\text{Y} \mid \text{Y}) \)、\( C(\text{Y} \mid \text{N}) \)；Recall 偏向 \( C(\text{Y} \mid \text{Y}) \)、\( C(\text{N} \mid \text{Y}) \)；F 除 \( C(\text{N} \mid \text{N}) \) 外全部。</li>
+<li><b>Evaluation</b>：holdout (2/3 : 1/3)、random subsampling (repeated holdout)、k-fold CV、LOOCV (\( k = n \))、repeated CV（估 variance）、stratified CV（imbalanced + 細樣本）。</li>
+<li><b>ROC</b>：\( y = TPR \)、\( x = FPR \)；\( (TPR,FPR)=(0,0) \) 全 −、(1,1) 全 +、(1,0) ideal；diagonal random；below = 反轉。要 continuous scores；sort desc → 每個 unique score 做 threshold → 計 TPR/FPR。AUC：1 ideal、0.5 random；曲線交叉時 M1 好喺細 FPR、M2 好喺大 FPR。</li>
+<li><b>Imbalance handling</b>：class-based ordering、cost-sensitive (predict + if \( p(+|x) &gt; C(-,+)/(C(-,+)+C(+,-)) \))、sampling (under-sample majority / over-sample rare)。</li>
 <li><b>Sick 例</b>：0.7×1000 = 700 &lt; 0.3×100000 = 30000 → predict sick。</li>
 </ul></div>
 

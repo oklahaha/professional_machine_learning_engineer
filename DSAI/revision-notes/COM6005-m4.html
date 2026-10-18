@@ -31,7 +31,7 @@
     <li>Simple linear regression \( Y=\beta_0+\beta_1X_1+\text{error} \)：適用條件、dependent / independent variable 嘅叫法。</li>
     <li>OLS：最小化 \( SS(a,b)=\sum(Y_t-a-bX_t)^2 \)；用 <code>smf.ols('fuel~dlic', data).fit()</code>、讀 <code>model.summary()</code>、<code>model.params</code>、<code>model.predict()</code>。</li>
     <li>Matrix 解法：\( \hat\beta=(X'X)^{-1}X'Y \)，識用 3 點例子手計。</li>
-    <li>R² = 1 − RSS/TSS 嘅意思；TSS = ESS + RSS。</li>
+    <li>\( R^2 = 1 - RSS/TSS \) 嘅意思；\( TSS = ESS + RSS \)。</li>
     <li>Regression 幾時 fail：non-linearity、residuals 唔 i.i.d. normal；四幅 diagnostic plots 點讀。</li>
     <li>Multiple linear regression、coefficient interpretation、train/test split、Bias / RMSE、in-sample vs out-of-sample、AIC / BIC。</li>
     <li>（Optional）interval prediction、ANOVA F-test、coefficient t-test 同 standard error 公式。</li>
@@ -39,8 +39,8 @@
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>OLS 目標函數同 \( \hat\beta=(X'X)^{-1}X'Y \)；3 點 (1,2), (2,3), (3,5) → \( \hat\beta_0 = 1/3,\ \hat\beta_1 = 3/2 \)。</li>
-    <li>讀 summary：\( \hat Y=-227.3091+14.0984X \)；slope 解讀（X 加 1 單位，Y 平均變幾多）、p-value、95% CI、R² = 0.489。</li>
-    <li>\( R^2 = 1-\dfrac{RSS}{TSS} \)，TSS = ESS + RSS；R² = 1 = perfect fit。</li>
+    <li>讀 summary：\( \hat Y=-227.3091+14.0984X \)；slope 解讀（X 加 1 單位，Y 平均變幾多）、p-value、95% CI、\(R^2 = 0.489\)。</li>
+    <li>\( R^2 = 1-\dfrac{RSS}{TSS} \)，\( TSS = ESS + RSS \)；\(R^2 = 1\) = perfect fit。</li>
     <li>Residual diagnostics：Residual vs Fitted（linearity、constant variance）、vs Index（independence）、Lag plot（autocorrelation）、QQ-plot（normality）。</li>
     <li>Big model in-sample RMSE 一定較細，但 out-of-sample 唔一定；用 test data RMSE / AIC / BIC（越低越好）揀 model。</li>
   </ol>
@@ -50,7 +50,7 @@
 <div class="formula">$$ Y = \beta_0 + \beta_1 X_1 + \text{error} $$</div>
 <p>Slide 1：適合以下問題——</p>
 <ul>
-<li>只有 <b>p = 1</b> 個 predictor；</li>
+<li>只有 <b>\( p = 1 \)</b> 個 predictor；</li>
 <li>X 同 Y 都係 <b>numerical and continuous</b>；</li>
 <li>X、Y 嘅 scatter plot 理想上似一條直線。</li>
 </ul>
@@ -92,7 +92,7 @@ print(model.params)                                  # 睇 a-hat 同 b-hat</code
 <tr><th>項目</th><th>值</th><th>意思</th></tr>
 <tr><td>Dep. Variable</td><td>fuel</td><td>Y</td></tr>
 <tr><td>No. Observations</td><td>48</td><td>n</td></tr>
-<tr><td>Df Residuals / Df Model</td><td>46 / 1</td><td>n − 2 / p</td></tr>
+<tr><td>Df Residuals / Df Model</td><td>46 / 1</td><td>\( n - 2 \) / \( p \)</td></tr>
 <tr><td>R-squared / Adj. R-squared</td><td>0.489 / 0.477</td><td>dlic 解釋到 fuel 約 48.9% 嘅 variation</td></tr>
 <tr><td>F-statistic / Prob (F)</td><td>43.94 / 3.29e-08</td><td>整個 model 顯著（ANOVA F-test）</td></tr>
 <tr><td>AIC / BIC</td><td>559.9 / 563.6</td><td>model selection 用，越低越好</td></tr>
@@ -107,10 +107,10 @@ print(model.params)                                  # 睇 a-hat 同 b-hat</code
 <div class="box exam"><span class="label">⭐ Coefficient interpretation（考試必寫格式）</span>
 <ul>
 <li><b>Slope 14.0984</b>：dlic 每增加 1 單位（1 個百分點），預期 fuel consumption <b>平均</b>增加約 14.10 單位。</li>
-<li><b>Intercept −227.31</b>：dlic = 0 時嘅預測 fuel——負數冇實際意義，因為 dlic = 0 遠超出數據範圍（extrapolation），intercept 只係令條線位置正確。</li>
-<li><b>t = coef / std err</b>：14.0984 / 2.127 = 6.629；p-value ≈ 0.000 &lt; 0.05 → reject H0：β1 = 0 → dlic 對 fuel 有顯著線性關係。Intercept p = 0.069 &gt; 0.05 → 喺 5% 唔顯著。</li>
-<li><b>95% CI of slope</b>：[9.817, 18.380]，唔包 0 → 同 t-test 結論一致（Module 3：CI 唔包 null value ⇔ reject H0）。手計：14.0984 ± 2.013 × 2.127 = 14.0984 ± 4.282（\( t_{46,0.975} \approx 2.013 \)）。</li>
-<li>Simple regression 入面 F = t²：6.629² ≈ 43.94 ✔。</li>
+<li><b>Intercept −227.31</b>：\( \text{dlic} = 0 \) 時嘅預測 fuel——負數冇實際意義，因為 \( \text{dlic} = 0 \) 遠超出數據範圍（extrapolation），intercept 只係令條線位置正確。</li>
+<li><b>\( t = \text{coef} / \text{std err} \)</b>：14.0984 / 2.127 = 6.629；p-value ≈ 0.000 &lt; 0.05 → reject \(H_0: \beta_1 = 0\) → dlic 對 fuel 有顯著線性關係。Intercept \( p = 0.069 &gt; 0.05 \) → 喺 5% 唔顯著。</li>
+<li><b>95% CI of slope</b>：[9.817, 18.380]，唔包 0 → 同 t-test 結論一致（Module 3：CI 唔包 null value ⇔ reject \(H_0\)）。手計：14.0984 ± 2.013 × 2.127 = 14.0984 ± 4.282（\( t_{46,0.975} \approx 2.013 \)）。</li>
+<li>Simple regression 入面 \( F = t^2 \)：\( 6.629^2 \approx 43.94 \) ✔。</li>
 </ul></div>
 
 <h3>2.2 畫 fitted line 同 prediction（slides 9–10）</h3>
@@ -123,7 +123,7 @@ newdata = pd.DataFrame({'dlic': [50]})             # test dataset：column 名�
 prediction = model.predict(newdata)                # 477.61
 newdata = pd.DataFrame({'dlic': [50, 55, 60]})
 predictions = model.predict(newdata)               # 477.61, 548.10, 618.59</code></pre>
-<div class="box exam"><span class="label">⭐ 手計 prediction</span><p>dlic = 50：\( \hat Y = -227.3091 + 14.0984 \times 50 = -227.3091 + 704.92 = 477.61 \)。<br>dlic = 60：\( -227.3091 + 845.904 = 618.59 \)。</p></div>
+<div class="box exam"><span class="label">⭐ 手計 prediction</span><p>\( \text{dlic} = 50 \)：\( \hat Y = -227.3091 + 14.0984 \times 50 = -227.3091 + 704.92 = 477.61 \)。<br>\( \text{dlic} = 60 \)：\( -227.3091 + 845.904 = 618.59 \)。</p></div>
 
 <h2>3. Step-by-step numerical example：Matrix OLS（slides 11–19）</h2>
 <p>3 個數據點：(1, 2)、(2, 3)、(3, 5)。Slide 12 嘅圖顯示 OLS line 穿過三點附近。</p>
@@ -177,20 +177,20 @@ print(model.summary())</code></pre>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p><code>sm.OLS</code>（大寫，array API）唔會自動加 intercept，要自己加一欄 1（或 <code>sm.add_constant(x)</code>）；<code>smf.ols</code>（細寫，formula API）會自動加 Intercept。</p></div>
 
 <h2>4. R squared（slide 20）</h2>
-<p>R² 係 0 至 1 之間嘅數，描述 Y 嘅 variation 有幾多比例被 model 解釋。</p>
+<p>\(R^2\) 係 0 至 1 之間嘅數，描述 Y 嘅 variation 有幾多比例被 model 解釋。</p>
 <div class="formula">$$ \text{Total SS} = \text{Explained SS} + \text{Residual SS}, \qquad R^2 = 1 - \frac{\text{Residual SS}}{\text{Total SS}} = 1 - \frac{RSS}{TSS} $$</div>
 <div class="formula">$$ TSS = \sum_{t=1}^{n}(Y_t-\bar Y)^2, \qquad RSS = \sum_{t=1}^{n}\left(Y_t - \hat\beta_0 - \hat\beta_1X_{1t} - \cdots - \hat\beta_pX_{pt}\right)^2 = \sum(\text{True} - \text{Predicted})^2 $$</div>
-<p>Explained / Regression SS (ESS) = TSS − RSS。R² = 1 代表 perfect fit（RSS = 0）。</p>
-<div class="box warn"><span class="label">⚠️ 留意</span><p>Slide 20 原文寫 “R squared: 1 means perfect fit. It implies that ESS = 0”——正確應該係 <b>RSS（Residual SS）= 0</b>（所有點都喺線上），ESS = TSS。考試要寫 RSS = 0。</p></div>
-<div class="box exam"><span class="label">⭐ Worked example：3 點數據嘅 R²</span>
+<p>Explained / Regression SS (ESS)：\( ESS = TSS - RSS \)。\( R^2 = 1 \) 代表 perfect fit（\( RSS = 0 \)）。</p>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>Slide 20 原文寫 “R squared: 1 means perfect fit. It implies that ESS = 0”——正確應該係 <b>RSS（Residual SS）= 0</b>（所有點都喺線上），\( ESS = TSS \)。考試要寫 \( RSS = 0 \)。</p></div>
+<div class="box exam"><span class="label">⭐ Worked example：3 點數據嘅 \(R^2\)</span>
 <ol>
-<li>\( \bar Y = 10/3 = 3.333 \)；TSS = \( (2-3.333)^2 + (3-3.333)^2 + (5-3.333)^2 = 1.778 + 0.111 + 2.778 = 4.667 \)</li>
+<li>\( \bar Y = 10/3 = 3.333 \)；\( TSS = (2-3.333)^2 + (3-3.333)^2 + (5-3.333)^2 = 1.778 + 0.111 + 2.778 = 4.667 \)</li>
 <li>Fitted：\( \hat Y = 1.833,\ 3.333,\ 4.833 \)；residuals = 0.167, −0.333, 0.167</li>
-<li>RSS = 0.0278 + 0.1111 + 0.0278 = 0.1667</li>
-<li>ESS = 4.667 − 0.1667 = 4.5</li>
+<li>\( RSS = 0.0278 + 0.1111 + 0.0278 = 0.1667 \)</li>
+<li>\( ESS = 4.667 - 0.1667 = 4.5 \)</li>
 <li>\( R^2 = 1 - 0.1667/4.667 = 0.964 \) → model 解釋 96.4% variation。</li>
 </ol></div>
-<div class="box tip"><span class="label">💡 Fuel 例子</span><p>R² = 0.489：dlic 只解釋到 fuel 大約一半嘅差異，其餘可能嚟自 income、tax 等其他因素 → 引出 multiple regression。</p></div>
+<div class="box tip"><span class="label">💡 Fuel 例子</span><p>\(R^2 = 0.489\)：dlic 只解釋到 fuel 大約一半嘅差異，其餘可能嚟自 income、tax 等其他因素 → 引出 multiple regression。</p></div>
 
 <h2>5. When does regression fail?（slides 21–22）</h2>
 <div class="box exam"><span class="label">⭐ 失敗情況</span>
@@ -232,17 +232,17 @@ plt.hist(resid, bins=20); plt.show()         # residual histogram</code></pre>
 <p>Applicable if：</p>
 <ul>
 <li>所有 X 同 Y 都係 numerical and continuous；</li>
-<li>p 相對 n 細（<b>p &gt; 10 can be very problematic</b>）。</li>
+<li>p 相對 n 細（<b>\( p &gt; 10 \) can be very problematic</b>）。</li>
 </ul>
-<p>Lecture 4 第二部分內容：basic ideas of regression for p &gt; 1、doing prediction using Python、selecting important predictors。</p>
+<p>Lecture 4 第二部分內容：basic ideas of regression for \( p &gt; 1 \)、doing prediction using Python、selecting important predictors。</p>
 <p>例子（slide 29）：What affects the saving rate？<code>savings.csv</code>：50 個國家 1960–1970 數據（Belsley, Kuh &amp; Welsch 1980, <i>Regression Diagnostics</i>）。</p>
 <table>
 <tr><th>Variable</th><th>意思</th></tr>
-<tr><td>Y = sr</td><td>personal saving ÷ disposable income</td></tr>
-<tr><td>X1 = pop15</td><td>% population under age 15</td></tr>
-<tr><td>X2 = pop75</td><td>% population over age 75</td></tr>
-<tr><td>X3 = dpi</td><td>per capita disposable income (US$)</td></tr>
-<tr><td>X4 = ddpi</td><td>% growth rate of dpi</td></tr>
+<tr><td>\( Y = \text{sr} \)</td><td>personal saving ÷ disposable income</td></tr>
+<tr><td>\( X_1 = \text{pop15} \)</td><td>% population under age 15</td></tr>
+<tr><td>\( X_2 = \text{pop75} \)</td><td>% population over age 75</td></tr>
+<tr><td>\( X_3 = \text{dpi} \)</td><td>per capita disposable income (US$)</td></tr>
+<tr><td>\( X_4 = \text{ddpi} \)</td><td>% growth rate of dpi</td></tr>
 </table>
 
 <h2>7. Multiple regression with Python（slides 30–34）</h2>
@@ -257,14 +257,14 @@ print(model.summary())                                 # β-hat 喺 "coef" 欄</
 <tr><td>pop75</td><td>1.3050</td><td>0.778</td><td>1.678</td><td>0.100</td><td>−0.259</td><td>2.869</td></tr>
 <tr><td>dpi</td><td>−0.0003</td><td>0.001</td><td>−0.337</td><td>0.738</td><td>−0.002</td><td>0.002</td></tr>
 </table>
-<p>R² = 0.102、Adj. R² = 0.064、F = 2.680、Prob (F) = 0.0791、n = 50、Df Residuals = 47、Df Model = 2、AIC = 291.5、BIC = 297.2。</p>
+<p>\(R^2 = 0.102\)、Adj. \(R^2 = 0.064\)、\( F = 2.680 \)、Prob (F) = 0.0791、\( n = 50 \)、Df Residuals = 47、Df Model = 2、AIC = 291.5、BIC = 297.2。</p>
 <div class="box exam"><span class="label">⭐ Multiple regression 嘅 coefficient interpretation</span>
 <div class="formula">$$ \widehat{sr} = 7.0566 + 1.3050\,\text{pop75} - 0.0003\,\text{dpi} $$</div>
 <ul>
-<li><b>pop75 = 1.3050</b>：<b>在 dpi 不變（holding other variables constant）</b>下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加約 1.305 個百分點。p = 0.100 &gt; 0.05 → 喺 5% 水平唔顯著；95% CI [−0.259, 2.869] 包 0，結論一致。</li>
-<li><b>dpi = −0.0003</b>：pop75 不變下，人均可支配收入每增加 US$1，saving rate 平均跌 0.0003（每增加 $1000 跌 0.3）；p = 0.738 → 完全唔顯著。</li>
-<li><b>Overall F-test</b>：p = 0.0791 &gt; 0.05 → 喺 5% 水平唔能夠 reject “β_pop75 = β_dpi = 0”。</li>
-<li><b>R² = 0.102</b>：只解釋 10.2% variation，model 解釋力弱。</li>
+<li><b>pop75 = 1.3050</b>：<b>在 dpi 不變（holding other variables constant）</b>下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加約 1.305 個百分點。\( p = 0.100 &gt; 0.05 \) → 喺 5% 水平唔顯著；95% CI [−0.259, 2.869] 包 0，結論一致。</li>
+<li><b>dpi = −0.0003</b>：pop75 不變下，人均可支配收入每增加 US$1，saving rate 平均跌 0.0003（每增加 $1000 跌 0.3）；\( p = 0.738 \) → 完全唔顯著。</li>
+<li><b>Overall F-test</b>：\( p = 0.0791 &gt; 0.05 \) → 喺 5% 水平唔能夠 reject “\(\beta_{\text{pop75}} = \beta_{\text{dpi}} = 0\)”。</li>
+<li><b>\(R^2 = 0.102\)</b>：只解釋 10.2% variation，model 解釋力弱。</li>
 </ul></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Multiple regression 嘅 coefficient 一定要加「<b>holding other variables constant</b>」；同 simple regression 嘅 slope 唔同。Coefficient 大細亦受單位影響（dpi 係美元，所以 coef 好細），唔代表重要性。</p></div>
 
@@ -281,7 +281,7 @@ newdata = pd.DataFrame({'pop15': [30, 25], 'pop75': [3, 4],
                         'dpi': [2000, 2000], 'ddpi': [5, 5]})
 predictions = model.get_prediction(newdata)   # 有 summary_frame，可出 interval
 predictions = model.predict(newdata)          # point prediction</code></pre>
-<p>例：用 slide 32 model，pop75 = 3、dpi = 2000：\( \widehat{sr} = 7.0566 + 1.305(3) - 0.0003(2000) = 7.0566 + 3.915 - 0.6 = 10.37 \)（用四捨五入後嘅 coef；多出嚟嘅 columns 如 pop15、ddpi 會被 model 忽略）。</p>
+<p>例：用 slide 32 model，\( \text{pop75} = 3 \)、\( \text{dpi} = 2000 \)：\( \widehat{sr} = 7.0566 + 1.305(3) - 0.0003(2000) = 7.0566 + 3.915 - 0.6 = 10.37 \)（用四捨五入後嘅 coef；多出嚟嘅 columns 如 pop15、ddpi 會被 model 忽略）。</p>
 
 <h2>8. Measuring prediction ability（slides 35–39）</h2>
 <div class="box exam"><span class="label">⭐ 步驟（slide 35）</span>
@@ -307,7 +307,7 @@ bias = np.mean(pre_val - act_val)        # 正 = 系統性高估；負 = 系統�
 rmse = np.sqrt(mean_squared_error(act_val, pre_val))
 print("Bias:", bias)
 print("RMSE:", rmse)                     # 亦可以用 MSE</code></pre>
-<div class="box tip"><span class="label">💡 手計例子（補充）</span><p>Actual = 10, 12, 8；Predicted = 11, 11, 10。Errors (pred − act) = 1, −1, 2。Bias = 2/3 = 0.667（平均高估）；MSE = (1 + 1 + 4)/3 = 2；RMSE = √2 = 1.414。</p></div>
+<div class="box tip"><span class="label">💡 手計例子（補充）</span><p>Actual = 10, 12, 8；Predicted = 11, 11, 10。Errors (pred − act) = 1, −1, 2。\( \text{Bias} = 2/3 = 0.667 \)（平均高估）；\( MSE = (1 + 1 + 4)/3 = 2 \)；\( RMSE = \sqrt{2} = 1.414 \)。</p></div>
 
 <h3>8.1 Big model vs small model（slides 36–39）</h3>
 <div class="box exam"><span class="label">⭐ Is a big model always better than a small model?（slide 38）</span>
@@ -323,7 +323,7 @@ for name, m in [("small", small_model), ("big", big_model)]:
     in_rmse = np.sqrt(mean_squared_error(savings_train['sr'], m.predict(savings_train)))
     out_rmse = np.sqrt(mean_squared_error(savings_test['sr'], m.predict(savings_test)))
     print(f"{name}: AIC={m.aic:.1f}, BIC={m.bic:.1f}, In-RMSE={in_rmse:.4f}, Out-RMSE={out_rmse:.4f}")</code></pre>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>用 training data 嘅 R² / RMSE 去揀 model——加任何 variable（就算係 random noise）R² 都只會升唔會跌。要睇 out-of-sample RMSE、Adj. R²、AIC / BIC。Slide 39 冇顯示實際輸出數字，重點係概念：small model 嘅 out-of-sample RMSE 可以更低。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>用 training data 嘅 \(R^2\) / RMSE 去揀 model——加任何 variable（就算係 random noise）\(R^2\) 都只會升唔會跌。要睇 out-of-sample RMSE、Adj. \(R^2\)、AIC / BIC。Slide 39 冇顯示實際輸出數字，重點係概念：small model 嘅 out-of-sample RMSE 可以更低。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification：training error vs test (generalization) error、model overfitting、holdout method——同一個概念。COM6001 Week 1 講過嘅 train/test split 同 Module 2a 嘅 <code>np.random.choice(range(0,100), 70, replace=False)</code> 都係做呢件事（slide 37 用 <code>iloc[:35]</code> 係按次序切，唔係 random）。</p></div>
 
 <h2>9. Optional topics（slides 40–46）</h2>
@@ -334,65 +334,65 @@ prediction_summary = predictions.summary_frame(alpha=0.05)
 print(prediction_summary)
 # mean_ci_lower/upper：population mean（平均 Y）嘅 CI
 # obs_ci_lower/upper ：future prediction / new data point 嘅 prediction interval（更闊）</code></pre>
-<div class="box tip"><span class="label">💡 兩種 interval</span><p>CI of mean：「dlic = 50 嘅州，<b>平均</b> fuel 喺邊個範圍」；Prediction interval：「<b>某一個</b> dlic = 50 嘅州 fuel 喺邊」——要加埋個別 error 嘅 variance，所以更闊。</p></div>
+<div class="box tip"><span class="label">💡 兩種 interval</span><p>CI of mean：「\( \text{dlic} = 50 \) 嘅州，<b>平均</b> fuel 喺邊個範圍」；Prediction interval：「<b>某一個</b> \( \text{dlic} = 50 \) 嘅州 fuel 喺邊」——要加埋個別 error 嘅 variance，所以更闊。</p></div>
 
 <h3>9.2 Is X helpful to predict Y?（slides 42–43）</h3>
 <table>
 <tr><th></th><th>ANOVA (F-statistic)</th><th>T-tests</th></tr>
-<tr><td>H0</td><td>所有 regression coefficients（intercept 除外）= 0：\( \beta_1=\beta_2=\cdots=\beta_p=0 \)</td><td>\( \beta_j = 0 \)：第 j 個 predictor 對 Y 冇 effect（given other variables）</td></tr>
-<tr><td>H1</td><td>至少一個 ≠ 0</td><td>\( \beta_j \ne 0 \)：X_j 同 Y 有顯著線性關係</td></tr>
+<tr><td>\(H_0\)</td><td>所有 regression coefficients（intercept 除外）= 0：\( \beta_1=\beta_2=\cdots=\beta_p=0 \)</td><td>\( \beta_j = 0 \)：第 j 個 predictor 對 Y 冇 effect（given other variables）</td></tr>
+<tr><td>\(H_1\)</td><td>至少一個 \( \ne 0 \)</td><td>\( \beta_j \ne 0 \)：\( X_j \) 同 Y 有顯著線性關係</td></tr>
 <tr><td>測試咩</td><td>整個 model 係咪比 intercept-only mean model 解釋顯著更多 variance</td><td>個別 predictor 係咪顯著</td></tr>
 </table>
 <div class="box exam"><span class="label">⭐ ANOVA table（simple regression，slide 43）</span>
 <table>
 <tr><th>Source of variation</th><th>Sum of squares</th><th>Degree of freedom</th><th>Mean square</th><th>F-ratio</th></tr>
-<tr><td>Regression</td><td>SSR</td><td>1</td><td>MSR = SSR/1</td><td>MSR/MSE</td></tr>
-<tr><td>Error</td><td>SSE</td><td>n − 2</td><td>MSE = SSE/(n − 2)</td><td></td></tr>
-<tr><td>Total</td><td>SST</td><td>n − 1</td><td></td><td></td></tr>
+<tr><td>Regression</td><td>SSR</td><td>1</td><td>\( MSR = SSR/1 \)</td><td>\( MSR/MSE \)</td></tr>
+<tr><td>Error</td><td>SSE</td><td>\( n - 2 \)</td><td>\( MSE = SSE/(n-2) \)</td><td></td></tr>
+<tr><td>Total</td><td>SST</td><td>\( n - 1 \)</td><td></td><td></td></tr>
 </table>
-<p>F-test：比較 F-ratio 同 \( F_{1,\,n-2,\,95\%} \)（記法 \( F_{\text{numerator},\,\text{denominator},\,\alpha} \)）。F-ratio 大過 critical value → reject H0。</p></div>
-<p>Slide 44 係 F-table（α = 0.05）：column = Numerator DF（1–10），row = Denominator DF（1–50）。例如 \( F_{1,1} = 161.448 \)、\( F_{1,3} = 10.128 \)、\( F_{1,46} = 4.052 \)、\( F_{2,47} = 3.195 \)。</p>
+<p>F-test：比較 F-ratio 同 \( F_{1,\,n-2,\,95\%} \)（記法 \( F_{\text{numerator},\,\text{denominator},\,\alpha} \)）。F-ratio 大過 critical value → reject \(H_0\)。</p></div>
+<p>Slide 44 係 F-table（\(\alpha = 0.05\)）：column = Numerator DF（1–10），row = Denominator DF（1–50）。例如 \( F_{1,1} = 161.448 \)、\( F_{1,3} = 10.128 \)、\( F_{1,46} = 4.052 \)、\( F_{2,47} = 3.195 \)。</p>
 <div class="box exam"><span class="label">⭐ Worked example：Fuel model F-test</span>
-<p>F = 43.94，df = (1, 46)；查表 \( F_{1,46,0.05} = 4.052 \)。43.94 &gt; 4.052 → reject H0：β1 = 0，dlic 有助預測 fuel（同 Prob(F) = 3.29e-08 一致）。</p>
-<p>Savings model：F = 2.680，df = (2, 47)；\( F_{2,47} = 3.195 \)。2.680 &lt; 3.195 → do not reject（同 Prob(F) = 0.0791 &gt; 0.05 一致）。</p></div>
+<p>\( F = 43.94 \)，\( df = (1, 46) \)；查表 \( F_{1,46,0.05} = 4.052 \)。43.94 &gt; 4.052 → reject \(H_0: \beta_1 = 0\)，dlic 有助預測 fuel（同 Prob(F) = 3.29e-08 一致）。</p>
+<p>Savings model：\( F = 2.680 \)，\( df = (2, 47) \)；\( F_{2,47} = 3.195 \)。2.680 &lt; 3.195 → do not reject（同 Prob(F) = 0.0791 &gt; 0.05 一致）。</p></div>
 
 <h3>9.3 Is the coefficient significantly different from zero?（slides 45–46）</h3>
 <p>統計估計同 prediction 通常會附上 <b>standard error</b> 量度準確度／不確定性。</p>
 <div class="formula">$$ \hat\sigma = \sqrt{\frac{1}{n-2}\,SS(\hat a,\hat b)}, \qquad \text{S.E.}(\hat a) = \hat\sigma\sqrt{\frac1n + \frac{\bar X^2}{S_{XX}}}, \qquad \text{S.E.}(\hat b) = \hat\sigma\sqrt{\frac{1}{S_{XX}}} $$</div>
 <div class="formula">$$ S_{XX} = \sum_{t=1}^{n}(X_t-\bar X)^2, \qquad t = \frac{\hat b}{\text{S.E.}(\hat b)} \ \text{ compared with } t_{n-2,\,97.5\%} $$</div>
-<p>Slide 46 係 t-table（同 Module 3a 一樣，row ν、column α）。</p>
+<p>Slide 46 係 t-table（同 Module 3a 一樣，row \(\nu\)、column \(\alpha\)）。</p>
 <div class="box exam"><span class="label">⭐ Worked example 1：3 點數據 (1,2), (2,3), (3,5)</span>
 <ol>
-<li>SS(â, b̂) = RSS = 0.1667；n − 2 = 1 → \( \hat\sigma = \sqrt{0.1667/1} = 0.4082 \)</li>
+<li>\( SS(\hat{a}, \hat{b}) = RSS = 0.1667 \)；\( n - 2 = 1 \) → \( \hat\sigma = \sqrt{0.1667/1} = 0.4082 \)</li>
 <li>\( S_{XX} = (1-2)^2 + 0 + (3-2)^2 = 2 \)</li>
-<li>S.E.(b̂) = 0.4082 × √(1/2) = 0.2887</li>
-<li>t = 1.5 / 0.2887 = <b>5.196</b></li>
-<li>\( t_{1,\,97.5\%} = 12.706 \)（ν = 1，α = .025）→ 5.196 &lt; 12.706 → <b>唔能 reject</b> β1 = 0。只有 3 點，df = 1，證據唔夠。</li>
-<li>S.E.(â) = 0.4082 × √(1/3 + 4/2) = 0.4082 × 1.5275 = 0.6236</li>
-<li>ANOVA 驗證：SSR = 4.5，MSE = 0.1667/1 → F = 27 = t²（5.196² ≈ 27）；\( F_{1,1} = 161.448 \) → 同樣唔 reject。</li>
+<li>\( SE(\hat{b}) = 0.4082 \times \sqrt{1/2} = 0.2887 \)</li>
+<li>\( t = 1.5 / 0.2887 = \) <b>5.196</b></li>
+<li>\( t_{1,\,97.5\%} = 12.706 \)（\(\nu = 1\)，\( \alpha = .025 \)）→ 5.196 &lt; 12.706 → <b>唔能 reject</b> \(\beta_1 = 0\)。只有 3 點，\( df = 1 \)，證據唔夠。</li>
+<li>\( SE(\hat{a}) = 0.4082 \times \sqrt{1/3 + 4/2} = 0.4082 \times 1.5275 = 0.6236 \)</li>
+<li>ANOVA 驗證：\( SSR = 4.5 \)，\( MSE = 0.1667/1 \) → \( F = 27 = t^2 \)（\( 5.196^2 \approx 27 \)）；\( F_{1,1} = 161.448 \) → 同樣唔 reject。</li>
 </ol></div>
 <div class="box exam"><span class="label">⭐ Worked example 2：Module 1 廣告 vs Sales（n = 5）</span>
-<p>X = 172, 156, 167, 145, 150；Y = 60, 43, 52, 36, 40。</p>
+<p>\( X = 172, 156, 167, 145, 150 \)；\( Y = 60, 43, 52, 36, 40 \)。</p>
 <ol>
 <li>\( \bar X = 158,\ \bar Y = 46.2,\ S_{XX} = 514,\ S_{XY} = 434 \) → \( \hat b = 0.8444,\ \hat a = -87.21 \)</li>
-<li>TSS = 376.8；RSS = 10.35 → \( R^2 = 1 - 10.35/376.8 = 0.973 \)</li>
-<li>\( \hat\sigma = \sqrt{10.35/3} = 1.857 \)；S.E.(b̂) = 1.857/√514 = 0.0819</li>
-<li>t = 0.8444/0.0819 = <b>10.31</b>；\( t_{3,\,97.5\%} = 3.182 \) → reject H0：β1 = 0，廣告開支顯著影響 sales。</li>
+<li>\( TSS = 376.8 \)；\( RSS = 10.35 \) → \( R^2 = 1 - 10.35/376.8 = 0.973 \)</li>
+<li>\( \hat\sigma = \sqrt{10.35/3} = 1.857 \)；\( SE(\hat{b}) = 1.857/\sqrt{514} = 0.0819 \)</li>
+<li>\( t = 0.8444/0.0819 = \) <b>10.31</b>；\( t_{3,\,97.5\%} = 3.182 \) → reject \(H_0: \beta_1 = 0\)，廣告開支顯著影響 sales。</li>
 <li>95% CI of slope：0.8444 ± 3.182 × 0.0819 = (0.584, 1.105)。</li>
 </ol></div>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Regression coefficient t-test 嘅 df = <b>n − 2</b>（simple regression；multiple regression 係 n − p − 1），唔係 n − 1。two-sided 用 97.5% quantile。</p></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>t-test of coefficient 就係 Module 3a t-test 嘅延伸（estimate ÷ S.E. 對比 t critical value）；coefficient CI 就係 Module 3 嘅「CI 唔包 0 ⇔ reject H0」。ANOVA F 用嘅 between / within variation 概念同 Module 3a slide 32 一樣。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Regression coefficient t-test 嘅 \( df = \) <b>\( n - 2 \)</b>（simple regression；multiple regression 係 \( n - p - 1 \)），唔係 \( n - 1 \)。two-sided 用 97.5% quantile。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>t-test of coefficient 就係 Module 3a t-test 嘅延伸（estimate ÷ S.E. 對比 t critical value）；coefficient CI 就係 Module 3 嘅「CI 唔包 0 ⇔ reject \(H_0\)」。ANOVA F 用嘅 between / within variation 概念同 Module 3a slide 32 一樣。</p></div>
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 用 matrix 方法計 (0, 1), (1, 3), (2, 2) 嘅 OLS line。</summary><p>\( X^TX = \begin{bmatrix}3&amp;3\\3&amp;5\end{bmatrix} \)，det = 15 − 9 = 6，\( (X^TX)^{-1} = \frac16\begin{bmatrix}5&amp;-3\\-3&amp;3\end{bmatrix} \)；\( X^TY = \begin{bmatrix}6\\7\end{bmatrix} \)；\( \hat\beta = \frac16\begin{bmatrix}30-21\\-18+21\end{bmatrix} = \begin{bmatrix}1.5\\0.5\end{bmatrix} \) → \( \hat Y = 1.5 + 0.5X \)。</p></details>
-<details class="q"><summary>Q2. 繼續 Q1：計 TSS、RSS、R²。</summary><p>\( \bar Y = 2 \)；TSS = 1 + 1 + 0 = 2。Fitted = 1.5, 2, 2.5；residuals = −0.5, 1, −0.5；RSS = 0.25 + 1 + 0.25 = 1.5。R² = 1 − 1.5/2 = 0.25。</p></details>
-<details class="q"><summary>Q3. 某 output：coef of X = −2.35，std err = 0.80，n = 25（simple regression）。做 two-sided t-test（α = 0.05）並解讀 coefficient。</summary><p>t = −2.35/0.80 = −2.94；df = 23，\( t_{23,0.975} \) = 2.069。|−2.94| &gt; 2.069 → reject H0：β1 = 0。解讀：X 每增加 1 單位，Y 平均減少 2.35 單位。</p></details>
-<details class="q"><summary>Q4. Fuel model：dlic = 65 時嘅預測？如果政策令 dlic 由 60 跌到 30，預測 fuel 變化？有咩問題？</summary><p>dlic = 65：−227.3091 + 14.0984 × 65 = 689.09。60 → 30：變化 = 14.0984 × (−30) = −422.95。問題：dlic = 30 可能遠超出 training data 範圍（extrapolation），linear 關係未必成立；而且 regression 只顯示 association，唔一定係 causation。</p></details>
+<details class="q"><summary>Q2. 繼續 Q1：計 TSS、RSS、\(R^2\)。</summary><p>\( \bar Y = 2 \)；\( TSS = 1 + 1 + 0 = 2 \)。Fitted = 1.5, 2, 2.5；residuals = −0.5, 1, −0.5；\( RSS = 0.25 + 1 + 0.25 = 1.5 \)。\(R^2 = 1 - 1.5/2 = 0.25\)。</p></details>
+<details class="q"><summary>Q3. 某 output：coef of X = −2.35，std err = 0.80，\( n = 25 \)（simple regression）。做 two-sided t-test（\(\alpha = 0.05\)）並解讀 coefficient。</summary><p>\( t = -2.35/0.80 = -2.94 \)；\( df = 23 \)，\( t_{23,0.975} = 2.069 \)。|−2.94| &gt; 2.069 → reject \(H_0: \beta_1 = 0\)。解讀：X 每增加 1 單位，Y 平均減少 2.35 單位。</p></details>
+<details class="q"><summary>Q4. Fuel model：\( \text{dlic} = 65 \) 時嘅預測？如果政策令 dlic 由 60 跌到 30，預測 fuel 變化？有咩問題？</summary><p>\( \text{dlic} = 65 \)：−227.3091 + 14.0984 × 65 = 689.09。60 → 30：變化 = 14.0984 × (−30) = −422.95。問題：\( \text{dlic} = 30 \) 可能遠超出 training data 範圍（extrapolation），linear 關係未必成立；而且 regression 只顯示 association，唔一定係 causation。</p></details>
 <details class="q"><summary>Q5. Residual vs fitted plot 呈漏斗形（fitted 越大，residual 越散），代表咩問題？違反咩 assumption？</summary><p>Heteroskedasticity（non-constant variance），違反 identically distributed（constant Var(error)）assumption。可考慮 transformation（例如 log Y）或 GARCH 類 time-varying variance model。</p></details>
-<details class="q"><summary>Q6. Simple regression，n = 22，SSR = 120，SSE = 200。完成 ANOVA table 並做 F-test（α = 0.05）。R² 係幾多？</summary><p>df：Regression 1、Error 20、Total 21。MSR = 120；MSE = 200/20 = 10；F = 12。\( F_{1,20,0.05} \) = 4.351 → 12 &gt; 4.351 → reject H0：β1 = 0。SST = 320，R² = 120/320 = 0.375。</p></details>
+<details class="q"><summary>Q6. Simple regression，\( n = 22 \)，\( SSR = 120 \)，\( SSE = 200 \)。完成 ANOVA table 並做 F-test（\(\alpha = 0.05\)）。\(R^2\) 係幾多？</summary><p>df：Regression 1、Error 20、Total 21。\( MSR = 120 \)；\( MSE = 200/20 = 10 \)；\( F = 12 \)。\( F_{1,20,0.05} = 4.351 \) → 12 &gt; 4.351 → reject \(H_0: \beta_1 = 0\)。\( SST = 320 \)，\(R^2 = 120/320 = 0.375\)。</p></details>
 <details class="q"><summary>Q7. 點解 big model 嘅 in-sample RMSE 一定 ≤ small model，但 out-of-sample 唔一定？點樣揀？</summary><p>OLS 喺 training data 上最小化 SS；多咗 parameters 最差都可以將佢哋設 0 得返 small model，所以 in-sample error 唔會更大。但多餘 parameters 會 fit 埋 noise（overfitting），喺 unseen test data 表現可能更差。揀 model：比較 out-of-sample RMSE，或 AIC / BIC（越低越好）。</p></details>
 <details class="q"><summary>Q8. 寫 Python：用 <code>savings</code> 頭 35 行 fit sr ~ pop15 + pop75，計 test set 嘅 bias 同 RMSE。</summary><p><code>m = smf.ols('sr~pop15+pop75', data=savings.iloc[:35]).fit(); te = savings.iloc[35:50]; pred = m.predict(te); bias = np.mean(pred - te['sr']); rmse = np.sqrt(mean_squared_error(te['sr'], pred))</code></p></details>
-<details class="q"><summary>Q9. Savings output 中 pop75 coef = 1.305、p = 0.100。用完整句子解讀，並講喺 α = 0.05 / 0.10 嘅結論。</summary><p>喺 dpi 不變下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加 1.305 個百分點。α = 0.05：p = 0.100 &gt; 0.05 → 唔顯著；α = 0.10：p = 0.100 啱啱喺邊界（p 唔細過 0.10），嚴格嚟講都唔 reject。</p></details>
+<details class="q"><summary>Q9. Savings output 中 pop75 coef = 1.305、\( p = 0.100 \)。用完整句子解讀，並講喺 \(\alpha = 0.05 / 0.10\) 嘅結論。</summary><p>喺 dpi 不變下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加 1.305 個百分點。\(\alpha = 0.05\)：\( p = 0.100 &gt; 0.05 \) → 唔顯著；\(\alpha = 0.10\)：\( p = 0.100 \) 啱啱喺邊界（p 唔細過 0.10），嚴格嚟講都唔 reject。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
@@ -400,15 +400,15 @@ print(prediction_summary)
 <li>OLS：min \( \sum(Y_t-a-bX_t)^2 \)；\( \hat b=S_{XY}/S_{XX} \)，\( \hat a=\bar Y-\hat b\bar X \)；matrix：\( \hat\beta=(X'X)^{-1}X'Y \)（X 第一欄全 1）。</li>
 <li>3 點 (1,2),(2,3),(3,5)：\( X'X=\begin{bmatrix}3&amp;6\\6&amp;14\end{bmatrix} \)，det 6，\( X'Y=(10,23)' \) → \( \hat\beta=(1/3,\ 3/2) \)。</li>
 <li>Python：<code>smf.ols('y~x1+x2', data).fit()</code>、<code>.summary()</code>、<code>.params</code>、<code>.predict(newdata)</code>、<code>.get_prediction().summary_frame(alpha=0.05)</code>；<code>sm.OLS(endog, exog)</code> 要自己加 constant。</li>
-<li>Fuel：\( \hat Y=-227.3091+14.0984X \)，R² = 0.489，slope t = 6.629，F = 43.94 = t²；dlic = 50 → 477.61。</li>
+<li>Fuel：\( \hat Y=-227.3091+14.0984X \)，\(R^2 = 0.489\)，slope \( t = 6.629 \)，\( F = 43.94 = t^2 \)；\( \text{dlic} = 50 \) → 477.61。</li>
 <li>Slope 解讀：X 加 1 單位，Y 平均變 \( \hat\beta \)（multiple：holding others constant）；intercept 可能無實際意義（extrapolation）。</li>
-<li>\( R^2=1-RSS/TSS \)；TSS = ESS + RSS；R² = 1 ⇔ RSS = 0。</li>
+<li>\( R^2=1-RSS/TSS \)；\( TSS = ESS + RSS \)；\( R^2 = 1 \iff RSS = 0 \)。</li>
 <li>Fail：non-linear；residuals 唔 independent（serial correlation）／唔 identical（heteroskedasticity → GARCH）／唔 normal（QQ-plot、Anderson-Darling）。</li>
 <li>Diagnostics：resid vs fitted（曲線 = non-linear，漏斗 = heteroscedastic）；vs index（trend = dependence）；lag plot（斜線 = autocorrelation）；QQ（直線 = normal）；histogram。</li>
-<li>Multiple regression：p 相對 n 細（p &gt; 10 有問題）。</li>
-<li>Prediction ability：train/test（70/30）；Bias = mean(pred − act)；RMSE = √MSE；in-sample 大 model 必勝，out-of-sample 唔一定；AIC / BIC 越低越好。</li>
-<li>ANOVA：Regression df 1、Error df n − 2、Total n − 1；F = MSR/MSE vs \( F_{1,n-2,95\%} \)；H0：所有 slopes = 0。</li>
-<li>\( \hat\sigma=\sqrt{SS/(n-2)} \)；SE(b̂) = \( \hat\sigma/\sqrt{S_{XX}} \)；SE(â) = \( \hat\sigma\sqrt{1/n+\bar X^2/S_{XX}} \)；t = b̂/SE vs \( t_{n-2,97.5\%} \)。</li>
+<li>Multiple regression：p 相對 n 細（\( p &gt; 10 \) 有問題）。</li>
+<li>Prediction ability：train/test（70/30）；\( \text{Bias} = \text{mean}(\text{pred} - \text{act}) \)；\( RMSE = \sqrt{MSE} \)；in-sample 大 model 必勝，out-of-sample 唔一定；AIC / BIC 越低越好。</li>
+<li>ANOVA：Regression df 1、Error df \( n - 2 \)、Total \( n - 1 \)；\( F = MSR/MSE \) vs \( F_{1,n-2,95\%} \)；\(H_0\)：所有 slopes = 0。</li>
+<li>\( \hat\sigma=\sqrt{SS/(n-2)} \)；\( SE(\hat{b}) = \hat\sigma/\sqrt{S_{XX}} \)；\( SE(\hat{a}) = \hat\sigma\sqrt{1/n+\bar X^2/S_{XX}} \)；\( t = \hat{b}/SE \) vs \( t_{n-2,97.5\%} \)。</li>
 </ul></div>
 
 <nav class="pager">

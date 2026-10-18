@@ -30,15 +30,15 @@
   <ul>
     <li>定義 classification task（attribute set \(x\) → class label \(y\)），理解 training set / test set 同建 model 嘅一般流程。</li>
     <li>理解 Decision Tree 點樣分類、Hunt's Algorithm、各類 attributes 嘅 test conditions，並<b>識計 Gini、Entropy、Misclassification error 同 Gain</b> 去揀 best split。</li>
-    <li>掌握 K-Nearest Neighbor：三個要素、分類步驟、k 嘅選擇、scaling、distance-weighted voting。</li>
+    <li>掌握 K-Nearest Neighbor：三個要素、分類步驟、\( k \) 嘅選擇、scaling、distance-weighted voting。</li>
     <li>用 Bayes theorem 同 conditional independence 做 Naïve Bayes 計算（categorical + Gaussian continuous），理解 zero-probability 問題。</li>
     <li>理解 SVM 嘅 maximum margin 概念、linear model、support vectors、slack variables 同特性。</li>
     <li>比較四種 classifiers（eager vs lazy、speed、memory、robustness）。</li>
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>Gini / Entropy / Error 公式同計算；Gain = P − M（weighted child impurity）；用嚟揀 split（包括 continuous attribute 揀 cut point）。</li>
-    <li>Naïve Bayes 完整計算（Refund = No, Divorced, Income = 120K 例子），包括 Gaussian density 同 P(Refund=Yes|Yes)=0 嘅問題。</li>
+    <li>Gini / Entropy / Error 公式同計算；\( \text{Gain} = P - M \)（weighted child impurity）；用嚟揀 split（包括 continuous attribute 揀 cut point）。</li>
+    <li>Naïve Bayes 完整計算（Refund = No, Divorced, Income = 120K 例子），包括 Gaussian density 同 \( P(\text{Refund}=\text{Yes} \mid \text{Yes})=0 \) 嘅問題。</li>
     <li>KNN：k 太細 / 太大嘅後果、點解要 scale attributes、weight factor \(w = 1/d^2\)。</li>
     <li>SVM：maximize margin \(2/\|\mathbf{w}\|\) ⇔ minimize \(\|\mathbf{w}\|^2/2\)，constraints \(y_i(\mathbf{w}\cdot\mathbf{x}_i + b) \ge 1\)；decision boundary 只取決於 support vectors。</li>
     <li>Summary 表：DT（Tree, Eager）、KNN（Instance, Lazy）、NB（Probabilistic, Eager）、SVM（Geometric, Eager）各自優缺點。</li>
@@ -54,7 +54,7 @@
 <p><b>Task</b>：Learn a model that maps each attribute set \(x\) into one of the predefined class labels \(y\)，即將 class label 建模成 attribute set 嘅 function。</p>
 <p>Slide 4 <b>Goal</b>：<b>previously unseen records should be assigned a class as accurately as possible.</b> 用 <b>test set</b> 量度 model 嘅 accuracy：通常將 data 分成 training set（建 model）同 test set（validate model）。</p>
 <table>
-<tr><th>Task (Slide 5)</th><th>Attribute set, x</th><th>Class label, y</th></tr>
+<tr><th>Task (Slide 5)</th><th>Attribute set, \( x \)</th><th>Class label, \( y \)</th></tr>
 <tr><td>Categorizing email messages</td><td>Features extracted from email message header and content</td><td>spam or non-spam</td></tr>
 <tr><td>Identifying tumor cells</td><td>Features extracted from x-rays or MRI scans</td><td>malignant or benign cells</td></tr>
 <tr><td>Cataloging galaxies</td><td>Features extracted from telescope images</td><td>Elliptical, spiral, or irregular-shaped galaxies</td></tr>
@@ -65,7 +65,7 @@
 
 <h2>2. Decision Trees: 結構同應用</h2>
 <p>Slide 8–9 展示 decision tree 例子。Tree 由 <b>root node</b>、<b>internal nodes</b>（每個係一個 attribute test condition，叫 <b>splitting attributes</b>）同 <b>leaf nodes</b>（class label）組成。Slide 9 "Another Example" 說明：<b>同一份 data 可以 fit 出多過一棵 tree</b>。</p>
-<p>本 chapter 一直用一個 10-record 稅務例子（attributes：Refund、Marital Status、Taxable Income；class：Evade / Cheat）。以下係教科書嘅數據同經典 tree（數字同 slide 58 文字 P(No) = 7/10、P(Married | No) = 4/7、P(Refund = Yes | Yes) = 0 完全吻合）：</p>
+<p>本 chapter 一直用一個 10-record 稅務例子（attributes：Refund、Marital Status、Taxable Income；class：Evade / Cheat）。以下係教科書嘅數據同經典 tree（數字同 slide 58 文字 \( P(\text{No}) = 7/10 \)、\( P(\text{Married} \mid \text{No}) = 4/7 \)、\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \) 完全吻合）：</p>
 <table>
 <tr><th>Tid</th><th>Refund</th><th>Marital Status</th><th>Taxable Income</th><th>Evade</th></tr>
 <tr><td>1</td><td>Yes</td><td>Single</td><td>125K</td><td>No</td></tr>
@@ -123,7 +123,7 @@
 <h3>4.1 Test Conditions by Attribute Type (Slides 26–29)</h3>
 <table>
 <tr><th>Attribute type</th><th>Multi-way split</th><th>Binary split</th></tr>
-<tr><td><b>Nominal</b>（例：Marital Status）</td><td>Use as many partitions as distinct values：{Single}, {Married}, {Divorced}</td><td>Divides values into two subsets，例：{Married} vs {Single, Divorced}。k 個值有 \(2^{k-1}-1\) 種 binary splits。</td></tr>
+<tr><td><b>Nominal</b>（例：Marital Status）</td><td>Use as many partitions as distinct values：{Single}, {Married}, {Divorced}</td><td>Divides values into two subsets，例：{Married} vs {Single, Divorced}。\( k \) 個值有 \(2^{k-1}-1\) 種 binary splits。</td></tr>
 <tr><td><b>Ordinal</b>（例：Shirt Size S/M/L/XL）</td><td>As many partitions as distinct values</td><td>Two subsets，<b>但要 preserve order property</b>：{S, M} vs {L, XL} ✓；{S, L} vs {M, XL} ✗（破壞次序）</td></tr>
 <tr><td><b>Continuous</b>（例：Taxable Income）</td><td>Discretize 成多個 ranges（例如 &lt;10K, [10K,25K), [25K,50K), [50K,80K), ≥80K）</td><td>Binary decision：\((A \lt v)\) or \((A \ge v)\)</td></tr>
 </table>
@@ -153,9 +153,9 @@
 <h3>5.1 Worked example：計單一 node 嘅 impurity</h3>
 <table>
 <tr><th>Node (C1, C2)</th><th>p</th><th>Gini</th><th>Entropy</th><th>Error</th></tr>
-<tr><td>(0, 6)</td><td>0, 1</td><td>1 − 0 − 1 = <b>0</b></td><td>−0 − 1·log₂1 = <b>0</b></td><td>1 − 1 = <b>0</b></td></tr>
-<tr><td>(1, 5)</td><td>1/6, 5/6</td><td>1 − (1/6)² − (5/6)² = <b>0.278</b></td><td>−(1/6)log₂(1/6) − (5/6)log₂(5/6) = <b>0.650</b></td><td>1 − 5/6 = <b>0.167</b></td></tr>
-<tr><td>(2, 4)</td><td>2/6, 4/6</td><td>1 − (1/3)² − (2/3)² = <b>0.444</b></td><td><b>0.918</b></td><td>1 − 4/6 = <b>0.333</b></td></tr>
+<tr><td>(0, 6)</td><td>0, 1</td><td>\( 1 - 0 - 1 = \) <b>0</b></td><td>\( -0 - 1 \cdot \log_2 1 = \) <b>0</b></td><td>\( 1 - 1 = \) <b>0</b></td></tr>
+<tr><td>(1, 5)</td><td>1/6, 5/6</td><td>\( 1 - (1/6)^2 - (5/6)^2 = \) <b>0.278</b></td><td>\( -(1/6)\log_2(1/6) - (5/6)\log_2(5/6) = \) <b>0.650</b></td><td>\( 1 - 5/6 = \) <b>0.167</b></td></tr>
+<tr><td>(2, 4)</td><td>2/6, 4/6</td><td>\( 1 - (1/3)^2 - (2/3)^2 = \) <b>0.444</b></td><td><b>0.918</b></td><td>\( 1 - 4/6 = \) <b>0.333</b></td></tr>
 <tr><td>(3, 3)</td><td>0.5, 0.5</td><td><b>0.5</b></td><td><b>1</b></td><td><b>0.5</b></td></tr>
 </table>
 <p>三個 measures 嘅排序一致（越 pure 越細），只係數值唔同。Entropy 對 impurity 最敏感。</p>
@@ -163,12 +163,12 @@
 <h3>5.2 Finding the Best Split (Slides 33–34)</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：Gain 步驟</span>
 <ol>
-<li>計 <b>splitting 前</b>嘅 impurity measure <b>P</b>（parent）。</li>
-<li>計 <b>splitting 後</b>嘅 impurity measure <b>M</b>：先計每個 child node 嘅 impurity，<b>M = child nodes 嘅 weighted impurity</b>：
+<li>計 <b>splitting 前</b>嘅 impurity measure <b>\( P \)</b>（parent）。</li>
+<li>計 <b>splitting 後</b>嘅 impurity measure <b>\( M \)</b>：先計每個 child node 嘅 impurity，<b>\( M \) = child nodes 嘅 weighted impurity</b>：
 <div class="formula">$$ M = \sum_{j=1}^{k} \frac{n_j}{n}\, I(\text{child}_j) $$</div></li>
 <li>揀產生<b>最高 gain</b> 嘅 attribute test condition：
 <div class="formula">$$ \text{Gain} = P - M $$</div>
-或等價地，揀 splitting 後 impurity <b>M 最低</b>嘅。</li>
+或等價地，揀 splitting 後 impurity <b>\( M \) 最低</b>嘅。</li>
 </ol>
 <p>用 entropy 計嘅 gain 叫 <b>Information Gain</b>。</p></div>
 
@@ -176,25 +176,25 @@
 <p>Parent：7 No、3 Yes → \(P = 1 - 0.7^2 - 0.3^2 = 1 - 0.49 - 0.09 = \mathbf{0.42}\)</p>
 <p><b>(a) Refund</b>：</p>
 <ul>
-<li>Refund = Yes：3 records（No 3, Yes 0）→ Gini = 0</li>
-<li>Refund = No：7 records（No 4, Yes 3）→ Gini = \(1 - (4/7)^2 - (3/7)^2 = 1 - 25/49 = 0.490\)</li>
-<li>M = (3/10)(0) + (7/10)(0.490) = <b>0.343</b> → Gain = 0.42 − 0.343 = <b>0.077</b></li>
+<li>Refund = Yes：3 records（No 3, Yes 0）→ \( \text{Gini} = 0 \)</li>
+<li>Refund = No：7 records（No 4, Yes 3）→ \( \text{Gini} = 1 - (4/7)^2 - (3/7)^2 = 1 - 25/49 = 0.490 \)</li>
+<li>\( M = (3/10)(0) + (7/10)(0.490) = \) <b>0.343</b> → \( \text{Gain} = 0.42 - 0.343 = \) <b>0.077</b></li>
 </ul>
 <p><b>(b) Marital Status（multi-way）</b>：</p>
 <ul>
-<li>Single：4 records（Tid 1, 3, 8, 10 → No 2, Yes 2）→ Gini = 0.5</li>
-<li>Married：4 records（Tid 2, 4, 6, 9 → No 4）→ Gini = 0</li>
-<li>Divorced：2 records（Tid 5 Yes, 7 No）→ Gini = 0.5</li>
-<li>M = 0.4(0.5) + 0.4(0) + 0.2(0.5) = <b>0.300</b> → Gain = <b>0.120</b></li>
+<li>Single：4 records（Tid 1, 3, 8, 10 → No 2, Yes 2）→ \( \text{Gini} = 0.5 \)</li>
+<li>Married：4 records（Tid 2, 4, 6, 9 → No 4）→ \( \text{Gini} = 0 \)</li>
+<li>Divorced：2 records（Tid 5 Yes, 7 No）→ \( \text{Gini} = 0.5 \)</li>
+<li>\( M = 0.4(0.5) + 0.4(0) + 0.2(0.5) = \) <b>0.300</b> → \( \text{Gain} = \) <b>0.120</b></li>
 </ul>
-<p><b>(c) Marital Status（binary {Married} vs {Single, Divorced}）</b>：{S, D} 有 6 records（No 3, Yes 3）→ Gini 0.5 → M = 0.6(0.5) + 0.4(0) = <b>0.300</b>（同 multi-way 一樣）。</p>
+<p><b>(c) Marital Status（binary {Married} vs {Single, Divorced}）</b>：{S, D} 有 6 records（No 3, Yes 3）→ Gini 0.5 → \( M = 0.6(0.5) + 0.4(0) = \) <b>0.300</b>（同 multi-way 一樣）。</p>
 <p><b>(d) Taxable Income（continuous，binary split）</b>：先排序，再喺相鄰值中點試每個 cut：</p>
 <table>
 <tr><th>Sorted income</th><td>60</td><td>70</td><td>75</td><td>85</td><td>90</td><td>95</td><td>100</td><td>120</td><td>125</td><td>220</td></tr>
 <tr><th>Class</th><td>No</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
 </table>
 <table>
-<tr><th>Cut v</th><th>≤ v (Yes, No)</th><th>&gt; v (Yes, No)</th><th>Weighted Gini</th></tr>
+<tr><th>Cut \( v \)</th><th>\( \le v \) (Yes, No)</th><th>\( &gt; v \) (Yes, No)</th><th>Weighted Gini</th></tr>
 <tr><td>65</td><td>(0, 1)</td><td>(3, 6)</td><td>0.400</td></tr>
 <tr><td>72.5</td><td>(0, 2)</td><td>(3, 5)</td><td>0.375</td></tr>
 <tr><td>80</td><td>(0, 3)</td><td>(3, 4)</td><td>0.343</td></tr>
@@ -205,22 +205,22 @@
 <tr><td>122.5</td><td>(3, 5)</td><td>(0, 2)</td><td>0.375</td></tr>
 <tr><td>172.5</td><td>(3, 6)</td><td>(0, 1)</td><td>0.400</td></tr>
 </table>
-<p>例：v = 97.5：左 6 records Gini 0.5，右 4 records Gini 0 → M = 0.6 × 0.5 = 0.3。</p>
-<p><b>結論</b>：Marital Status 同 Taxable Income (≤ 97.5) 都得 M = 0.300（Gain 0.12），好過 Refund（M = 0.343）。</p>
+<p>例：\( v = 97.5 \)：左 6 records Gini 0.5，右 4 records Gini 0 → \( M = 0.6 \times 0.5 = 0.3 \)。</p>
+<p><b>結論</b>：Marital Status 同 Taxable Income (\( \le 97.5 \)) 都得 \( M = 0.300 \)（Gain 0.12），好過 Refund（\( M = 0.343 \)）。</p>
 <div class="box tip"><span class="label">💡 計 continuous split 嘅技巧</span><p>(1) 先 sort；(2) 只需要喺 class label 改變嘅相鄰位置試 cut（例如 75→85、95→100），其他位置唔會係最佳；(3) 由左至右掃描，逐步更新左右兩邊嘅 class counts，唔使每次重新數。</p></div>
 
 <h3>5.4 Worked example：Information Gain（Entropy）</h3>
 <p>Parent entropy：\(H = -0.3\log_2 0.3 - 0.7\log_2 0.7 = 0.521 + 0.360 = \mathbf{0.881}\)</p>
 <ul>
-<li><b>Refund</b>：Refund = No (3 Yes, 4 No) entropy = 0.985；M = 0.7 × 0.985 = 0.690；<b>IG = 0.881 − 0.690 = 0.192</b></li>
-<li><b>Marital Status</b>：Single (2, 2) = 1；Married = 0；Divorced (1, 1) = 1；M = 0.4 + 0 + 0.2 = 0.6；<b>IG = 0.281</b></li>
-<li><b>Income ≤ 97.5</b>：(3, 3) = 1；(0, 4) = 0；M = 0.6；<b>IG = 0.281</b></li>
+<li><b>Refund</b>：Refund = No (3 Yes, 4 No) \( \text{entropy} = 0.985 \)；\( M = 0.7 \times 0.985 = 0.690 \)；<b>\( IG = 0.881 - 0.690 = 0.192 \)</b></li>
+<li><b>Marital Status</b>：Single (2, 2) = 1；Married = 0；Divorced (1, 1) = 1；\( M = 0.4 + 0 + 0.2 = 0.6 \)；<b>\( IG = 0.281 \)</b></li>
+<li><b>Income \( \le 97.5 \)</b>：(3, 3) = 1；(0, 4) = 0；\( M = 0.6 \)；<b>\( IG = 0.281 \)</b></li>
 </ul>
 <p>同 Gini 結論一致：Refund 最差。</p>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul>
-<li>計 M 時<b>忘記用 child size 做 weight</b>（直接平均 children impurity）。</li>
-<li>\(\log_2\) 用錯 base（用咗 ln 或 log₁₀）。計數機：\(\log_2 x = \ln x / \ln 2\)。</li>
-<li>以為 Gain 越細越好——<b>Gain 越大越好</b>（或 M 越細越好）。</li>
+<li>計 \( M \) 時<b>忘記用 child size 做 weight</b>（直接平均 children impurity）。</li>
+<li>\(\log_2\) 用錯 base（用咗 \( \ln \) 或 \( \log_{10} \)）。計數機：\(\log_2 x = \ln x / \ln 2\)。</li>
+<li>以為 Gain 越細越好——<b>Gain 越大越好</b>（或 \( M \) 越細越好）。</li>
 <li>Multi-way split 有好多細 partitions 時（例如用 Customer ID split，每個 child 只有 1 個 record，impurity 全部 0）gain 會好高但冇用——呢個係 impurity-based gain 偏好多值 attributes 嘅問題。</li>
 </ul></div>
 <pre><code>from sklearn.tree import DecisionTreeClassifier, export_text
@@ -261,46 +261,46 @@ print(export_text(clf, feature_names=list(X_train.columns)))</code></pre>
 <ol>
 <li>The set of <b>labeled records</b></li>
 <li><b>Distance metric</b> to compute distance between records</li>
-<li>The value of <b>k</b>, the number of nearest neighbors to retrieve</li>
+<li>The value of <b>\( k \)</b>, the number of nearest neighbors to retrieve</li>
 </ol>
 <p>Slide 42：To classify an unknown record：</p>
 <ol>
 <li>Compute distance to other training records</li>
-<li>Identify k nearest neighbors</li>
+<li>Identify \( k \) nearest neighbors</li>
 <li>Use class labels of nearest neighbors to determine the class label of unknown record（e.g., by taking <b>majority vote</b>）</li>
 </ol>
 <p>Slide 43：Compute proximity，例如 Euclidean distance \( d(\mathbf{x},\mathbf{y}) = \sqrt{\sum_i (x_i - y_i)^2} \)。決定 class：</p>
 <ul>
-<li>Take the majority vote of class labels among the k-nearest neighbors</li>
+<li>Take the majority vote of class labels among the \( k \)-nearest neighbors</li>
 <li><b>Weight the vote according to distance</b>：weight factor \( w = 1/d^2 \)</li>
 </ul>
 
 <h3>7.1 Worked example（自擬）</h3>
-<p>Training：P1(1,1) A、P2(2,2) A、P3(3,1) A、P4(5,4) B、P5(6,5) B、P6(4,4) B。Test X = (3.2, 3)。</p>
+<p>Training：\( P_1(1,1) \) A、\( P_2(2,2) \) A、\( P_3(3,1) \) A、\( P_4(5,4) \) B、\( P_5(6,5) \) B、\( P_6(4,4) \) B。Test \( X = (3.2, 3) \)。</p>
 <table>
-<tr><th>Point</th><th>Class</th><th>Euclidean distance to X</th><th>\(w = 1/d^2\)</th><th>Rank</th></tr>
-<tr><td>P6 (4,4)</td><td>B</td><td>\(\sqrt{0.64+1} = 1.281\)</td><td>0.609</td><td>1</td></tr>
-<tr><td>P2 (2,2)</td><td>A</td><td>\(\sqrt{1.44+1} = 1.562\)</td><td>0.410</td><td>2</td></tr>
-<tr><td>P3 (3,1)</td><td>A</td><td>\(\sqrt{0.04+4} = 2.010\)</td><td>0.248</td><td>3</td></tr>
-<tr><td>P4 (5,4)</td><td>B</td><td>\(\sqrt{3.24+1} = 2.059\)</td><td>0.236</td><td>4</td></tr>
-<tr><td>P1 (1,1)</td><td>A</td><td>\(\sqrt{4.84+4} = 2.973\)</td><td>0.113</td><td>5</td></tr>
-<tr><td>P5 (6,5)</td><td>B</td><td>\(\sqrt{7.84+4} = 3.441\)</td><td>0.084</td><td>6</td></tr>
+<tr><th>Point</th><th>Class</th><th>Euclidean distance to \( X \)</th><th>\(w = 1/d^2\)</th><th>Rank</th></tr>
+<tr><td>\( P_6 \) (4,4)</td><td>B</td><td>\(\sqrt{0.64+1} = 1.281\)</td><td>0.609</td><td>1</td></tr>
+<tr><td>\( P_2 \) (2,2)</td><td>A</td><td>\(\sqrt{1.44+1} = 1.562\)</td><td>0.410</td><td>2</td></tr>
+<tr><td>\( P_3 \) (3,1)</td><td>A</td><td>\(\sqrt{0.04+4} = 2.010\)</td><td>0.248</td><td>3</td></tr>
+<tr><td>\( P_4 \) (5,4)</td><td>B</td><td>\(\sqrt{3.24+1} = 2.059\)</td><td>0.236</td><td>4</td></tr>
+<tr><td>\( P_1 \) (1,1)</td><td>A</td><td>\(\sqrt{4.84+4} = 2.973\)</td><td>0.113</td><td>5</td></tr>
+<tr><td>\( P_5 \) (6,5)</td><td>B</td><td>\(\sqrt{7.84+4} = 3.441\)</td><td>0.084</td><td>6</td></tr>
 </table>
 <ul>
-<li><b>k = 1</b>：最近係 P6 → <b>B</b></li>
-<li><b>k = 3</b>：P6 (B)、P2 (A)、P3 (A) → majority <b>A</b>（2:1）</li>
-<li><b>k = 3, distance-weighted</b>：B = 0.609；A = 0.410 + 0.248 = 0.658 → <b>A</b>（好接近！）</li>
-<li><b>k = 5</b>：B, A, A, B, A → <b>A</b>（3:2）</li>
+<li><b>\( k = 1 \)</b>：最近係 \( P_6 \) → <b>B</b></li>
+<li><b>\( k = 3 \)</b>：\( P_6 \) (B)、\( P_2 \) (A)、\( P_3 \) (A) → majority <b>A</b>（2:1）</li>
+<li><b>\( k = 3 \), distance-weighted</b>：\( B = 0.609 \)；\( A = 0.410 + 0.248 = 0.658 \) → <b>A</b>（好接近！）</li>
+<li><b>\( k = 5 \)</b>：B, A, A, B, A → <b>A</b>（3:2）</li>
 </ul>
-<p>結論：k 嘅選擇可以改變答案。</p>
+<p>結論：\( k \) 嘅選擇可以改變答案。</p>
 
 <h3>7.2 Choosing k &amp; Proximity (Slides 44–45)</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：k 嘅選擇</span>
 <ul>
-<li><b>If k is too small, sensitive to noise points</b>（k = 1 時一個 mislabeled 點就會誤導）。</li>
-<li><b>If k is too large, neighborhood may include points from other classes</b>（決策變得太「平均」，被大 class 主導）。</li>
+<li><b>If \( k \) is too small, sensitive to noise points</b>（\( k = 1 \) 時一個 mislabeled 點就會誤導）。</li>
+<li><b>If \( k \) is too large, neighborhood may include points from other classes</b>（決策變得太「平均」，被大 class 主導）。</li>
 </ul>
-<p>實務：用 cross-validation 揀 k；binary classification 用奇數 k 避免打和。</p></div>
+<p>實務：用 cross-validation 揀 \( k \)；binary classification 用奇數 \( k \) 避免打和。</p></div>
 <p>Slide 45：<b>Choice of proximity measure matters</b>——視乎 data types 同 attribute types（例如 documents 用 cosine，binary 用 Jaccard，見 Chapter 2）。</p>
 
 <h3>7.3 Data Preprocessing for KNN (Slide 46)</h3>
@@ -332,7 +332,7 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 <div class="formula">$$ \text{Conditional Probability: } P(Y\mid X) = \frac{P(X,Y)}{P(X)}, \qquad P(X\mid Y) = \frac{P(X,Y)}{P(Y)} $$</div>
 <div class="formula">$$ \text{Bayes theorem: } P(Y\mid X) = \frac{P(X\mid Y)\,P(Y)}{P(X)} $$</div>
 <p>將每個 attribute 同 class label 當 random variables。給定 record with attributes \((X_1, X_2, \dots, X_d)\)，目標係預測 class \(Y\)：<b>搵令 \(P(Y \mid X_1, \dots, X_d)\) 最大嘅 \(Y\)</b>。</p>
-<p>Slide 53 問：可唔可以直接由 data 估計 P(Evade = Yes | X) 同 P(Evade = No | X)？（X = Refund = No, Divorced, Income = 120K）——通常唔得，因為 training data 未必有完全相同 attribute 組合嘅 record。</p>
+<p>Slide 53 問：可唔可以直接由 data 估計 \( P(\text{Evade} = \text{Yes} \mid X) \) 同 \( P(\text{Evade} = \text{No} \mid X) \)？（\( X = (\text{Refund} = \text{No}, \text{Divorced}, \text{Income} = 120\text{K}) \)）——通常唔得，因為 training data 未必有完全相同 attribute 組合嘅 record。</p>
 <p><span class="tag exam">Exam</span>Approach (slide 54)：用 Bayes theorem 計 posterior probability：</p>
 <div class="formula">$$ P(Y \mid X_1 \dots X_d) = \frac{P(X_1 X_2 \dots X_d \mid Y)\, P(Y)}{P(X_1 X_2 \dots X_d)} $$</div>
 <p><b>Maximum a-posteriori (MAP)</b>：揀令 \(P(Y \mid X_1 \dots X_d)\) 最大嘅 \(Y\)。因為分母對所有 class 一樣，<b>等價於揀令 \(P(X_1 \dots X_d \mid Y)\,P(Y)\) 最大嘅 \(Y\)</b>。問題：點估計 \(P(X_1 \dots X_d \mid Y)\)？</p>
@@ -345,8 +345,8 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 
 <h3>8.3 Estimate Probabilities from Data (Slides 58–60)</h3>
 <ul>
-<li><b>Class prior</b>：\(P(y)\) = fraction of instances of class \(y\)。例：P(No) = 7/10，P(Yes) = 3/10。</li>
-<li><b>Categorical attributes</b>：\( P(X_i = c \mid y) = n_c / n \)，\(n_c\) = 屬於 class \(y\) 而 attribute value 為 \(c\) 嘅 instances 數，\(n\) = 屬於 class \(y\) 嘅 instances 數。例：<b>P(Status = Married | No) = 4/7</b>、<b>P(Refund = Yes | Yes) = 0</b>。</li>
+<li><b>Class prior</b>：\(P(y)\) = fraction of instances of class \(y\)。例：\( P(\text{No}) = 7/10 \)，\( P(\text{Yes}) = 3/10 \)。</li>
+<li><b>Categorical attributes</b>：\( P(X_i = c \mid y) = n_c / n \)，\(n_c\) = 屬於 class \(y\) 而 attribute value 為 \(c\) 嘅 instances 數，\(n\) = 屬於 class \(y\) 嘅 instances 數。例：<b>\( P(\text{Status} = \text{Married} \mid \text{No}) = 4/7 \)</b>、<b>\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \)</b>。</li>
 <li><b>Continuous attributes</b>（slide 59）：
   <ul><li><b>Discretization</b>：將 range 分 bins，用 bin value 代替（continuous → ordinal）。</li>
   <li><b>Probability density estimation</b>：假設 attribute 跟 <b>normal distribution</b>，用 data 估 parameters（mean、standard deviation），再用 distribution 估 conditional probability。</li></ul></li>
@@ -356,37 +356,37 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 
 <h3>8.4 Worked example：X = (Refund = No, Divorced, Income = 120K)</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：完整 Naïve Bayes 計算</span>
-<p><b>Step 1 — Priors</b>：P(No) = 7/10，P(Yes) = 3/10。</p>
+<p><b>Step 1 — Priors</b>：\( P(\text{No}) = 7/10 \)，\( P(\text{Yes}) = 3/10 \)。</p>
 <p><b>Step 2 — Categorical conditionals</b>（由數據表數）：</p>
 <ul>
-<li>Class No（7 records：Tid 1, 2, 3, 4, 6, 7, 9）：Refund = No 有 Tid 2, 3, 6, 9 → P(Refund = No | No) = <b>4/7</b>；Divorced 只有 Tid 7 → P(Divorced | No) = <b>1/7</b>。</li>
-<li>Class Yes（3 records：Tid 5, 8, 10）：Refund 全部 No → P(Refund = No | Yes) = <b>1</b>；Divorced 有 Tid 5 → P(Divorced | Yes) = <b>1/3</b>。</li>
+<li>Class No（7 records：Tid 1, 2, 3, 4, 6, 7, 9）：Refund = No 有 Tid 2, 3, 6, 9 → \( P(\text{Refund} = \text{No} \mid \text{No}) = \) <b>4/7</b>；Divorced 只有 Tid 7 → \( P(\text{Divorced} \mid \text{No}) = \) <b>1/7</b>。</li>
+<li>Class Yes（3 records：Tid 5, 8, 10）：Refund 全部 No → \( P(\text{Refund} = \text{No} \mid \text{Yes}) = \) <b>1</b>；Divorced 有 Tid 5 → \( P(\text{Divorced} \mid \text{Yes}) = \) <b>1/3</b>。</li>
 </ul>
 <p><b>Step 3 — Income（Gaussian）</b>：</p>
 <ul>
-<li>Class No incomes：125, 100, 70, 120, 60, 220, 75 → mean = 770/7 = <b>110</b>；sample variance = <b>2975</b>（sd = 54.54）。
-\( P(120 \mid No) = \frac{1}{\sqrt{2\pi(2975)}} e^{-\frac{(120-110)^2}{2(2975)}} = \mathbf{0.0072} \)</li>
-<li>Class Yes incomes：95, 85, 90 → mean = <b>90</b>；variance = <b>25</b>（sd = 5）。
-\( P(120 \mid Yes) = \frac{1}{\sqrt{2\pi(25)}} e^{-\frac{(120-90)^2}{2(25)}} = \mathbf{1.2 \times 10^{-9}} \)</li>
+<li>Class No incomes：125, 100, 70, 120, 60, 220, 75 → \( \text{mean} = 770/7 = \) <b>110</b>；\( \text{sample variance} = \) <b>2975</b>（\( \text{sd} = 54.54 \)）。
+\( P(120 \mid \text{No}) = \frac{1}{\sqrt{2\pi(2975)}} e^{-\frac{(120-110)^2}{2(2975)}} = \mathbf{0.0072} \)</li>
+<li>Class Yes incomes：95, 85, 90 → \( \text{mean} = \) <b>90</b>；\( \text{variance} = \) <b>25</b>（\( \text{sd} = 5 \)）。
+\( P(120 \mid \text{Yes}) = \frac{1}{\sqrt{2\pi(25)}} e^{-\frac{(120-90)^2}{2(25)}} = \mathbf{1.2 \times 10^{-9}} \)</li>
 </ul>
 <p><b>Step 4 — Likelihoods</b>（slide 57 結構）：</p>
 <ul>
-<li>P(X | No) = P(Refund = No | No) × P(Divorced | No) × P(Income = 120K | No) = 4/7 × 1/7 × 0.0072 = <b>0.0006</b></li>
-<li>P(X | Yes) = 1 × 1/3 × 1.2 × 10<sup>−9</sup> = <b>4 × 10<sup>−10</sup></b></li>
+<li>\( P(X \mid \text{No}) = P(\text{Refund} = \text{No} \mid \text{No}) \times P(\text{Divorced} \mid \text{No}) \times P(\text{Income} = 120\text{K} \mid \text{No}) = 4/7 \times 1/7 \times 0.0072 = \) <b>0.0006</b></li>
+<li>\( P(X \mid \text{Yes}) = 1 \times 1/3 \times 1.2 \times 10^{-9} = \) <b>\( 4 \times 10^{-10} \)</b></li>
 </ul>
-<p><b>Step 5 — 乘 prior 比較</b>：P(X | No)P(No) = 0.0006 × 0.7 = 4.2 × 10<sup>−4</sup>；P(X | Yes)P(Yes) = 4 × 10<sup>−10</sup> × 0.3 = 1.2 × 10<sup>−10</sup>。</p>
-<p>因為 P(X | No)P(No) &gt; P(X | Yes)P(Yes) → <b>P(No | X) &gt; P(Yes | X) → 分類為 Evade = No</b>。</p></div>
+<p><b>Step 5 — 乘 prior 比較</b>：\( P(X \mid \text{No})P(\text{No}) = 0.0006 \times 0.7 = 4.2 \times 10^{-4} \)；\( P(X \mid \text{Yes})P(\text{Yes}) = 4 \times 10^{-10} \times 0.3 = 1.2 \times 10^{-10} \)。</p>
+<p>因為 \( P(X \mid \text{No})P(\text{No}) &gt; P(X \mid \text{Yes})P(\text{Yes}) \) → <b>\( P(\text{No} \mid X) &gt; P(\text{Yes} \mid X) \) → 分類為 Evade = No</b>。</p></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul>
-<li>忘記乘 prior P(Y)。</li>
+<li>忘記乘 prior \( P(Y) \)。</li>
 <li>Gaussian density 唔係 probability（可以大過 1），但喺比較中可以照用。</li>
-<li>Variance 用 sample variance（分母 n − 1）：Class No 嘅 \(\sum(x-110)^2 = 17850\)，÷ 6 = 2975。</li>
+<li>Variance 用 sample variance（分母 \( n - 1 \)）：Class No 嘅 \(\sum(x-110)^2 = 17850\)，÷ 6 = 2975。</li>
 </ul></div>
 
 <h3>8.5 Issues with Naïve Bayes (Slides 64–66)</h3>
-<p>由 slide 58 可見 <b>P(Refund = Yes | Yes) = 0</b>。如果 test record 係 Refund = Yes，咁 P(X | Yes) 成個乘積都會變 0——<b>無論其他 attributes 幾支持 Yes 都冇用</b>。如果某 record 對兩個 class 都有一個 conditional probability = 0，就完全分類唔到。</p>
+<p>由 slide 58 可見 <b>\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \)</b>。如果 test record 係 Refund = Yes，咁 \( P(X \mid \text{Yes}) \) 成個乘積都會變 0——<b>無論其他 attributes 幾支持 Yes 都冇用</b>。如果某 record 對兩個 class 都有一個 conditional probability = 0，就完全分類唔到。</p>
 <p>教科書嘅解決方法係用其他 probability estimates：</p>
 <div class="formula">$$ \text{Original: } P(A_i \mid C) = \frac{N_{ic}}{N_c} \qquad \text{Laplace: } P(A_i \mid C) = \frac{N_{ic} + 1}{N_c + c} \qquad \text{m-estimate: } P(A_i \mid C) = \frac{N_{ic} + m\,p}{N_c + m} $$</div>
-<p>其中 \(c\) = attribute 可取值嘅數目，\(p\) = 初始估計 (prior) 概率，\(m\) = parameter。例：Laplace 下 P(Refund = Yes | Yes) = (0 + 1)/(3 + 2) = <b>0.2</b>（唔再係 0）。</p>
+<p>其中 \(c\) = attribute 可取值嘅數目，\(p\) = 初始估計 (prior) 概率，\(m\) = parameter。例：Laplace 下 \( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = (0 + 1)/(3 + 2) = \) <b>0.2</b>（唔再係 0）。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 64–66 "Issues with Naïve Bayes Classifier" 全部係圖片，文字擷取不到；上面 zero-probability 問題同 Laplace / m-estimate 係根據教科書補充，請對照原 slide 確認 slide 實際涵蓋範圍。</p></div>
 
 <h3>8.6 Characteristics of Naïve Bayes (Slide 67)</h3>
@@ -434,7 +434,7 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <ul>
 <li>Test \(\mathbf{x} = (2.5, 1.5)\)：\(1(2.5) + 1(1.5) - 3 = 1 \ge 0\) → <b>+1</b>（剛好喺 margin 上，可能係 support vector）</li>
 <li>Test \(\mathbf{x} = (1, 1)\)：\(1 + 1 - 3 = -1 \lt 0\) → <b>−1</b></li>
-<li>Margin = \(2/\|\mathbf{w}\| = 2/\sqrt{1^2+1^2} = 2/\sqrt{2} = \mathbf{1.414}\)</li>
+<li>\( \text{Margin} = 2/\|\mathbf{w}\| = 2/\sqrt{1^2+1^2} = 2/\sqrt{2} = \mathbf{1.414} \)</li>
 </ul>
 <p>如果想 margin 更大，就要 \(\|\mathbf{w}\|\) 更細——所以 minimize \(\|\mathbf{w}\|^2/2\)。</p></div>
 
@@ -442,7 +442,7 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <p>如果問題<b>唔係 linearly separable</b>？引入 <b>slack variables</b> \(\xi_i \ge 0\)，容許部分點越過 margin 甚至分錯：</p>
 <div class="formula">$$ \min\; L(\mathbf{w}) = \frac{\|\mathbf{w}\|^2}{2} + C\left(\sum_{i=1}^{N} \xi_i^{k}\right) $$</div>
 <div class="formula">$$ \text{Subject to: } y_i = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \ge 1 - \xi_i \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \le -1 + \xi_i \end{cases} $$</div>
-<p>If \(k\) is 1 or 2, this leads to similar objective function as linear SVM but with different constraints。\(C\) 控制「大 margin」同「少錯誤」之間嘅 trade-off（C 大 → 少容忍錯誤）。</p>
+<p>If \(k\) is 1 or 2, this leads to similar objective function as linear SVM but with different constraints。\(C\) 控制「大 margin」同「少錯誤」之間嘅 trade-off（\( C \) 大 → 少容忍錯誤）。</p>
 <div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 81 嘅公式係圖片；上面係教科書標準 soft-margin 形式，請對照原 slide 第 81 頁。</p></div>
 
 <h3>9.4 Characteristics of SVM (Slides 82–83)</h3>
@@ -474,41 +474,41 @@ svm[-1].coef_, svm[-1].intercept_, svm[-1].support_vectors_   # w, b, support ve
 <p>記憶法：KNN 係 lazy（training 唔做嘢 → very fast；prediction 要計晒距離 → slow；要存晒 data → memory high；對 noise / irrelevant 最弱）。NB 最怕 <b>redundant</b>（違反 independence）。SVM training 最慢但最 robust。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 一個 node 有 class 分佈 (C1 = 4, C2 = 6)。計 Gini、Entropy、Classification error。</summary>
-<p>p = 0.4, 0.6。Gini = 1 − 0.16 − 0.36 = <b>0.48</b>；Entropy = −0.4 log₂0.4 − 0.6 log₂0.6 = 0.529 + 0.442 = <b>0.971</b>；Error = 1 − 0.6 = <b>0.4</b>。</p></details>
-<details class="q"><summary>Q2. Parent node (C0 = 10, C1 = 10)。Split A 得 children (C0 = 7, C1 = 3) 同 (C0 = 3, C1 = 7)；Split B 得 (C0 = 10, C1 = 4) 同 (C0 = 0, C1 = 6)。用 Gini 揀邊個 split 較好？</summary>
-<p>P = 0.5。<br>Split A：每個 child Gini = 1 − 0.49 − 0.09 = 0.42；M = 0.5(0.42) + 0.5(0.42) = 0.42；Gain = 0.08。<br>Split B：child1 (10, 4)：Gini = 1 − (10/14)² − (4/14)² = 1 − 0.510 − 0.082 = 0.408；child2 pure = 0；M = (14/20)(0.408) = 0.286；Gain = <b>0.214</b>。<br>→ <b>Split B 較好</b>。</p></details>
+<details class="q"><summary>Q1. 一個 node 有 class 分佈 \( (C_1 = 4, C_2 = 6) \)。計 Gini、Entropy、Classification error。</summary>
+<p>\( p = 0.4, 0.6 \)。\( \text{Gini} = 1 - 0.16 - 0.36 = \) <b>0.48</b>；\( \text{Entropy} = -0.4 \log_2 0.4 - 0.6 \log_2 0.6 = 0.529 + 0.442 = \) <b>0.971</b>；\( \text{Error} = 1 - 0.6 = \) <b>0.4</b>。</p></details>
+<details class="q"><summary>Q2. Parent node \( (C_0 = 10, C_1 = 10) \)。Split A 得 children \( (C_0 = 7, C_1 = 3) \) 同 \( (C_0 = 3, C_1 = 7) \)；Split B 得 \( (C_0 = 10, C_1 = 4) \) 同 \( (C_0 = 0, C_1 = 6) \)。用 Gini 揀邊個 split 較好？</summary>
+<p>\( P = 0.5 \)。<br>Split A：每個 child \( \text{Gini} = 1 - 0.49 - 0.09 = 0.42 \)；\( M = 0.5(0.42) + 0.5(0.42) = 0.42 \)；\( \text{Gain} = 0.08 \)。<br>Split B：child1 (10, 4)：\( \text{Gini} = 1 - (10/14)^2 - (4/14)^2 = 1 - 0.510 - 0.082 = 0.408 \)；child2 pure = 0；\( M = (14/20)(0.408) = 0.286 \)；\( \text{Gain} = \) <b>0.214</b>。<br>→ <b>Split B 較好</b>。</p></details>
 <details class="q"><summary>Q3. 用 entropy 計 Q2 Split B 嘅 information gain。</summary>
-<p>Parent entropy = 1。Child1 (10/14, 4/14)：−0.714 log₂0.714 − 0.286 log₂0.286 = 0.347 + 0.516 = 0.863；child2 = 0。M = 0.7 × 0.863 = 0.604。IG = 1 − 0.604 = <b>0.396</b>。</p></details>
+<p>Parent entropy = 1。Child1 (10/14, 4/14)：\( -0.714 \log_2 0.714 - 0.286 \log_2 0.286 = 0.347 + 0.516 = 0.863 \)；child2 = 0。\( M = 0.7 \times 0.863 = 0.604 \)。\( IG = 1 - 0.604 = \) <b>0.396</b>。</p></details>
 <details class="q"><summary>Q4. 點解 decision tree 嘅 decision boundaries 係 axis-parallel？有咩後果？</summary>
-<p>因為每個 internal node 只 test 一個 attribute（例如 x₁ &lt; 5），所以每條 boundary 都垂直於某條軸。如果真正 boundary 係斜線或者 class 取決於 attributes 之間嘅 interaction，tree 要用大量 splits 去近似（樓梯形），容易變得複雜同 overfit（slides 36–38）。</p></details>
-<details class="q"><summary>Q5. KNN 中 k 太細同太大各有咩問題？點解要 scale attributes？</summary>
-<p>k 太細 → 對 noise points 敏感；k 太大 → neighborhood 會包含其他 class 嘅點。要 scale 係因為 attributes 範圍唔同（例如 income $10K–$1M vs height 1.5–1.8m），唔 scale 嘅話 distance 被範圍最大嘅 attribute 主導。</p></details>
-<details class="q"><summary>Q6. 用本頁稅務 data，用 Naïve Bayes 分類 X = (Refund = No, Married, Income = 120K)。</summary>
-<p>P(X | No) = P(Refund=No | No) × P(Married | No) × P(120 | No) = 4/7 × 4/7 × 0.0072 = 0.00235；× P(No) 0.7 = 1.6 × 10<sup>−3</sup>。<br>P(X | Yes) = 1 × P(Married | Yes) × … = 1 × <b>0/3</b> × … = <b>0</b>。<br>→ 分類為 <b>No</b>。留意 P(Married | Yes) = 0 令 Yes 嘅概率直接變 0——就係 zero-probability issue，可用 Laplace smoothing 修正。</p></details>
+<p>因為每個 internal node 只 test 一個 attribute（例如 \(x_1 &lt; 5\)），所以每條 boundary 都垂直於某條軸。如果真正 boundary 係斜線或者 class 取決於 attributes 之間嘅 interaction，tree 要用大量 splits 去近似（樓梯形），容易變得複雜同 overfit（slides 36–38）。</p></details>
+<details class="q"><summary>Q5. KNN 中 \( k \) 太細同太大各有咩問題？點解要 scale attributes？</summary>
+<p>\( k \) 太細 → 對 noise points 敏感；\( k \) 太大 → neighborhood 會包含其他 class 嘅點。要 scale 係因為 attributes 範圍唔同（例如 income $10K–$1M vs height 1.5–1.8m），唔 scale 嘅話 distance 被範圍最大嘅 attribute 主導。</p></details>
+<details class="q"><summary>Q6. 用本頁稅務 data，用 Naïve Bayes 分類 \( X = (\text{Refund} = \text{No}, \text{Married}, \text{Income} = 120\text{K}) \)。</summary>
+<p>\( P(X \mid \text{No}) = P(\text{Refund}=\text{No} \mid \text{No}) \times P(\text{Married} \mid \text{No}) \times P(120 \mid \text{No}) = 4/7 \times 4/7 \times 0.0072 = 0.00235 \)；\( \times P(\text{No})\ 0.7 = 1.6 \times 10^{-3} \)。<br>\( P(X \mid \text{Yes}) = 1 \times P(\text{Married} \mid \text{Yes}) \times \dots = 1 \times \) <b>0/3</b> \( \times \dots = \) <b>0</b>。<br>→ 分類為 <b>No</b>。留意 \( P(\text{Married} \mid \text{Yes}) = 0 \) 令 Yes 嘅概率直接變 0——就係 zero-probability issue，可用 Laplace smoothing 修正。</p></details>
 <details class="q"><summary>Q7. 「Naïve」指咩假設？舉一個 conditional independence 例子。邊類 attributes 會令佢失效？</summary>
-<p>假設 given class 時 attributes 互相 conditionally independent：P(X₁…X_d | Y) = ∏ P(Xᵢ | Y)。例：arm length 同 reading skills 係 conditionally independent given age。Redundant / correlated attributes 會違反呢個假設（slide 67）。</p></details>
+<p>假設 given class 時 attributes 互相 conditionally independent：\( P(X_1 \ldots X_d \mid Y) = \prod P(X_i \mid Y) \)。例：arm length 同 reading skills 係 conditionally independent given age。Redundant / correlated attributes 會違反呢個假設（slide 67）。</p></details>
 <details class="q"><summary>Q8. SVM 點解要 maximize margin？寫出 optimization problem。邊啲點決定 decision boundary？</summary>
-<p>Margin 大 → generalization 較好、對 noise 更 robust、減少 overfitting。Problem：minimize ‖w‖²/2 subject to yᵢ(w·xᵢ + b) ≥ 1 for all i（等價於 maximize 2/‖w‖）。用 Lagrange multipliers 解；decision boundary 只取決於 <b>support vectors</b>（λᵢ &gt; 0 嘅點）。</p></details>
-<details class="q"><summary>Q9. 一個 linear SVM 有 w = (2, −1)、b = 1。分類 x = (1, 4) 同 x = (0, 0)，並計 margin。</summary>
-<p>(1, 4)：2 − 4 + 1 = −1 &lt; 0 → <b>−1</b>。(0, 0)：0 + 0 + 1 = 1 ≥ 0 → <b>+1</b>。Margin = 2/‖w‖ = 2/√5 = <b>0.894</b>。</p></details>
+<p>Margin 大 → generalization 較好、對 noise 更 robust、減少 overfitting。Problem：minimize \( \|w\|^2/2 \) subject to \( y_i(w\cdot x_i + b) \ge 1 \) for all \( i \)（等價於 maximize \( 2/\|w\| \)）。用 Lagrange multipliers 解；decision boundary 只取決於 <b>support vectors</b>（\(\lambda_i &gt; 0\) 嘅點）。</p></details>
+<details class="q"><summary>Q9. 一個 linear SVM 有 \( w = (2, -1) \)、\( b = 1 \)。分類 \( x = (1, 4) \) 同 \( x = (0, 0) \)，並計 margin。</summary>
+<p>(1, 4)：\( 2 - 4 + 1 = -1 &lt; 0 \) → <b>−1</b>。(0, 0)：\( 0 + 0 + 1 = 1 \ge 0 \) → <b>+1</b>。\( \text{Margin} = 2/\|w\| = 2/\sqrt{5} = \) <b>0.894</b>。</p></details>
 <details class="q"><summary>Q10. 邊個 classifier：(a) prediction 最慢 (b) training 最慢 (c) 對 redundant attributes 最差 (d) 係 lazy learner？</summary>
 <p>(a) KNN (b) SVM (c) Naïve Bayes（very poor）(d) KNN（Instance, Lazy）。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li><b>Classification</b>：record (x, y)；learn model x → predefined y；training set 建 model，test set 量 accuracy。</li>
+<li><b>Classification</b>：record \( (x, y) \)；learn model \( x \to \) predefined \( y \)；training set 建 model，test set 量 accuracy。</li>
 <li><b>Decision tree</b>：root → internal (attribute test) → leaf (class)；分類只行一條路徑。Algorithms：Hunt's、CART、ID3/C4.5、SLIQ/SPRINT。</li>
 <li><b>Hunt's</b>：\(D_t\) 同一 class → leaf；否則用 attribute test split，recursive。</li>
-<li><b>Test conditions</b>：nominal（multi-way / binary subsets）、ordinal（binary 要保持 order）、continuous（discretize static/dynamic，或 binary A &lt; v，試所有 cuts）。</li>
-<li><b>Impurity</b>：Gini = 1 − Σp²（max 0.5 for 2-class）；Entropy = −Σp log₂p（max 1）；Error = 1 − max p（max 0.5）。</li>
-<li><b>Gain = P − M</b>，M = Σ (nⱼ/n) I(childⱼ)；揀 gain 最大 / M 最細。Entropy 版 = Information Gain。</li>
-<li>例：Gini parent 0.42；Refund M 0.343；Marital M 0.300；Income ≤ 97.5 M 0.300。</li>
+<li><b>Test conditions</b>：nominal（multi-way / binary subsets）、ordinal（binary 要保持 order）、continuous（discretize static/dynamic，或 binary \( A &lt; v \)，試所有 cuts）。</li>
+<li><b>Impurity</b>：\( \text{Gini} = 1 - \sum p^2 \)（max 0.5 for 2-class）；\( \text{Entropy} = -\sum p \log_2 p \)（max 1）；\( \text{Error} = 1 - \max p \)（max 0.5）。</li>
+<li><b>\( \text{Gain} = P - M \)</b>，\( M = \sum (n_j/n)\, I(\text{child}_j) \)；揀 gain 最大 / \( M \) 最細。Entropy 版 = Information Gain。</li>
+<li>例：Gini parent 0.42；Refund M 0.343；Marital M 0.300；Income \( \le 97.5 \) M 0.300。</li>
 <li><b>Stop</b>：same class / identical attributes / early termination；pre-pruning、post-pruning。</li>
 <li><b>DT 優</b>：平、快、易解釋（細 tree）、robust to noise、handle redundant / irrelevant；<b>缺</b>：greedy 未必最佳、唔考慮 interactions、boundary 只涉及單一 attribute（axis-parallel）。</li>
-<li><b>KNN</b>：labeled records + distance metric + k；majority vote 或 w = 1/d²；k 細 → noise 敏感，k 大 → 包含其他 class；要 scale（z-score）；local、任意形狀 boundary；irrelevant 加 noise、redundant 加 bias；missing values 令 proximities 不可比。</li>
-<li><b>Naïve Bayes</b>：MAP → max P(X|Y)P(Y)；conditional independence → ∏P(Xᵢ|Y)；categorical = n_c/n；continuous = discretize 或 Gaussian（μ, σ² 用 sample 估）；zero probability 問題（Laplace (n_c+1)/(n+c)）；robust to noise / irrelevant，missing 可忽略，redundant 違反假設。</li>
-<li><b>SVM</b>：max margin 2/‖w‖ ⇔ min ‖w‖²/2 s.t. yᵢ(w·xᵢ+b) ≥ 1；Lagrange multipliers；boundary 只靠 support vectors；predict sign(w·x+b)；slack ξᵢ + C Σξᵢᵏ；convex → global optimum；training 慢；robust；handle irrelevant / redundant；難處理 missing。</li>
+<li><b>KNN</b>：labeled records + distance metric + \( k \)；majority vote 或 \( w = 1/d^2 \)；\( k \) 細 → noise 敏感，\( k \) 大 → 包含其他 class；要 scale（z-score）；local、任意形狀 boundary；irrelevant 加 noise、redundant 加 bias；missing values 令 proximities 不可比。</li>
+<li><b>Naïve Bayes</b>：MAP → \( \max P(X \mid Y)P(Y) \)；conditional independence → \( \prod P(X_i \mid Y) \)；categorical = \( n_c/n \)；continuous = discretize 或 Gaussian（\(\mu\), \(\sigma^2\) 用 sample 估）；zero probability 問題（Laplace \( (n_c+1)/(n+c) \)）；robust to noise / irrelevant，missing 可忽略，redundant 違反假設。</li>
+<li><b>SVM</b>：max margin \( 2/\|w\| \) ⇔ min \( \|w\|^2/2 \) s.t. \( y_i(w\cdot x_i+b) \ge 1 \)；Lagrange multipliers；boundary 只靠 support vectors；predict \( \text{sign}(w\cdot x+b) \)；slack \( \xi_i \) + \( C \sum \xi_i^k \)；convex → global optimum；training 慢；robust；handle irrelevant / redundant；難處理 missing。</li>
 <li><b>Summary</b>：DT Tree/Eager；KNN Instance/Lazy；NB Probabilistic/Eager；SVM Geometric/Eager。</li>
 </ul></div>
 

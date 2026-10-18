@@ -229,7 +229,7 @@ FROM S AS a RIGHT JOIN R AS b ON a.ID = b.ID;</code></pre>
 SELECT a.ID, a.Name, b.MCode, b.Grade FROM S AS a FULL OUTER JOIN R AS b ON a.ID = b.ID;</code></pre>
 <h3>5.4 Cartesian join</h3>
 <pre><code>SELECT * FROM S AS a, R AS b;          -- 3 × 3 = 9 rows：每個組合都出</code></pre>
-<p>Cartesian join（cross product）唔需要 join condition：|S| × |R| rows。<span class="tag exam">Exam</span><b>Inner join = Cartesian join + WHERE</b>：</p>
+<p>Cartesian join（cross product）唔需要 join condition：\( |S| \times |R| \) rows。<span class="tag exam">Exam</span><b>Inner join = Cartesian join + WHERE</b>：</p>
 <pre><code>SELECT * FROM S AS a, R AS b WHERE a.ID = b.ID;   -- 同 INNER JOIN 結果一樣</code></pre>
 <p>（Slides 32–33 的 Result 表第三行係 103 CS1001 A，所以 slide 的結果有 3 行：101/CS1001、103/CS1002、103/CS1001；用本頁 R 表（第三行係 104）就只得 2 行。）</p>
 <p><b>Performance?</b> 先做 Cartesian join 再 WHERE 理論上慢好多，但 existing DBMS 會自動 <b>"re-write"</b> query 去 optimize，所以速度一樣，兩種寫法都可以用。</p>
@@ -462,7 +462,7 @@ SELECT class FROM Courses GROUP BY class HAVING COUNT(student) &gt;= 5;</code></
 <li>NULL = 不存在 / 未知；≠ ""；用 IS NULL</li>
 <li><code>CREATE INDEX idx ON t (c1, c2)</code></li>
 <li>SELECT [DISTINCT] … FROM … WHERE … ORDER BY … [DESC] LIMIT n OFFSET m；<code>&lt;&gt;</code> = not equal</li>
-<li>INNER = 兩邊 match；LEFT/RIGHT 保留一邊、另一邊 NULL；Cartesian = |A|×|B|；Cartesian + WHERE = inner join（optimizer 會 rewrite，速度一樣）</li>
+<li>INNER = 兩邊 match；LEFT/RIGHT 保留一邊、另一邊 NULL；Cartesian = \( |A| \times |B| \)；Cartesian + WHERE = inner join（optimizer 會 rewrite，速度一樣）</li>
 <li>Alias：<code>Student AS s</code> 或 <code>Student s</code>；multiple joins 逐個順序做</li>
 <li>Self join：同一 table 兩個 alias，將不同 rows 放入同一 row 比較</li>
 <li>CASE WHEN … THEN … ELSE … END AS col</li>

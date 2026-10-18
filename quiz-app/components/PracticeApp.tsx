@@ -6,6 +6,7 @@ import { presentQuestion } from "@/lib/present";
 import { DOMAINS, filterByDomain } from "@/lib/domains";
 import DomainPanel, { type DomainStat } from "./DomainPanel";
 import { HomeLink } from "./ModeSwitch";
+import StyleToggle from "./StyleToggle";
 import QuestionCard from "./QuestionCard";
 
 const STORAGE_KEY = "pmle-practice-v3"; // v3: answers are label arrays (multi-answer)
@@ -333,27 +334,30 @@ export default function PracticeApp() {
           <p className="hud-label mt-1">Google Professional Machine Learning Engineer</p>
         </div>
 
-        {/* One toolbar: question order, then the option shuffle. */}
-        <div className="seg flex-wrap self-center">
-          {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
+        <div className="flex flex-wrap items-center gap-2 self-center">
+          {/* One toolbar: question order, then the option shuffle. */}
+          <div className="seg flex-wrap">
+            {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                aria-pressed={orderMode === m}
+                className="seg-item"
+              >
+                {m === "sequential" ? "In order" : "Shuffled"}
+              </button>
+            ))}
+            <span aria-hidden className="seg-sep" />
             <button
-              key={m}
-              onClick={() => setMode(m)}
-              aria-pressed={orderMode === m}
+              onClick={toggleShuffleOpts}
+              aria-pressed={shuffleOpts}
+              title="Shuffle the answer options within each question"
               className="seg-item"
             >
-              {m === "sequential" ? "In order" : "Shuffled"}
+              Shuffle options
             </button>
-          ))}
-          <span aria-hidden className="seg-sep" />
-          <button
-            onClick={toggleShuffleOpts}
-            aria-pressed={shuffleOpts}
-            title="Shuffle the answer options within each question"
-            className="seg-item"
-          >
-            Shuffle options
-          </button>
+          </div>
+          <StyleToggle />
         </div>
       </header>
 
@@ -432,7 +436,7 @@ export default function PracticeApp() {
       </div>
 
       {/* mobile sticky controls */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
         <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
@@ -484,9 +488,11 @@ const Minimap = memo(function Minimap({
       {/* Pointer shortcut to any question. Kept out of the tab sequence (the
           full bank of cells would bury the answer options) — the Jump input is
           the keyboard-accessible path to any question. Cells grow on a touch
-          screen, where 8px is no target. */}
+          screen, where 8px is no target. content-visibility clips painting to this
+          box, so it carries 4px of padding (cancelled by the negative margin) for
+          the current cell's ring and the hover zoom to draw into. */}
       <div
-        className="flex flex-wrap gap-[3px] [@media(pointer:coarse)]:gap-1 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]"
+        className="-m-1 flex flex-wrap gap-[3px] p-1 [@media(pointer:coarse)]:gap-1 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]"
         role="group"
         aria-label="Question coverage map"
       >
@@ -507,7 +513,7 @@ const Minimap = memo(function Minimap({
               title={`Q${item.id}${answered ? (right ? " · correct" : " · wrong") : ""}`}
               aria-label={`Go to question ${i + 1}`}
               className={`h-2 w-2 rounded-[2px] [@media(pointer:coarse)]:h-3 [@media(pointer:coarse)]:w-3 transition-transform hover:scale-150 ${tone} ${
-                isCurrent ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(46,230,255,0.7)]" : ""
+                isCurrent ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(var(--glow-cyan),0.7)]" : ""
               }`}
             />
           );

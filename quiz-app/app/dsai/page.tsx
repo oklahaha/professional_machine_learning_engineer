@@ -3,6 +3,7 @@ import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
 import notesRaw from "@/data/notes.json";
 import ModeSwitch, { HomeLink } from "@/components/ModeSwitch";
+import StyleToggle from "@/components/StyleToggle";
 import Tile from "@/components/Tile";
 
 export const metadata: Metadata = {
@@ -21,8 +22,11 @@ export default function Page() {
     <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
       <div className="flex items-center justify-between gap-4">
         <HomeLink />
-        <div className="seg">
-          <ModeSwitch source="dsai" />
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <div className="seg">
+            <ModeSwitch source="dsai" />
+          </div>
+          <StyleToggle />
         </div>
       </div>
       <header className="mb-10 mt-8 sm:mb-14 sm:mt-12">

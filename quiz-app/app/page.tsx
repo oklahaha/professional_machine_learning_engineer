@@ -1,6 +1,7 @@
 import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
 import pmleRaw from "@/data/questions.json";
+import StyleToggle from "@/components/StyleToggle";
 import Tile from "@/components/Tile";
 
 // A server component: the bank sizes are read at build time, and none of the three banks is
@@ -13,6 +14,9 @@ const courseCount = new Set(cardsRaw.map((c) => c.course)).size;
 export default function Home() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-10 sm:px-6 sm:pt-20">
+      <div className="-mt-4 mb-6 flex justify-end sm:-mt-10 sm:mb-8">
+        <StyleToggle />
+      </div>
       <header className="mb-10 sm:mb-14">
         <h1 className="neon-title text-balance font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl">
           Study Console

@@ -277,6 +277,9 @@ and the `ModeSwitch` pill.
   (`$$…$$`, `\(…\)` — a lone `$` is prose) is typeset by KaTeX at build time via `renderMath`
   (`lib/notes-math.ts`), skipping `<pre>`/`<code>`. No KaTeX CDN, no auto-render script.
   `npm test` typesets every formula with `throwOnError: true`.
+  Code blocks (`<pre><code>`) are syntax-coloured the same way, at build time, by `highlightCode`
+  (`lib/notes-code.ts`): four token classes (`tk-c/s/k/n`), Python keywords only, inline `<code>`
+  untouched; `npm test` asserts every block's visible text is unchanged.
 - **Islands** (`components/NotesReader.tsx`): Exam only, Mark reviewed, the contents list. They share
   one `useSyncExternalStore` over storage key **`dsai-notes-v1`** (`{version, done[], examOnly}`),
   so the header toggle, the rail tick and the index's "n of m reviewed" agree within and across tabs.

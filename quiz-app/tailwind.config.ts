@@ -5,25 +5,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Deep-space base. Panels are tinted toward cyan so glass reads as "lit" rather than grey.
-        ink: "#04050D",
-        ink2: "#080C1C",
-        panel: "#0C1228",
-        panel2: "#121A38",
-        line: "#1D2B55",
-        linestrong: "#2D4280",
-        mist: "#8E9CC8",
-        paper: "#EEF3FF",
-        paperdim: "#C6CFEB",
+        // Role tokens, not fixed colours: each is an `r g b` triple set per theme in globals.css
+        // (:root is the deep-space default; the style switcher swaps the rest). Deep-space base:
+        // panels are tinted toward cyan so glass reads as "lit" rather than grey.
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        ink2: "rgb(var(--c-ink2) / <alpha-value>)",
+        panel: "rgb(var(--c-panel) / <alpha-value>)",
+        panel2: "rgb(var(--c-panel2) / <alpha-value>)",
+        line: "rgb(var(--c-line) / <alpha-value>)",
+        linestrong: "rgb(var(--c-linestrong) / <alpha-value>)",
+        mist: "rgb(var(--c-mist) / <alpha-value>)",
+        paper: "rgb(var(--c-paper) / <alpha-value>)",
+        paperdim: "rgb(var(--c-paperdim) / <alpha-value>)",
         // Electric cyan: the interactive/"system" accent. Kept clearly bluer than `correct`
         // so a selected option never reads as a right answer.
-        signal: "#2EE6FF",
-        correct: "#34E3A8",
-        wrong: "#FF6B81",
-        amber: "#FFB547",
-        iris: "#A88BFF",
+        signal: "rgb(var(--c-signal) / <alpha-value>)",
+        correct: "rgb(var(--c-correct) / <alpha-value>)",
+        wrong: "rgb(var(--c-wrong) / <alpha-value>)",
+        amber: "rgb(var(--c-amber) / <alpha-value>)",
+        iris: "rgb(var(--c-iris) / <alpha-value>)",
         // Decorative magenta — glows, gradients, nebula. Never a verdict colour.
-        plasma: "#D66BFF",
+        plasma: "rgb(var(--c-plasma) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],

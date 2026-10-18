@@ -30,6 +30,7 @@ import {
 import DeckPanel, { type CourseStat } from "./DeckPanel";
 import Flashcard from "./Flashcard";
 import ModeSwitch, { HomeLink } from "./ModeSwitch";
+import StyleToggle from "./StyleToggle";
 
 // v1: SM-2 states keyed by the content-hash card id. Deliberately not the quiz's key —
 // the two modes share a build, not a save file.
@@ -450,6 +451,7 @@ export default function FlashcardApp() {
               Limits
             </button>
           </div>
+          <StyleToggle />
         </div>
       </header>
 

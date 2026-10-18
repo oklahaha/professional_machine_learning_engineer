@@ -4,7 +4,24 @@
 
 :root {
   color-scheme: dark;
+  /* Colour roles as `r g b` triples, read by tailwind.config.ts as rgb(var(--c-x) / alpha). */
+  --c-ink: 4 5 13;
+  --c-ink2: 8 12 28;
+  --c-panel: 12 18 40;
+  --c-panel2: 18 26 56;
+  --c-line: 29 43 85;
+  --c-linestrong: 45 66 128;
+  --c-mist: 142 156 200;
+  --c-paper: 238 243 255;
+  --c-paperdim: 198 207 235;
+  --c-signal: 46 230 255;
+  --c-correct: 52 227 168;
+  --c-wrong: 255 107 129;
+  --c-amber: 255 181 71;
+  --c-iris: 168 139 255;
+  --c-plasma: 214 107 255;
   --glow-cyan: 46, 230, 255; /* signal */
+  --glow-correct: 52, 227, 168; /* correct */
   --glow-plasma: 214, 107, 255; /* plasma */
   --glow-iris: 168, 139, 255; /* iris */
 }
@@ -58,7 +75,7 @@ html[data-motion="off"] .cosmos * {
 
 ::selection {
   background: rgba(var(--glow-cyan), 0.28);
-  color: #eef3ff;
+  color: theme("colors.paper");
 }
 
 /* The outline follows each element's own corners; forcing a radius here reshaped square
@@ -71,7 +88,7 @@ html[data-motion="off"] .cosmos * {
 /* thin console-style scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2d4280 transparent;
+  scrollbar-color: theme("colors.linestrong") transparent;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -249,7 +266,7 @@ html[data-motion="off"] .cosmos * {
      so they survive `overflow-hidden` and need no positioning. */
   .holo {
     border: 1px solid rgba(var(--glow-cyan), 0.16);
-    background-color: rgba(12, 18, 40, 0.55);
+    background-color: rgb(var(--c-panel) / 0.55);
     -webkit-backdrop-filter: blur(10px) saturate(130%);
     backdrop-filter: blur(10px) saturate(130%);
     box-shadow:
@@ -261,7 +278,7 @@ html[data-motion="off"] .cosmos * {
   .holo-card {
     --c: rgba(var(--glow-cyan), 0.75);
     border: 1px solid rgba(var(--glow-cyan), 0.24);
-    background-color: rgba(12, 18, 40, 0.72);
+    background-color: rgb(var(--c-panel) / 0.72);
     background-image:
       linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
       linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
@@ -292,7 +309,7 @@ html[data-motion="off"] .cosmos * {
   .holo-solid {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background-color: rgba(12, 18, 40, 0.94);
+    background-color: rgb(var(--c-panel) / 0.94);
   }
 
   /* Header strip of a card: a HUD bar with a fine scanline texture. */
@@ -306,7 +323,7 @@ html[data-motion="off"] .cosmos * {
         transparent 1px,
         transparent 3px
       ),
-      linear-gradient(90deg, rgba(var(--glow-cyan), 0.1), rgba(8, 12, 28, 0.7) 40%, rgba(var(--glow-plasma), 0.07));
+      linear-gradient(90deg, rgba(var(--glow-cyan), 0.1), rgb(var(--c-ink2) / 0.7) 40%, rgba(var(--glow-plasma), 0.07));
   }
 
   /* Big readout number (accuracy / queue) */
@@ -319,7 +336,7 @@ html[data-motion="off"] .cosmos * {
   .seg {
     @apply flex items-center gap-0.5 rounded-[6px] p-0.5 font-display text-[13px] font-medium;
     border: 1px solid rgba(var(--glow-cyan), 0.2);
-    background: rgba(8, 12, 28, 0.6);
+    background: rgb(var(--c-ink2) / 0.6);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
   }
@@ -438,7 +455,7 @@ html[data-motion="off"] .cosmos * {
   /* quiet: prev / dismissive actions */
   .btn-ghost {
     color: theme("colors.paperdim");
-    background: rgba(12, 18, 40, 0.6);
+    background: rgb(var(--c-panel) / 0.6);
     box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.18);
   }
   .btn-ghost:hover:not(:disabled) {
@@ -507,7 +524,7 @@ html[data-motion="off"] .cosmos * {
   .field {
     @apply rounded-[4px] font-sans tabular-nums text-paper;
     border: 1px solid rgba(var(--glow-cyan), 0.25);
-    background: rgba(4, 5, 13, 0.7);
+    background: rgb(var(--c-ink) / 0.7);
   }
   .field:focus {
     border-color: theme("colors.signal");
@@ -546,14 +563,14 @@ html[data-motion="off"] .cosmos * {
 .notes-prose ol { list-style: decimal; }
 .notes-prose li { margin: 0.3em 0; }
 .notes-prose li::marker { color: theme("colors.mist"); }
-.notes-prose :is(b, strong) { font-weight: 600; color: #fff; }
+.notes-prose :is(b, strong) { font-weight: 600; color: theme("colors.paper"); }
 .notes-prose a { color: theme("colors.signal"); text-decoration: underline; text-underline-offset: 3px; }
 .notes-prose a:hover { text-decoration-thickness: 2px; }
 .notes-prose mark.k { background: none; color: theme("colors.amber"); font-weight: 600; }
 .notes-prose code {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.86em;
-  background: rgba(4, 5, 13, 0.7);
+  background: rgb(var(--c-ink) / 0.7);
   border: 1px solid rgba(var(--glow-cyan), 0.18);
   border-radius: 3px;
   padding: 0.05em 0.35em;
@@ -562,12 +579,17 @@ html[data-motion="off"] .cosmos * {
   margin: 1.1em 0;
   padding: 0.9rem 1rem;
   overflow-x: auto;
-  background: rgba(4, 5, 13, 0.75);
+  background: rgb(var(--c-ink) / 0.75);
   border: 1px solid rgba(var(--glow-cyan), 0.16);
   border-radius: 6px;
   line-height: 1.55;
 }
 .notes-prose pre code { background: none; border: 0; padding: 0; font-size: 14px; }
+/* Token colours from lib/notes-code.ts. Not green: green means "reviewed" on this page. */
+.notes-prose pre .tk-k { color: theme("colors.signal"); }
+.notes-prose pre .tk-s { color: #ffc98b; }
+.notes-prose pre .tk-n { color: theme("colors.plasma"); }
+.notes-prose pre .tk-c { color: theme("colors.mist"); font-style: italic; }
 .notes-prose table {
   display: block;
   max-width: 100%;
@@ -595,7 +617,7 @@ html[data-motion="off"] .cosmos * {
   margin: 1.5rem 0;
   padding: 1.1rem 1.4rem;
   border-radius: 8px;
-  background: rgba(4, 5, 13, 0.55);
+  background: rgb(var(--c-ink) / 0.55);
   box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.18);
 }
 .notes-prose .overview h3 { margin-top: 0.4rem; }
@@ -645,7 +667,7 @@ html[data-motion="off"] .cosmos * {
   margin: 0.7rem 0;
   padding: 0.7rem 1rem;
   border-radius: 6px;
-  background: rgba(4, 5, 13, 0.5);
+  background: rgb(var(--c-ink) / 0.5);
   box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.14);
 }
 .notes-prose details.q summary { cursor: pointer; font-weight: 600; }
@@ -661,7 +683,7 @@ html[data-motion="off"] .cosmos * {
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .holo,
   .holo-card {
-    background-color: rgba(12, 18, 40, 0.92);
+    background-color: rgb(var(--c-panel) / 0.92);
   }
 }
 
@@ -673,4 +695,355 @@ html[data-motion="off"] .cosmos * {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEMPORARY style trial (components/StylePicker.tsx): Claude dark (the default — app/layout.tsx
+   renders it on <html>) and Resend, from Design-claude.md and Design-Resend.md. Both re-point the
+   colour roles and fonts of the original "Space" look above. Once one is chosen, fold its values
+   into :root and delete this section, and with it the Space-only scene and glass it overrides.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Resend: true black, off-white text, serif display, a white primary button, blue links. */
+html[data-theme="resend"] {
+  color-scheme: dark;
+  --c-ink: 0 0 0;
+  --c-ink2: 6 6 10;
+  --c-panel: 10 10 12;
+  --c-panel2: 18 18 21;
+  --c-line: 28 28 31;
+  --c-linestrong: 48 49 52;
+  --c-mist: 161 164 165;
+  --c-paper: 252 253 255;
+  --c-paperdim: 216 217 219;
+  --c-signal: 59 158 255;
+  --c-correct: 17 255 153;
+  --c-wrong: 255 32 71;
+  --c-amber: 255 197 61;
+  --c-iris: 255 128 31;
+  --c-plasma: 255 128 31;
+  --glow-cyan: 59, 158, 255;
+  --glow-correct: 17, 255, 153;
+  --glow-plasma: 255, 128, 31;
+  --glow-iris: 255, 128, 31;
+  --font-display: var(--font-trial-sans), "Geist", system-ui, sans-serif;
+  --trial-heading: var(--font-trial-serif), "Domaine Display", Georgia, serif;
+  --font-sans: var(--font-trial-sans), "Geist", system-ui, sans-serif;
+  --trial-radius: 8px;
+  --trial-display-tracking: -0.01em;
+}
+
+/* Claude dark, from the reference page's own dark preview
+   (getdesign.md/design-md/claude/preview-dark.html): #0c0c0e canvas, #161618 cards, white text at
+   85/60% and white hairlines at 12/22%, flattened here onto the card colour, with the coral accent
+   and semantic colours of the light design. */
+html[data-theme="claude-dark"] {
+  color-scheme: dark;
+  --c-ink: 12 12 14;
+  --c-ink2: 22 22 24;
+  --c-panel: 22 22 24;
+  --c-panel2: 31 30 27;
+  --c-line: 50 50 52;
+  --c-linestrong: 73 73 75;
+  --c-mist: 158 158 159;
+  --c-paper: 255 255 255;
+  --c-paperdim: 218 218 219;
+  --c-signal: 204 120 92;
+  --c-correct: 93 184 114;
+  --c-wrong: 198 69 69;
+  --c-amber: 232 165 90;
+  --c-iris: 93 184 166;
+  --c-plasma: 204 120 92;
+  --glow-cyan: 204, 120, 92;
+  --glow-correct: 93, 184, 114;
+  --glow-plasma: 204, 120, 92;
+  --glow-iris: 93, 184, 166;
+  --font-display: var(--font-trial-sans), -apple-system, "Segoe UI", system-ui, sans-serif;
+  --trial-heading: var(--font-trial-serif), "Tiempos Headline", Georgia, serif;
+  --font-sans: var(--font-trial-sans), -apple-system, "Segoe UI", system-ui, sans-serif;
+  --trial-radius: 8px;
+  --trial-display-tracking: -0.015em;
+}
+
+/* Claude puts white text on its coral (on-primary #fff). */
+html[data-theme="claude-dark"] .btn-primary:not(:disabled) {
+  color: #fff;
+}
+
+/* Both set only headings in the serif; buttons, labels and figures stay sans. */
+html:is([data-theme="claude-dark"], [data-theme="resend"]) :is(h1, h2.font-display, .notes-prose h2, .notes-prose h3) {
+  font-family: var(--trial-heading);
+  font-weight: 400;
+  letter-spacing: var(--trial-display-tracking);
+}
+
+/* The Claude ⇄ Resend switch (components/StyleToggle.tsx), after the light/dark toggle in
+   toggle_button.png: a sunken pill track and a raised round knob, larger than the track, that
+   slides to its style's side and carries that style's mark (Claude: a cream disc with the coral
+   mascot; Resend: a black disc with the white R). The style's name sits in the half the knob
+   leaves free. The knob floats, so it is the one place these flat styles take a shadow. */
+.theme-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 112px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+.theme-switch-track {
+  position: absolute;
+  inset: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: #1f1e1b;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  transition: background-color 0.3s ease;
+}
+.theme-switch[data-on="true"] .theme-switch-track {
+  justify-content: flex-start;
+  background: #0d0d10;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.theme-switch-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--c-mist));
+  transition: color 0.2s ease;
+}
+.theme-switch:hover .theme-switch-label {
+  color: rgb(var(--c-paper));
+}
+.theme-switch-knob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #faf9f5;
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.55),
+    inset 0 -2px 3px rgba(20, 20, 19, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease;
+}
+.theme-switch[data-on="true"] .theme-switch-knob {
+  transform: translateX(74px);
+  background: #000;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.theme-switch:active .theme-switch-knob {
+  scale: 0.94;
+}
+.theme-switch-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* What both styles share: no backdrop scene, no glass, no glow, no chamfer. */
+html[data-theme] .cosmos {
+  display: none;
+}
+html[data-theme] body {
+  background: theme("colors.ink");
+}
+html[data-theme] .neon-title {
+  background: none;
+  color: theme("colors.paper");
+  filter: none;
+  font-weight: 400;
+  letter-spacing: var(--trial-display-tracking);
+}
+html[data-theme] .neon-glyph {
+  color: theme("colors.signal");
+  text-shadow: none;
+}
+html[data-theme] :is(.holo, .holo-card) {
+  border: 1px solid theme("colors.line");
+  background-color: theme("colors.panel");
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+html[data-theme="claude-dark"] .holo-card {
+  border-radius: 12px;
+}
+html[data-theme] .holo-solid {
+  background-color: theme("colors.panel");
+}
+html[data-theme] .hud-strip {
+  border-bottom: 1px solid theme("colors.line");
+  background: theme("colors.panel2");
+}
+html[data-theme] .seg {
+  border: 1px solid theme("colors.line");
+  background: theme("colors.panel");
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-radius: var(--trial-radius);
+}
+html[data-theme] .seg-item {
+  border-radius: calc(var(--trial-radius) - 2px);
+}
+html[data-theme] .seg-item[aria-current="page"],
+html[data-theme] .seg-item[aria-pressed="true"] {
+  text-shadow: none;
+}
+html[data-theme] .seg-item[aria-pressed="true"] {
+  color: theme("colors.paper");
+  background: theme("colors.panel2");
+  box-shadow: none;
+}
+html[data-theme] .seg-item[aria-current="page"]::after {
+  box-shadow: none;
+}
+html[data-theme] .btn-cyber {
+  clip-path: none;
+  border-radius: var(--trial-radius);
+}
+html[data-theme] .btn-cyber::after {
+  display: none;
+}
+html[data-theme] .btn-cyber:focus-visible {
+  box-shadow: none;
+  outline: 2px solid theme("colors.signal");
+  outline-offset: 2px;
+}
+html[data-theme] .btn-primary,
+html[data-theme] .btn-primary:hover:not(:disabled) {
+  filter: none;
+}
+html[data-theme] .btn-primary::before {
+  background: theme("colors.signal");
+  clip-path: none;
+  border-radius: var(--trial-radius);
+}
+html[data-theme] .btn-primary:hover:not(:disabled)::before {
+  filter: brightness(0.9);
+}
+html[data-theme] .btn-primary:disabled::before {
+  background: transparent;
+}
+/* Resend's primary is the brightest pixel: a white button with black text. */
+html[data-theme="resend"] .btn-primary::before {
+  background: theme("colors.paper");
+}
+html[data-theme] .btn-neon {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px theme("colors.linestrong");
+}
+html[data-theme] .btn-neon:hover:not(:disabled) {
+  background: theme("colors.panel2");
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px theme("colors.signal");
+}
+html[data-theme] .btn-ghost {
+  background: theme("colors.panel");
+  box-shadow: inset 0 0 0 1px theme("colors.line");
+}
+html[data-theme] .btn-ghost:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px theme("colors.linestrong");
+}
+html[data-theme] .lift:hover {
+  border-color: theme("colors.linestrong");
+  box-shadow: none;
+}
+html[data-theme] .field {
+  border-color: theme("colors.linestrong");
+  background: theme("colors.panel");
+  border-radius: calc(var(--trial-radius) - 2px);
+}
+html[data-theme] .field:focus {
+  box-shadow: 0 0 0 3px rgba(var(--glow-cyan), 0.15);
+}
+/* The components' own glow shadows (selected option, minimap cursor, phone nav bar). Only the
+   shadow layer is dropped, so a ring-* on the same element still draws. */
+html[data-theme] [class*="shadow-["] {
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-colored: 0 0 #0000 !important;
+}
+html[data-theme] .notes-prose :is(.overview, details.q) {
+  background: theme("colors.panel");
+}
+
+/* Revision-notes code, after each design's own code block (the reference preview pages' CSS).
+   Claude: its code window — #1f1e1b (the inner tone; #181715 is barely a step from the dark
+   card), a faint hairline, 12px corners, 24px padding, cream text, JetBrains Mono 13/1.7, muted
+   keyword/string/number tints. Resend: a code well — #06060a, 14% white
+   border, 12px corners, 24px padding, Geist Mono 13/1.6, with the traffic-light dots on top. */
+html[data-theme="claude-dark"] {
+  --font-mono: var(--font-trial-mono), ui-monospace, monospace;
+}
+html[data-theme="resend"] {
+  --font-mono: var(--font-trial-geist-mono), ui-monospace, monospace;
+}
+html[data-theme] .notes-prose pre {
+  margin: 1.4em 0;
+  border-radius: 12px;
+  font-size: 13px;
+}
+html[data-theme] .notes-prose pre code {
+  font-size: 13px;
+}
+/* JetBrains Mono draws `==` and `<=` as single glyphs; in teaching code they must read as typed. */
+html[data-theme] :is(pre, code) {
+  font-variant-ligatures: none;
+}
+
+html[data-theme="claude-dark"] .notes-prose pre {
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1f1e1b;
+  color: #faf9f5;
+  line-height: 1.7;
+}
+html[data-theme="claude-dark"] .notes-prose pre .tk-k { color: #c898b9; }
+html[data-theme="claude-dark"] .notes-prose pre .tk-s { color: #d4a37c; }
+html[data-theme="claude-dark"] .notes-prose pre .tk-n { color: #87b8c4; }
+html[data-theme="claude-dark"] .notes-prose pre .tk-c { color: #8e8b82; font-style: normal; }
+
+html[data-theme="resend"] .notes-prose pre {
+  padding: 44px 24px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(circle at 30px 22px, #ff2047 4px, transparent 4.5px),
+    radial-gradient(circle at 46px 22px, #ffc53d 4px, transparent 4.5px),
+    radial-gradient(circle at 62px 22px, #11ff99 4px, transparent 4.5px),
+    #06060a;
+  color: rgba(252, 253, 255, 0.86);
+  line-height: 1.6;
+}
+html[data-theme="resend"] .notes-prose pre .tk-k { color: #3b9eff; }
+html[data-theme="resend"] .notes-prose pre .tk-s { color: #ffc53d; }
+html[data-theme="resend"] .notes-prose pre .tk-n { color: #ff801f; }
+html[data-theme="resend"] .notes-prose pre .tk-c { color: #888e90; font-style: normal; }
+
+/* Inline code: a small tinted chip, no outline (Resend keeps its hairline). */
+html[data-theme] .notes-prose :not(pre) > code {
+  border: 0;
+  border-radius: 4px;
+  background: theme("colors.panel2");
+}
+html[data-theme="resend"] .notes-prose :not(pre) > code {
+  background: #0a0a0c;
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }

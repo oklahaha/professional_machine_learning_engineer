@@ -24,6 +24,7 @@ import {
 import { presentMcq } from "@/lib/mcq-present";
 import McqCard from "./McqCard";
 import ModeSwitch, { HomeLink } from "./ModeSwitch";
+import StyleToggle from "./StyleToggle";
 import QuizDeckPanel, { type QuizCourseStat, type Score } from "./QuizDeckPanel";
 
 // Its own key: shares nothing with the PMLE quiz (pmle-practice-v3) or the DSAI flashcards'
@@ -374,6 +375,7 @@ export default function DsaiQuizApp() {
               Shuffle options
             </button>
           </div>
+          <StyleToggle />
         </div>
       </header>
 
@@ -444,7 +446,7 @@ export default function DsaiQuizApp() {
         </aside>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(46,230,255,0.35)] backdrop-blur-md sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
         <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
@@ -486,9 +488,11 @@ function Coverage({
         </span>
       </div>
       {/* Pointer shortcut only (out of the tab order); the Jump field is the keyboard and
-          screen-reader path to any question. Cells grow on a touch screen, where 8px is no target. */}
+          screen-reader path to any question. Cells grow on a touch screen, where 8px is no target.
+          content-visibility clips painting to this box, so it carries 4px of padding (cancelled by
+          the negative margin) for the current cell's ring and the hover zoom to draw into. */}
       <div
-        className="flex flex-wrap gap-[3px] [@media(pointer:coarse)]:gap-1 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]"
+        className="-m-1 flex flex-wrap gap-[3px] p-1 [@media(pointer:coarse)]:gap-1 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]"
         role="group"
         aria-label="Question coverage map"
       >
@@ -507,7 +511,7 @@ function Coverage({
               title={`Question ${i + 1}${answered ? (right ? " · correct" : " · wrong") : ""}`}
               aria-label={`Go to question ${i + 1}`}
               className={`h-2 w-2 rounded-[2px] [@media(pointer:coarse)]:h-3 [@media(pointer:coarse)]:w-3 transition-transform hover:scale-150 ${tone} ${
-                i === pos ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(46,230,255,0.7)]" : ""
+                i === pos ? "ring-2 ring-signal ring-offset-1 ring-offset-ink shadow-[0_0_8px_2px_rgba(var(--glow-cyan),0.7)]" : ""
               }`}
             />
           );

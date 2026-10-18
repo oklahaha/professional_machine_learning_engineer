@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ModeSwitch from "@/components/ModeSwitch";
+import StyleToggle from "@/components/StyleToggle";
 import { NotesCourseProgress, NotesDoneMark } from "@/components/NotesReader";
 import { notes, notesByCourse } from "@/lib/notes";
 
@@ -19,8 +20,11 @@ export default function Page() {
         <Link href="/dsai" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper">
           <span aria-hidden>←</span> Data Science &amp; AI
         </Link>
-        <div className="seg">
-          <ModeSwitch source="dsai" />
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <div className="seg">
+            <ModeSwitch source="dsai" />
+          </div>
+          <StyleToggle />
         </div>
       </div>
 

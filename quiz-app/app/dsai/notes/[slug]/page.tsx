@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import ModeSwitch from "@/components/ModeSwitch";
+import StyleToggle from "@/components/StyleToggle";
 import { NotesBody, NotesDoneMark, NotesToc, NotesToggles } from "@/components/NotesReader";
 import { findNote, neighbours, notes } from "@/lib/notes";
+import { highlightCode } from "@/lib/notes-code";
 import { renderMath } from "@/lib/notes-math";
 
 // Every lecture is prerendered at build time; an unknown slug is a 404, not a render.
@@ -34,7 +36,7 @@ export default async function Page({ params }: Params) {
   const note = findNote((await params).slug);
   if (!note) notFound();
 
-  const html = renderMath(note.html, tex);
+  const html = highlightCode(renderMath(note.html, tex));
   const { prev, next } = neighbours(note.slug);
   const siblings = notes.filter((n) => n.course === note.course);
 
@@ -49,6 +51,7 @@ export default async function Page({ params }: Params) {
             <ModeSwitch source="dsai" />
           </div>
           <NotesToggles slug={note.slug} />
+          <StyleToggle />
         </div>
       </header>
 

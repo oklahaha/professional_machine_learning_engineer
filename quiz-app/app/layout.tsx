@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import MotionToggle from "@/components/MotionToggle";
+import { DEFAULT_STYLE, STYLE_BOOT } from "@/components/StyleToggle";
 import "./globals.css";
 
 // Self-hosted (app/fonts/, the Google Fonts latin subset, OFL) rather than next/font/google: that
@@ -31,6 +32,41 @@ const mono = localFont({
   display: "swap",
 });
 
+// TEMPORARY (style trial, components/StyleToggle.tsx): faces for the Claude dark and Resend
+// styles: sans, serif headings, and the JetBrains Mono / Geist Mono their code blocks name. Not
+// preloaded, since each style needs only some of them.
+const trialSans = localFont({
+  src: "./fonts/inter-latin.woff2",
+  variable: "--font-trial-sans",
+  weight: "400 600",
+  display: "swap",
+  preload: false,
+});
+
+const trialSerif = localFont({
+  src: "./fonts/eb-garamond-latin.woff2",
+  variable: "--font-trial-serif",
+  weight: "400 500",
+  display: "swap",
+  preload: false,
+});
+
+const trialMono = localFont({
+  src: "./fonts/jetbrains-mono-latin.woff2",
+  variable: "--font-trial-mono",
+  weight: "400 500",
+  display: "swap",
+  preload: false,
+});
+
+const trialGeistMono = localFont({
+  src: "./fonts/geist-mono-latin.woff2",
+  variable: "--font-trial-geist-mono",
+  weight: "400 500",
+  display: "swap",
+  preload: false,
+});
+
 // Each route names itself; this is the home page's title and the fallback.
 export const metadata: Metadata = {
   title: "Study Console",
@@ -41,7 +77,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#04050D",
+  themeColor: "#0c0c0e", // Claude dark canvas (style trial)
   viewportFit: "cover", // lets the phone nav bars pad for the home indicator (env(safe-area-inset-*))
 };
 
@@ -53,8 +89,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${trialSans.variable} ${trialSerif.variable} ${trialMono.variable} ${trialGeistMono.variable}`}
+      data-theme={DEFAULT_STYLE}
+      suppressHydrationWarning // STYLE_BOOT may switch data-theme before React hydrates
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: STYLE_BOOT }} />
+      </head>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

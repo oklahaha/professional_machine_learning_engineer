@@ -220,7 +220,7 @@ export default function QuestionCard({
             let chip = "border-linestrong text-mist";
             if (revealed) {
               if (isAnswer) {
-                row = "border-correct/70 bg-correct/[0.08] shadow-[0_0_20px_-8px_rgba(52,227,168,0.7)]";
+                row = "border-correct/70 bg-correct/[0.08] shadow-[0_0_20px_-8px_rgba(var(--glow-correct),0.7)]";
                 chip = "border-correct bg-correct text-ink";
               } else if (chosen) {
                 row = "border-wrong/70 bg-wrong/[0.08]";
@@ -230,7 +230,7 @@ export default function QuestionCard({
                 chip = "border-linestrong text-mist";
               }
             } else if (chosen) {
-              row = "border-signal bg-signal/[0.10] shadow-[0_0_20px_-6px_rgba(46,230,255,0.7)]";
+              row = "border-signal bg-signal/[0.10] shadow-[0_0_20px_-6px_rgba(var(--glow-cyan),0.7)]";
               chip = "border-signal bg-signal text-ink";
             }
 

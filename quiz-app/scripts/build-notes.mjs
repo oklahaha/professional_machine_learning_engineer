@@ -91,6 +91,23 @@ for (const file of files) {
   });
   if (headings.length === 0) fail("no <h2> sections");
 
+  // The overview box opens with an <h3> straight under the page's <h1>, skipping a level (axe
+  // "heading-order", on every page). Promote it to an <h2> carrying a class, so the numbering
+  // above, which matches bare <h2>s only, keeps it out of the contents. CSS sizes it as an h3.
+  body = body.replace(/(<div class="overview">\s*)<h3>([\s\S]*?)<\/h3>/g, '$1<h2 class="overview-title">$2</h2>');
+
+  // A comparison table whose corner cell is empty labels its rows in the first column. Make those
+  // labels row headers, so a screen reader reads "意思" with each cell of that row (axe
+  // "td-has-header"). CSS keeps them looking like the plain cells they were.
+  body = body.replace(/<table\b[^>]*>[\s\S]*?<\/table>/g, (table) =>
+    /^<table\b[^>]*>\s*(?:<thead>\s*)?<tr>\s*<th>\s*<\/th>/.test(table)
+      ? table.replace(/(<tr>\s*)<td>([\s\S]*?)<\/td>/g, '$1<th scope="row">$2</th>')
+      : table,
+  );
+  // An empty header cell (the corner, or a blank column head) heads nothing; a header with no
+  // text is announced as a blank (axe "empty-table-header"). Make it a plain cell.
+  body = body.replace(/<th>\s*<\/th>/g, "<td></td>");
+
   // A cross-reference to a sibling page ("see Week 3") becomes that page's route.
   body = body.replace(/(<a\b[^>]*href=")([^"#]+)\.html(#[^"]*)?"/gi, (m, pre, name, hash = "") =>
     slugs.has(name) ? `${pre}/dsai/notes/${name}${hash}"` : m,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
 import notesRaw from "@/data/notes.json";
-import ModeSwitch, { HomeLink } from "@/components/ModeSwitch";
+import { HomeLink } from "@/components/ModeSwitch";
 import StyleToggle from "@/components/StyleToggle";
 import Tile from "@/components/Tile";
 
@@ -23,9 +23,6 @@ export default function Page() {
       <div className="flex items-center justify-between gap-4">
         <HomeLink />
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <div className="seg">
-            <ModeSwitch source="dsai" />
-          </div>
           <StyleToggle />
         </div>
       </div>
@@ -49,7 +46,7 @@ export default function Page() {
             { label: "cards", value: cardsRaw.length },
             { label: "decks", value: cardDecks },
           ]}
-          action="Review cards"
+          action="Review Cards"
         />
         <Tile
           href="/dsai/quiz"
@@ -61,7 +58,7 @@ export default function Page() {
             { label: "questions", value: mcqRaw.length },
             { label: "decks", value: mcqDecks },
           ]}
-          action="Take the quiz"
+          action="Take the Quiz"
         />
         <Tile
           href="/dsai/notes"
@@ -73,7 +70,7 @@ export default function Page() {
             { label: "lectures", value: notesRaw.length },
             { label: "courses", value: noteCourses },
           ]}
-          action="Read the notes"
+          action="Read the Notes"
         />
       </div>
     </main>

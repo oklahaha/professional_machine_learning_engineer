@@ -97,7 +97,7 @@ export default function RootLayout({
       </head>
       <body>
         <a href="#main" className="skip-link">
-          Skip to content
+          Skip to Content
         </a>
         {/* Decorative space scene, pure CSS (see globals.css). Fixed behind every route. */}
         <div aria-hidden className="cosmos">

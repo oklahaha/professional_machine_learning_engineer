@@ -48,7 +48,7 @@ export default function ModeSwitch({ source }: { source: "pmle" | "dsai" }) {
 /** The way back to the source picker: a plain text link above each page title. */
 export function HomeLink() {
   return (
-    <Link href="/" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper">
+    <Link href="/" className="hud-label inline-flex items-center gap-1.5 whitespace-nowrap transition hover:text-paper">
       <span aria-hidden>←</span> Study Console
     </Link>
   );

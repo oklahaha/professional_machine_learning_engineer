@@ -600,6 +600,9 @@ label,
   vertical-align: top;
 }
 .notes-prose th { background: theme("colors.panel2"); font-weight: 600; }
+/* Row labels are <th scope="row"> for screen readers; they keep a plain cell's look. The min-width
+   stops a short CJK label ("意思") breaking one character per line; long ones still wrap. */
+.notes-prose th[scope="row"] { background: none; font-weight: inherit; min-width: 6em; }
 .notes-prose .formula,
 .notes-prose .katex-display { overflow-x: auto; overflow-y: hidden; }
 .notes-prose .formula { margin: 0.6em 0; }
@@ -615,6 +618,8 @@ label,
   box-shadow: inset 0 0 0 1px rgba(var(--glow-cyan), 0.18);
 }
 .notes-prose .overview h3 { margin-top: 0.4rem; }
+/* The overview's title is an h2 for the outline (scripts/build-notes.mjs), sized as the h3 it was. */
+.notes-prose .overview h2.overview-title { font-size: 1.2rem; margin: 0.4rem 0 0.5rem; }
 @media (max-width: 639px) {
   .notes-prose { font-size: 16px; }
   .notes-prose .overview { padding: 0.9rem 1rem; }
@@ -642,6 +647,8 @@ label,
 .notes-prose .box.exam { --tone: theme("colors.amber"); }
 .notes-prose .box.tip { --tone: theme("colors.iris"); }
 .notes-prose .box.warn { --tone: theme("colors.wrong"); }
+/* Rose text on its own tinted box measured 3.47:1; lifted toward the text colour it clears 4.5:1. */
+.notes-prose .box.warn .label { color: color-mix(in srgb, var(--tone) 70%, theme("colors.paper")); }
 .notes-prose .box.link { --tone: theme("colors.signal"); }
 .notes-prose .tag {
   display: inline-block;
@@ -666,12 +673,6 @@ label,
 }
 .notes-prose details.q summary { cursor: pointer; font-weight: 600; }
 .notes-prose details.q[open] summary { margin-bottom: 0.5rem; color: theme("colors.signal"); }
-
-/* Exam only (NotesBody sets the attribute): the original pages' rule, in CSS — every top-level
-   block stays only if it is a heading, the overview, or is or contains an exam marker. */
-[data-exam-only="true"] .notes-prose > :not(h2, h3, .exam, .overview):not(:has(.exam)) {
-  display: none;
-}
 
 /* Older/low-power browsers without backdrop-filter: make glass opaque enough to read. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

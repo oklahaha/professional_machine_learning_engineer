@@ -1,128 +1,13 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
-import { EMPTY, STORAGE_KEY, parseNotesState, toggleDone, type NotesState } from "@/lib/notes-store";
+import { useEffect, useState } from "react";
 import type { Heading } from "@/lib/notes";
 
 /*
  * The interactive bits of the revision notes. The page itself (app/dsai/notes/[slug]) is a
  * server component that prerenders the lecture's HTML and math; these islands only add what
- * needs the browser: the Exam-only view, the "reviewed" tick and the scroll-tracking contents.
- * They share one store, so a toggle in the header and a tick in the rail never disagree.
+ * needs the browser: the scroll-tracking contents, and keyboard access to wide code blocks.
  */
-
-// The last value written, for when localStorage throws (private mode): the toggles still work
-// for the visit, they just are not remembered.
-let memory: string | null = null;
-let cachedRaw: string | null | undefined;
-let cached: NotesState = EMPTY;
-const listeners = new Set<() => void>();
-
-function readRaw(): string | null {
-  try {
-    return window.localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return memory;
-  }
-}
-
-function snapshot(): NotesState {
-  const raw = readRaw();
-  if (raw !== cachedRaw) {
-    cachedRaw = raw;
-    cached = parseNotesState(raw);
-  }
-  return cached;
-}
-
-function subscribe(onChange: () => void) {
-  listeners.add(onChange);
-  const onStorage = (e: StorageEvent) => {
-    if (e.key === STORAGE_KEY) onChange();
-  };
-  window.addEventListener("storage", onStorage);
-  return () => {
-    listeners.delete(onChange);
-    window.removeEventListener("storage", onStorage);
-  };
-}
-
-function write(next: NotesState) {
-  memory = JSON.stringify(next);
-  try {
-    window.localStorage.setItem(STORAGE_KEY, memory);
-  } catch {
-    /* storage unavailable — `memory` carries it */
-  }
-  listeners.forEach((l) => l());
-}
-
-// The server renders the defaults (nothing reviewed, full view); the stored state lands on
-// hydration.
-export function useNotesState(): NotesState {
-  return useSyncExternalStore(subscribe, snapshot, () => EMPTY);
-}
-
-/** The reader's two switches, as a `.seg` group beside the mode switch. */
-export function NotesToggles({ slug }: { slug: string }) {
-  const state = useNotesState();
-  const done = state.done.includes(slug);
-  return (
-    <div className="seg">
-      <button
-        type="button"
-        onClick={() => write({ ...state, examOnly: !state.examOnly })}
-        aria-pressed={state.examOnly}
-        title="Show only the exam-marked points, headings and the overview"
-        className="seg-item"
-      >
-        Exam only
-      </button>
-      <span aria-hidden className="seg-sep" />
-      <button
-        type="button"
-        onClick={() => write(toggleDone(state, slug))}
-        aria-pressed={done}
-        className="seg-item"
-      >
-        {done ? "Reviewed ✓" : "Mark reviewed"}
-      </button>
-    </div>
-  );
-}
-
-/**
- * Wraps the prerendered lecture. Exam-only is pure CSS (`.notes-prose` in globals.css): it hides
- * every top-level block that neither is nor contains an `.exam` marker, which is the rule the
- * original pages applied in script.
- */
-export function NotesBody({ children }: { children: ReactNode }) {
-  const { examOnly } = useNotesState();
-  return <div data-exam-only={examOnly ? "true" : undefined}>{children}</div>;
-}
-
-/** The tick beside a lecture in the index and the rail. Renders nothing until reviewed. */
-export function NotesDoneMark({ slug }: { slug: string }) {
-  const { done } = useNotesState();
-  if (!done.includes(slug)) return null;
-  return (
-    <span className="shrink-0 text-[13px] text-correct">
-      <span aria-hidden>✓</span>
-      <span className="sr-only">reviewed</span>
-    </span>
-  );
-}
-
-/** "3 of 7 reviewed" under a course heading. */
-export function NotesCourseProgress({ slugs }: { slugs: string[] }) {
-  const { done } = useNotesState();
-  const n = slugs.filter((s) => done.includes(s)).length;
-  return (
-    <span className="hud-label tabular-nums">
-      {n} of {slugs.length} reviewed
-    </span>
-  );
-}
 
 /**
  * The page's sections. On a desktop it sits in the sticky rail and follows the scroll; on a
@@ -135,15 +20,31 @@ export function NotesToc({ headings, variant }: { headings: Heading[]; variant: 
   useEffect(() => {
     if (variant !== "rail") return;
     const els = headings.map((h) => document.getElementById(h.id)).filter((e): e is HTMLElement => !!e);
-    // A heading counts as current once it crosses the top 30% of the viewport.
-    const obs = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
-      },
-      { rootMargin: "0px 0px -70% 0px" },
-    );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
+    // The current section is the last heading above the top 30% of the viewport — so a long
+    // section stays lit all the way down, not only while its heading is in that band. Read once
+    // per frame at most; there are only a dozen headings.
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.3;
+      let current: string | null = null;
+      for (const el of els) {
+        if (el.getBoundingClientRect().top > line) break;
+        current = el.id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [headings, variant]);
 
   const list = (
@@ -176,8 +77,52 @@ export function NotesToc({ headings, variant }: { headings: Heading[]; variant: 
 
   return (
     <nav aria-label="Contents" className="holo rounded-lg p-4">
-      <h2 className="hud-label mb-2 px-2.5">On this page</h2>
+      <h2 className="hud-label mb-2 px-2.5">On This Page</h2>
       {list}
     </nav>
   );
+}
+
+/**
+ * A code block, table or display formula wider than the article scrolls sideways, and a keyboard user can only
+ * scroll what they can focus. Measured in the browser (a block that fits must not become a useless
+ * tab stop), and again on resize, since a phone overflows blocks a desktop does not. A code block
+ * gets a name to announce on focus: as a `group`, not a `region` landmark, since a page can hold
+ * twenty and landmarks must be told apart. A table keeps its own role, and a formula is read
+ * from its MathML. Renders nothing.
+ */
+export function NotesCodeScroll() {
+  useEffect(() => {
+    const blocks = [...document.querySelectorAll<HTMLElement>(".notes-prose :is(pre, table, .katex-display)")];
+    let frame = 0;
+    const mark = () => {
+      frame = 0;
+      for (const el of blocks) {
+        const isCode = el.tagName === "PRE";
+        if (el.scrollWidth > el.clientWidth + 1) {
+          el.tabIndex = 0;
+          if (isCode) {
+            el.setAttribute("role", "group");
+            el.setAttribute("aria-label", "Code listing");
+          }
+        } else {
+          el.removeAttribute("tabindex");
+          if (isCode) {
+            el.removeAttribute("role");
+            el.removeAttribute("aria-label");
+          }
+        }
+      }
+    };
+    const onResize = () => {
+      if (!frame) frame = requestAnimationFrame(mark);
+    };
+    mark();
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+  return null;
 }

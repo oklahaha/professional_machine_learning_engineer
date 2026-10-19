@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import katex from "katex";
 import { decodeEntities, formulas, renderMath } from "./notes-math.ts";
-import { parseNotesState, toggleDone, EMPTY } from "./notes-store.ts";
 
 const fake = (tex: string, display: boolean) => (display ? `[D:${tex}]` : `[I:${tex}]`);
 
@@ -43,20 +42,4 @@ test("every formula in the bank typesets without a KaTeX error", () => {
       );
     }
   assert.ok(count > 500, `expected the bank's formulas, found ${count}`);
-});
-
-test("stored state is coerced, never trusted", () => {
-  assert.deepEqual(parseNotesState(null), EMPTY);
-  assert.deepEqual(parseNotesState("{oops"), EMPTY);
-  assert.deepEqual(parseNotesState('{"done":["a",1,"a"],"examOnly":"yes"}'), {
-    version: 1,
-    done: ["a"],
-    examOnly: false,
-  });
-});
-
-test("toggleDone adds and removes", () => {
-  const on = toggleDone(EMPTY, "COM6001-w1");
-  assert.deepEqual(on.done, ["COM6001-w1"]);
-  assert.deepEqual(toggleDone(on, "COM6001-w1").done, []);
 });

@@ -84,19 +84,36 @@ export function NotesToc({ headings, variant }: { headings: Heading[]; variant: 
 }
 
 /**
- * A code block, table or display formula wider than the article scrolls sideways, and a keyboard user can only
+ * A code block, table or display formula wider than the article scrolls sideways, and a keyboard
+ * user can only
  * scroll what they can focus. Measured in the browser (a block that fits must not become a useless
  * tab stop), and again on resize, since a phone overflows blocks a desktop does not. A code block
  * gets a name to announce on focus: as a `group`, not a `region` landmark, since a page can hold
  * twenty and landmarks must be told apart. A table keeps its own role, and a formula is read
- * from its MathML. Renders nothing.
+ * from its MathML. An inline formula too wide for its line is made a scroller too. Renders nothing.
  */
 export function NotesCodeScroll() {
   useEffect(() => {
     const blocks = [...document.querySelectorAll<HTMLElement>(".notes-prose :is(pre, table, .katex-display)")];
+    const inline = [...document.querySelectorAll<HTMLElement>(".notes-prose .katex")].filter(
+      (k) => !k.closest(".katex-display, pre, table"),
+    );
     let frame = 0;
     const mark = () => {
       frame = 0;
+      // An inline formula cannot wrap; one wider than its line (a long \dfrac on a phone) would push
+      // the page past the screen. Only those get `.katex-wide`, a sideways scroller (globals.css):
+      // making every inline formula one would move them all off the text's baseline.
+      for (const k of inline) {
+        // The line is the nearest block's content box: an inline parent (<b>) reports width 0.
+        const block = k.parentElement!.closest<HTMLElement>("p, li, td, th, dd, div, h2, h3, h4") ?? k.parentElement!;
+        const cs = getComputedStyle(block);
+        const line = block.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        const wide = k.classList.contains("katex-wide") ? k.scrollWidth > k.clientWidth + 1 : k.getBoundingClientRect().width > line + 1;
+        k.classList.toggle("katex-wide", wide);
+        if (wide) k.tabIndex = 0;
+        else k.removeAttribute("tabindex");
+      }
       for (const el of blocks) {
         const isCode = el.tagName === "PRE";
         if (el.scrollWidth > el.clientWidth + 1) {

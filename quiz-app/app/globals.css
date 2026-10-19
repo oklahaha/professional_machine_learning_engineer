@@ -603,6 +603,20 @@ label,
 /* Row labels are <th scope="row"> for screen readers; they keep a plain cell's look. The min-width
    stops a short CJK label ("意思") breaking one character per line; long ones still wrap. */
 .notes-prose th[scope="row"] { background: none; font-weight: inherit; min-width: 6em; }
+/* KaTeX's screen-reader copy (.katex-mathml) is an absolute 1px box, but with no positioned
+   ancestor its <math> still adds to the page's scroll width: on a phone, seven lectures were up to
+   600px wide, so the browser zoomed out and the notes looked narrow. Anchoring it to its own
+   formula keeps it inside the column. Applies to the quiz and flashcards' formulas too. */
+.katex { position: relative; }
+/* An inline formula wider than its line (set by NotesCodeScroll, only on those): scroll it. */
+.notes-prose .katex.katex-wide {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align: middle;
+}
+
 .notes-prose .formula,
 .notes-prose .katex-display { overflow-x: auto; overflow-y: hidden; }
 .notes-prose .formula { margin: 0.6em 0; }

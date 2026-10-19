@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   EMPTY_FILTER,
   filterCards,
@@ -201,6 +201,21 @@ export default function DsaiQuizApp() {
   const pos = Math.min(Math.max(rawPos, 0), order.length - 1);
   const q = MCQ_BY_ID.get(order[pos])!;
 
+  // Moving to another question while scrolled down (the phone's → sits at the bottom, under the
+  // option explanations) would leave the new stem above the screen, and on a phone the card sits
+  // below the rail. Bring its top into view, but only if it is off-screen, and never on load.
+  const shownId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!hydrated) return;
+    const first = shownId.current === null;
+    shownId.current = q.id;
+    if (first) return;
+    const card = document.getElementById("main");
+    if (!card || card.getBoundingClientRect().top >= 0) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    card.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+  }, [hydrated, q.id]);
+
   // Mirror the current question and the course/unit cut into the URL, so the address bar is a
   // link to exactly this. replaceState, not push: stepping through must not flood history.
   useEffect(() => {
@@ -344,7 +359,9 @@ export default function DsaiQuizApp() {
           <p className="hud-label mt-1">Data Science &amp; AI, multiple choice</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-center lg:justify-between">
+        {/* On a phone this row wraps under the title and spans it: mode switch left, style toggle
+            at the right edge. */}
+        <div className="flex flex-wrap items-center gap-2 self-center max-sm:w-full max-sm:justify-between lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>
@@ -354,7 +371,7 @@ export default function DsaiQuizApp() {
 
       <div className="study-grid">
 
-        <main id="main" className="study-main">
+        <main id="main" className="study-main scroll-mt-4">
           {!hydrated ? (
             // About a card's height, so the rail under it on a phone is not shoved down when the card lands.
             <div className="holo hud-label flex min-h-[75dvh] items-center justify-center rounded-lg p-10 text-center lg:min-h-[40rem]">
@@ -384,7 +401,9 @@ export default function DsaiQuizApp() {
           </nav>
         </main>
 
-        <aside className="study-rail" aria-label="Progress and filters">
+        {/* Below lg the rail (score, courses, coverage) comes first and the question under it, as in
+            PMLE; the markup keeps the card first, so the skip link and reading order reach it first. */}
+        <aside className="study-rail max-lg:order-first" aria-label="Progress and filters">
           {/* One line even at the widest figures ("100.0%", "521/521") down to a 360px phone: no
               wrap, and the stats size to their own content — equal grid columns each took the
               width of "521/521" and pushed the line over. */}
@@ -420,21 +439,12 @@ export default function DsaiQuizApp() {
           </div>
 
           <Coverage className="md:col-start-2 md:row-start-1" items={runItems} pos={pos} answers={answers} onJump={goto} />
-          {/* On a phone, Reset sits here under the stats, not in the bottom bar beside the arrows,
-              where one stray tap would wipe every answer. */}
-          <button
-            type="button"
-            onClick={resetAll}
-            className="hud-label self-end rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong sm:hidden"
-          >
-            Reset
-          </button>
         </aside>
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
-        <JumpControl pos={pos} total={order.length} onJump={goto} compact />
+        <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
       </nav>
     </div>
@@ -554,7 +564,7 @@ function JumpControl({
   pos: number;
   total: number;
   onJump: (n: number) => void;
-  onReset?: () => void; // omitted in the phone bar
+  onReset?: () => void;
   compact?: boolean;
 }) {
   // Committed on Enter or leaving the field, never per keystroke: typing 120 must not visit

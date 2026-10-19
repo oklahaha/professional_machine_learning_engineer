@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Card } from "@/lib/cards";
 import { courseLabel } from "@/lib/cards";
 import { splitCodeBlocks } from "@/lib/format";
@@ -87,6 +87,15 @@ export default function Flashcard({
   // so a new card always starts face-down.
   const [peekFront, setPeekFront] = useState(false);
   const showBack = revealed && !peekFront;
+
+  // On a phone the card sits under the rail, so the grade buttons that appear on reveal land below
+  // the screen. Scroll just enough to show them ("nearest" does nothing if they already are).
+  const gradesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!revealed) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    gradesRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  }, [revealed]);
 
   function flip() {
     if (!revealed) onReveal();
@@ -196,7 +205,7 @@ export default function Flashcard({
           from what actually happens when you click. Grading stays available whichever face
           is up: flipping back to re-read the question must not cost you the grade. */}
       {revealed && (
-        <div className="animate-verdict-in mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div ref={gradesRef} className="animate-verdict-in mt-5 grid scroll-mb-4 grid-cols-2 gap-2 sm:grid-cols-4">
           {GRADES.map((g) => (
             <button
               key={g}

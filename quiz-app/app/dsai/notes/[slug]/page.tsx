@@ -48,7 +48,9 @@ export default async function Page({ params }: Params) {
         <Link href="/dsai/notes" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper lg:justify-self-start">
           <span aria-hidden>←</span> All Revision Notes
         </Link>
-        <div className="flex flex-wrap items-center gap-2 lg:justify-between">
+        {/* On a phone this row wraps under the back link and spans it: mode switch left, style
+            toggle at the right edge, as on the other DSAI pages. */}
+        <div className="flex flex-wrap items-center gap-2 max-sm:w-full max-sm:justify-between lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>
@@ -65,7 +67,9 @@ export default async function Page({ params }: Params) {
             <h1 className="mt-2 text-balance font-display text-3xl font-semibold leading-tight tracking-tight text-paper sm:text-4xl">
               {note.title}
             </h1>
-            <p className="hud-label mt-3">{note.meta}</p>
+            {/* break-words: the meta names a source file ("Module_2c_NormalDist_Approximation_L02_…"),
+                one unbreakable word that pushed a 360px phone's page wider than the screen. */}
+            <p className="hud-label mt-3 break-words">{note.meta}</p>
 
             <NotesToc headings={note.headings} variant="inline" />
 
@@ -79,7 +83,9 @@ export default async function Page({ params }: Params) {
           </nav>
         </main>
 
-        <aside className="study-rail" aria-label="Contents and lectures">
+        {/* Below lg the rail (this course's lectures) comes first and the notes under it; the
+            markup keeps the article first, so the skip link and reading order reach it first. */}
+        <aside className="study-rail max-lg:order-first" aria-label="Contents and lectures">
           <div className="hidden lg:block">
             <NotesToc headings={note.headings} variant="rail" />
           </div>

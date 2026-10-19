@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { questions } from "@/lib/questions";
 import { presentQuestion } from "@/lib/present";
 import { DOMAINS, filterByDomain } from "@/lib/domains";
@@ -149,6 +149,21 @@ export default function PracticeApp() {
   const pos = Math.min(Math.max(rawPos, 0), order.length - 1);
 
   const q = questions[order[pos]];
+
+  // Moving to another question while scrolled down (the phone's → sits at the bottom, under the
+  // explanation) would leave the new stem above the screen, and on a phone the card sits below the
+  // rail. Bring its top into view, but only if it is off-screen, and never on the first render.
+  const shownId = useRef<number | null>(null);
+  useEffect(() => {
+    if (!hydrated) return;
+    const first = shownId.current === null;
+    shownId.current = q.id;
+    if (first) return;
+    const card = document.getElementById("main");
+    if (!card || card.getBoundingClientRect().top >= 0) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    card.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+  }, [hydrated, q.id]);
 
   // Mirror the current question and section cut into the URL, so the address bar is a link to
   // exactly this. replaceState, not push: stepping through questions must not flood history.
@@ -336,7 +351,7 @@ export default function PracticeApp() {
 
       <div className="study-grid">
 
-        <main id="main" className="study-main">
+        <main id="main" className="study-main scroll-mt-4">
           {/* Until storage is read, the question on screen would be Q1, not where you left off. */}
           {!hydrated ? (
             // About a card's height, so the rail under it on a phone is not shoved down when the card lands.
@@ -365,7 +380,10 @@ export default function PracticeApp() {
           </nav>
         </main>
 
-        <aside className="study-rail" aria-label="Progress and filters">
+        {/* PMLE only: below lg the rail (score, sections, coverage) comes first and the question
+            under it; the markup keeps the card first, so the skip link and reading order still
+            reach it before the rail. On desktop the grid places them side by side as before. */}
+        <aside className="study-rail max-lg:order-first" aria-label="Progress and filters">
           {/* accuracy readout — the metric this whole app computes */}
           {/* One line even at the widest figures ("100.0%", "521/521") down to a 360px phone: no
               wrap, and the stats size to their own content — equal grid columns each took the
@@ -409,22 +427,13 @@ export default function PracticeApp() {
             answers={answers}
             onJump={goto}
           />
-          {/* On a phone, Reset sits here under the stats, not in the bottom bar beside the arrows,
-              where one stray tap would wipe every answer. */}
-          <button
-            type="button"
-            onClick={resetAll}
-            className="hud-label self-end rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong sm:hidden"
-          >
-            Reset
-          </button>
         </aside>
       </div>
 
       {/* mobile sticky controls */}
       <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
-        <JumpControl pos={pos} total={order.length} onJump={goto} compact />
+        <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
       </nav>
     </div>
@@ -555,7 +564,7 @@ function JumpControl({
   pos: number;
   total: number;
   onJump: (n: number) => void;
-  onReset?: () => void; // omitted in the phone bar
+  onReset?: () => void;
   compact?: boolean;
 }) {
   // What is being typed, until Enter or leaving the field commits it. Jumping on every keystroke

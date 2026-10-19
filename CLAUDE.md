@@ -161,7 +161,12 @@ not authored by hand:
 **The app** is fully client-side interactive:
 
 - `components/PracticeApp.tsx` (`"use client"`) owns all state: current position, per-question answers,
-  sequential/shuffle order, and progress. It persists to `localStorage` key `pmle-practice-v3`.
+  a shuffled question order, and progress. It persists to `localStorage` key `pmle-practice-v3`.
+  **Both quizzes always shuffle questions and options** — there is no In order / Shuffle options
+  toggle. A stored `orderMode: "sequential"` or `shuffleOpts: false` (from before) is replaced by a
+  fresh shuffle and random option seed on load; answers are kept. **Reset** clears the
+  answers and reshuffles both. On a phone it sits at the foot of the rail, never in the fixed bottom
+  bar beside the arrows (`JumpControl` there gets no `onReset`).
 - `components/QuestionCard.tsx` is presentational: renders the stem/options, handles select →
   check/reveal → correct-highlight + explanation.
 - `app/pmle/page.tsx` just renders `<PracticeApp />`. `app/page.tsx` is the source picker (a server
@@ -218,10 +223,13 @@ and the `ModeSwitch` pill.
   cursor; `FlashcardApp` holds a due queue and rebuilds it when it empties. A card still in learning is
   re-inserted a few cards later (`requeue`), never immediately. Do not copy the `order`/`pos` mechanic
   here.
-- **Shuffle** (the `Shuffle` toggle) is `QueueOptions.shuffleSeed` in `buildQueue`: new cards are drawn in
+- **Shuffle** is always on (no toggle; a stored seed of 0 gets a random one on load, and
+  Reset review history deals a new one). It is `QueueOptions.shuffleSeed` in `buildQueue`: new cards are drawn in
   an order keyed by `seedFrom(id, seed)` (so the same seed introduces the same cards day to day),
   today's reviews are dealt in seeded order *after* the cap takes the most overdue, and learning
-  steps are never shuffled. 0 = deck order; the seed persists in `msc-cards-srs-v1`.
+  steps are never shuffled. 0 = deck order (still supported by `buildQueue`, never used by the app); the seed persists in
+  `msc-cards-srs-v1`. **Limits** (daily new/review caps, and the history reset) is a collapsed
+  panel above Decks in the rail, shut by default.
 - **Undo is one step and in memory only** (`Z`, or the button under the card): it restores the
   `states`/`log`/`queue` captured just before the last grade. Anything else that rebuilds the queue
   (filter, limits, shuffle, reset) drops it, since the snapshot would no longer match the deck.
@@ -244,7 +252,7 @@ and the `ModeSwitch` pill.
 - `components/DsaiQuizApp.tsx` mirrors `PracticeApp`'s order/pos model (persisted full-bank `order`
   of **ids**, filter as a presentation cut, restart at 0 on filter change) under storage key
   `dsai-mcq-v1`. `load()` keeps stored order for ids that still exist, appends new ones, drops orphans.
-- **Option shuffle** (the `Shuffle options` toggle) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
+- **Option shuffle** (always on) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
   presenter, not a shared one. Answers/pending stay in original-label space; only `McqCard` sees
   display labels. Each option's explanation travels with it, and no DSAI text cites an option by
   letter, so nothing in the prose is remapped. `shuffleOpts`/`optSeed` persist in `dsai-mcq-v1`.
@@ -272,6 +280,11 @@ and the `ModeSwitch` pill.
   (`COM6001-w3.html`) to `/dsai/notes/COM6001-w3`, and **hard-fails without writing** on a script,
   inline handler, image, `javascript:` URL, any other relative link, or unbalanced block tags — the
   body is injected with `dangerouslySetInnerHTML`.
+  For accessibility it also rewrites three things the source pages get wrong on every page: the
+  overview's `<h3>` becomes `<h2 class="overview-title">` (no h1→h3 skip; the class keeps it out of
+  the numbered contents, which only matches bare `<h2>`), a table whose corner cell is empty gets
+  `<th scope="row">` row labels, and any empty `<th>` becomes `<td>`. Only header cells holding
+  nothing but a formula still fail axe `empty-table-header` — a checker limit: KaTeX's MathML is read.
 - **Server-only.** `lib/notes.ts` imports the ~800 KB bank; only the server pages may import it.
   Every lecture is prerendered (`generateStaticParams`, `dynamicParams = false`), and math
   (`$$…$$`, `\(…\)` — a lone `$` is prose) is typeset by KaTeX at build time via `renderMath`
@@ -280,14 +293,12 @@ and the `ModeSwitch` pill.
   Code blocks (`<pre><code>`) are syntax-coloured the same way, at build time, by `highlightCode`
   (`lib/notes-code.ts`): four token classes (`tk-c/s/k/n`), Python keywords only, inline `<code>`
   untouched; `npm test` asserts every block's visible text is unchanged.
-- **Islands** (`components/NotesReader.tsx`): Exam only, Mark reviewed, the contents list. They share
-  one `useSyncExternalStore` over storage key **`dsai-notes-v1`** (`{version, done[], examOnly}`),
-  so the header toggle, the rail tick and the index's "n of m reviewed" agree within and across tabs.
-- **Exam only is pure CSS** (`.notes-prose` in `globals.css`): hide every top-level block of the body
-  that is not a heading or `.overview` and neither is nor contains `.exam`. So, as in the source
-  brief, content must stay a direct child of the body — no wrapper `<section>` around groups.
+- **Islands** (`components/NotesReader.tsx`): the scroll-tracking contents list, and `NotesCodeScroll`,
+  which makes a code block, table or display formula that overflows sideways keyboard-focusable. The Exam only /
+  Mark reviewed toggles and the "reviewed" ticks were removed, along with `lib/notes-store.ts`; a
+  stale `dsai-notes-v1` key in a browser is simply never read.
 - Callout colours keep the app's meanings: exam = amber, common mistake (`box warn`) = rose, tip =
-  iris, cross-course link = cyan. Green appears only on the "reviewed" tick, never in a callout.
+  iris, cross-course link = cyan. Green never appears in a callout.
 
 ## Working notes
 
@@ -320,6 +331,8 @@ and the `ModeSwitch` pill.
   arrows move between options and, for a single answer, select. Both cards mark the list
   `data-options`, and each quiz's global ←/→ question navigation skips key presses from inside it
   (and from inside a `<pre>`, which arrows scroll) — keep that guard if you add another shortcut.
+  Enter checks, and once checked Enter moves to the next question (as does the card's **Next →**,
+  passed as `onNext`, absent on the last question); Enter on a focused button stays that button's click.
 - **The 答案评论 (comments) PDF has no text layer** — it is image-rendered, so community comments cannot
   be extracted without OCR (not available here). Only the 解密 PDF is used as the data source.
 - Answers/explanations are community exam-dump content and may be wrong; treat the official Google Cloud

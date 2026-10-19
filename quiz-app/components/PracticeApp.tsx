@@ -35,6 +35,8 @@ function sequentialOrder(): number[] {
   return questions.map((_, i) => i);
 }
 
+// Questions and options are always shuffled. An order or seed stored before that (from the old
+// "In order" mode or with option shuffle off) is replaced once; the answers are kept.
 function shuffledOrder(): number[] {
   const a = sequentialOrder();
   for (let i = a.length - 1; i > 0; i--) {
@@ -46,6 +48,10 @@ function shuffledOrder(): number[] {
 
 // Locale-aware, one decimal: "87.5" here, "87,5" in a comma-decimal locale.
 const PERCENT = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+function randomSeed(): number {
+  return Math.floor(Math.random() * 0xffffffff) + 1;
+}
 
 function load(): Persisted | null {
   if (typeof window === "undefined") return null;
@@ -73,11 +79,9 @@ function load(): Persisted | null {
 }
 
 export default function PracticeApp() {
-  const [orderMode, setOrderMode] = useState<OrderMode>("sequential");
   const [baseOrder, setBaseOrder] = useState<number[]>(sequentialOrder);
   const [rawPos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
-  const [shuffleOpts, setShuffleOpts] = useState(false);
   const [optSeed, setOptSeed] = useState(1);
   const [domainFilter, setDomainFilter] = useState<number[]>([]); // empty = every section
   const [hydrated, setHydrated] = useState(false);
@@ -85,9 +89,10 @@ export default function PracticeApp() {
 
   useEffect(() => {
     const p = load();
-    const ord = p?.order ?? sequentialOrder();
+    const keepOrder = p?.orderMode === "shuffle";
+    const ord = keepOrder ? p.order : shuffledOrder();
     let domains = p?.domains ?? [];
-    let start = p ? Math.min(p.pos, ord.length - 1) : 0;
+    let start = keepOrder ? Math.min(p.pos, ord.length - 1) : 0;
 
     // The URL wins over storage, so a shared link (?q=120&s=3,4) opens that question in that cut.
     // A linked question the linked sections would hide clears the filter rather than going missing.
@@ -105,13 +110,9 @@ export default function PracticeApp() {
       start = run.indexOf(ord[at]);
     }
 
-    if (p) {
-      setOrderMode(p.orderMode);
-      setBaseOrder(p.order);
-      setAnswers(p.answers ?? {});
-      setShuffleOpts(p.shuffleOpts ?? false);
-      setOptSeed(p.optSeed ?? 1);
-    }
+    setBaseOrder(ord);
+    setAnswers(p?.answers ?? {});
+    setOptSeed(p?.shuffleOpts && p.optSeed ? p.optSeed : randomSeed());
     setPos(start);
     setDomainFilter(domains);
     setHydrated(true);
@@ -120,11 +121,11 @@ export default function PracticeApp() {
   useEffect(() => {
     if (!hydrated) return;
     const p: Persisted = {
-      orderMode,
+      orderMode: "shuffle",
       order: baseOrder,
       pos: rawPos,
       answers,
-      shuffleOpts,
+      shuffleOpts: true,
       optSeed,
       domains: domainFilter,
     };
@@ -133,7 +134,7 @@ export default function PracticeApp() {
     } catch {
       /* storage may be unavailable (private mode) — ignore */
     }
-  }, [hydrated, orderMode, baseOrder, rawPos, answers, shuffleOpts, optSeed, domainFilter]);
+  }, [hydrated, baseOrder, rawPos, answers, optSeed, domainFilter]);
 
   // The run the user is actually walking: the persisted order, narrowed to the selected
   // exam sections. filterByDomain guarantees a non-empty result, so `order[pos]` is always
@@ -163,8 +164,8 @@ export default function PracticeApp() {
   // Option shuffle is a pure presentation transform: state/scoring below stay
   // in ORIGINAL-letter space; only the view is remapped to display labels.
   const view = useMemo(
-    () => presentQuestion(q, shuffleOpts, optSeed),
-    [q, shuffleOpts, optSeed],
+    () => presentQuestion(q, true, optSeed),
+    [q, optSeed],
   );
   const selectedOrig = revealed ? committed : pending;
   const selectedDisplay = selectedOrig
@@ -246,26 +247,12 @@ export default function PracticeApp() {
     [revealed, view, q],
   );
 
-  function toggleShuffleOpts() {
-    const next = !shuffleOpts;
-    setShuffleOpts(next);
-    if (next) setOptSeed((s) => ((s * 1103515245 + 12345) >>> 0) || 1); // fresh arrangement
-    setPending([]);
-  }
-
   function clearCurrent() {
     setAnswers((a) => {
       const copy = { ...a };
       delete copy[q.id];
       return copy;
     });
-    setPending([]);
-  }
-
-  function setMode(mode: OrderMode) {
-    setOrderMode(mode);
-    setBaseOrder(mode === "shuffle" ? shuffledOrder() : sequentialOrder());
-    setPos(0);
     setPending([]);
   }
 
@@ -286,13 +273,15 @@ export default function PracticeApp() {
   }, []);
 
   function resetAll() {
-    if (!window.confirm("Reset all progress and answers?")) return;
+    if (!window.confirm("Reset all progress and answers, and reshuffle?")) return;
     setAnswers({});
+    setBaseOrder(shuffledOrder());
+    setOptSeed(randomSeed());
     setPos(0);
     setPending([]);
   }
 
-  // Keys, as in the DSAI quiz: A–E or 1–5 pick, Enter checks, ←/→ move. Enter on a focused
+  // Keys, as in the DSAI quiz: A–E or 1–5 pick, Enter checks (and, once checked, moves on), ←/→ move. Enter on a focused
   // button is that button's own click, so the shortcut leaves it alone.
   useEffect(() => {
     if (!hydrated) return;
@@ -310,6 +299,10 @@ export default function PracticeApp() {
       } else if (k === "enter" && !revealed && pending.length === q.answers.length && !el?.closest("button, a")) {
         e.preventDefault();
         check();
+      } else if (k === "enter" && revealed && !el?.closest("button, a")) {
+        // Enter checks, then Enter again moves on: the whole loop works from the keyboard.
+        e.preventDefault();
+        goto(pos + 1);
       } else if ((k === "arrowright" || k === "arrowleft") && el?.closest("[data-options], pre")) {
         // inside the answer options ←/→ move between options, inside a code listing they scroll it
       } else if (k === "arrowright") goto(pos + 1);
@@ -322,8 +315,10 @@ export default function PracticeApp() {
   return (
     <div className="study-shell pb-6 sm:pb-12">
       {/* ── eval console header ─────────────────────────────── */}
-      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-        <div>
+      {/* No wrap: with only the style toggle on the right, it shares the title's row on a phone
+          rather than taking a row of its own; the subtitle wraps instead. */}
+      <header className="flex items-start justify-between gap-x-4 sm:gap-x-6">
+        <div className="min-w-0">
           <HomeLink />
           <div className="mt-1.5 flex items-center gap-2.5">
             <span aria-hidden className="neon-glyph text-lg">◇</span>
@@ -334,29 +329,7 @@ export default function PracticeApp() {
           <p className="hud-label mt-1">Google Professional Machine Learning Engineer</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-center">
-          {/* One toolbar: question order, then the option shuffle. */}
-          <div className="seg flex-wrap">
-            {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                aria-pressed={orderMode === m}
-                className="seg-item"
-              >
-                {m === "sequential" ? "In order" : "Shuffled"}
-              </button>
-            ))}
-            <span aria-hidden className="seg-sep" />
-            <button
-              onClick={toggleShuffleOpts}
-              aria-pressed={shuffleOpts}
-              title="Shuffle the answer options within each question"
-              className="seg-item"
-            >
-              Shuffle options
-            </button>
-          </div>
+        <div className="flex shrink-0 items-center gap-2 sm:self-center">
           <StyleToggle />
         </div>
       </header>
@@ -380,6 +353,7 @@ export default function PracticeApp() {
               onSelect={select}
               onCheck={check}
               onClear={clearCurrent}
+              onNext={pos < order.length - 1 ? () => goto(pos + 1) : undefined}
             />
           )}
 
@@ -393,10 +367,13 @@ export default function PracticeApp() {
 
         <aside className="study-rail" aria-label="Progress and filters">
           {/* accuracy readout — the metric this whole app computes */}
-          <div className="holo flex flex-wrap content-center items-end gap-x-5 gap-y-2 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
-            <div className="flex flex-col-reverse">
+          {/* One line even at the widest figures ("100.0%", "521/521") down to a 360px phone: no
+              wrap, and the stats size to their own content — equal grid columns each took the
+              width of "521/521" and pushed the line over. */}
+          <div className="holo flex items-end justify-between gap-x-3 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
+            <div className="flex shrink-0 flex-col-reverse">
               <div className="hud-label">accuracy</div>
-              <div className="readout hud-figure text-[32px] leading-none">
+              <div className="readout hud-figure text-[28px] leading-none sm:text-[32px]">
                 {accuracy === null ? (
                   <span className="text-2xl text-mist">n/a</span>
                 ) : (
@@ -407,7 +384,7 @@ export default function PracticeApp() {
                 )}
               </div>
             </div>
-            <dl className="mb-0.5 grid grid-cols-3 gap-x-5">
+            <dl className="mb-0.5 flex gap-x-3 sm:gap-x-4">
               <Stat label="correct" value={correctCount} tone="text-correct" />
               <Stat label="wrong" value={answeredCount - correctCount} tone="text-wrong" />
               <Stat label="seen" value={`${answeredCount}/${order.length}`} tone="text-paper" />
@@ -432,13 +409,22 @@ export default function PracticeApp() {
             answers={answers}
             onJump={goto}
           />
+          {/* On a phone, Reset sits here under the stats, not in the bottom bar beside the arrows,
+              where one stray tap would wipe every answer. */}
+          <button
+            type="button"
+            onClick={resetAll}
+            className="hud-label self-end rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong sm:hidden"
+          >
+            Reset
+          </button>
         </aside>
       </div>
 
       {/* mobile sticky controls */}
       <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
-        <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
+        <JumpControl pos={pos} total={order.length} onJump={goto} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
       </nav>
     </div>
@@ -569,7 +555,7 @@ function JumpControl({
   pos: number;
   total: number;
   onJump: (n: number) => void;
-  onReset: () => void;
+  onReset?: () => void; // omitted in the phone bar
   compact?: boolean;
 }) {
   // What is being typed, until Enter or leaving the field commits it. Jumping on every keystroke
@@ -588,15 +574,14 @@ function JumpControl({
     <div className="hud-label flex items-center gap-2">
       {!compact && <span>Jump to</span>}
       <input
-        type="number"
+        type="text"
+        pattern="[0-9]*"
         name="jump"
         inputMode="numeric"
         autoComplete="off"
-        min={1}
-        max={total}
         enterKeyHint="go"
         value={draft ?? pos + 1}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={(e) => setDraft(e.target.value.replace(/\D/g, ""))}
         onBlur={commit}
         onKeyDown={(e) => {
           if (e.key === "Enter") commit();
@@ -606,14 +591,15 @@ function JumpControl({
         aria-label="Jump to question number"
       />
       {!compact && <span className="text-mist">/ {total}</span>}
-      <button
-        onClick={onReset}
-        className={`rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong ${
-          compact ? "" : "ml-1"
-        }`}
-      >
-        {compact ? "Reset" : "Reset progress"}
-      </button>
+      {onReset && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="ml-1 rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong"
+        >
+          Reset
+        </button>
+      )}
     </div>
   );
 }

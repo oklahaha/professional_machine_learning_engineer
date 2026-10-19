@@ -5,7 +5,7 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import ModeSwitch from "@/components/ModeSwitch";
 import StyleToggle from "@/components/StyleToggle";
-import { NotesBody, NotesDoneMark, NotesToc, NotesToggles } from "@/components/NotesReader";
+import { NotesCodeScroll, NotesToc } from "@/components/NotesReader";
 import { findNote, neighbours, notes } from "@/lib/notes";
 import { highlightCode } from "@/lib/notes-code";
 import { renderMath } from "@/lib/notes-math";
@@ -42,15 +42,16 @@ export default async function Page({ params }: Params) {
 
   return (
     <div className="study-shell pb-6 sm:pb-12">
-      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <Link href="/dsai/notes" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper">
-          <span aria-hidden>←</span> All revision notes
+      {/* On desktop the header takes the study grid's columns, so the mode switch lines up with the
+          lecture's left edge and the style toggle with its right. */}
+      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 lg:grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-x-8">
+        <Link href="/dsai/notes" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper lg:justify-self-start">
+          <span aria-hidden>←</span> All Revision Notes
         </Link>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>
-          <NotesToggles slug={note.slug} />
           <StyleToggle />
         </div>
       </header>
@@ -68,9 +69,8 @@ export default async function Page({ params }: Params) {
 
             <NotesToc headings={note.headings} variant="inline" />
 
-            <NotesBody>
-              <div className="notes-prose mt-8" dangerouslySetInnerHTML={{ __html: html }} />
-            </NotesBody>
+            <div className="notes-prose mt-8" dangerouslySetInnerHTML={{ __html: html }} />
+            <NotesCodeScroll />
           </article>
 
           <nav aria-label="Lectures" className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -95,9 +95,8 @@ export default async function Page({ params }: Params) {
                     aria-current={n.slug === note.slug ? "page" : undefined}
                     className="flex items-baseline gap-2 rounded-[4px] px-2.5 py-1.5 text-[14px] leading-snug text-mist transition hover:bg-signal/5 hover:text-paper aria-[current=page]:bg-signal/10 aria-[current=page]:text-signal"
                   >
-                    <span className="w-[5.5rem] shrink-0 tabular-nums">{n.unitLabel}</span>
+                    <span className="w-[6.5rem] shrink-0 tabular-nums">{n.unitLabel}</span>
                     <span className="min-w-0 flex-1">{n.title}</span>
-                    <NotesDoneMark slug={n.slug} />
                   </Link>
                 </li>
               ))}
@@ -119,7 +118,7 @@ function PagerLink({ note, dir }: { note?: { slug: string; unitLabel: string; ti
     >
       <span className="hud-label">
         {dir === "prev" ? "← " : ""}
-        {note ? note.unitLabel : "All revision notes"}
+        {note ? note.unitLabel : "All Revision Notes"}
         {dir === "next" ? " →" : ""}
       </span>
       {note && <span lang="zh-Hant" className="font-display text-base font-medium text-paper">{note.title}</span>}

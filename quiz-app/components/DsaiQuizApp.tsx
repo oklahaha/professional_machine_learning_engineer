@@ -55,6 +55,12 @@ function sameSet(a: string[], b: string[]) {
   return a.length === b.length && a.every((x) => b.includes(x));
 }
 
+// Questions and options are always shuffled. An order or seed stored before that (from the old
+// "In order" mode or with option shuffle off) is replaced once; the answers are kept.
+function randomSeed(): number {
+  return Math.floor(Math.random() * 0xffffffff) + 1;
+}
+
 function shuffled(ids: string[]): string[] {
   const a = [...ids];
   for (let i = a.length - 1; i > 0; i--) {
@@ -123,22 +129,21 @@ function scoreOf(items: Mcq[], answers: Answers): Score {
 }
 
 export default function DsaiQuizApp() {
-  const [orderMode, setOrderMode] = useState<OrderMode>("sequential");
   const [baseOrder, setBaseOrder] = useState<string[]>(MCQ_ORDER);
   const [rawPos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [filter, setFilter] = useState<DeckFilter>(EMPTY_FILTER);
   const [pending, setPending] = useState<string[]>([]);
   const [hintShown, setHintShown] = useState(false);
-  const [shuffleOpts, setShuffleOpts] = useState(false);
   const [optSeed, setOptSeed] = useState(1);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const p = load();
-    const ord = p?.order ?? MCQ_ORDER;
+    const keepOrder = p?.orderMode === "shuffle";
+    const ord = keepOrder ? p.order : shuffled(MCQ_ORDER);
     let f: DeckFilter = p ? { courses: p.courses, units: p.units } : EMPTY_FILTER;
-    let start = p?.pos ?? 0;
+    let start = keepOrder ? p.pos : 0;
 
     // The URL wins over storage, so a shared link (?q=<id>&c=COM6001&u=COM6002::Lecture_1) opens
     // that question in that cut. A linked question the cut would hide clears the filter instead.
@@ -158,13 +163,9 @@ export default function DsaiQuizApp() {
       start = run.indexOf(qid);
     }
 
-    if (p) {
-      setOrderMode(p.orderMode);
-      setBaseOrder(p.order);
-      setAnswers(p.answers);
-      setShuffleOpts(p.shuffleOpts ?? false);
-      setOptSeed(p.optSeed ?? 1);
-    }
+    setBaseOrder(ord);
+    if (p) setAnswers(p.answers);
+    setOptSeed(p?.shuffleOpts ? p.optSeed! : randomSeed());
     setPos(start);
     setFilter(f);
     setHydrated(true);
@@ -174,13 +175,13 @@ export default function DsaiQuizApp() {
     if (!hydrated) return;
     const p: Persisted = {
       version: 1,
-      orderMode,
+      orderMode: "shuffle",
       order: baseOrder,
       pos: rawPos,
       answers,
       courses: filter.courses,
       units: filter.units,
-      shuffleOpts,
+      shuffleOpts: true,
       optSeed,
     };
     try {
@@ -188,7 +189,7 @@ export default function DsaiQuizApp() {
     } catch {
       /* storage may be unavailable (private mode) — ignore */
     }
-  }, [hydrated, orderMode, baseOrder, rawPos, answers, filter, shuffleOpts, optSeed]);
+  }, [hydrated, baseOrder, rawPos, answers, filter, optSeed]);
 
   // The run being walked: the persisted order narrowed to the filter. Never empty — an empty
   // cut falls back to the whole bank, so `order[pos]` always resolves.
@@ -214,7 +215,7 @@ export default function DsaiQuizApp() {
   const revealed = committed != null;
   // Option shuffle is a pure presentation transform: answers/pending/scoring stay in
   // ORIGINAL-label space; only the card sees display labels.
-  const view = useMemo(() => presentMcq(q, shuffleOpts, optSeed), [q, shuffleOpts, optSeed]);
+  const view = useMemo(() => presentMcq(q, true, optSeed), [q, optSeed]);
   const selected = (revealed ? committed : pending).map((l) => view.origToDisplay[l]).filter(Boolean);
 
   const runItems = useMemo(() => order.map((id) => MCQ_BY_ID.get(id)!), [order]);
@@ -279,19 +280,6 @@ export default function DsaiQuizApp() {
     setPending([]);
   }
 
-  function toggleShuffleOpts() {
-    const next = !shuffleOpts;
-    setShuffleOpts(next);
-    if (next) setOptSeed((s) => ((s * 1103515245 + 12345) >>> 0) || 1); // fresh arrangement
-    setPending([]);
-  }
-
-  function setMode(mode: OrderMode) {
-    setOrderMode(mode);
-    setBaseOrder(mode === "shuffle" ? shuffled(MCQ_ORDER) : MCQ_ORDER);
-    goto(0);
-  }
-
   // A filter change re-cuts the run, so restart at its first question.
   const applyFilter = useCallback((next: DeckFilter) => {
     setFilter(next);
@@ -301,12 +289,14 @@ export default function DsaiQuizApp() {
   }, []);
 
   function resetAll() {
-    if (!window.confirm("Clear every DSAI multiple-choice answer?")) return;
+    if (!window.confirm("Clear every DSAI multiple-choice answer, and reshuffle?")) return;
     setAnswers({});
+    setBaseOrder(shuffled(MCQ_ORDER));
+    setOptSeed(randomSeed());
     goto(0);
   }
 
-  // Keys: A–D or 1–4 pick, Enter checks, ←/→ move, h toggles the hint. Enter on a focused
+  // Keys: A–D or 1–4 pick, Enter checks (and, once checked, moves on), ←/→ move, h toggles the hint. Enter on a focused
   // button is that button's own click, so the shortcut leaves it alone.
   useEffect(() => {
     if (!hydrated) return;
@@ -324,6 +314,10 @@ export default function DsaiQuizApp() {
       } else if (k === "enter" && !revealed && pending.length === q.answers.length && !el?.closest("button, a")) {
         e.preventDefault();
         check();
+      } else if (k === "enter" && revealed && !el?.closest("button, a")) {
+        // Enter checks, then Enter again moves on: the whole loop works from the keyboard.
+        e.preventDefault();
+        goto(pos + 1);
       } else if ((k === "arrowright" || k === "arrowleft") && el?.closest("[data-options], pre")) {
         // inside the answer options ←/→ move between options, inside a code listing they scroll it
       } else if (k === "arrowright") goto(pos + 1);
@@ -336,7 +330,9 @@ export default function DsaiQuizApp() {
 
   return (
     <div className="study-shell pb-6 sm:pb-12">
-      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      {/* On desktop the header takes the study grid's columns, so the mode switch lines up with the
+          card's left edge and the style toggle with its right. */}
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 lg:grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-x-8">
         <div>
           <HomeLink />
           <div className="mt-1.5 flex items-center gap-2.5">
@@ -348,32 +344,9 @@ export default function DsaiQuizApp() {
           <p className="hud-label mt-1">Data Science &amp; AI, multiple choice</p>
         </div>
 
-        {/* Two groups, not one bar: where you are (Cards / Quiz), then question order and the option
-            shuffle. One bar wrapped mid-group on a phone and made the page link read as a toggle. */}
-        <div className="flex flex-wrap items-center gap-2 self-center">
+        <div className="flex flex-wrap items-center gap-2 self-center lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
-          </div>
-          <div className="seg">
-            {(["sequential", "shuffle"] as OrderMode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                aria-pressed={orderMode === m}
-                className="seg-item"
-              >
-                {m === "sequential" ? "In order" : "Shuffled"}
-              </button>
-            ))}
-            <span aria-hidden className="seg-sep" />
-            <button
-              onClick={toggleShuffleOpts}
-              aria-pressed={shuffleOpts}
-              title="Shuffle the answer options within each question"
-              className="seg-item"
-            >
-              Shuffle options
-            </button>
           </div>
           <StyleToggle />
         </div>
@@ -399,6 +372,7 @@ export default function DsaiQuizApp() {
               onSelect={select}
               onCheck={check}
               onClear={clearCurrent}
+              onNext={pos < order.length - 1 ? () => goto(pos + 1) : undefined}
               onHint={() => setHintShown((v) => !v)}
             />
           )}
@@ -411,10 +385,13 @@ export default function DsaiQuizApp() {
         </main>
 
         <aside className="study-rail" aria-label="Progress and filters">
-          <div className="holo flex flex-wrap content-center items-end gap-x-5 gap-y-2 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
-            <div className="flex flex-col-reverse">
+          {/* One line even at the widest figures ("100.0%", "521/521") down to a 360px phone: no
+              wrap, and the stats size to their own content — equal grid columns each took the
+              width of "521/521" and pushed the line over. */}
+          <div className="holo flex items-end justify-between gap-x-3 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
+            <div className="flex shrink-0 flex-col-reverse">
               <div className="hud-label">accuracy</div>
-              <div className="readout hud-figure text-[32px] leading-none">
+              <div className="readout hud-figure text-[28px] leading-none sm:text-[32px]">
                 {accuracy === null ? (
                   <span className="text-2xl text-mist">n/a</span>
                 ) : (
@@ -425,7 +402,7 @@ export default function DsaiQuizApp() {
                 )}
               </div>
             </div>
-            <dl className="mb-0.5 grid grid-cols-3 gap-x-5">
+            <dl className="mb-0.5 flex gap-x-3 sm:gap-x-4">
               <Stat label="correct" value={run.correct} tone="text-correct" />
               <Stat label="wrong" value={run.answered - run.correct} tone="text-wrong" />
               <Stat label="seen" value={`${run.answered}/${run.total}`} tone="text-paper" />
@@ -443,12 +420,21 @@ export default function DsaiQuizApp() {
           </div>
 
           <Coverage className="md:col-start-2 md:row-start-1" items={runItems} pos={pos} answers={answers} onJump={goto} />
+          {/* On a phone, Reset sits here under the stats, not in the bottom bar beside the arrows,
+              where one stray tap would wipe every answer. */}
+          <button
+            type="button"
+            onClick={resetAll}
+            className="hud-label self-end rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong sm:hidden"
+          >
+            Reset
+          </button>
         </aside>
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-2 border-t border-signal/25 bg-ink/80 px-[max(1rem,env(safe-area-inset-left))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_30px_-12px_rgba(var(--glow-cyan),0.35)] backdrop-blur-md sm:hidden">
         <NavButton dir="prev" disabled={pos === 0} onClick={() => goto(pos - 1)} compact />
-        <JumpControl pos={pos} total={order.length} onJump={goto} onReset={resetAll} compact />
+        <JumpControl pos={pos} total={order.length} onJump={goto} compact />
         <NavButton dir="next" disabled={pos === order.length - 1} onClick={() => goto(pos + 1)} compact />
       </nav>
     </div>
@@ -568,7 +554,7 @@ function JumpControl({
   pos: number;
   total: number;
   onJump: (n: number) => void;
-  onReset: () => void;
+  onReset?: () => void; // omitted in the phone bar
   compact?: boolean;
 }) {
   // Committed on Enter or leaving the field, never per keystroke: typing 120 must not visit
@@ -586,15 +572,14 @@ function JumpControl({
     <div className="hud-label flex items-center gap-2">
       {!compact && <span>Jump to</span>}
       <input
-        type="number"
+        type="text"
+        pattern="[0-9]*"
         name="jump"
         inputMode="numeric"
         autoComplete="off"
         enterKeyHint="go"
-        min={1}
-        max={total}
         value={draft ?? pos + 1}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={(e) => setDraft(e.target.value.replace(/\D/g, ""))}
         onBlur={commit}
         onKeyDown={(e) => {
           if (e.key === "Enter") commit();
@@ -604,12 +589,15 @@ function JumpControl({
         aria-label="Jump to question number"
       />
       {!compact && <span className="text-mist">/ {total}</span>}
-      <button
-        onClick={onReset}
-        className={`rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong ${compact ? "" : "ml-1"}`}
-      >
-        {compact ? "Reset" : "Reset progress"}
-      </button>
+      {onReset && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="ml-1 rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong"
+        >
+          Reset
+        </button>
+      )}
     </div>
   );
 }

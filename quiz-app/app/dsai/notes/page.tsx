@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import ModeSwitch from "@/components/ModeSwitch";
+import ModeSwitch, { HomeLink } from "@/components/ModeSwitch";
 import StyleToggle from "@/components/StyleToggle";
-import { NotesCourseProgress, NotesDoneMark } from "@/components/NotesReader";
 import { notes, notesByCourse } from "@/lib/notes";
 
 export const metadata: Metadata = {
@@ -16,11 +15,9 @@ const courses = notesByCourse();
 export default function Page() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
-      <div className="flex items-center justify-between gap-4">
-        <Link href="/dsai" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper">
-          <span aria-hidden>←</span> Data Science &amp; AI
-        </Link>
-        <div className="flex flex-wrap items-center justify-end gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <HomeLink />
+        <div className="flex items-center gap-2">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>
@@ -30,7 +27,7 @@ export default function Page() {
 
       <header className="mb-10 mt-8 sm:mb-12 sm:mt-12">
         <h1 className="neon-title text-balance font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl">
-          Revision notes
+          Revision Notes
         </h1>
         <p className="mt-4 max-w-2xl font-sans text-lg leading-relaxed text-paperdim">
           {notes.length} lectures, one page each: the concepts explained in Traditional Chinese with the
@@ -38,8 +35,7 @@ export default function Page() {
         </p>
         <p className="mt-3 max-w-2xl font-sans text-base leading-relaxed text-mist">
           Exam markers are inferred from what the slides stress, repeat and work through — they are not
-          the lecturer&rsquo;s announced scope. <span className="text-paperdim">Exam only</span> on each
-          page hides everything else.
+          the lecturer&rsquo;s announced scope.
         </p>
       </header>
 
@@ -47,10 +43,11 @@ export default function Page() {
         {courses.map((c) => (
           <section key={c.course} className="holo-card animate-cell-in rounded-lg p-6 sm:p-7">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h2 className="font-display text-xl font-semibold tracking-tight text-paper">
-                <span translate="no" className="text-signal">{c.course}</span> {c.title}
+              {/* The code takes the unit column's width, so the course title lines up with the lecture titles. */}
+              <h2 className="flex items-baseline gap-3 font-display text-xl font-semibold tracking-tight text-paper">
+                <span translate="no" className="w-[6.5rem] shrink-0 whitespace-nowrap text-signal">{c.course}</span>
+                <span className="min-w-0">{c.title}</span>
               </h2>
-              <NotesCourseProgress slugs={c.notes.map((n) => n.slug)} />
             </div>
             <ol lang="zh-Hant" className="mt-4 flex flex-col">
               {c.notes.map((n) => (
@@ -59,9 +56,8 @@ export default function Page() {
                     href={`/dsai/notes/${n.slug}`}
                     className="-mx-2 flex items-baseline gap-3 rounded-[4px] px-2 py-2 transition hover:bg-signal/5"
                   >
-                    <span lang="en" className="hud-label w-[5.5rem] shrink-0 tabular-nums">{n.unitLabel}</span>
+                    <span lang="en" className="hud-label w-[6.5rem] shrink-0 tabular-nums">{n.unitLabel}</span>
                     <span className="min-w-0 flex-1 text-[15px] leading-snug text-paperdim">{n.title}</span>
-                    <NotesDoneMark slug={n.slug} />
                   </Link>
                 </li>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { courseSelection, isUnitOn, type DeckFilter } from "@/lib/deck";
 import type { Counts } from "@/lib/srs";
 
@@ -45,6 +45,7 @@ export default function DeckPanel({
   // that call (`auto` below), so the server render is already laid out right and nothing moves
   // when the page hydrates; opening it from an effect pushed the rest of the rail down.
   const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const bodyId = useId();
   const [wide, setWide] = useState(false); // only for aria-expanded, which moves nothing
   useEffect(() => setWide(window.matchMedia("(min-width: 1024px)").matches), []);
   const open = userOpen ?? wide;
@@ -65,6 +66,7 @@ export default function DeckPanel({
           type="button"
           onClick={() => setUserOpen(!open)}
           aria-expanded={open}
+          aria-controls={auto || open ? bodyId : undefined}
           className="flex flex-1 items-center gap-2 font-display text-sm font-medium text-paperdim transition hover:text-paper"
         >
           <span
@@ -95,14 +97,14 @@ export default function DeckPanel({
             onClick={onClear}
             className="hud-label px-1 transition hover:text-paper"
           >
-            clear
+            Clear
           </button>
         )}
       </div>
 
       {(auto || open) && (
-        <div className={`border-t border-signal/15 px-2 pb-2 pt-2 ${auto ? "hidden lg:block" : ""}`}>
-          {/* Column heads for the eye; each row's aria-label says the same in words. */}
+        <div id={bodyId} className={`border-t border-signal/15 px-2 pb-2 pt-2 ${auto ? "hidden lg:block" : ""}`}>
+          {/* Column heads for the eye; each row names its figures in sr-only words (see Figures). */}
           <div aria-hidden className="hud-label flex items-center gap-3 px-2.5 pb-1">
             <span className="flex-1">Course and maturity</span>
             <span className="w-20 text-right">Due / new</span>
@@ -130,7 +132,6 @@ export default function DeckPanel({
                     type="button"
                     onClick={() => onToggleCourse(d.course)}
                     aria-pressed={sel === "some" ? "mixed" : on}
-                    aria-label={`${d.label}${sel === "some" ? ", some units" : ""}: ${countsLabel(counts)}`}
                     title={`${d.label} — ${counts.mature}/${counts.total} mature (21+ day interval)`}
                     className="flex min-w-0 flex-1 items-center gap-3 px-2.5 py-2 text-left"
                   >
@@ -156,21 +157,7 @@ export default function DeckPanel({
                       </span>
                     </span>
 
-                    <span className="hud-figure w-20 shrink-0 text-right text-sm">
-                      <span
-                        className={counts.due + counts.learning > 0 ? "text-signal" : "text-mist"}
-                      >
-                        {counts.due + counts.learning}
-                      </span>
-                      <span className="text-mist"> / </span>
-                      <span className={counts.fresh > 0 ? "text-paperdim" : "text-mist"}>
-                        {counts.fresh}
-                      </span>
-                    </span>
-
-                    <span className="hud-label w-12 shrink-0 text-right tabular-nums">
-                      {counts.total}
-                    </span>
+                    <Figures c={counts} />
                   </button>
 
                   <button
@@ -198,7 +185,6 @@ export default function DeckPanel({
                           type="button"
                           onClick={() => onToggleUnit(d.course, u.unit)}
                           aria-pressed={unitOn}
-                          aria-label={`${u.label}: ${countsLabel(c)}`}
                           title={`${d.label} · ${u.label} — ${c.mature}/${c.total} mature`}
                           className={`flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition ${
                             unitOn ? "bg-signal/[0.06]" : "hover:bg-panel2/40"
@@ -219,18 +205,7 @@ export default function DeckPanel({
                           >
                             {u.label}
                           </span>
-                          <span className="hud-figure w-20 shrink-0 text-right text-sm">
-                            <span className={c.due + c.learning > 0 ? "text-signal" : "text-mist"}>
-                              {c.due + c.learning}
-                            </span>
-                            <span className="text-mist"> / </span>
-                            <span className={c.fresh > 0 ? "text-paperdim" : "text-mist"}>
-                              {c.fresh}
-                            </span>
-                          </span>
-                          <span className="hud-label w-12 shrink-0 text-right tabular-nums">
-                            {c.total}
-                          </span>
+                          <Figures c={c} />
                         </button>
                       );
                     })}
@@ -245,7 +220,29 @@ export default function DeckPanel({
   );
 }
 
-/** A row's figures in words, for its aria-label: the column heads are for the eye only. */
-function countsLabel(c: Counts) {
-  return `${c.due + c.learning} due, ${c.fresh} new, ${c.mature} of ${c.total} cards mature`;
+/**
+ * A row's "due / new" and card count. The column heads are for the eye only, so sr-only words
+ * name each figure: the row's accessible name is then what it shows plus those words, which a
+ * voice-control user can say ("click COM6001 0 / 263"), unlike a separate aria-label.
+ */
+function Figures({ c }: { c: Counts }) {
+  return (
+    <>
+      <span className="hud-figure w-20 shrink-0 text-right text-sm">
+        <span className={c.due + c.learning > 0 ? "text-signal" : "text-mist"}>
+          {c.due + c.learning}
+          <span className="sr-only"> due,</span>
+        </span>
+        <span className="text-mist"> / </span>
+        <span className={c.fresh > 0 ? "text-paperdim" : "text-mist"}>
+          {c.fresh}
+          <span className="sr-only"> new,</span>
+        </span>
+      </span>
+      <span className="hud-label w-12 shrink-0 text-right tabular-nums">
+        {c.total}
+        <span className="sr-only"> cards, {c.mature} mature</span>
+      </span>
+    </>
+  );
 }

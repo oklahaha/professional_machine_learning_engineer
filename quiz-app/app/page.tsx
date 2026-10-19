@@ -37,7 +37,7 @@ export default function Home() {
             { label: "questions", value: pmleCount },
             { label: "exam sections", value: 6 },
           ]}
-          action="Start the exam bank"
+          action="Start the Exam Bank"
         />
         <Tile
           href="/dsai"
@@ -50,7 +50,7 @@ export default function Home() {
             { label: "questions", value: mcqCount },
             { label: "courses", value: courseCount },
           ]}
-          action="Open the MSc decks"
+          action="Open the MSc Decks"
         />
       </div>
     </main>

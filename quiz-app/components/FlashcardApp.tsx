@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { COURSES, UNIT_KEYS, cards, cardsForFilter, courseLabel, unitsForCourse } from "@/lib/cards";
 import {
   EMPTY_FILTER,
@@ -42,7 +42,9 @@ const EMPTY_DAY: DayLog = { newDone: 0, reviewsDone: 0 };
 type DayLog = { newDone: number; reviewsDone: number };
 type Limits = { newPerDay: number; reviewPerDay: number };
 // Everything one grade changed, as it was before: enough to put the card back exactly.
-type Undo = { states: States; log: Record<string, DayLog>; queue: string[]; label: string };
+// `note` is when the graded card comes back ("Back in 10m"), shown beside Undo: grading a new card
+// leaves "in queue" unchanged (it is still in learning), so without it a grade can look like a no-op.
+type Undo = { states: States; log: Record<string, DayLog>; queue: string[]; label: string; note: string };
 
 type Persisted = {
   version: 1;
@@ -143,10 +145,9 @@ export default function FlashcardApp() {
   const [log, setLog] = useState<Record<string, DayLog>>({});
   const [limits, setLimits] = useState<Limits>(DEFAULT_LIMITS);
   const [filter, setFilter] = useState<DeckFilter>(EMPTY_FILTER);
-  const [shuffleSeed, setShuffleSeed] = useState(0); // 0 = deck order
+  const [shuffleSeed, setShuffleSeed] = useState(1); // always shuffled; the real seed lands on hydration
   const [queue, setQueue] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
-  const [showLimits, setShowLimits] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const [undo, setUndo] = useState<Undo | null>(null); // the last grade, until anything else changes the queue
   const [hydrated, setHydrated] = useState(false);
@@ -180,9 +181,11 @@ export default function FlashcardApp() {
     setLog(l);
     setLimits(lim);
     setFilter(f);
-    setShuffleSeed(p?.shuffleSeed ?? 0);
+    // Cards are always shuffled. A stored 0 (deck order, from the old toggle) gets a fresh seed.
+    const seed = p?.shuffleSeed || randomSeed();
+    setShuffleSeed(seed);
     setNow(at);
-    setQueue(fill(s, l, lim, cardsForFilter(f), at, p?.shuffleSeed ?? 0));
+    setQueue(fill(s, l, lim, cardsForFilter(f), at, seed));
     setHydrated(true);
     // Mount-only: `fill` changes identity with the seed, and re-running this would reload storage.
   }, []);
@@ -283,7 +286,13 @@ export default function FlashcardApp() {
       let nextQueue = stillLearning ? requeue(queue, id) : queue.filter((x) => x !== id);
       if (nextQueue.length === 0) nextQueue = fill(nextStates, nextLog, limits, deck, at);
 
-      setUndo({ states, log, queue, label: GRADE_LABEL[g] });
+      setUndo({
+        states,
+        log,
+        queue,
+        label: GRADE_LABEL[g],
+        note: `${stillLearning ? "Back" : "Due again"} in ${previews[g]}`,
+      });
       setStates(nextStates);
       setLog(nextLog);
       setQueue(nextQueue);
@@ -391,20 +400,11 @@ export default function FlashcardApp() {
     setLog({});
     setRevealed(false);
     setUndo(null);
-    setNow(at);
-    setQueue(fill({}, {}, limits, deck, at));
-  }
-
-  // Turning shuffle on picks a fresh seed (a new order); off returns to deck order. Either way
-  // the queue is rebuilt, so the card on screen may change.
-  function toggleShuffle() {
-    const seed = shuffleSeed ? 0 : (Math.floor(Math.random() * 0xffffffff) >>> 0) || 1;
-    const at = Date.now();
+    // Starting over also deals a new shuffle.
+    const seed = randomSeed();
     setShuffleSeed(seed);
-    setRevealed(false);
-    setUndo(null);
     setNow(at);
-    setQueue(fill(states, log, limits, deck, at, seed));
+    setQueue(fill({}, {}, limits, deck, at, seed));
   }
 
   function checkAgain() {
@@ -415,7 +415,9 @@ export default function FlashcardApp() {
 
   return (
     <div className="study-shell pb-12">
-      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      {/* On desktop the header takes the study grid's columns, so the mode switch lines up with the
+          card's left edge and the style toggle with its right. */}
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 lg:grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-x-8">
         <div>
           <HomeLink />
           <div className="mt-1.5 flex items-center gap-2.5">
@@ -427,29 +429,9 @@ export default function FlashcardApp() {
           <p className="hud-label mt-1">Data Science &amp; AI, spaced repetition</p>
         </div>
 
-        {/* Two groups, not one bar: where you are (Cards / Quiz), then what is switched on. One bar
-            wrapped mid-group on a phone and made the page link read as one more toggle. */}
-        <div className="flex flex-wrap items-center gap-2 self-center">
+        <div className="flex flex-wrap items-center gap-2 self-center lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
-          </div>
-          <div className="seg">
-            <button
-              onClick={toggleShuffle}
-              aria-pressed={shuffleSeed !== 0}
-              title="Study cards in random order instead of deck order"
-              className="seg-item"
-            >
-              Shuffle
-            </button>
-            <button
-              onClick={() => setShowLimits((s) => !s)}
-              aria-expanded={showLimits}
-              title="Daily new-card and review limits"
-              className="seg-item"
-            >
-              Limits
-            </button>
           </div>
           <StyleToggle />
         </div>
@@ -490,13 +472,16 @@ export default function FlashcardApp() {
           )}
 
           {hydrated && undo && (
-            <div className="mt-3 flex justify-center">
+            <div className="hud-label mt-3 flex flex-wrap items-center justify-center gap-x-1">
+              <span className="tabular-nums">
+                {undo.label} · {undo.note}
+              </span>
               <button
                 type="button"
                 onClick={undoGrade}
-                className="hud-label rounded-md px-3 py-2 underline-offset-4 transition hover:text-paper hover:underline"
+                className="rounded-md px-2 py-2 underline-offset-4 transition hover:text-paper hover:underline"
               >
-                Undo “{undo.label}” <span className="text-mist">(Z)</span>
+                Undo <span className="text-mist">(Z)</span>
               </button>
             </div>
           )}
@@ -520,31 +505,9 @@ export default function FlashcardApp() {
             </dl>
           </div>
 
-          {showLimits && (
-            <div className="holo hud-label animate-verdict-in flex flex-wrap items-center gap-4 rounded-lg px-4 py-3 md:col-span-2">
-              <LimitInput
-                name="new-per-day"
-                label="New a day"
-                value={limits.newPerDay}
-                onChange={(v) => applyLimits({ ...limits, newPerDay: v })}
-              />
-              <LimitInput
-                name="reviews-per-day"
-                label="Reviews a day"
-                value={limits.reviewPerDay}
-                onChange={(v) => applyLimits({ ...limits, reviewPerDay: v })}
-              />
-              <span className="tabular-nums">
-                Today: {today.newDone} new, {today.reviewsDone} reviews
-              </span>
-              <button
-                onClick={resetAll}
-                className="ml-auto rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong"
-              >
-                Reset review history
-              </button>
-            </div>
-          )}
+          <div className="md:col-span-2">
+            <LimitsPanel limits={limits} today={today} onChange={applyLimits} onReset={resetAll} />
+          </div>
 
           <div className="md:col-span-2">
             <DeckPanel
@@ -557,6 +520,70 @@ export default function FlashcardApp() {
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function randomSeed(): number {
+  return (Math.floor(Math.random() * 0xffffffff) >>> 0) || 1;
+}
+
+/** Daily limits and the history reset, folded shut above the decks until you need them. */
+function LimitsPanel({
+  limits,
+  today,
+  onChange,
+  onReset,
+}: {
+  limits: Limits;
+  today: DayLog;
+  onChange: (next: Limits) => void;
+  onReset: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
+  return (
+    <div className="holo rounded-lg">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={open ? bodyId : undefined}
+        className="flex w-full items-center gap-2 px-3 py-2 font-display text-sm font-medium text-paperdim transition hover:text-paper"
+      >
+        <span aria-hidden className={`transition-transform ${open ? "rotate-90" : ""}`}>
+          ›
+        </span>
+        <span>Limits</span>
+        <span className="hud-label tabular-nums">
+          {limits.newPerDay} new · {limits.reviewPerDay} reviews a day
+        </span>
+      </button>
+      {open && (
+        <div id={bodyId} className="hud-label flex flex-wrap items-center gap-4 border-t border-signal/15 px-4 py-3">
+          <LimitInput
+            name="new-per-day"
+            label="New a day"
+            value={limits.newPerDay}
+            onChange={(v) => onChange({ ...limits, newPerDay: v })}
+          />
+          <LimitInput
+            name="reviews-per-day"
+            label="Reviews a day"
+            value={limits.reviewPerDay}
+            onChange={(v) => onChange({ ...limits, reviewPerDay: v })}
+          />
+          <span className="tabular-nums">
+            Today: {today.newDone} new, {today.reviewsDone} reviews
+          </span>
+          <button
+            onClick={onReset}
+            className="ml-auto rounded-lg px-2 py-1.5 text-mist transition hover:text-wrong"
+          >
+            Reset Review History
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -596,15 +623,14 @@ function LimitInput({
     <label className="flex items-center gap-2">
       <span>{label}</span>
       <input
-        type="number"
+        type="text"
+        pattern="[0-9]*"
         name={name}
         inputMode="numeric"
         autoComplete="off"
-        min={0}
-        max={9999}
         enterKeyHint="done"
         value={draft ?? value}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={(e) => setDraft(e.target.value.replace(/\D/g, ""))}
         onBlur={commit}
         onKeyDown={(e) => {
           if (e.key === "Enter") commit();
@@ -632,7 +658,7 @@ function Done({
   return (
     <section className="holo-card animate-cell-in rounded-lg p-8 text-center">
       <h2 className="neon-title font-display text-3xl font-semibold tracking-tight">
-        Nothing left for today
+        Nothing Left for Today
       </h2>
       <p className="mx-auto mt-3 max-w-md font-sans text-base leading-relaxed text-paperdim">
         {today.newDone + today.reviewsDone > 0
@@ -649,14 +675,14 @@ function Done({
           onClick={onCheckAgain}
           className="btn-cyber btn-ghost px-4 py-2 text-sm"
         >
-          Check again
+          Check Again
         </button>
         {canAddNew && (
           <button
             onClick={onMoreNew}
             className="btn-cyber btn-neon px-4 py-2 text-sm"
           >
-            Add 10 new cards
+            Add 10 New Cards
           </button>
         )}
       </div>

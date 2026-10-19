@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { DOMAINS, PASS_MARK, type Domain } from "@/lib/domains";
 
 export type DomainStat = Domain & {
@@ -37,6 +37,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
   // that call (`auto` below), so the server render is already laid out right and nothing moves
   // when the page hydrates; opening it from an effect pushed the rest of the rail down.
   const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const bodyId = useId();
   const [wide, setWide] = useState(false); // only for aria-expanded, which moves nothing
   useEffect(() => setWide(window.matchMedia("(min-width: 1024px)").matches), []);
   const open = userOpen ?? wide;
@@ -54,6 +55,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
           type="button"
           onClick={() => setUserOpen(!open)}
           aria-expanded={open}
+          aria-controls={auto || open ? bodyId : undefined}
           className="flex flex-1 items-center gap-2 font-display text-sm font-medium text-paperdim transition hover:text-paper"
         >
           <span
@@ -83,14 +85,15 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
             onClick={onClear}
             className="hud-label px-1 transition hover:text-paper"
           >
-            clear
+            Clear
           </button>
         )}
       </div>
 
       {(auto || open) && (
-        <div className={`border-t border-signal/15 px-2 pb-2 pt-2 ${auto ? "hidden lg:block" : ""}`}>
-          {/* Column heads for the eye; each row's aria-label says the same in words. */}
+        <div id={bodyId} className={`border-t border-signal/15 px-2 pb-2 pt-2 ${auto ? "hidden lg:block" : ""}`}>
+          {/* Column heads for the eye; each row names its figures with sr-only words instead, so its
+              accessible name is what it shows plus those words, and voice control can say it. */}
           <div aria-hidden className="hud-label flex items-center gap-3 px-2.5 pb-1">
             <span className="flex-1">Section and your accuracy</span>
             <span>Seen</span>
@@ -105,9 +108,6 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
                 type="button"
                 onClick={() => onToggle(d.id)}
                 aria-pressed={on}
-                aria-label={`§${d.id} ${d.name}: ${
-                  d.accuracy !== null ? `${d.accuracy}% correct, ` : ""
-                }${d.answered} of ${d.total} answered, about ${d.weight}% of the exam`}
                 title={`${d.title} — ${d.blurb}`}
                 className={`flex w-full items-center gap-3 rounded-md border px-2.5 py-2 text-left transition ${
                   on
@@ -143,11 +143,12 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
                 <span className="shrink-0 text-right">
                   {d.accuracy !== null && (
                     <span className={`hud-figure block text-sm ${scoreTone(d.accuracy)}`}>
-                      {d.accuracy}%
+                      {d.accuracy}%<span className="sr-only"> correct,</span>
                     </span>
                   )}
                   <span className="hud-label block tabular-nums">
                     {d.answered}/{d.total}
+                    <span className="sr-only"> answered,</span>
                   </span>
                 </span>
 
@@ -155,7 +156,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
                   title={`This section is ~${d.weight}% of the real exam`}
                   className="hud-label w-12 shrink-0 text-right tabular-nums"
                 >
-                  ~{d.weight}%
+                  ~{d.weight}%<span className="sr-only"> of the exam</span>
                 </span>
               </button>
             );

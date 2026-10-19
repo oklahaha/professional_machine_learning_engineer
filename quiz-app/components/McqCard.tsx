@@ -16,6 +16,7 @@ type Props = {
   onSelect: (label: string) => void;
   onCheck: () => void;
   onClear: () => void;
+  onNext?: () => void; // absent on the last question of the run
   onHint: () => void; // toggles the hint open/closed
 };
 
@@ -63,6 +64,7 @@ export default function McqCard({
   onSelect,
   onCheck,
   onClear,
+  onNext,
   onHint,
 }: Props) {
   const correct = question.answers;
@@ -129,7 +131,7 @@ export default function McqCard({
               <span aria-hidden className="mr-1 inline-block transition-transform">
                 {hintShown ? "▾" : "▸"}
               </span>
-              {hintShown ? "Hide hint" : "Show hint"} <span className="text-iris">(H)</span>
+              {hintShown ? "Hide Hint" : "Show Hint"} <span className="text-iris">(H)</span>
             </button>
             {/* Live, so opening the hint reads it out without moving focus. */}
             <div aria-live="polite">
@@ -252,7 +254,7 @@ export default function McqCard({
               className="btn-cyber btn-primary px-6 py-3 text-base"
             >
               <span aria-hidden className="text-[13px]">▶</span>
-              Check answer
+              Check Answer
             </button>
           )}
           {/* Says why the button is not ready yet, rather than leaving a dead control. */}
@@ -272,10 +274,8 @@ export default function McqCard({
               <span
                 ref={verdictRef}
                 tabIndex={-1}
-                className={`animate-verdict-in inline-flex items-center gap-2 rounded-md border px-4 py-2 font-display text-base font-semibold ${
-                  isCorrect
-                    ? "border-correct/50 bg-correct/10 text-correct"
-                    : "border-wrong/50 bg-wrong/10 text-wrong"
+                className={`animate-verdict-in inline-flex items-center gap-2 font-display text-base font-semibold outline-none ${
+                  isCorrect ? "text-correct" : "text-wrong"
                 }`}
               >
                 <span aria-hidden>{isCorrect ? "✓" : "✗"}</span>
@@ -283,6 +283,18 @@ export default function McqCard({
               </span>
             )}
           </span>
+          {/* The verdict is text, not a box, so the two real buttons read as the actions: Next is
+              the way on (Enter does the same), Try Again the quieter one. */}
+          {revealed && onNext && (
+            <button
+              type="button"
+              onClick={onNext}
+              className="btn-cyber btn-neon px-5 py-2.5 text-sm sm:ml-2"
+            >
+              Next <span aria-hidden>→</span>
+              <span className="hidden text-[12px] opacity-60 sm:inline">(Enter)</span>
+            </button>
+          )}
           {revealed && (
             <button
               type="button"
@@ -290,9 +302,9 @@ export default function McqCard({
                 handOff.current = true;
                 onClear();
               }}
-              className="hud-label underline-offset-4 transition hover:text-paper hover:underline"
+              className="btn-cyber btn-ghost px-4 py-2.5 text-sm"
             >
-              Try again
+              Try Again
             </button>
           )}
         </div>

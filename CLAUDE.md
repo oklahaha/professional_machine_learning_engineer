@@ -309,8 +309,7 @@ and the `ModeSwitch` pill.
 - **Both quizzes deep-link.** The URL mirrors the current question and filter via `replaceState`
   (PMLE `?q=<id>&s=<sections>`, DSAI quiz `?q=<id>&c=<courses>&u=<COURSE::UNIT,…>`) and **wins over
   `localStorage` on load**; a linked question the linked filter would hide clears the filter. The
-  flashcards are queue-based and do not deep-link. The footer's background-motion switch persists
-  under its own key, `ui-motion-v1`, and pauses `.cosmos` via `html[data-motion="off"]`.
+  flashcards are queue-based and do not deep-link.
 - **The rail's panels (`DomainPanel`, `DeckPanel`, `QuizDeckPanel`) default open on desktop and shut on
   a phone by CSS, not by an effect**: `userOpen` stays `null` until the first toggle, and the body
   renders `hidden lg:block`. Opening it from a `useEffect` after mount shoved the rail down on every

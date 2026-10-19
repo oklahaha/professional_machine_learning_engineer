@@ -429,7 +429,9 @@ export default function FlashcardApp() {
           <p className="hud-label mt-1">Data Science &amp; AI, spaced repetition</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-center lg:justify-between">
+        {/* On a phone this row wraps under the title and spans it: mode switch left, style toggle
+            at the right edge. */}
+        <div className="flex flex-wrap items-center gap-2 self-center max-sm:w-full max-sm:justify-between lg:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>
@@ -487,7 +489,9 @@ export default function FlashcardApp() {
           )}
         </main>
 
-        <aside className="study-rail" aria-label="Progress and filters">
+        {/* Below lg the rail (queue, limits, decks) comes first and the card under it, as in PMLE;
+            the markup keeps the card first, so the skip link and reading order reach it first. */}
+        <aside className="study-rail max-lg:order-first" aria-label="Progress and filters">
           <div className="holo flex flex-wrap items-end gap-x-5 gap-y-2 rounded-lg px-4 py-3 sm:px-5 sm:py-4 md:col-span-2">
             <div className="flex flex-col-reverse">
               <div className="hud-label">in queue</div>

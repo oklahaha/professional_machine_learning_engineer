@@ -17,7 +17,9 @@ export default function Page() {
     <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <HomeLink />
-        <div className="flex items-center gap-2">
+        {/* On a phone this group wraps under the back link and spans the row: mode switch left,
+            style toggle at the right edge, as on the flashcards and quiz. */}
+        <div className="flex items-center gap-2 max-sm:w-full max-sm:justify-between">
           <div className="seg">
             <ModeSwitch source="dsai" />
           </div>

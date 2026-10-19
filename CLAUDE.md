@@ -165,8 +165,9 @@ not authored by hand:
   **Both quizzes always shuffle questions and options** — there is no In order / Shuffle options
   toggle. A stored `orderMode: "sequential"` or `shuffleOpts: false` (from before) is replaced by a
   fresh shuffle and random option seed on load; answers are kept. **Reset** clears the
-  answers and reshuffles both. On a phone it sits at the foot of the rail, never in the fixed bottom
-  bar beside the arrows (`JumpControl` there gets no `onReset`).
+  answers and reshuffles both. On a phone it sits in the fixed bottom bar, right of the
+  question-number field, as plain text (PMLE); the DSAI quiz keeps it at the foot of the rail instead
+  (its bottom-bar `JumpControl` gets no `onReset`). Both ask for confirmation.
 - `components/QuestionCard.tsx` is presentational: renders the stem/options, handles select →
   check/reveal → correct-highlight + explanation.
 - `app/pmle/page.tsx` just renders `<PracticeApp />`. `app/page.tsx` is the source picker (a server
@@ -294,7 +295,14 @@ and the `ModeSwitch` pill.
   (`lib/notes-code.ts`): four token classes (`tk-c/s/k/n`), Python keywords only, inline `<code>`
   untouched; `npm test` asserts every block's visible text is unchanged.
 - **Islands** (`components/NotesReader.tsx`): the scroll-tracking contents list, and `NotesCodeScroll`,
-  which makes a code block, table or display formula that overflows sideways keyboard-focusable. The Exam only /
+  which makes a code block, table or display formula that overflows sideways keyboard-focusable. It
+  also gives an *inline* formula too wide for its line `.katex-wide` (an inline-block scroller), only
+  those — making every inline formula one would drop them all off the baseline.
+- **No page may be wider than the screen** (a phone then zooms out and the notes look narrow). Two
+  causes were found and fixed: KaTeX's hidden `.katex-mathml` copy escaping the column (fixed app-wide
+  by `.katex { position: relative }` in `globals.css`), and unbreakable tokens such as a source file
+  name in the meta line (`break-words`). Re-check after adding decks: every route's
+  `document.documentElement.scrollWidth` must equal the viewport width at 320 and 360px. The Exam only /
   Mark reviewed toggles and the "reviewed" ticks were removed, along with `lib/notes-store.ts`; a
   stale `dsai-notes-v1` key in a browser is simply never read.
 - Callout colours keep the app's meanings: exam = amber, common mistake (`box warn`) = rose, tip =
@@ -325,7 +333,10 @@ and the `ModeSwitch` pill.
   a phone by CSS, not by an effect**: `userOpen` stays `null` until the first toggle, and the body
   renders `hidden lg:block`. Opening it from a `useEffect` after mount shoved the rail down on every
   desktop load (layout shift 0.03–0.05); don't reintroduce that. On a phone the card comes *before*
-  the rail in the markup (`.study-main` / `.study-rail` in `globals.css` place them on desktop), and
+  the rail in the markup (`.study-main` / `.study-rail` in `globals.css` place them on desktop) — except
+  PMLE, the DSAI quiz, the flashcards and the lecture pages, whose rail is `max-lg:order-first` so the score/queue and filters show
+  above the card below lg. PMLE scrolls the card back into view on a question change when its top is
+  off-screen; the flashcard scrolls its grade buttons into view on reveal (`block: "nearest"`) — and
   each app's loading placeholder holds roughly a card's height so the rail doesn't jump when it lands.
 - **Answer options are an ARIA radio group** (`role="checkbox"` for a "choose two"): one Tab stop,
   arrows move between options and, for a single answer, select. Both cards mark the list

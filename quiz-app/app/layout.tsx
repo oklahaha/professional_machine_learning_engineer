@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import MotionToggle from "@/components/MotionToggle";
 import { DEFAULT_STYLE, STYLE_BOOT } from "@/components/StyleToggle";
 import "./globals.css";
 
@@ -111,9 +110,8 @@ export default function RootLayout({
           <div className="cosmos-lines" />
         </div>
         {children}
-        <footer className="flex justify-center px-4 pb-28 pt-4 sm:pb-8">
-          <MotionToggle />
-        </footer>
+        {/* Keeps the end of every page clear of the quizzes' fixed phone nav bar. */}
+        <div aria-hidden className="h-28 sm:h-8" />
       </body>
     </html>
   );

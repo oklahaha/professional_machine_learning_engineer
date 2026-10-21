@@ -2630,6 +2630,456 @@
     "deck": "COM6001_Lecture_07"
   },
   {
+    "id": "c44235ddce59",
+    "front": "Why do text columns usually need cleaning before analysis?",
+    "back": "Text entered by different users or collected from different platforms is rarely consistent in case, white space, abbreviations or the length of fixed-length terms.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "2d7f919786fc",
+    "front": "How do you apply a string method to every cell of a pandas column?",
+    "back": "Through the string accessor `.str`, e.g. `nyc['PU_Address'].str.lower()`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "849993cad108",
+    "front": "Which string methods unify the case of a text column?",
+    "back": "`.str.lower()` or `.str.upper()`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "641a3db49a50",
+    "front": "How do you remove leading and trailing white space from a column and keep the result?",
+    "back": "Assign it back: `nyc['PU_Address'] = nyc['PU_Address'].str.strip()`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "3eb49b774de3",
+    "front": "What does `\"hello world\\n\".strip()` return?",
+    "back": "`'hello world'`; the newline counts as white space and is removed, just like leading or trailing spaces.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "460c04096462",
+    "front": "How do you unify an abbreviation such as `ny;` to `new york;` across a column?",
+    "back": "`nyc['PU_Address'].str.replace('ny;', 'new york;')`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "8a3fc60a0d0f",
+    "front": "How can you check terms that should have a fixed length, such as postcodes or times?",
+    "back": "Use `.str.len()` to get each cell's length; e.g. every value of `nyc['Time'].str.len()` should be 8.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "fe9ab9a82042",
+    "front": "How do you keep only the rows whose `PU_Address` contains the keyword `airport`?",
+    "back": "`nyc[nyc['PU_Address'].str.contains('airport')]`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "a38bd3eb997e",
+    "front": "How do you extract the last three characters of every cell in a column?",
+    "back": "Slice through the accessor: `nyc['PU_Address'].str[-3:]`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "f0ddbe2c1dc1",
+    "front": "Before cleaning, why did `nyc['PU_Address'].str[-3:]` show `Y;` for one row instead of `NY;`?",
+    "back": "That cell ended with an extra, hard-to-see space, so the last three characters were `Y; `; stripping white space fixes it.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "f50081efa980",
+    "front": "How do you keep only the rows whose `PU_Address` starts with `best western`?",
+    "back": "`nyc[nyc['PU_Address'].str.startswith('best western')]`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "4d784a5b7c2e",
+    "front": "How do you remove the trailing state field (e.g. ` ny;`, 4 characters) from every address?",
+    "back": "`nyc['PU_Address'] = nyc['PU_Address'].str[:-4]`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "3131f52f5da9",
+    "front": "How do you count the rows that a string filter keeps?",
+    "back": "Take `.shape[0]` of the filtered frame, e.g. `nyc[nyc['PU_Address'].str.contains('airport')].shape[0]` (29 in the NYC taxi data).",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "d2492fa3ca05",
+    "front": "How do you combine two string conditions when filtering a DataFrame?",
+    "back": "Wrap each condition in parentheses and join them with `&`, e.g. `nyc[(nyc['PU_Address'].str.startswith('best western')) & (nyc['DO_Address'].str.contains('airport'))]`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "e8eb8d814128",
+    "front": "How do you keep the routes that went to Flushing and have status Arrived?",
+    "back": "`nyc[nyc['DO_Address'].str.contains('Flushing') & (nyc['Status'] == 'Arrived')]`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "3c290b8744cf",
+    "front": "Why does the Flushing filter on `DO_Address` search for `'Flushing'` with a capital F, while the `PU_Address` filters use lower case?",
+    "back": "Only `PU_Address` was lowercased; `DO_Address` keeps its original case, and `str.contains()` is case-sensitive by default.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "6cede6db675e",
+    "front": "What are regular expressions, and what are three uses of them in data science?",
+    "back": "Patterns used to match, search and manipulate text; used for cleaning messy text data, extracting specific information from strings, and validating data formats such as emails or phone numbers.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "e09a17c92e29",
+    "front": "Which Python module provides regular expressions?",
+    "back": "The `re` module: `import re`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "0117e66cc1d6",
+    "front": "What does `.` match in a regex?",
+    "back": "Any single character, e.g. `a.c` matches `abc` and `a1c`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "84321fd49ef1",
+    "front": "What do `\\d`, `\\w` and `\\s` match?",
+    "back": "`\\d` a digit (0–9), `\\w` a word character (letter, digit or underscore), `\\s` any white-space character.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "4af6ccd97966",
+    "front": "How do the quantifiers `*`, `+` and `?` differ?",
+    "back": "`*` is zero or more occurrences, `+` one or more, `?` zero or one.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "1b90882c47ac",
+    "front": "What does `colou?r` match?",
+    "back": "Both `color` and `colour`, since `?` makes the `u` optional.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "1bbe6e1608fd",
+    "front": "What do the anchors `^` and `$` mean in a regex?",
+    "back": "`^` is the start of the string and `$` the end, e.g. `^Hello` matches strings starting with Hello and `world$` strings ending with world.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "18b4d5dab19b",
+    "front": "What does `re.findall(r'\\d+', text)` return?",
+    "back": "A list of every run of one or more digits in `text`, as strings, e.g. `['12345', '2026', '10', '19']`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "8e8b9b533af0",
+    "front": "Which `re` call replaces runs of multiple spaces with a single space?",
+    "back": "`re.sub(r'\\s+', ' ', text)`",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "f7c416882e26",
+    "front": "What does `re.findall(r'[\\w\\.-]+@[\\w\\.-]+\\.\\w+', text)` extract?",
+    "back": "The email addresses in `text`, e.g. `['info@example.com', 'support@test.org']`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "4ec5926185d2",
+    "front": "What does `df['address'].str.extract(r'^(.*?)(?:,|$)')` produce for the HK property data?",
+    "back": "The estate name: the text from the start of each address up to the first comma (or the end), e.g. `Grand Jete`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "a0b039da2251",
+    "front": "What does `df['address'].str.extract(r'Phase\\s+(\\d+)')` return?",
+    "back": "The phase number captured after `Phase` and white space, e.g. `1` or `4` (from `Phase 4B`), and NaN where an address has no phase.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "afe88a4fb5d7",
+    "front": "How do you count the addresses that contain no floor category?",
+    "back": "`(~df['address'].str.contains(floor_pattern, case=False, na=False)).sum()`; `~` negates the match, `case=False` ignores case and `na=False` treats missing values as no match.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "6b01fdc75b47",
+    "front": "What do standard, min-max and robust scaling all try to do?",
+    "back": "More or less move the data's centre to 0 and its spread to 1.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "591924158c8a",
+    "front": "What is the formula for standard scaling?",
+    "back": "$x' = \\frac{x - \\text{mean}}{\\text{std}}$, giving mean 0 and standard deviation 1.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "b4fbe9b3dee8",
+    "front": "How do you standard-scale `X` with scikit-learn?",
+    "back": "`from sklearn.preprocessing import StandardScaler`, then `ss = StandardScaler()` and `X_ss = ss.fit_transform(X)`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "59cf28116587",
+    "front": "How sensitive is standard scaling to outliers?",
+    "back": "Moderately: the mean and standard deviation shift with outliers, but less strongly than the min and max used by min-max scaling.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "9ca89d93c52d",
+    "front": "What is the formula for min-max scaling?",
+    "back": "$x' = \\frac{x - \\min}{\\max - \\min}$, mapping the minimum to 0 and the maximum to 1.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "7709eeba6d02",
+    "front": "How do you min-max scale `X` with scikit-learn?",
+    "back": "`from sklearn.preprocessing import MinMaxScaler`, then `mm = MinMaxScaler()` and `X_mm = mm.fit_transform(X)`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "47db6a4e6ac7",
+    "front": "Why is min-max scaling highly sensitive to outliers?",
+    "back": "An extreme value becomes the max (or min), so the bulk of the data is compressed into a small sub-range of [0, 1].",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "d702301d06f0",
+    "front": "What is the formula for robust scaling?",
+    "back": "$x' = \\frac{x - Q_2}{Q_3 - Q_1}$: subtract the median and divide by the IQR, which maps the IQR to 1.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "cc247c1363ed",
+    "front": "How do you robust-scale `X` with scikit-learn?",
+    "back": "`from sklearn.preprocessing import RobustScaler`, then `rs = RobustScaler()` and `X_rs = rs.fit_transform(X)`.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "e9c8486fe7f0",
+    "front": "Why is robust scaling much less sensitive to outliers?",
+    "back": "The median and IQR are barely moved by extreme values, unlike the mean, std, min or max.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "7787e26a6940",
+    "front": "Which of the three scalers gives a fixed output range?",
+    "back": "Only min-max scaling, typically [0, 1]; standard and robust scaling have no fixed range.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "a9ec64def7d1",
+    "front": "When should you prefer `StandardScaler`?",
+    "back": "When there are no strong outliers and the algorithm assumes zero-centred or normal data or uses distances, e.g. PCA, logistic regression, linear models, k-means.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "d717415114ba",
+    "front": "When should you prefer `MinMaxScaler`?",
+    "back": "When a bounded range is required, e.g. inputs to neural networks with sigmoid activations, visualisation, or algorithms expecting [0, 1].",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "25271d3a5834",
+    "front": "When should you prefer `RobustScaler`?",
+    "back": "When the data has many outliers or heavy tails and you want to reduce their effect without clipping.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "cf02212e724f",
+    "front": "Which data should a scaler be fitted on?",
+    "back": "The training data only; the validation and test sets are transformed with that already-fitted scaler.",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
+    "id": "66305209bfea",
+    "front": "Why can `MinMaxScaler` be problematic on new data?",
+    "back": "New values outside the training min and max scale to below 0 or above 1 (extrapolation).",
+    "course": "COM6001",
+    "unit": "Lecture_8",
+    "topic": "",
+    "tag": "COM6001::Lecture_8",
+    "deck": "COM6001_Lecture_8"
+  },
+  {
     "id": "7e4e6b9457df",
     "front": "What is the primary write inefficiency associated with file-based data management?",
     "back": "The entire file must be re-written even when making a tiny update.",
@@ -7438,6 +7888,456 @@
     "topic": "",
     "tag": "COM6004::Chapter_5",
     "deck": "COM6004_Chapter_5"
+  },
+  {
+    "id": "d03ab1021ce0",
+    "front": "What is the goal of association rule mining on market-basket transactions?",
+    "back": "Given a set of transactions, find rules that predict the occurrence of an item based on the occurrences of other items in the transaction.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "cc7d5c405969",
+    "front": "What is an itemset, and what is a $k$-itemset?",
+    "back": "An itemset is a collection of one or more items, e.g. {Milk, Bread, Diaper}. A $k$-itemset is an itemset that contains $k$ items.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "425e54101d9b",
+    "front": "How do the support count $\\sigma(X)$ and the support $s(X)$ of an itemset differ, and when is the itemset frequent?",
+    "back": "$\\sigma(X)$ is the number of transactions containing $X$; $s(X) = \\sigma(X)/N$ is the fraction, e.g. $\\sigma = 2$ in 5 transactions gives $s = 2/5$. $X$ is frequent if $s(X) \\ge minsup$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "88c697b56001",
+    "front": "What is an association rule?",
+    "back": "An implication expression of the form $X \\to Y$, where $X$ and $Y$ are itemsets, e.g. {Milk, Diaper} $\\to$ {Beer}.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "e4fb5abfc3b5",
+    "front": "What does the support $s$ of a rule $X \\to Y$ measure?",
+    "back": "The fraction of transactions that contain both $X$ and $Y$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "a44a8a1a30c3",
+    "front": "What does the confidence $c$ of a rule $X \\to Y$ measure?",
+    "back": "How often items in $Y$ appear in transactions that contain $X$: $c(X \\to Y) = \\sigma(X \\cup Y) / \\sigma(X)$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "7465b136e71b",
+    "front": "What is the association rule mining task?",
+    "back": "Find all rules with support $\\ge minsup$ and confidence $\\ge minconf$. The brute-force way (list every rule, compute both measures, prune) is computationally prohibitive.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "63a2f88dd550",
+    "front": "Given $d$ unique items, how many itemsets are there, and how many possible rules are there when $d = 6$?",
+    "back": "There are $2^d$ itemsets; with $d = 6$ there are 602 possible association rules.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "ba4d05b47bb4",
+    "front": "What do the rules {Milk,Diaper} $\\to$ {Beer}, {Beer} $\\to$ {Milk,Diaper} and {Milk} $\\to$ {Diaper,Beer} have in common, and how do they differ?",
+    "back": "They are all binary partitions of the same itemset {Milk, Diaper, Beer}, so they have identical support ($s = 0.4$) but can have different confidence (0.67, 0.67, 0.5). Hence the support and confidence requirements can be decoupled.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "385d296fd312",
+    "front": "What are the two steps of the two-step approach to mining association rules?",
+    "back": "1. Frequent itemset generation: all itemsets with support $\\ge minsup$ (still computationally expensive). 2. Rule generation: high-confidence rules from each frequent itemset, each a binary partition of it.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "981b5731cf04",
+    "front": "What is the complexity of brute-force frequent itemset generation, and why is it expensive?",
+    "back": "$O(NMw)$: every one of $N$ transactions (width $w$) is matched against every one of $M$ candidates, and $M = 2^d$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "6a95ee837f06",
+    "front": "What are the three strategies for reducing the cost of frequent itemset generation?",
+    "back": "Reduce the number of candidates $M$ (pruning), reduce the number of transactions $N$ (as itemset size grows, e.g. DHP and vertical-based mining), and reduce the number of comparisons $NM$ (efficient data structures).",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "fab58740c97e",
+    "front": "State the Apriori principle.",
+    "back": "If an itemset is frequent, then all of its subsets must also be frequent.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "a1de08f96ad3",
+    "front": "What is the anti-monotone property of support?",
+    "back": "The support of an itemset never exceeds the support of its subsets: $X \\subseteq Y \\Rightarrow s(X) \\ge s(Y)$. It is why the Apriori principle holds.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "0b64423dead7",
+    "front": "How does the Apriori principle prune the itemset lattice?",
+    "back": "Once an itemset is found to be infrequent, all of its supersets are pruned, since none of them can be frequent.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "fd229da1eb82",
+    "front": "With 6 items and minimum support 3, how many candidates are counted with and without support-based pruning (up to 3-itemsets)?",
+    "back": "Without pruning: $\\binom{6}{1} + \\binom{6}{2} + \\binom{6}{3} = 6 + 15 + 20 = 41$. With pruning: $6 + 6 + 4 = 16$, or $6 + 6 + 1 = 13$ using the $F_{k-1} \\times F_{k-1}$ method.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "0f38ddefaaca",
+    "front": "What are the four steps repeated in each iteration of the Apriori algorithm?",
+    "back": "1. Candidate generation: build $L_{k+1}$ from $F_k$. 2. Candidate pruning: drop candidates with an infrequent $k$-subset. 3. Support counting: scan the DB. 4. Candidate elimination: drop infrequent candidates, leaving $F_{k+1}$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "34db563d9626",
+    "front": "How does the $F_{k-1} \\times F_{k-1}$ method generate candidates?",
+    "back": "It merges two frequent $(k-1)$-itemsets if their first $(k-2)$ items are identical, e.g. Merge(ABC, ABD) = ABCD.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "34cc1685ab1f",
+    "front": "With $F_3$ = {ABC,ABD,ABE,ACD,BCD,BDE,CDE}, why is candidate ABCE pruned?",
+    "back": "Its subsets ACE and BCE are not in $F_3$, so they are infrequent and ABCE cannot be frequent.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "12ddb333b6ab",
+    "front": "How does the alternate $F_{k-1} \\times F_{k-1}$ method generate candidates?",
+    "back": "It merges two frequent $(k-1)$-itemsets if the last $(k-2)$ items of the first are identical to the first $(k-2)$ items of the second, e.g. Merge(ABC, BCD) = ABCD.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "1955d6725910",
+    "front": "Why is support counting of candidate itemsets expensive?",
+    "back": "Every candidate itemset must be matched against every transaction in the database.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "bad28eadf681",
+    "front": "How does a hash structure reduce the cost of support counting?",
+    "back": "Candidates are stored in hashed buckets, so each transaction is matched only against the candidates in the buckets it hashes to, not against every candidate.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "14e4c8d0c8c8",
+    "front": "What two things are needed to build a candidate hash tree?",
+    "back": "A hash function, and a max leaf size: the most itemsets a leaf may hold. When a leaf exceeds it, the node is split.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "a0297b5a4ab3",
+    "front": "In the hash tree example with 15 candidate 3-itemsets, how many candidates is transaction (1,2,3,5,6) matched against?",
+    "back": "11 out of 15 candidates.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "2fd30c5af7e6",
+    "front": "How are candidate rules generated from a frequent itemset $L$?",
+    "back": "Find all non-empty subsets $f \\subset L$ such that $f \\to L - f$ satisfies the minimum confidence requirement.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "ea072380c9f2",
+    "front": "How many candidate association rules does a frequent $k$-itemset produce?",
+    "back": "$2^k - 2$, ignoring $L \\to \\emptyset$ and $\\emptyset \\to L$; e.g. {A,B,C,D} gives 14.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "8090480bd8c4",
+    "front": "Does confidence have an anti-monotone property in general?",
+    "back": "No: $c(ABC \\to D)$ can be larger or smaller than $c(AB \\to D)$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "a1157b69d719",
+    "front": "What anti-monotone property does confidence have for rules from the same itemset?",
+    "back": "Confidence is anti-monotone with respect to the number of items on the RHS: $c(ABC \\to D) \\ge c(AB \\to CD) \\ge c(A \\to BCD)$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "25028e45ce0a",
+    "front": "How does lowering the minimum support threshold affect Apriori's complexity?",
+    "back": "It produces more frequent itemsets, which may increase the number of candidates and the maximum length of frequent itemsets.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "24197da44f42",
+    "front": "Besides the support threshold, what other factors affect the complexity of Apriori?",
+    "back": "Dimensionality (space for each item's support count), database size (Apriori makes multiple passes), and average transaction width (longer frequent itemsets and more hash tree traversals).",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "872686b0a3f3",
+    "front": "What is a maximal frequent itemset?",
+    "back": "A frequent itemset none of whose immediate supersets is frequent.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "9b3a335bd08f",
+    "front": "What is a closed itemset?",
+    "back": "An itemset $X$ none of whose immediate supersets has the same support as $X$. It is not closed if at least one immediate superset has the same support count.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "e87acebd6b9f",
+    "front": "In the slides' example with minimum support 2, how many itemsets are closed frequent and how many maximal frequent?",
+    "back": "9 closed frequent and 4 maximal frequent. Every maximal itemset is also closed, but some closed itemsets are not maximal.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "216c89a3f087",
+    "front": "Why are interestingness measures needed in pattern evaluation?",
+    "back": "Association rule algorithms can produce a large number of rules; interestingness measures prune or rank them. The original formulation used only support and confidence.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "dff7878466f4",
+    "front": "What do $f_{11}$, $f_{10}$, $f_{01}$ and $f_{00}$ mean in the contingency table for $X \\to Y$?",
+    "back": "The counts of transactions containing $X$ and $Y$; $X$ but not $Y$; $Y$ but not $X$; and neither $X$ nor $Y$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "e62eb951df97",
+    "front": "Why is Tea $\\to$ Coffee misleading despite a confidence of 0.75?",
+    "back": "$P(\\text{Coffee}) = 0.8$, so knowing a person drinks tea reduces the probability of coffee; for non-tea drinkers $P(\\text{Coffee} \\mid \\overline{\\text{Tea}}) = 650/800 = 0.8125$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "9ca51ebe86b7",
+    "front": "Why is Tea $\\to$ Honey interesting despite a confidence of only 0.50?",
+    "back": "$P(\\text{Honey}) = 120/1000 = 0.12$, so tea drinkers are far more likely to have honey than customers overall.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "4635392f5893",
+    "front": "Besides being sufficiently high, what constraint should the confidence of a good rule $X \\to Y$ satisfy?",
+    "back": "$c(X \\to Y) > s(Y)$; otherwise having $X$ actually reduces the chance of having $Y$ in the same transaction.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "d7cd46b2c471",
+    "front": "What is statistical independence of $X$ and $Y$, and when are they positively or negatively correlated?",
+    "back": "Independent when $P(X,Y) = P(X)P(Y)$, equivalent to $c(X \\to Y) = s(Y)$. Positively correlated if $P(X,Y) > P(X)P(Y)$; negatively if $P(X,Y) < P(X)P(Y)$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "9c62ecb38e82",
+    "front": "What is the difference between lift and interest?",
+    "back": "Lift is used for rules, interest for itemsets. Both compare the observed co-occurrence with independence: $\\frac{c(X \\to Y)}{s(Y)} = \\frac{P(X,Y)}{P(X)P(Y)}$.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "54e9d71ac19d",
+    "front": "What is the interest of Tea and Coffee when $P(\\text{Tea, Coffee}) = 0.15$, $P(\\text{Tea}) = 0.2$ and $P(\\text{Coffee}) = 0.8$?",
+    "back": "$0.15 / (0.2 \\times 0.8) = 0.9375$, which is $< 1$, so they are negatively associated.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "6dbad80cbf19",
+    "front": "Which measure keeps its value under row/column scaling, as in Mosteller's grade–gender example?",
+    "back": "The odds ratio: the underlying association should not depend on the relative number of male and female students sampled.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "f1eaa061385e",
+    "front": "Which measures are invariant under null addition, and which are not?",
+    "back": "Invariant: cosine, Jaccard, all-confidence, confidence. Not invariant: correlation, interest/lift, odds ratio.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "2f7b212bfbe7",
+    "front": "What is Simpson's paradox?",
+    "back": "An observed relationship is influenced by confounding (hidden) variables, which can make it disappear or reverse direction. Proper stratification is needed to avoid spurious patterns.",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
+  },
+  {
+    "id": "c0f162161827",
+    "front": "In the Covid example, Hospital B has the higher overall recovery rate (90% vs 80%). Why is Hospital A better?",
+    "back": "Hospital A has the higher recovery rate in both strata: older patients (50% vs 30%) and younger patients (99% vs 98%).",
+    "course": "COM6004",
+    "unit": "Chapter_6",
+    "topic": "",
+    "tag": "COM6004::Chapter_6",
+    "deck": "COM6004_Chapter_6"
   },
   {
     "id": "6b92fcc2703a",

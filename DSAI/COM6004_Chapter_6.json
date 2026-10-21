@@ -1,0 +1,684 @@
+[
+  {
+    "question": "Using the eight transactions T1 {Bread, Butter, Milk}; T2 {Bread, Butter}; T3 {Bread, Jam}; T4 {Butter, Milk}; T5 {Bread, Butter, Jam}; T6 {Milk}; T7 {Bread, Butter, Milk}; T8 {Bread, Milk}, what is the support of {Bread, Butter}?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.5$",
+        "Explanation": "{Bread, Butter} appears in T1, T2, T5 and T7, so $s = 4/8 = 0.5$."
+      },
+      {
+        "label": "B",
+        "text": "$0.625$",
+        "Explanation": "$5/8$ is the support of {Butter} alone, not of the pair."
+      },
+      {
+        "label": "C",
+        "text": "$0.75$",
+        "Explanation": "$6/8$ is the support of {Bread} alone; support of a pair counts only transactions containing both items."
+      },
+      {
+        "label": "D",
+        "text": "$4$",
+        "Explanation": "4 is the support count $\\sigma$, not the support, which is the fraction of the 8 transactions."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Count the transactions that contain both items, then divide by the total number of transactions.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Using the eight transactions T1 {Bread, Butter, Milk}; T2 {Bread, Butter}; T3 {Bread, Jam}; T4 {Butter, Milk}; T5 {Bread, Butter, Jam}; T6 {Milk}; T7 {Bread, Butter, Milk}; T8 {Bread, Milk}, what is the confidence of {Bread, Butter} $\\to$ {Milk}?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.25$",
+        "Explanation": "$2/8$ is the support of the rule (all three items over all transactions), not its confidence."
+      },
+      {
+        "label": "B",
+        "text": "$0.5$",
+        "Explanation": "$\\sigma(\\{\\text{Bread, Butter, Milk}\\}) = 2$ (T1, T7) and $\\sigma(\\{\\text{Bread, Butter}\\}) = 4$, so $c = 2/4 = 0.5$."
+      },
+      {
+        "label": "C",
+        "text": "$0.4$",
+        "Explanation": "Dividing by $\\sigma(\\{\\text{Milk}\\}) = 5$ gives the confidence of the reverse rule {Milk} $\\to$ {Bread, Butter}."
+      },
+      {
+        "label": "D",
+        "text": "$0.667$",
+        "Explanation": "$4/6$ is the confidence of {Bread} $\\to$ {Butter}, a different rule; here the antecedent is {Bread, Butter} with count 4."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Confidence conditions on the left-hand side of the rule.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Using the eight transactions T1 {Bread, Butter, Milk}; T2 {Bread, Butter}; T3 {Bread, Jam}; T4 {Butter, Milk}; T5 {Bread, Butter, Jam}; T6 {Milk}; T7 {Bread, Butter, Milk}; T8 {Bread, Milk}, the rule {Milk} $\\to$ {Butter} has confidence $0.6$. What is its lift, and what does it say?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$1.6$: buying Milk strongly raises the chance of buying Butter",
+        "Explanation": "This divides the confidence by $s(\\text{Milk} \\cup \\text{Butter}) = 3/8$ instead of by $s(\\text{Butter})$."
+      },
+      {
+        "label": "B",
+        "text": "$0.6$: the rule is reliable because confidence exceeds 50%",
+        "Explanation": "0.6 is the confidence itself; lift compares it with $s(\\text{Butter}) = 0.625$, and confidence above 50% can still be misleading."
+      },
+      {
+        "label": "C",
+        "text": "$0.96$: buying Milk slightly lowers the chance of buying Butter",
+        "Explanation": "$s(\\text{Butter}) = 5/8 = 0.625$, so lift $= 0.6 / 0.625 = 0.96 < 1$: a negative association despite a confidence above 50%."
+      },
+      {
+        "label": "D",
+        "text": "$1.0$: Milk and Butter are independent",
+        "Explanation": "Independence would need $c(\\text{Milk} \\to \\text{Butter}) = s(\\text{Butter})$, but $0.6 \\neq 0.625$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the confidence with the support of the right-hand side.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "The rules {Milk, Diaper} $\\to$ {Beer} and {Beer} $\\to$ {Milk, Diaper} come from the same transactions. What must be true of them?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They have identical confidence but can have different support",
+        "Explanation": "Support depends only on the union of both sides, which is the same itemset, so it is support that must match."
+      },
+      {
+        "label": "B",
+        "text": "They have identical support and identical confidence",
+        "Explanation": "Confidence divides by the antecedent's count, and the antecedents differ, so confidence can differ."
+      },
+      {
+        "label": "C",
+        "text": "They can differ in both support and confidence",
+        "Explanation": "Their union is the same itemset, so their support cannot differ."
+      },
+      {
+        "label": "D",
+        "text": "They have identical support but can have different confidence",
+        "Explanation": "Both are binary partitions of {Milk, Diaper, Beer}, so their support is that itemset's support; confidence divides by different antecedents."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about which measure depends only on the union of the two sides.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "A frequent itemset contains 5 items. How many candidate association rules can be generated from it, ignoring $L \\to \\emptyset$ and $\\emptyset \\to L$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$32$",
+        "Explanation": "$2^5 = 32$ includes the two excluded rules with an empty side."
+      },
+      {
+        "label": "B",
+        "text": "$30$",
+        "Explanation": "There are $2^k - 2 = 2^5 - 2 = 30$ candidate rules, one per non-empty proper subset used as the antecedent."
+      },
+      {
+        "label": "C",
+        "text": "$20$",
+        "Explanation": "$\\binom{5}{2} + \\binom{5}{3} = 20$ counts only antecedents of 2 or 3 items, missing those of 1 or 4 items."
+      },
+      {
+        "label": "D",
+        "text": "$10$",
+        "Explanation": "$\\binom{5}{2} = 10$ counts only rules with a 2-item antecedent."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Each non-empty proper subset can serve as the left-hand side of exactly one rule.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "A dataset has 5 items. If every subset of size 1, 2 or 3 is considered as a candidate (no pruning), how many candidates must be counted?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$32$",
+        "Explanation": "$2^5 = 32$ counts every itemset in the lattice, including the empty set and itemsets of size 4 and 5."
+      },
+      {
+        "label": "B",
+        "text": "$15$",
+        "Explanation": "$5 + 10 = 15$ stops at 2-itemsets and leaves out the 3-itemsets."
+      },
+      {
+        "label": "C",
+        "text": "$41$",
+        "Explanation": "41 is the figure for 6 items: $6 + 15 + 20$."
+      },
+      {
+        "label": "D",
+        "text": "$25$",
+        "Explanation": "$\\binom{5}{1} + \\binom{5}{2} + \\binom{5}{3} = 5 + 10 + 10 = 25$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Add up the binomial coefficients for each itemset size.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Support counting shows that {A, B} is infrequent. By the Apriori principle, which itemset can be pruned without counting its support?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{A, B, C}",
+        "Explanation": "{A, B} is a subset of {A, B, C}, and an itemset's support never exceeds that of its subsets, so {A, B, C} must be infrequent too."
+      },
+      {
+        "label": "B",
+        "text": "{A}",
+        "Explanation": "The principle runs downward from frequent itemsets; a subset of an infrequent itemset may still be frequent."
+      },
+      {
+        "label": "C",
+        "text": "{A, C}",
+        "Explanation": "{A, C} does not contain {A, B}, so nothing about its support follows."
+      },
+      {
+        "label": "D",
+        "text": "{B, C}",
+        "Explanation": "{B, C} does not contain {A, B}, so it must still be counted."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Infrequency propagates to supersets, not subsets.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Given the frequent 3-itemsets $F_3$ = {ACD, ACE, ADE, BCD, BCE, CDE}, which candidate 4-itemsets does the $F_{k-1} \\times F_{k-1}$ method generate (merging itemsets whose first $k-2$ items match)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{ACDE}",
+        "Explanation": "This is the result after candidate pruning; generation also produces BCDE from BCD and BCE."
+      },
+      {
+        "label": "B",
+        "text": "{ACDE, ABCD, BCDE}",
+        "Explanation": "ABCD would need two itemsets with prefix AB, and none exists in $F_3$."
+      },
+      {
+        "label": "C",
+        "text": "{ACDE, BCDE}",
+        "Explanation": "ACD and ACE share the prefix AC, giving ACDE; BCD and BCE share BC, giving BCDE. No other pair shares a 2-item prefix."
+      },
+      {
+        "label": "D",
+        "text": "{ACDE, ADCE, BCDE}",
+        "Explanation": "ADCE is the same itemset as ACDE; itemsets are sets, so merging produces it only once."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Sort each itemset and look for pairs that agree on their first two items.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "With $F_3$ = {ACD, ACE, ADE, BCD, BCE, CDE}, the candidate 4-itemsets are $L_4$ = {ACDE, BCDE}. What is $L_4$ after candidate pruning?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{ACDE}, because BCDE has the infrequent subset BDE",
+        "Explanation": "All 3-subsets of ACDE (ACD, ACE, ADE, CDE) are in $F_3$, but BDE is not, so BCDE is pruned."
+      },
+      {
+        "label": "B",
+        "text": "{BCDE}, because ACDE has the infrequent subset ADE",
+        "Explanation": "ADE is in $F_3$, so it is frequent and ACDE survives."
+      },
+      {
+        "label": "C",
+        "text": "{ACDE, BCDE}, because both were generated from frequent itemsets",
+        "Explanation": "Being generated from two frequent itemsets does not guarantee that every other $k$-subset is frequent."
+      },
+      {
+        "label": "D",
+        "text": "{}, because both contain an infrequent subset",
+        "Explanation": "ACDE has no infrequent 3-subset; only BCDE does."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Check every 3-item subset of each candidate against $F_3$.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "With $F_3$ = {ACD, ACE, ADE, BCD, BCE, CDE}, which pair is merged by the alternate $F_{k-1} \\times F_{k-1}$ method (the last $k-2$ items of the first equal the first $k-2$ items of the second)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "ACD and ACE, giving ACDE",
+        "Explanation": "These share a prefix, which is the rule of the standard method; the last two items of ACD (CD) do not start ACE."
+      },
+      {
+        "label": "B",
+        "text": "ACD and CDE, giving ACDE",
+        "Explanation": "The last two items of ACD are CD, which are the first two items of CDE, so they merge into ACDE."
+      },
+      {
+        "label": "C",
+        "text": "BCE and CDE, giving BCDE",
+        "Explanation": "The last two items of BCE are CE, but CDE starts with CD."
+      },
+      {
+        "label": "D",
+        "text": "ADE and BCD, giving ABCDE",
+        "Explanation": "Merging two 3-itemsets must give a 4-itemset, and DE does not start BCD."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compare the tail of the first itemset with the head of the second.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "In the Apriori algorithm, which step decides which candidates to drop without scanning the database?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Support counting, using a pass over the transactions",
+        "Explanation": "Support counting is precisely the step that scans the database."
+      },
+      {
+        "label": "B",
+        "text": "Candidate elimination, using the counted supports",
+        "Explanation": "Elimination drops candidates whose counted support is below $minsup$, which needs the database scan first."
+      },
+      {
+        "label": "C",
+        "text": "Candidate pruning, using the frequent $k$-itemsets already found",
+        "Explanation": "A candidate in $L_{k+1}$ with any infrequent $k$-subset is dropped by checking $F_k$, which needs no pass over the data."
+      },
+      {
+        "label": "D",
+        "text": "Candidate generation, using the transactions",
+        "Explanation": "Generation builds $L_{k+1}$ by merging itemsets in $F_k$; it neither reads transactions nor drops candidates for infrequency."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Which step can rely purely on the Apriori principle?",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "A candidate hash tree uses the hash function that sends items 1, 4, 7 to the first branch, 2, 5, 8 to the second and 3, 6, 9 to the third. At the root, hashing on the first item, where does candidate {2 6 9} go?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The first branch",
+        "Explanation": "The first branch takes items 1, 4 and 7; the first item here is 2."
+      },
+      {
+        "label": "B",
+        "text": "The third branch",
+        "Explanation": "Items 6 and 9 hash to the third branch, but at the root only the first item is used."
+      },
+      {
+        "label": "C",
+        "text": "It is split across all three branches",
+        "Explanation": "Each candidate is stored in exactly one leaf; a transaction, not a candidate, is spread across branches."
+      },
+      {
+        "label": "D",
+        "text": "The second branch",
+        "Explanation": "The first item is 2, which belongs to the group 2, 5, 8."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "At each level only one item of the candidate is hashed.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "During hash tree support counting, how many 3-item subsets does the transaction {1, 2, 3, 5, 6} contain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$15$",
+        "Explanation": "15 is the number of candidate itemsets in the slides' example, not the number of subsets of the transaction."
+      },
+      {
+        "label": "B",
+        "text": "$10$",
+        "Explanation": "$\\binom{5}{3} = 10$ subsets of size 3 can be enumerated from a 5-item transaction."
+      },
+      {
+        "label": "C",
+        "text": "$11$",
+        "Explanation": "11 is how many candidates the transaction was matched against, not its subset count."
+      },
+      {
+        "label": "D",
+        "text": "$5$",
+        "Explanation": "5 is the transaction width; the number of 3-subsets is $\\binom{5}{3}$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Count the ways to choose 3 items from 5.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "A team lowers the minimum support threshold of Apriori. What effect should they expect?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fewer frequent itemsets and a faster run",
+        "Explanation": "Lowering the threshold admits more itemsets, not fewer."
+      },
+      {
+        "label": "B",
+        "text": "The same frequent itemsets but more rules",
+        "Explanation": "The frequent itemsets change with the threshold; rule count depends on $minconf$ too."
+      },
+      {
+        "label": "C",
+        "text": "Fewer passes over the database",
+        "Explanation": "A lower threshold can lengthen the longest frequent itemset, so Apriori may need more passes, not fewer."
+      },
+      {
+        "label": "D",
+        "text": "More frequent itemsets, possibly more candidates and longer frequent itemsets",
+        "Explanation": "A lower threshold lets more itemsets pass, which may raise the number of candidates and the maximum length of frequent itemsets."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Ask how many itemsets clear a lower bar.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "The frequent itemsets of a dataset are {A}, {B}, {C}, {D}, {A,B}, {A,C}, {B,C}, {C,D} and {A,B,C}. Which are the maximal frequent itemsets?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{A,B,C} and {C,D}",
+        "Explanation": "Neither has a frequent immediate superset, while every other listed itemset is a subset of one of them."
+      },
+      {
+        "label": "B",
+        "text": "{A,B,C} only",
+        "Explanation": "{C,D} has no frequent superset either, since {A,B,C} is the only frequent 3-itemset and it does not contain D."
+      },
+      {
+        "label": "C",
+        "text": "{A,B}, {A,C}, {B,C} and {C,D}",
+        "Explanation": "{A,B}, {A,C} and {B,C} each have the frequent superset {A,B,C}."
+      },
+      {
+        "label": "D",
+        "text": "{A}, {B}, {C} and {D}",
+        "Explanation": "Single items with frequent supersets are not maximal."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "A maximal itemset has no frequent immediate superset.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Five transactions are {A,B,C}, {A,B,C}, {A,B}, {A} and {C}. Which list gives exactly the closed itemsets?",
+    "options": [
+      {
+        "label": "A",
+        "text": "{A,B,C} only",
+        "Explanation": "{A,B,C} is the only maximal itemset here; {A}, {C} and {A,B} are also closed because no immediate superset matches their support."
+      },
+      {
+        "label": "B",
+        "text": "{A}, {B}, {C}, {A,B,C}",
+        "Explanation": "{B} (support 3) is not closed, since its superset {A,B} also has support 3; and {A,B} is missing."
+      },
+      {
+        "label": "C",
+        "text": "{A}, {C}, {A,B}, {A,B,C}",
+        "Explanation": "Supports: A 4, B 3, C 3, AB 3, AC 2, BC 2, ABC 2. {B} has the same support as {A,B}, and {A,C}, {B,C} the same as {A,B,C}, so those are not closed; the rest are."
+      },
+      {
+        "label": "D",
+        "text": "{A,B}, {A,C}, {B,C}, {A,B,C}",
+        "Explanation": "{A,C} and {B,C} have support 2, the same as their superset {A,B,C}, so they are not closed."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compute every itemset's support count, then compare each with its immediate supersets.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Among 500 customers, 150 go to the gym; 120 of them buy smoothies, as do 300 of the 350 who do not. What does Gym $\\to$ Smoothie show?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Confidence $0.8$, so gym-goers are more likely to buy smoothies than customers overall",
+        "Explanation": "Customers overall buy smoothies with probability 0.84, so gym-goers are slightly less likely."
+      },
+      {
+        "label": "B",
+        "text": "Confidence $0.24$, so the rule is uninteresting",
+        "Explanation": "0.24 is the support $120/500$, not the confidence."
+      },
+      {
+        "label": "C",
+        "text": "Lift about $1.05$: a positive association",
+        "Explanation": "This inverts the ratio; lift is confidence divided by $s(\\text{Smoothie})$, $0.8/0.84$."
+      },
+      {
+        "label": "D",
+        "text": "Confidence $0.8$, but lift about $0.95$: a negative association",
+        "Explanation": "$c = 120/150 = 0.8$ and $P(\\text{Smoothie}) = 420/500 = 0.84$, so lift $= 0.8/0.84 \\approx 0.95 < 1$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare the confidence with how common smoothies are among all customers.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "For itemsets $X$ and $Y$, $P(X) = 0.4$, $P(Y) = 0.5$ and $P(X,Y) = 0.3$. What is the interest, and how are $X$ and $Y$ related?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.75$: negatively correlated",
+        "Explanation": "$0.3/0.4 = 0.75$ is the confidence of $X \\to Y$, not the interest."
+      },
+      {
+        "label": "B",
+        "text": "$1.0$: independent",
+        "Explanation": "Independence needs $P(X,Y) = P(X)P(Y) = 0.2$, but $P(X,Y) = 0.3$."
+      },
+      {
+        "label": "C",
+        "text": "$1.5$: positively correlated",
+        "Explanation": "Interest $= P(X,Y)/(P(X)P(Y)) = 0.3/0.2 = 1.5 > 1$, since $P(X,Y) > P(X)P(Y)$."
+      },
+      {
+        "label": "D",
+        "text": "$0.6$: negatively correlated",
+        "Explanation": "$0.3/0.5 = 0.6$ is the confidence of $Y \\to X$, not the interest."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the joint probability with what independence would predict.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Many transactions containing neither $X$ nor $Y$ are added to a dataset (null addition). Which measure of the $X$–$Y$ association changes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Confidence",
+        "Explanation": "Confidence uses only $f_{11}$ and $f_{1+}$, which null transactions do not touch."
+      },
+      {
+        "label": "B",
+        "text": "Lift",
+        "Explanation": "Lift depends on $N$ through $s(Y)$, so adding transactions with neither item changes it; it is not invariant under null addition."
+      },
+      {
+        "label": "C",
+        "text": "Cosine",
+        "Explanation": "Cosine is invariant under null addition."
+      },
+      {
+        "label": "D",
+        "text": "Jaccard",
+        "Explanation": "Jaccard uses $f_{11}$, $f_{10}$ and $f_{01}$ only, so it is invariant under null addition."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Ask which measure uses the total number of transactions or $f_{00}$.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "A survey samples three times as many female students as before, which scales one column of a grade–gender contingency table. Which measure keeps its value?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The odds ratio",
+        "Explanation": "The odds ratio is invariant under row/column scaling, so the association does not depend on the relative number of each gender sampled."
+      },
+      {
+        "label": "B",
+        "text": "Confidence",
+        "Explanation": "Scaling a column changes $f_{11}$ relative to $f_{1+}$, so confidence changes."
+      },
+      {
+        "label": "C",
+        "text": "Support",
+        "Explanation": "Support is a fraction of all transactions, which shifts when one column is scaled."
+      },
+      {
+        "label": "D",
+        "text": "Lift",
+        "Explanation": "Lift depends on the row and column totals, so scaling a column changes it."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Mosteller argued the underlying association should not depend on the sample proportions.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "Clinic A's overall recovery rate is 70% and Clinic B's is 80%. For severe cases A recovers 40% and B 30%; for mild cases A 95% and B 90%. What explains this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Clinic B is better, because the overall rate covers all patients",
+        "Explanation": "The overall rate hides the case mix; within each severity group Clinic A does better."
+      },
+      {
+        "label": "B",
+        "text": "The figures are inconsistent and must contain an error",
+        "Explanation": "They are consistent if A treats a larger share of severe cases; this reversal is exactly what a hidden variable can cause."
+      },
+      {
+        "label": "C",
+        "text": "Simpson's paradox: case severity is a confounding variable, so the data should be stratified",
+        "Explanation": "A is better in both strata; it looks worse overall because it treats a larger share of severe cases, which reverses the observed relationship."
+      },
+      {
+        "label": "D",
+        "text": "Both clinics are equally good, since the differences cancel out",
+        "Explanation": "A is better in both groups, so the stratified figures do not cancel."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Look at what differs between the patients the two clinics treat.",
+    "course": "COM6004",
+    "week": "6"
+  },
+  {
+    "question": "For the frequent itemset {P, Q, R, S}, which relationship between rule confidences is guaranteed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$c(PQR \\to S) \\ge c(PQ \\to RS)$",
+        "Explanation": "For rules from the same itemset, confidence is anti-monotone in the number of RHS items: moving R to the right can only lower it."
+      },
+      {
+        "label": "B",
+        "text": "$c(PQ \\to RS) \\ge c(PQR \\to S)$",
+        "Explanation": "This reverses the anti-monotone property; the rule with more items on the right cannot have higher confidence."
+      },
+      {
+        "label": "C",
+        "text": "$c(PQR \\to S) \\ge c(PQ \\to S)$",
+        "Explanation": "These rules come from different itemsets, and confidence has no anti-monotone property in general."
+      },
+      {
+        "label": "D",
+        "text": "$c(PQR \\to S) = c(PQ \\to RS)$",
+        "Explanation": "The two rules share their support but divide by different antecedent counts, so their confidences can differ."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "All these rules share one numerator; look at the denominators.",
+    "course": "COM6004",
+    "week": "6"
+  }
+]

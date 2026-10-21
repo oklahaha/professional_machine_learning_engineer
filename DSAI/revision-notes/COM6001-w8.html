@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 8 Text Cleaning &amp; Scaling</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w8">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 8</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 8 · Source: Lecture08_Text_Cleaning_Scaling.pdf（Jupyter notebook export, 18 pages）· Lecturer: Dr. Aileen Hou</p>
+<h1>Text Cleaning &amp; Feature Scaling</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>用 <mark class="k">string accessor <code>.str</code></mark> 對成個 column 做 string methods：<code>lower()/upper()</code>、<code>strip()</code>、<code>replace()</code>、<code>len()</code>、<code>contains()</code>、<code>startswith()</code>、slicing <code>.str[-3:]</code>。</li>
+    <li>用 Boolean mask 組合多個 text 條件（<code>&amp;</code>、<code>~</code>）去 filter / count rows（NYC taxi 例子）。</li>
+    <li><mark class="k">Regular expressions (Regex)</mark>：<code>.</code> <code>\d</code> <code>\w</code> <code>\s</code> <code>*</code> <code>+</code> <code>?</code> <code>^</code> <code>$</code>；Python <code>re.findall()</code>、<code>re.sub()</code>；pandas <code>.str.extract()</code>、<code>.str.contains(pattern)</code>（HK property address 例子）。</li>
+    <li><mark class="k">Feature scaling</mark>：點解要 scale（K-means distance 例子）；<code>StandardScaler</code>、<code>MinMaxScaler</code>、<code>RobustScaler</code> 嘅公式、對 outliers 嘅敏感度、output range 同幾時用邊個。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>三條 scaling 公式：Standard \( x' = \frac{x - \text{mean}}{\text{std}} \)；Min-max \( x' = \frac{x - \min}{\max - \min} \)；Robust \( x' = \frac{x - Q_2}{Q_3 - Q_1} \)。</li>
+    <li>Outlier 敏感度：MinMax <b>最敏感</b> &gt; Standard <b>中等</b> &gt; Robust <b>最唔敏感</b>；只有 MinMax 有固定 range [0, 1]。</li>
+    <li>Rules of thumb：無強 outliers / distance-based 或 assume normality → Standard；要固定 interval / activation function input → MinMax；好多 outliers / heavy tails → Robust。</li>
+    <li>Scaler 只可以 <b>fit 喺 training data</b>，validation/test 用已 fit 嘅 scaler 去 <code>transform</code>（避免 data leakage）。</li>
+    <li><code>.str</code> accessor + string method 處理成個 column；regex 基本符號同 <code>str.extract()</code>（capture group <code>( )</code>）／<code>str.contains()</code> 用法。</li>
+  </ol>
+</div>
+
+<div class="box note"><span class="label">📄 講義範圍</span><p>封面寫住「COM 6001 Lecture 07」，但檔名同內容係 Lecture 08。開頭 outline 列咗 Review of Feature Transformation、Cleaning texts、Scaling、<b>Mapping new values</b>、<b>Applying functions</b>，不過今份 notebook 實際只有 Cleaning texts 同 Scaling 兩部分有內容；最尾 summary 亦重溫 Week 7 嘅 datetime、encoding、binning。</p></div>
+
+<h2>1. Review: Feature Transformation（Week 7 回顧）</h2>
+<p>Outline 一開始重溫上堂嘅 <mark class="k">categorical → numerical</mark> 轉換：</p>
+<ul>
+  <li><b>Nominal data</b>（無次序，例如顏色）→ <mark class="k">one-hot encoding</mark>：<code>pd.get_dummies(df, prefix=...)</code>。</li>
+  <li><b>Ordinal data</b>（有次序，例如 Low/Mid/High）→ <mark class="k">ordinal encoder</mark>：<code>OrdinalEncoder(categories=[[...]])</code>。</li>
+</ul>
+<p>Summary slide 仲提到：datetime 用 <code>.dt</code> accessor；binning 要分清 <code>cut()</code>（equal-width / 自訂 edges）同 <code>qcut()</code>（equal-sized / quantile-based）。詳細內容睇 <a href="COM6001-w7.html">Week 7</a>。</p>
+
+<h2>2. Data preparation：NYC Federal Taxi dataset</h2>
+<pre><code>import pandas as pd
+dir_path = './Datasets/week_8/'
+nyc = pd.read_csv(dir_path + 'nyc_federal_taxi.csv')
+nyc.info()     # 267 rows × 7 columns，全部 dtype = object
+nyc.head(3)</code></pre>
+<p>7 個 columns：<code>Date</code>、<code>Time</code>、<code>PU_Address</code>（pick-up）、<code>DO_Address</code>（drop-off）、<code>Routing Details</code>、<code>PU_Address.1</code>、<code>Status</code>（例如 Cancelled / Arrived / Assigned）。全部都係 <code>object</code>（string），所以呢份 data 正正需要 text cleaning。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p><code>PU_Address.1</code> 呢個名係 pandas 自動加嘅：原 CSV 有兩個 column 都叫 <code>PU_Address</code>，<code>read_csv</code> 會將第二個改名做 <code>PU_Address.1</code> 避免重複。</p></div>
+
+<h2>3. Cleaning texts with string methods</h2>
+<p>Text data 通常由唔同 users / collectors、喺唔同 platforms 輸入，所以格式好少一致。Slides 列出常見問題同對應 method：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：問題 → method</span>
+<table>
+<tr><th>問題</th><th>Method</th><th>Slides 例子</th></tr>
+<tr><td>Upper/lower cases 唔統一</td><td><code>.str.lower()</code> / <code>.str.upper()</code></td><td><code>nyc['PU_Address'].str.lower()</code></td></tr>
+<tr><td>White spaces（頭尾多咗空格）</td><td><code>.str.strip()</code></td><td><code>nyc['PU_Address'] = nyc['PU_Address'].str.strip()</code></td></tr>
+<tr><td>Abbreviations 唔統一</td><td><code>.str.replace(old, new)</code></td><td><code>nyc['PU_Address'].str.replace('ny;', 'new york;')</code></td></tr>
+<tr><td>Fixed-length terms（zipcode、postcode、時間）長度檢查</td><td><code>.str.len()</code></td><td><code>nyc['Time'].str.len()</code> → 全部應該係 8</td></tr>
+<tr><td>Filter 含某 keyword 嘅 entries</td><td><code>.str.contains('kw')</code></td><td><code>nyc[nyc['PU_Address'].str.contains('airport')]</code></td></tr>
+<tr><td>抽每格某一段 characters</td><td>slicing <code>.str[a:b]</code></td><td><code>nyc['PU_Address'].str[-3:]</code></td></tr>
+<tr><td>開頭 / 結尾係某 sub-string</td><td><code>.str.startswith()</code> / <code>.str.endswith()</code></td><td><code>nyc[nyc['PU_Address'].str.startswith('best western')]</code></td></tr>
+</table>
+<p>記住：一定要經 <code>.str</code> accessor，string method 先會 apply 到 <b>每一個 cell</b>（cell level）。</p></div>
+
+<h3>Observation 1 on the NYC Taxi Data</h3>
+<ul>
+  <li>Cases 唔統一（有啲大楷、有啲細楷）。</li>
+  <li>有啲 white spaces 肉眼唔易見，例如 <code>head(10)</code> 入面 line 3 同 line 6 尾有多餘空格。</li>
+</ul>
+<p>證據：<code>nyc['PU_Address'].str[-3:]</code> 抽最後三個字元，大部分係 <code>NY;</code>、<code>NJ;</code>，但 row 2 出咗 <code>Y;</code>，因為尾有一個空格，最後三格變成「Y; 」。</p>
+<pre><code>nyc['PU_Address'] = nyc['PU_Address'].str.lower()   # 統一做細楷
+nyc['PU_Address'] = nyc['PU_Address'].str.strip()   # 去頭尾空白
+nyc['PU_Address'].str[-3:]                          # 而家全部係 'ny;' / 'nj;'
+
+print("hello world\n")           # 會多印一行空行
+print("hello world\n".strip())   # strip() 連 \n 都會去埋
+print("   hello world   ".strip())  # 'hello world'</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+  <li>String methods <b>唔會 in-place 修改</b>：<code>nyc['PU_Address'].str.lower()</code> 只會回傳新 Series，一定要 assign 返：<code>nyc['PU_Address'] = ...</code>。</li>
+  <li><code>strip()</code> 只去 <b>頭尾</b> 嘅 whitespace（space、<code>\n</code>、<code>\t</code>），中間嘅多個空格唔會處理 → 要用 regex <code>re.sub(r'\s+', ' ', text)</code>（見 Section 4）。</li>
+  <li><code>contains()</code> default 係 <b>case-sensitive</b>：lower 咗 <code>PU_Address</code> 之後要搵 <code>'airport'</code>；但 <code>DO_Address</code> 冇 lower，所以 Task 4 要搵 <code>'Flushing'</code>（大楷 F）。</li>
+</ul></div>
+
+<h3>Tasks（課堂練習）</h3>
+<p><span class="tag exam">Exam</span> 呢幾題係典型「寫一行 pandas code」題型：</p>
+<pre><code># Task 1：刪走每個地址尾嘅 state field（空格 + 州名縮寫 + ';'），例如 " ny;"
+nyc['PU_Address'] = nyc['PU_Address'].str[:-4]    # 去最後 4 個字元
+
+# Task 2：有幾多條 route 由 airport 出發？
+nyc[nyc['PU_Address'].str.contains('airport')].shape[0]     # 29
+
+# Task 3：PU_Address 以 'best western' 開頭，而且去 airport（DO_Address 含 airport）
+nyc[(nyc['PU_Address'].str.startswith('best western'))
+    &amp; (nyc['DO_Address'].str.contains('Airport'))]          # 1 row（index 102）
+
+# Task 4：狀態係 'Arrived'，而且 drop-off 係 Flushing
+nyc[nyc['DO_Address'].str.contains('Flushing') &amp; (nyc['Status'] == 'Arrived')]   # 2 rows</code></pre>
+<div class="box note"><span class="label">📄 Code 被截斷</span><p class="missing">PDF 入面 Task 3 嗰行 code 喺 <code>&amp; (nyc['DO_Addre…</code> 被截斷，上面 <code>contains('Airport')</code> 係按題目意思補返（DO_Address 冇 lower，原文寫 "John F Kennedy International Airport"）；請對照原 notebook 第 5 頁。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Task 1 嘅 <code>.str[:-4]</code> 假設每格尾都係「空格 + 兩個字母 + ;」。Output 第 262 行（<code>907 59 st., bk ny; st: w66 st./broadway, ny</code>）顯示有啲地址有兩段，只會刪最後一段——固定長度 slicing 對格式唔一致嘅 data 唔夠 robust，呢個正正係引入 regex 嘅原因。另外組合條件時每個條件要加括號，用 <code>&amp;</code> / <code>|</code>，唔可以用 <code>and</code> / <code>or</code>。</p></div>
+
+<h2>4. Introduction to Regular Expressions (Regex)</h2>
+<p><mark class="k">Regular expressions</mark> 係用嚟 match、search、manipulate text 嘅 patterns。Data science 用途：</p>
+<ul>
+  <li>Cleaning messy text data</li>
+  <li>Extracting specific information from strings</li>
+  <li>Validating data formats（emails、phone numbers 等）</li>
+</ul>
+<p>Lecturer 特別提到：course project 好大機會遇到格式唔一致嘅 dataset，regex 可以有效處理。Python 用 <code>re</code> module：<code>import re</code>。</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Basic syntax</span>
+<table>
+<tr><th>Pattern</th><th>Meaning</th><th>Example</th></tr>
+<tr><td><code>.</code></td><td>Any single character</td><td><code>a.c</code> matches "abc", "a1c"</td></tr>
+<tr><td><code>\d</code></td><td>Any digit (0-9)</td><td><code>\d\d\d</code> matches "123"</td></tr>
+<tr><td><code>\w</code></td><td>Any word character (letters, digits, underscore)</td><td><code>\w+</code> matches "hello"</td></tr>
+<tr><td><code>\s</code></td><td>Any whitespace</td><td><code>a\sb</code> matches "a b"</td></tr>
+<tr><td><code>*</code></td><td>Zero or more occurrences</td><td><code>ab*c</code> matches "ac", "abc", "abbc"</td></tr>
+<tr><td><code>+</code></td><td>One or more occurrences</td><td><code>ab+c</code> matches "abc", "abbc"（not "ac"）</td></tr>
+<tr><td><code>?</code></td><td>Zero or one occurrence</td><td><code>colou?r</code> matches "color" and "colour"</td></tr>
+<tr><td><code>^</code></td><td>Start of string</td><td><code>^Hello</code>：以 "Hello" 開頭</td></tr>
+<tr><td><code>$</code></td><td>End of string</td><td><code>world$</code>：以 "world" 結尾</td></tr>
+</table></div>
+
+<div class="box tip"><span class="label">💡 直覺理解：quantifier 只作用喺前一個字元</span><p><code>ab*c</code> 嘅 <code>*</code> 只修飾 <code>b</code>，所以係「a、任意個 b（可以 0 個）、c」。<code>*</code> vs <code>+</code> 嘅分別就係「0 個得唔得」：<code>ab*c</code> match "ac"，<code>ab+c</code> 唔 match。<code>?</code> 就係「可有可無」。</p></div>
+
+<h3>Using <code>re</code> module with Python</h3>
+<pre><code>import re
+
+# Example 1：搵晒所有數字（一個或多個連續 digits）
+text = "Order #12345 was placed on 2026-10-19"
+re.findall(r'\d+', text)          # ['12345', '2026', '10', '19']
+
+# Example 2：抽 email address
+text = "Contact us at info@example.com or support@test.org"
+re.findall(r'[\w\.-]+@[\w\.-]+\.\w+', text)   # ['info@example.com', 'support@test.org']
+
+# Example 3：將多個空格變一個
+text = "This    are   many     spaces"
+re.sub(r'\s+', ' ', text)          # 'This are many spaces'</code></pre>
+<ul>
+  <li><code>re.findall(pattern, text)</code>：回傳所有 non-overlapping matches 嘅 list。</li>
+  <li><code>re.sub(pattern, repl, text)</code>：將所有 match 替換成 <code>repl</code>。</li>
+  <li><code>r'...'</code>（raw string）：令 <code>\d</code> 嘅 backslash 唔會俾 Python 當 escape character。</li>
+  <li>Email pattern 拆解：<code>[\w\.-]+</code>（一個或多個 word char / 點 / 減號）＋ <code>@</code> ＋ domain <code>[\w\.-]+</code> ＋ <code>\.</code>（真正嘅點，要 escape）＋ <code>\w+</code>（com / org）。<code>[...]</code> 係 character class：入面任何一個字元都 match。</li>
+</ul>
+
+<h3>Regex with pandas：HK property data</h3>
+<p>pandas 可以直接經 <code>.str</code> accessor 用 regex。例子用 HK property dataset（<code>Datasetv2.csv</code>，2020–2023 交易），抽 1000 rows：</p>
+<pre><code>data_path = "./Datasets/week_8/"
+df_full = pd.read_csv(data_path + "Datasetv2.csv")
+df_short = df_full.sample(1000, random_state=42)   # 固定 random_state，結果可重現
+df_short['date'] = pd.to_datetime(df_short['date'], format='%d/%m/%Y', errors='coerce')
+df_short['date'].max(), df_short['date'].min()     # 2023-03-09, 2020-03-11</code></pre>
+<p><code>address</code> 例子：<code>Grand Jete, Phase 1, Tower 2, 7/F, Flat J</code>、<code>Miami Mansion, 3/F, Flat 3</code>、<code>Tierra Verde, Phase 2, Block 10, Lower Floor, ...</code>。</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點：三個 regex 例子</span>
+<pre><code># Task 1：抽 estate name（第一個逗號之前嘅部分）→ 用嚟同其他 dataset 合併計 per-estate trends
+df['Estate'] = df['address'].str.extract(r'^(.*?)(?:,|$)')
+#   Grand Jete, Phase 1, ...  → 'Grand Jete'
+#   Miami Mansion, 3/F, ...   → 'Miami Mansion'
+
+# Task 2：抽 Phase 編號
+df['Phase'] = df['address'].str.extract(r'Phase\s+(\d+)')
+#   'Phase 1' → '1'；'Phase 4B' → '4'；冇 Phase → NaN
+
+# Task 3：數有幾多 rows 冇 floor pattern
+floor_pattern = r"\b(?:Higher|Middle|Low|Lower)\s+Floor\b"
+rows_without_floor_category = (
+    ~df_short["address"].str.contains(floor_pattern, case=False, na=False)
+).sum()
+print(rows_without_floor_category)    # 771</code></pre></div>
+
+<p>逐個拆解：</p>
+<ul>
+  <li><code>^(.*?)(?:,|$)</code>：<code>^</code> 由開頭；<code>( )</code> 係 <mark class="k">capture group</mark>，<code>str.extract()</code> 回傳嘅就係呢部分；<code>.*?</code> 係 <b>lazy</b>（non-greedy）：盡量 match 少啲字元；<code>(?: )</code> 係 <b>non-capturing group</b>（只分組、唔抽出）；<code>,|$</code> 表示「遇到逗號或者去到字串尾」就停。所以抽到第一個逗號前嘅 estate name；冇逗號嘅地址就成個抽晒。</li>
+  <li><code>Phase\s+(\d+)</code>：字面 "Phase" + 一個或多個空白 + capture 一個或多個 digits。"4B" 只抽到 4，因為 <code>\d</code> 唔 match B。冇 match 嘅 row 回傳 <code>NaN</code>。</li>
+  <li><code>\b(?:Higher|Middle|Low|Lower)\s+Floor\b</code>：<code>\b</code> 係 <b>word boundary</b>（防止 match 到 "Slower Floor" 呢類字中間）；<code>|</code> 係 OR；<code>case=False</code> 唔分大細楷；<code>na=False</code> 將 missing 當 False；<code>~</code> 反轉 Boolean；<code>.sum()</code> 數 True 嘅數目（True = 1）。</li>
+</ul>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+  <li><b>Greedy vs lazy</b>：如果寫 <code>^(.*)(?:,|$)</code>（冇 <code>?</code>），<code>.*</code> 會食到最後一個逗號，抽到 "Grand Jete, Phase 1, Tower 2, 7/F"，唔係 estate name。</li>
+  <li><code>str.extract()</code> 一定要有至少一個 capture group <code>( )</code>，否則會出 error；<code>(?: )</code> 唔計 capture group。</li>
+  <li><code>str.contains(pattern)</code> default 會將 pattern 當 regex（<code>regex=True</code>），所以搵 "." 呢類特殊字元時要 escape 或者設 <code>regex=False</code>。</li>
+</ul></div>
+
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6002 SQL 入面 <code>LIKE '%airport%'</code> ≈ pandas <code>str.contains('airport')</code>；<code>LIKE 'best western%'</code> ≈ <code>str.startswith('best western')</code>。COM6004 Chapter 2 Data Quality（inconsistent values、duplicate data）就係呢類 text cleaning 要解決嘅問題。</p></div>
+
+<h2>5. Scaling：點解要 scale？</h2>
+<ul>
+  <li>唔同 variables 通常有唔同 scales：例如一個 feature 係 0–10（產品價錢），另一個係 10,000–50,000（有幾多間店賣）。</li>
+  <li><mark class="k">Scaling</mark>：converting the scale of numeric data so that they're on a comparable scale。</li>
+  <li>點解重要？例如 unsupervised learning 嘅 <b>K-means clustering</b>：clusters 係根據 inter-sample <b>distances</b> 搵出嚟，距離近嘅會被分入同一個 cluster。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：K-means age / income 例子（slide p.12）</span>
+<table>
+<tr><th></th><th>age</th><th>income</th></tr>
+<tr><td>John</td><td>25</td><td>31,000</td></tr>
+<tr><td>Amy</td><td>60</td><td>30,000</td></tr>
+<tr><td>Mike</td><td>55</td><td>28,000</td></tr>
+</table>
+<div class="formula">$$ d(J, A) = \sqrt{35^2 + 1000^2} = 1000.61, \qquad d(A, M) = \sqrt{5^2 + 2000^2} = 2000.01 $$</div>
+<p>John 同 Amy 年齡相差 100%+，income 只差約 3%；但因為 income 嘅數值大好多，Euclidean distance 幾乎完全由 income 決定，結論變成「Amy 同 John 近過同 Mike」——age 完全冇影響力。Scaling 之後兩個 features 先至有可比較嘅影響力。</p></div>
+<p>三種方法嘅共通目標：（或多或少）將 data 嘅 <b>center 變 0、spread 變 1</b>。</p>
+
+<p>Demo data：9000 個 \( N(50, 10) \) 正常值 + 100 個 \( N(100, 5) \) 高端 outliers。</p>
+<pre><code>import numpy as np
+X = pd.DataFrame({
+    'value': np.concatenate([
+        np.random.normal(50, 10, 9000),   # majority normal values
+        np.random.normal(100, 5, 100),    # outliers on the high end
+    ])
+})
+X.hist()   # 主峰喺 50 附近，100 附近有一小撮 outliers</code></pre>
+
+<h2>6. Standard Scaling (<code>StandardScaler</code>)</h2>
+<ul>
+  <li>將 variables 轉成 standard normal variables（mean = 0, std = 1）。</li>
+  <li>方法：減 mean，再除 standard deviation。</li>
+  <li>Mean 同 std 會被 outliers 拉動，但冇 min-max scaling 咁嚴重。</li>
+  <li>唔會限制喺某個指定 range。</li>
+</ul>
+<div class="formula">$$ x' = \frac{x - \text{mean}}{\text{std}} $$</div>
+<pre><code>from sklearn.preprocessing import StandardScaler
+ss = StandardScaler()
+X_ss = ss.fit_transform(X)
+X_ss.mean()   # 4.06e-16 ≈ 0
+X_ss.std()    # 1.0</code></pre>
+<p>Before / after histogram 嘅形狀完全一樣，只係 x-axis 由 20–120 變成大約 −3 至 6（outliers 喺 4 附近）。Scaling 係 <b>linear transformation</b>，唔會改變 distribution 形狀。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個就係 COM6005 嘅 <b>z-score</b> \( z = \frac{x - \mu}{\sigma} \)。COM6004 Chapter 2 嘅 standardization / normalization 亦係同一回事。注意 sklearn 用 population std（除 \( n \)），pandas <code>.std()</code> default 除 \( n - 1 \)。</p></div>
+
+<h2>7. Min-max Scaling (<code>MinMaxScaler</code>)</h2>
+<ul>
+  <li>將 variables 轉成 (0, 1) interval 入面嘅連續值。</li>
+  <li>將最小值 map 去 0、最大值 map 去 1。</li>
+  <li><b>Sensitive to outliers</b>：想所有值喺 0 至 1 之間就好用，但可以被 outliers 嚴重影響。</li>
+</ul>
+<div class="formula">$$ x' = \frac{x - \min}{\max - \min} $$</div>
+<pre><code>from sklearn.preprocessing import MinMaxScaler
+mm = MinMaxScaler()
+X_mm = mm.fit_transform(X)
+X_mm.mean()   # 0.360
+X_mm.std()    # 0.104   ← spread 好細</code></pre>
+<p>點解 std 只有 0.104？因為 max 係 outlier（約 120），正常值（30–70）全部被壓縮喺 0.2–0.5 呢個窄區間。Comparison plot 入面 MinMax 嘅 density curve 係一條好尖（peak ≈ 4）嘅窄峰。</p>
+
+<h2>8. Robust Scaling (<code>RobustScaler</code>)</h2>
+<ul>
+  <li>同 Min-Max 類似，但改為用 <mark class="k">interquartile range</mark>。</li>
+  <li>減 <b>median</b>，再按 quantile range scale（default 係 IQR = 25th 至 75th quantile 之間嘅距離）。</li>
+  <li>將 IQR（\( Q_3 - Q_1 \)）map 成 1；避免 outliers 造成偏差。</li>
+  <li><b>Robust to outliers</b>，但 <b>唔保證</b> 結果喺 0 至 1 之間。</li>
+</ul>
+<div class="formula">$$ x' = \frac{x - Q_2}{Q_3 - Q_1} $$</div>
+<pre><code>from sklearn.preprocessing import RobustScaler
+rs = RobustScaler()
+X_rs = rs.fit_transform(X)
+X_rs.mean()   # 0.025（median-centered，所以 mean 唔一定係 0）
+X_rs.std()    # 0.831</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Robust scaling 用嘅 median、\( Q_1 \)、\( Q_3 \)、IQR 同 <a href="COM6001-w7.html">Week 7</a> outlier detection 嘅 IQR method 一樣：佢哋都係 <b>resistant statistics</b>，唔會被極端值拉動（COM6005 Module 1：median vs mean）。</p></div>
+
+<h3>Worked example（自己計，加深理解）</h3>
+<p>Data：\( x = [10, 20, 30, 40, 100] \)（100 係 outlier）。mean = 40，population std = \( \sqrt{1000} \approx 31.62 \)，min = 10，max = 100，\( Q_1 = 20 \)，\( Q_2 = 30 \)，\( Q_3 = 40 \)，IQR = 20。</p>
+<table>
+<tr><th>x</th><th>Standard \( \frac{x-40}{31.62} \)</th><th>Min-max \( \frac{x-10}{90} \)</th><th>Robust \( \frac{x-30}{20} \)</th></tr>
+<tr><td>10</td><td>−0.949</td><td>0</td><td>−1.0</td></tr>
+<tr><td>20</td><td>−0.632</td><td>0.111</td><td>−0.5</td></tr>
+<tr><td>30</td><td>−0.316</td><td>0.222</td><td>0</td></tr>
+<tr><td>40</td><td>0</td><td>0.333</td><td>0.5</td></tr>
+<tr><td>100</td><td>1.897</td><td>1</td><td>3.5</td></tr>
+</table>
+<p>觀察：Min-max 將 4 個正常值擠入 0–0.33；Robust 令正常值之間距離保持清楚（每 10 單位 = 0.5），outlier 就明顯咁「突出」喺 3.5，超出 [0, 1]。</p>
+
+<h2>9. Comparison of Scaling Methods</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：比較表</span>
+<table>
+<tr><th></th><th>StandardScaler</th><th>MinMaxScaler</th><th>RobustScaler</th></tr>
+<tr><td>公式</td><td>\( \frac{x - \text{mean}}{\text{std}} \)</td><td>\( \frac{x - \min}{\max - \min} \)</td><td>\( \frac{x - Q_2}{Q_3 - Q_1} \)</td></tr>
+<tr><td>Effect on outliers</td><td><b>Moderately affected</b>：mean、std 隨 outliers 移動</td><td><b>Highly sensitive</b>：outliers 將大部分 data 壓縮入細範圍</td><td><b>Much less sensitive</b>：median 同 IQR 減低極端值影響</td></tr>
+<tr><td>Output range</td><td>無固定 range；mean ≈ 0，unit variance</td><td>固定，通常 [0, 1]；保留 relative spacing</td><td>無固定 range；保留 median-centered spread，對 long tails robust</td></tr>
+<tr><td>When to prefer</td><td>Algorithms assume zero-centered data：PCA、logistic regression、linear models、k-means</td><td>需要 bounded range：neural networks with sigmoids、visualization、expect [0, 1] 嘅 algorithms</td><td>Data 有 outliers，想減低影響但 <b>唔 clip</b></td></tr>
+</table></div>
+
+<h3>Practical considerations</h3>
+<ul>
+  <li><span class="tag exam">Exam</span> <b>Always fit scaler on training data only</b>，再用已 fit 嘅 scaler transform validation / test data。</li>
+  <li>MinMaxScaler 喺新 data 超出 training 嘅 min/max 時會有問題（extrapolation：output 會 &lt; 0 或 &gt; 1）。</li>
+  <li>有 outliers、而且要保留 non-outliers 之間嘅 relative order 時，RobustScaler 通常係 safe default。</li>
+  <li>StandardScaler 通常改善 gradient-based methods 嘅 convergence；MinMax 將 inputs bounded，可以加快 neural nets 訓練。</li>
+</ul>
+<pre><code>from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+X_train, X_test = train_test_split(X, test_size=0.2, random_state=42)
+ss = StandardScaler()
+X_train_s = ss.fit_transform(X_train)   # 只喺 train 計 mean / std
+X_test_s  = ss.transform(X_test)        # test 用 train 嘅 mean / std，唔好再 fit！</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤：data leakage</span><p>如果喺成個 dataset（包括 test）先 fit scaler，test data 嘅資訊（佢嘅 mean、max 等）就「漏」咗入 training，test performance 會偏樂觀。對 test set 用 <code>fit_transform</code> 係錯，只可以 <code>transform</code>。</p></div>
+
+<div class="box exam"><span class="label">⭐ Quick rules of thumb</span>
+<ul>
+  <li>No strong outliers，algorithms assume normality 或者用 distances → <b>StandardScaler</b>。</li>
+  <li>Need fixed interval 或者 activation functions 嘅 inputs → <b>MinMaxScaler</b>。</li>
+  <li>Many outliers 或 heavy tails → <b>RobustScaler</b>。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 4 KNN 同 Chapter 5 K-means / DBSCAN 都係 distance-based，一定要先 scale features；Chapter 2 嘅 proximity measures（Euclidean distance）亦提過 standardization。</p></div>
+
+<h2>10. Summary on Feature Transformation</h2>
+<ul>
+  <li><b>Date and Time</b>：用 <code>.dt</code> accessor。</li>
+  <li><b>Feature encoding</b>：one-hot vs ordinal encoding 嘅 use cases。</li>
+  <li><b>Binning</b>：<code>cut()</code> vs <code>qcut()</code> 嘅分別。</li>
+  <li><b>Cleaning texts</b>：唔好忘記 string accessor <code>.str</code>；<code>.str</code> + string method 可以處理成個 column / df。</li>
+  <li><b>Feature scaling</b>：唔同 scalers 嘅 use cases，幾時用邊個。</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. <code>nyc['PU_Address'].str.lower()</code> 執行之後，<code>nyc</code> 入面嘅 column 變咗細楷未？</summary><p>未。String methods 回傳新 Series，唔會 in-place 修改。要寫 <code>nyc['PU_Address'] = nyc['PU_Address'].str.lower()</code>。</p></details>
+<details class="q"><summary>Q2. 寫一行 code：數有幾多 rows 嘅 <code>PU_Address</code>（已 lower）含 "airport" 而且 <code>Status</code> 係 "Cancelled"。</summary><p><code>nyc[nyc['PU_Address'].str.contains('airport') &amp; (nyc['Status'] == 'Cancelled')].shape[0]</code>。也可以用 <code>(...).sum()</code> 直接數 Boolean mask。注意 <code>&amp;</code> 兩邊條件要加括號。</p></details>
+<details class="q"><summary>Q3. 以下邊個 strings 會被 <code>ab+c</code> match？"ac"、"abc"、"abbbc"。換成 <code>ab*c</code> 呢？</summary><p><code>ab+c</code>：abc、abbbc（"ac" 唔得，因為 <code>+</code> 要至少一個 b）。<code>ab*c</code>：三個都 match（<code>*</code> 容許 0 個 b）。</p></details>
+<details class="q"><summary>Q4. <code>re.findall(r'\d+', "Flat 12, 3/F, Block 7B")</code> 回傳乜？</summary><p><code>['12', '3', '7']</code>。<code>\d+</code> 抽每段連續 digits；"7B" 只抽到 7。</p></details>
+<details class="q"><summary>Q5. 點解抽 estate name 要用 <code>^(.*?)(?:,|$)</code> 而唔係 <code>^(.*)(?:,|$)</code>？<code>(?:...)</code> 有乜作用？</summary><p><code>.*?</code> 係 lazy，會喺第一個逗號停；<code>.*</code> 係 greedy，會食到最後一個逗號。<code>(?:...)</code> 係 non-capturing group：用嚟組合「逗號或字串尾」，但唔會被 <code>str.extract()</code> 抽出嚟，所以結果只有一個 column（estate name）。</p></details>
+<details class="q"><summary>Q6. Data = [2, 4, 6, 8, 50]。計 x = 8 嘅 min-max 同 robust scaled value（\( Q_1 = 4 \)，\( Q_3 = 8 \)）。</summary><p>Min-max：\( \frac{8 - 2}{50 - 2} = \frac{6}{48} = 0.125 \)。Robust：median \( Q_2 = 6 \)，IQR = 8 − 4 = 4，\( \frac{8 - 6}{4} = 0.5 \)。Min-max 將 2–8 擠入 0–0.125，因為 outlier 50 決定咗 max。</p></details>
+<details class="q"><summary>Q7. Demo data 經 MinMaxScaler 之後 std 只有 0.104，經 RobustScaler 之後係 0.831。解釋點解。</summary><p>MinMax 嘅分母係 max − min，被高端 outliers（約 100–120）撐大，正常值被壓縮喺細範圍，所以 spread 細。Robust 嘅分母係 IQR，只由中間 50% data 決定，唔受 outliers 影響，正常值保持原本嘅 spread（std 接近 1）。</p></details>
+<details class="q"><summary>Q8. 下面三個情況各揀邊個 scaler？(a) neural network 用 sigmoid activation；(b) income data 有好多極端富豪；(c) 冇明顯 outliers，做 PCA。</summary><p>(a) MinMaxScaler（需要 bounded [0, 1] input）；(b) RobustScaler（many outliers / heavy tail）；(c) StandardScaler（PCA assume zero-centered data）。</p></details>
+<details class="q"><summary>Q9. 以下 code 有乜問題？<br><code>X_train_s = ss.fit_transform(X_train); X_test_s = ss.fit_transform(X_test)</code></summary><p>Test set 唔應該再 fit。應該用 <code>ss.transform(X_test)</code>，用 training data 嘅 mean / std。再 fit 會令 train 同 test 用唔同標準 scale，亦違反「fit on training data only」。</p></details>
+<details class="q"><summary>Q10. 喺 age/income 例子，點解 d(J, A) ≈ 1000.61 證明需要 scaling？</summary><p>\( \sqrt{35^2 + 1000^2} \) 之中 \( 35^2 = 1225 \) 相對 \( 1000^2 = 1{,}000{,}000 \) 可以忽略，distance 幾乎等於 income 差距。Age 差 35 年（100%+）完全冇影響 clustering，所以要 scale 到 comparable scale。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><code>.str</code> accessor：<code>lower/upper</code>（cases）、<code>strip</code>（頭尾空白、<code>\n</code>）、<code>replace</code>（abbreviations）、<code>len</code>（fixed-length 檢查）、<code>contains</code>（keyword filter）、<code>startswith/endswith</code>、<code>.str[-3:]</code> / <code>.str[:-4]</code>（slicing）。</li>
+  <li>String methods 唔 in-place → 要 assign 返；<code>contains</code> case-sensitive（可設 <code>case=False</code>、<code>na=False</code>）。</li>
+  <li>組合條件：<code>df[(cond1) &amp; (cond2)]</code>；反轉 <code>~</code>；數目 <code>.shape[0]</code> 或 <code>.sum()</code>。</li>
+  <li>Regex：<code>.</code> 任意字元；<code>\d</code> digit；<code>\w</code> word char；<code>\s</code> whitespace；<code>*</code> 0+；<code>+</code> 1+；<code>?</code> 0 或 1；<code>^</code> 開頭；<code>$</code> 結尾；<code>\b</code> word boundary；<code>( )</code> capture；<code>(?: )</code> non-capturing；<code>|</code> OR；<code>.*?</code> lazy。</li>
+  <li><code>re.findall(p, s)</code> 回傳 list；<code>re.sub(p, repl, s)</code> 替換；<code>s.str.extract(p)</code> 抽 capture group（冇 match → NaN）；<code>s.str.contains(p)</code> Boolean。</li>
+  <li>Scaling 原因：features scale 唔同 → distance-based algorithms（K-means）被大數值 feature 主導（\( \sqrt{35^2 + 1000^2} = 1000.61 \)）。</li>
+  <li>Standard：\( \frac{x - \text{mean}}{\text{std}} \)，mean 0 std 1，無固定 range，outliers 中度影響。</li>
+  <li>Min-max：\( \frac{x - \min}{\max - \min} \)，[0, 1]，對 outliers 最敏感，新 data 超出 min/max 有 extrapolation 問題。</li>
+  <li>Robust：\( \frac{x - Q_2}{Q_3 - Q_1} \)，median-centered、IQR → 1，最 robust，但唔保證喺 [0, 1]。</li>
+  <li>Syntax：<code>from sklearn.preprocessing import StandardScaler / MinMaxScaler / RobustScaler</code>；<code>X_s = scaler.fit_transform(X)</code>；輸出係 NumPy array。</li>
+  <li>Fit on training only → <code>transform</code> validation / test。</li>
+  <li>Rules：無 outliers / distances / normality → Standard；fixed interval / activation → MinMax；outliers / heavy tails → Robust。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w7.html">← Week 7 Data Cleaning (II)</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

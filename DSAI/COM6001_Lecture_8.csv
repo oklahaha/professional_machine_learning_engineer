@@ -1,0 +1,45 @@
+Why do text columns usually need cleaning before analysis?,"Text entered by different users or collected from different platforms is rarely consistent in case, white space, abbreviations or the length of fixed-length terms."
+How do you apply a string method to every cell of a pandas column?,"Through the string accessor `.str`, e.g. `nyc['PU_Address'].str.lower()`."
+Which string methods unify the case of a text column?,`.str.lower()` or `.str.upper()`.
+How do you remove leading and trailing white space from a column and keep the result?,Assign it back: `nyc['PU_Address'] = nyc['PU_Address'].str.strip()`.
+"What does `""hello world\n"".strip()` return?","`'hello world'`; the newline counts as white space and is removed, just like leading or trailing spaces."
+How do you unify an abbreviation such as `ny;` to `new york;` across a column?,"`nyc['PU_Address'].str.replace('ny;', 'new york;')`"
+"How can you check terms that should have a fixed length, such as postcodes or times?",Use `.str.len()` to get each cell's length; e.g. every value of `nyc['Time'].str.len()` should be 8.
+How do you keep only the rows whose `PU_Address` contains the keyword `airport`?,`nyc[nyc['PU_Address'].str.contains('airport')]`
+How do you extract the last three characters of every cell in a column?,Slice through the accessor: `nyc['PU_Address'].str[-3:]`.
+"Before cleaning, why did `nyc['PU_Address'].str[-3:]` show `Y;` for one row instead of `NY;`?","That cell ended with an extra, hard-to-see space, so the last three characters were `Y; `; stripping white space fixes it."
+How do you keep only the rows whose `PU_Address` starts with `best western`?,`nyc[nyc['PU_Address'].str.startswith('best western')]`
+"How do you remove the trailing state field (e.g. ` ny;`, 4 characters) from every address?",`nyc['PU_Address'] = nyc['PU_Address'].str[:-4]`
+How do you count the rows that a string filter keeps?,"Take `.shape[0]` of the filtered frame, e.g. `nyc[nyc['PU_Address'].str.contains('airport')].shape[0]` (29 in the NYC taxi data)."
+How do you combine two string conditions when filtering a DataFrame?,"Wrap each condition in parentheses and join them with `&`, e.g. `nyc[(nyc['PU_Address'].str.startswith('best western')) & (nyc['DO_Address'].str.contains('airport'))]`."
+How do you keep the routes that went to Flushing and have status Arrived?,`nyc[nyc['DO_Address'].str.contains('Flushing') & (nyc['Status'] == 'Arrived')]`
+"Why does the Flushing filter on `DO_Address` search for `'Flushing'` with a capital F, while the `PU_Address` filters use lower case?","Only `PU_Address` was lowercased; `DO_Address` keeps its original case, and `str.contains()` is case-sensitive by default."
+"What are regular expressions, and what are three uses of them in data science?","Patterns used to match, search and manipulate text; used for cleaning messy text data, extracting specific information from strings, and validating data formats such as emails or phone numbers."
+Which Python module provides regular expressions?,The `re` module: `import re`.
+What does `.` match in a regex?,"Any single character, e.g. `a.c` matches `abc` and `a1c`."
+"What do `\d`, `\w` and `\s` match?","`\d` a digit (0–9), `\w` a word character (letter, digit or underscore), `\s` any white-space character."
+"How do the quantifiers `*`, `+` and `?` differ?","`*` is zero or more occurrences, `+` one or more, `?` zero or one."
+What does `colou?r` match?,"Both `color` and `colour`, since `?` makes the `u` optional."
+What do the anchors `^` and `$` mean in a regex?,"`^` is the start of the string and `$` the end, e.g. `^Hello` matches strings starting with Hello and `world$` strings ending with world."
+"What does `re.findall(r'\d+', text)` return?","A list of every run of one or more digits in `text`, as strings, e.g. `['12345', '2026', '10', '19']`."
+Which `re` call replaces runs of multiple spaces with a single space?,"`re.sub(r'\s+', ' ', text)`"
+"What does `re.findall(r'[\w\.-]+@[\w\.-]+\.\w+', text)` extract?","The email addresses in `text`, e.g. `['info@example.com', 'support@test.org']`."
+"What does `df['address'].str.extract(r'^(.*?)(?:,|$)')` produce for the HK property data?","The estate name: the text from the start of each address up to the first comma (or the end), e.g. `Grand Jete`."
+What does `df['address'].str.extract(r'Phase\s+(\d+)')` return?,"The phase number captured after `Phase` and white space, e.g. `1` or `4` (from `Phase 4B`), and NaN where an address has no phase."
+How do you count the addresses that contain no floor category?,"`(~df['address'].str.contains(floor_pattern, case=False, na=False)).sum()`; `~` negates the match, `case=False` ignores case and `na=False` treats missing values as no match."
+"What do standard, min-max and robust scaling all try to do?",More or less move the data's centre to 0 and its spread to 1.
+What is the formula for standard scaling?,"$x' = \frac{x - \text{mean}}{\text{std}}$, giving mean 0 and standard deviation 1."
+How do you standard-scale `X` with scikit-learn?,"`from sklearn.preprocessing import StandardScaler`, then `ss = StandardScaler()` and `X_ss = ss.fit_transform(X)`."
+How sensitive is standard scaling to outliers?,"Moderately: the mean and standard deviation shift with outliers, but less strongly than the min and max used by min-max scaling."
+What is the formula for min-max scaling?,"$x' = \frac{x - \min}{\max - \min}$, mapping the minimum to 0 and the maximum to 1."
+How do you min-max scale `X` with scikit-learn?,"`from sklearn.preprocessing import MinMaxScaler`, then `mm = MinMaxScaler()` and `X_mm = mm.fit_transform(X)`."
+Why is min-max scaling highly sensitive to outliers?,"An extreme value becomes the max (or min), so the bulk of the data is compressed into a small sub-range of [0, 1]."
+What is the formula for robust scaling?,"$x' = \frac{x - Q_2}{Q_3 - Q_1}$: subtract the median and divide by the IQR, which maps the IQR to 1."
+How do you robust-scale `X` with scikit-learn?,"`from sklearn.preprocessing import RobustScaler`, then `rs = RobustScaler()` and `X_rs = rs.fit_transform(X)`."
+Why is robust scaling much less sensitive to outliers?,"The median and IQR are barely moved by extreme values, unlike the mean, std, min or max."
+Which of the three scalers gives a fixed output range?,"Only min-max scaling, typically [0, 1]; standard and robust scaling have no fixed range."
+When should you prefer `StandardScaler`?,"When there are no strong outliers and the algorithm assumes zero-centred or normal data or uses distances, e.g. PCA, logistic regression, linear models, k-means."
+When should you prefer `MinMaxScaler`?,"When a bounded range is required, e.g. inputs to neural networks with sigmoid activations, visualisation, or algorithms expecting [0, 1]."
+When should you prefer `RobustScaler`?,When the data has many outliers or heavy tails and you want to reduce their effect without clipping.
+Which data should a scaler be fitted on?,The training data only; the validation and test sets are transformed with that already-fitted scaler.
+Why can `MinMaxScaler` be problematic on new data?,New values outside the training min and max scale to below 0 or above 1 (extrapolation).

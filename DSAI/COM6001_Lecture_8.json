@@ -1,0 +1,622 @@
+[
+  {
+    "question": "A feature has mean 50 and standard deviation 10. What does a value of 75 become after standard scaling?",
+    "options": [
+      {
+        "label": "A",
+        "text": "2.5",
+        "Explanation": "Correct. $(75 - 50) / 10 = 2.5$."
+      },
+      {
+        "label": "B",
+        "text": "7.5",
+        "Explanation": "This divides 75 by 10 without subtracting the mean first."
+      },
+      {
+        "label": "C",
+        "text": "0.25",
+        "Explanation": "This divides the difference by 100, not by the standard deviation of 10."
+      },
+      {
+        "label": "D",
+        "text": "25",
+        "Explanation": "This is only the distance from the mean; it still has to be divided by the standard deviation."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Subtract the centre first, then divide by the spread.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "A feature runs from a minimum of 20 to a maximum of 120. What does a value of 45 become after min-max scaling?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0.45",
+        "Explanation": "This divides 45 by 100 without subtracting the minimum."
+      },
+      {
+        "label": "B",
+        "text": "0.25",
+        "Explanation": "Correct. $(45 - 20) / (120 - 20) = 25 / 100 = 0.25$."
+      },
+      {
+        "label": "C",
+        "text": "0.375",
+        "Explanation": "This divides by the maximum, 120, rather than by the range."
+      },
+      {
+        "label": "D",
+        "text": "0.208",
+        "Explanation": "This divides the difference by 120 instead of by $\\max - \\min$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Min-max scaling divides the distance from the minimum by the full range.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "A feature has $Q_1 = 30$, median $Q_2 = 40$ and $Q_3 = 70$. What does a value of 90 become after robust scaling?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1.5",
+        "Explanation": "This subtracts $Q_1$ instead of the median: $(90 - 30) / 40$."
+      },
+      {
+        "label": "B",
+        "text": "2.25",
+        "Explanation": "This divides by the median rather than by the IQR."
+      },
+      {
+        "label": "C",
+        "text": "1.25",
+        "Explanation": "Correct. $(90 - 40) / (70 - 30) = 50 / 40 = 1.25$."
+      },
+      {
+        "label": "D",
+        "text": "0.5",
+        "Explanation": "This subtracts $Q_3$ instead of the median: $(90 - 70) / 40 = 0.5$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Robust scaling centres on the median and divides by the interquartile range.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "You are preparing inputs for a neural network with sigmoid activations and need every feature in a bounded range. Which scaler fits best?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`StandardScaler`",
+        "Explanation": "It gives zero mean and unit variance but no fixed range, so values are not bounded."
+      },
+      {
+        "label": "B",
+        "text": "`RobustScaler`",
+        "Explanation": "It centres on the median and divides by the IQR, which does not keep values between 0 and 1."
+      },
+      {
+        "label": "C",
+        "text": "No scaling, since neural networks ignore feature ranges",
+        "Explanation": "The lecture notes that bounding inputs can speed up training of neural nets, so ranges do matter."
+      },
+      {
+        "label": "D",
+        "text": "`MinMaxScaler`",
+        "Explanation": "Correct. It maps values into a fixed range, typically [0, 1], as inputs for activation functions require."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Only one of the three scalers guarantees a fixed interval.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "A feature has many outliers and a heavy tail, and you want to reduce their effect without clipping them. Which scaler should you choose?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`RobustScaler`",
+        "Explanation": "Correct. The median and IQR it uses are barely moved by extreme values."
+      },
+      {
+        "label": "B",
+        "text": "`MinMaxScaler`",
+        "Explanation": "It is highly sensitive to outliers, which compress the bulk of the data into a small sub-range."
+      },
+      {
+        "label": "C",
+        "text": "`StandardScaler`",
+        "Explanation": "Its mean and standard deviation shift with outliers, so it is moderately affected."
+      },
+      {
+        "label": "D",
+        "text": "Capping the data to [0, 1] after standard scaling",
+        "Explanation": "That clips values, which is exactly what you wanted to avoid."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about which summary statistics are least moved by extreme values.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "In the lecture's example (9,000 values around 50 plus 100 outliers around 100), the min-max scaled data has mean 0.36 and standard deviation 0.10. What explains such a narrow spread?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Min-max scaling always produces a standard deviation of 0.1",
+        "Explanation": "Min-max scaling fixes the range, not the standard deviation; it depends on the data."
+      },
+      {
+        "label": "B",
+        "text": "The outliers set the maximum, so the bulk of the data is squeezed into a small part of [0, 1]",
+        "Explanation": "Correct. The high-end outliers stretch the range, compressing the majority of values into a small sub-range."
+      },
+      {
+        "label": "C",
+        "text": "The scaler removed the outliers before scaling",
+        "Explanation": "`MinMaxScaler` does not drop any values; every row is scaled."
+      },
+      {
+        "label": "D",
+        "text": "Min-max scaling centres the data on the median",
+        "Explanation": "Centring on the median is what robust scaling does; min-max maps the minimum to 0."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Ask which values define the 0 and the 1 of the scaled range.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "You have split your data into `X_train` and `X_test`. Which workflow follows the lecture's advice?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`ss.fit_transform(X_test)` then `ss.transform(X_train)`",
+        "Explanation": "This fits on the test set, the reverse of what is advised."
+      },
+      {
+        "label": "B",
+        "text": "`ss.fit_transform(X_train)` then `ss.fit_transform(X_test)`",
+        "Explanation": "Refitting on the test set gives it its own mean and std, so the two sets are no longer scaled the same way."
+      },
+      {
+        "label": "C",
+        "text": "`ss.fit_transform(X_train)` then `ss.transform(X_test)`",
+        "Explanation": "Correct. The scaler is fitted on the training data only and the test set is transformed with that fitted scaler."
+      },
+      {
+        "label": "D",
+        "text": "Fit the scaler on `X_train` and `X_test` combined",
+        "Explanation": "This lets the test data influence the scaling parameters; fit on the training data only."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The test set should never influence the scaling parameters.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "A `MinMaxScaler` is fitted on training data with minimum 0 and maximum 200. A new test value is 250. What does it scale to?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1.0, because min-max output is always capped at 1",
+        "Explanation": "`MinMaxScaler` does not clip; values beyond the training range fall outside [0, 1]."
+      },
+      {
+        "label": "B",
+        "text": "0.8",
+        "Explanation": "This is $200 / 250$; the formula uses the training min and range."
+      },
+      {
+        "label": "C",
+        "text": "NaN, because the value was not seen during fitting",
+        "Explanation": "The scaler still applies its formula to any number; it does not return NaN."
+      },
+      {
+        "label": "D",
+        "text": "1.25",
+        "Explanation": "Correct. $(250 - 0) / (200 - 0) = 1.25$, illustrating the extrapolation problem with new data."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Apply the formula with the training minimum and maximum, then see where the result lands.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `\"  hello world  \".strip()` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'hello world'`",
+        "Explanation": "Correct. `strip()` removes white space from both ends while keeping the inner space."
+      },
+      {
+        "label": "B",
+        "text": "`'helloworld'`",
+        "Explanation": "`strip()` does not touch white space between words."
+      },
+      {
+        "label": "C",
+        "text": "`'hello world  '`",
+        "Explanation": "That removes only leading white space; `strip()` works on both ends."
+      },
+      {
+        "label": "D",
+        "text": "`'  hello world'`",
+        "Explanation": "That removes only trailing white space; `strip()` works on both ends."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The method only looks at the ends of the string.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "Before any cleaning, `nyc['PU_Address'].str[-3:]` returns `NY;` for most rows but `Y;` for one row. What is the most likely reason?",
+    "options": [
+      {
+        "label": "A",
+        "text": "That address uses a different state abbreviation",
+        "Explanation": "The visible `Y;` is part of `NY;`; the state is the same."
+      },
+      {
+        "label": "B",
+        "text": "That cell ends with an extra space, so the last three characters are `Y; `",
+        "Explanation": "Correct. The lecture points out hidden trailing white space, which `strip()` removes."
+      },
+      {
+        "label": "C",
+        "text": "`str[-3:]` returns only two characters when a cell contains a comma",
+        "Explanation": "Slicing counts characters regardless of commas."
+      },
+      {
+        "label": "D",
+        "text": "The cell is stored as a number, not a string",
+        "Explanation": "The column is an object column of strings; a number would not show `Y;`."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Some white space is in the data but hard to notice.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "After lowercasing and stripping, a cell reads `'20 west st., ny ny;'`. What does `.str[:-4]` turn it into?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'20 west st.,'`",
+        "Explanation": "That removes far more than four characters."
+      },
+      {
+        "label": "B",
+        "text": "`' ny;'`",
+        "Explanation": "That is the part being removed, which `str[-4:]` would return."
+      },
+      {
+        "label": "C",
+        "text": "`'20 west st., ny'`",
+        "Explanation": "Correct. The last four characters, ` ny;`, are dropped, leaving the city part."
+      },
+      {
+        "label": "D",
+        "text": "`'20 west st., ny ny'`",
+        "Explanation": "That removes only the semicolon; `[:-4]` drops four characters."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Count four characters back from the end, including the space.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "`PU_Address` was lowercased but `DO_Address` was not. Why might `nyc[nyc['DO_Address'].str.contains('flushing')]` miss the Flushing routes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`str.contains()` only works on lowercased columns",
+        "Explanation": "It works on any strings; the issue is matching the case."
+      },
+      {
+        "label": "B",
+        "text": "`str.contains()` matches whole cells only",
+        "Explanation": "It finds the keyword anywhere inside the cell."
+      },
+      {
+        "label": "C",
+        "text": "Flushing appears only in `PU_Address`",
+        "Explanation": "The lecture filters Flushing in the drop-off column, so it is there."
+      },
+      {
+        "label": "D",
+        "text": "The drop-off addresses spell it `Flushing`, and `str.contains()` is case-sensitive by default",
+        "Explanation": "Correct. Search with `'Flushing'`, lowercase the column first, or pass `case=False`."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about which column had its case unified.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "Which expression keeps rows whose `PU_Address` starts with `best western` and whose `DO_Address` contains `airport`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`nyc[(nyc['PU_Address'].str.startswith('best western')) & (nyc['DO_Address'].str.contains('airport'))]`",
+        "Explanation": "Correct. Each condition is in parentheses and they are combined with `&`."
+      },
+      {
+        "label": "B",
+        "text": "`nyc[nyc['PU_Address'].startswith('best western') & nyc['DO_Address'].contains('airport')]`",
+        "Explanation": "The string methods must be reached through the `.str` accessor on a Series."
+      },
+      {
+        "label": "C",
+        "text": "`nyc[(nyc['PU_Address'].str.startswith('best western')) and (nyc['DO_Address'].str.contains('airport'))]`",
+        "Explanation": "Python's `and` cannot combine two boolean Series element-wise; use `&`."
+      },
+      {
+        "label": "D",
+        "text": "`nyc[nyc['PU_Address'].str.contains('best western') | nyc['DO_Address'].str.contains('airport')]`",
+        "Explanation": "`|` keeps rows meeting either condition, and `contains` does not require the text at the start."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Both conditions must hold, element by element.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `re.findall(r'\\d+', 'Invoice 7781 due 2026-11-03')` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`['7', '7', '8', '1', '2', '0', '2', '6', '1', '1', '0', '3']`",
+        "Explanation": "`+` makes each match a whole run of digits, not single digits."
+      },
+      {
+        "label": "B",
+        "text": "`['7781', '2026', '11', '03']`",
+        "Explanation": "Correct. Each maximal run of one or more digits is returned as a string."
+      },
+      {
+        "label": "C",
+        "text": "`['7781', '2026-11-03']`",
+        "Explanation": "The hyphen is not a digit, so the date splits into three matches."
+      },
+      {
+        "label": "D",
+        "text": "`'7781'`",
+        "Explanation": "`findall()` returns every match in a list, not only the first."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "`\\d` is one digit; consider what the quantifier after it does.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "Which string does the pattern `ab+c` fail to match?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`abc`",
+        "Explanation": "It has one `b`, which satisfies `+`."
+      },
+      {
+        "label": "B",
+        "text": "`abbc`",
+        "Explanation": "Two `b`s satisfy one or more."
+      },
+      {
+        "label": "C",
+        "text": "`ac`",
+        "Explanation": "Correct. `+` needs at least one `b`; only `ab*c` would match `ac`."
+      },
+      {
+        "label": "D",
+        "text": "`abbbc`",
+        "Explanation": "Three `b`s still satisfy one or more."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Recall the minimum number of occurrences `+` requires.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `re.sub(r'\\s+', ' ', 'a   b    c')` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'abc'`",
+        "Explanation": "Each run of white space is replaced by one space, not removed."
+      },
+      {
+        "label": "B",
+        "text": "`'a   b    c'`",
+        "Explanation": "The pattern does match the runs of spaces, so the string changes."
+      },
+      {
+        "label": "C",
+        "text": "`['a', 'b', 'c']`",
+        "Explanation": "`re.sub()` returns a string, not a list."
+      },
+      {
+        "label": "D",
+        "text": "`'a b c'`",
+        "Explanation": "Correct. Every run of one or more white-space characters becomes a single space."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "`re.sub()` replaces each match with the replacement string.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `.str.extract(r'Phase\\s+(\\d+)')` return for the address `'Lohas Park, Phase 4B Wings At Sea II, Tower 5A'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'4'`",
+        "Explanation": "Correct. The group captures the digits after `Phase` and white space, and stops at the letter `B`."
+      },
+      {
+        "label": "B",
+        "text": "`'4B'`",
+        "Explanation": "`\\d+` matches digits only, so `B` is not captured."
+      },
+      {
+        "label": "C",
+        "text": "`'Phase 4'`",
+        "Explanation": "Only the parenthesised group is returned, not the word `Phase`."
+      },
+      {
+        "label": "D",
+        "text": "NaN",
+        "Explanation": "NaN is returned only when the address has no `Phase` followed by digits."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Only the part inside the parentheses is returned, and `\\d` matches digits only.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `.str.extract(r'^(.*?)(?:,|$)')` return for `'Cheung Wah Estate, Cheung Tak House, 26/F, Flat 3'`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'Cheung Wah Estate, Cheung Tak House'`",
+        "Explanation": "The capture stops at the first comma, not the second."
+      },
+      {
+        "label": "B",
+        "text": "`'Cheung Wah Estate'`",
+        "Explanation": "Correct. It captures from the start of the string up to the first comma, which gives the estate name."
+      },
+      {
+        "label": "C",
+        "text": "`'Flat 3'`",
+        "Explanation": "`^` anchors the match at the start of the string, not the end."
+      },
+      {
+        "label": "D",
+        "text": "The whole address",
+        "Explanation": "The whole string would be captured only if it contained no comma."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "`^` anchors the start, and the capture ends at the first comma it reaches.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "What does `(~df['address'].str.contains(floor_pattern, case=False, na=False)).sum()` compute?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The number of addresses that contain a floor category",
+        "Explanation": "The `~` flips the matches, so matching rows are not the ones counted."
+      },
+      {
+        "label": "B",
+        "text": "The floor number of each address",
+        "Explanation": "`str.contains()` returns True/False per row; it extracts nothing."
+      },
+      {
+        "label": "C",
+        "text": "The number of addresses without a floor category, treating missing addresses as no match",
+        "Explanation": "Correct. `~` negates the matches, `na=False` makes missing values False before negation, and `.sum()` counts the True values."
+      },
+      {
+        "label": "D",
+        "text": "The number of missing addresses",
+        "Explanation": "`na=False` only decides how missing values are treated; it does not count them separately."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Work out what `~` does to a boolean Series and what summing booleans gives.",
+    "course": "COM6001",
+    "week": "8"
+  },
+  {
+    "question": "Which regex matches strings that end with `world`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`^world`",
+        "Explanation": "`^` anchors the start of the string, so this matches strings beginning with world."
+      },
+      {
+        "label": "B",
+        "text": "`world*`",
+        "Explanation": "`*` applies only to the `d`, making it zero or more; it does not anchor the end."
+      },
+      {
+        "label": "C",
+        "text": "`world?`",
+        "Explanation": "`?` makes the `d` optional; it does not anchor the end."
+      },
+      {
+        "label": "D",
+        "text": "`world$`",
+        "Explanation": "Correct. `$` anchors the pattern at the end of the string."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "You need an anchor, not a quantifier.",
+    "course": "COM6001",
+    "week": "8"
+  }
+]

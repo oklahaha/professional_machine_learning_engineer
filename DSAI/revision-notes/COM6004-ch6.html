@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6004 · Chapter 6 Association Analysis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6004-ch6">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6004 Data Mining › Chapter 6</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6004 · Chapter 6 · Source: COM6004_Chapter_6_Association_Rules.pptx（95 slides）· Tan, Steinbach, Karpatne, Kumar, <i>Introduction to Data Mining</i> 2nd ed.</p>
+<h1>Association Analysis: Association Rule Mining</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>定義：itemset、k-itemset、<mark class="k">support count</mark> \( \sigma \)、<mark class="k">support</mark> \( s \)、frequent itemset、association rule \( X \rightarrow Y \)、<mark class="k">confidence</mark> \( c \)。</li>
+    <li>Brute-force 點解唔得：\( 2^d \) 個 itemsets、\( 3^d - 2^{d+1} + 1 \) 條 rules；改用 two-step approach（frequent itemset generation → rule generation）。</li>
+    <li><mark class="k">Apriori principle</mark>（anti-monotone property of support）、Apriori algorithm、candidate generation（\( F_{k-1} \times F_{k-1} \)）、candidate pruning、support counting（hash tree）。</li>
+    <li>Rule generation：\( 2^k - 2 \) 條 candidate rules；confidence 對 RHS item 數目係 anti-monotone。</li>
+    <li>Compact representation：<mark class="k">maximal frequent itemset</mark> vs <mark class="k">closed itemset</mark>。</li>
+    <li>Pattern evaluation：contingency table、confidence 嘅缺點、<mark class="k">lift / interest</mark>、PS、φ-coefficient；measures 嘅 properties（symmetry、scaling、inversion、null addition）；<mark class="k">Simpson's paradox</mark>。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>由 transaction table 計 support 同 confidence：\( s(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{|T|} \)，\( c(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{\sigma(X)} \)。</li>
+    <li>Apriori principle：frequent itemset 嘅所有 subsets 都 frequent ⇔ infrequent itemset 嘅所有 supersets 都 infrequent；識行 Apriori（minsup = 3 嘅 Bread/Milk/Diaper 例子，6 + 6 + 1 = 13）。</li>
+    <li>\( F_{k-1} \times F_{k-1} \) merge（頭 \( k-2 \) 個 items 相同）＋ candidate pruning（任何一個 \( (k-1) \)-subset infrequent 就刪）。</li>
+    <li>Maximal vs closed：識喺 transaction grid 搵出 frequent / maximal / closed itemsets；Maximal ⊆ Closed ⊆ Frequent。</li>
+    <li>Lift / Interest \( = \frac{P(X, Y)}{P(X)P(Y)} \)：&gt; 1 正相關、= 1 independent、&lt; 1 負相關（Tea → Coffee：0.9375）；Simpson's paradox（hospital / county 例子）。</li>
+  </ol>
+</div>
+
+<h2>1. Association Rule Mining：問題定義</h2>
+<p>Given a set of transactions, find rules that will predict the occurrence of an item based on the occurrences of other items in the transaction。經典應用係 <mark class="k">market-basket analysis</mark>：超市收銀紀錄入面，買咗某啲貨品嘅人仲會買乜。</p>
+<p>成章用嘅 market-basket transactions（slide 4，由 slide 圖片 EMF 內嘅文字還原）：</p>
+<table>
+<tr><th>TID</th><th>Items</th></tr>
+<tr><td>1</td><td>Bread, Milk</td></tr>
+<tr><td>2</td><td>Bread, Diaper, Beer, Eggs</td></tr>
+<tr><td>3</td><td>Milk, Diaper, Beer, Coke</td></tr>
+<tr><td>4</td><td>Bread, Milk, Diaper, Beer</td></tr>
+<tr><td>5</td><td>Bread, Milk, Diaper, Coke</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Association rule 代表 <b>co-occurrence</b>，唔代表 <b>causality</b>。{Diaper} → {Beer} 只話「買尿片嘅交易通常都有啤酒」，唔係話買尿片導致買啤酒。</p></div>
+
+<h2>2. Definitions：Itemset、Support、Association Rule</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：定義</span>
+<ul>
+  <li><b>Itemset</b>：A collection of one or more items，例如 {Milk, Bread, Diaper}。</li>
+  <li><b>k-itemset</b>：An itemset that contains k items。</li>
+  <li><b>Support count</b> \( \sigma \)：itemset 出現嘅次數（frequency of occurrence），例如 \( \sigma(\{\text{Milk, Bread, Diaper}\}) = 2 \)（TID 4、5）。</li>
+  <li><b>Support</b> \( s \)：含該 itemset 嘅 transactions 嘅比例，例如 \( s(\{\text{Milk, Bread, Diaper}\}) = 2/5 \)。</li>
+  <li><b>Frequent itemset</b>：support ≥ <mark class="k">minsup</mark> threshold 嘅 itemset。</li>
+  <li><b>Association rule</b>：形式為 \( X \rightarrow Y \) 嘅 implication expression，\( X \)、\( Y \) 係 itemsets（而且 \( X \cap Y = \emptyset \)），例如 {Milk, Diaper} → {Beer}。</li>
+</ul>
+<p><b>Rule evaluation metrics</b>：</p>
+<div class="formula">$$ s(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{|T|} \qquad c(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{\sigma(X)} $$</div>
+<ul>
+  <li><b>Support (s)</b>：Fraction of transactions that contain both X and Y。</li>
+  <li><b>Confidence (c)</b>：Measures how often items in Y appear in transactions that contain X。</li>
+</ul>
+<p>例子：{Milk, Diaper} → {Beer}：\( s = \frac{\sigma(\{\text{Milk, Diaper, Beer}\})}{5} = \frac{2}{5} = 0.4 \)，\( c = \frac{\sigma(\{\text{Milk, Diaper, Beer}\})}{\sigma(\{\text{Milk, Diaper}\})} = \frac{2}{3} = 0.67 \)。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Support 答「呢個組合有幾常見」（太少見嘅 rule 可能只係巧合，亦冇商業價值）；confidence 答「已知有 X，有 Y 嘅條件機率」，即 \( P(Y \mid X) \)。</p></div>
+
+<h2>3. Mining Task 與 Computational Complexity</h2>
+<p>Given a set of transactions T，association rule mining 嘅目標係搵出所有：support ≥ <i>minsup</i> threshold 同 confidence ≥ <i>minconf</i> threshold 嘅 rules。</p>
+<p><b>Brute-force approach</b>：列出所有可能 rules → 計每條嘅 support 同 confidence → prune 走唔過 minsup / minconf 嘅 → <b>Computationally prohibitive!</b></p>
+<div class="box exam"><span class="label">⭐ 考試重點：Complexity 公式</span>
+<p>Given \( d \) unique items：</p>
+<ul>
+  <li>Total number of itemsets \( = 2^d \)</li>
+  <li>Total number of possible association rules：</li>
+</ul>
+<div class="formula">$$ R = \sum_{k=1}^{d-1} \left[ \binom{d}{k} \times \sum_{j=1}^{d-k} \binom{d-k}{j} \right] = 3^d - 2^{d+1} + 1 $$</div>
+<p>If \( d = 6 \)：\( R = 3^6 - 2^7 + 1 = 729 - 128 + 1 = 602 \) rules。</p></div>
+<div class="box tip"><span class="label">💡 點解係 \( 3^d \)？</span><p>每個 item 有 3 個選擇：放 LHS、放 RHS、或者唔用 → \( 3^d \)。再減走 LHS 空（\( 2^d \) 種）同 RHS 空（\( 2^d \) 種），兩邊都空嗰種被減咗兩次，加返 1：\( 3^d - 2 \cdot 2^d + 1 \)。Slide 8 個圖顯示 \( d \) 由 2 到 10，rules 數目以指數增長（\( d = 10 \) 已接近 57,000）。</p></div>
+
+<h3>Mining Association Rules：觀察</h3>
+<p>由 itemset {Milk, Diaper, Beer} 產生嘅 rules：</p>
+<table>
+<tr><th>Rule</th><th>s</th><th>c</th></tr>
+<tr><td>{Milk, Diaper} → {Beer}</td><td>0.4</td><td>0.67</td></tr>
+<tr><td>{Milk, Beer} → {Diaper}</td><td>0.4</td><td>1.0</td></tr>
+<tr><td>{Diaper, Beer} → {Milk}</td><td>0.4</td><td>0.67</td></tr>
+<tr><td>{Beer} → {Milk, Diaper}</td><td>0.4</td><td>0.67</td></tr>
+<tr><td>{Diaper} → {Milk, Beer}</td><td>0.4</td><td>0.5</td></tr>
+<tr><td>{Milk} → {Diaper, Beer}</td><td>0.4</td><td>0.5</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點：Observations</span>
+<ul>
+  <li>以上全部係同一個 itemset {Milk, Diaper, Beer} 嘅 <b>binary partitions</b>。</li>
+  <li>同一個 itemset 產生嘅 rules <b>support 一樣</b>，但 <b>confidence 可以唔同</b>（分母 \( \sigma(X) \) 唔同）。</li>
+  <li>所以可以 <b>decouple</b> support 同 confidence 嘅要求 → <mark class="k">Two-step approach</mark>：
+    <ol>
+      <li><b>Frequent Itemset Generation</b>：搵出所有 support ≥ minsup 嘅 itemsets。</li>
+      <li><b>Rule Generation</b>：由每個 frequent itemset 產生 high confidence rules，每條 rule 係 frequent itemset 嘅一個 binary partitioning。</li>
+    </ol></li>
+  <li>Frequent itemset generation 仍然 computationally expensive。</li>
+</ul></div>
+
+<h2>4. Frequent Itemset Generation</h2>
+<p>Given \( d \) items，有 \( 2^d \) 個 possible candidate itemsets（slide 11 嘅 <b>itemset lattice</b>：由 null 到 A…E、AB…DE、一直到 ABCDE，5 個 items 共 32 個 nodes）。</p>
+<p><b>Brute-force approach</b>：lattice 入面每個 itemset 都係 candidate frequent itemset；scan database 計每個 candidate 嘅 support，每個 transaction 要同每個 candidate match。</p>
+<div class="formula">$$ \text{Complexity} \sim O(NMw) $$</div>
+<p>\( N \) = number of transactions，\( M \) = number of candidates，\( w \) = maximum transaction width。Expensive since \( M = 2^d \)!!!</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Frequent itemset generation strategies</span>
+<table>
+<tr><th>Reduce…</th><th>做法</th></tr>
+<tr><td>Number of candidates (\( M \))</td><td>Complete search：\( M = 2^d \)；用 <b>pruning techniques</b> 減少 \( M \)（Apriori）</td></tr>
+<tr><td>Number of transactions (\( N \))</td><td>Itemset size 增加時減少 \( N \)；DHP 同 vertical-based mining algorithms 用</td></tr>
+<tr><td>Number of comparisons (\( NM \))</td><td>用 efficient data structures 儲 candidates 或 transactions，唔使每個 candidate 同每個 transaction 都 match（hash tree）</td></tr>
+</table></div>
+
+<h2>5. Apriori Principle</h2>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p><b>Apriori principle</b>：If an itemset is frequent, then all of its subsets must also be frequent。</p>
+<p>成立原因：support measure 有以下 property——Support of an itemset never exceeds the support of its subsets。即：</p>
+<div class="formula">$$ \forall X, Y : (X \subseteq Y) \Rightarrow s(X) \geq s(Y) $$</div>
+<p>呢個叫 support 嘅 <mark class="k">anti-monotone property</mark>。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解：反過嚟用先有用</span><p>Contrapositive：如果一個 itemset <b>infrequent</b>，佢所有 <b>supersets</b> 都一定 infrequent。所以喺 lattice 一發現 {A,B} infrequent，所有含 A、B 嘅 itemsets（ABC、ABD、…、ABCDE）全部可以 prune 走，唔使計（slide 15：「Found to be Infrequent → Pruned supersets」）。</p></div>
+
+<h3>Illustrating Apriori Principle（minsup = 3）</h3>
+<p>Items (1-itemsets) count（用 Section 1 嘅 5 transactions）：</p>
+<table>
+<tr><th>Item</th><th>Count</th></tr>
+<tr><td>Bread</td><td>4</td></tr><tr><td>Coke</td><td>2 ✗</td></tr><tr><td>Milk</td><td>4</td></tr><tr><td>Beer</td><td>3</td></tr><tr><td>Diaper</td><td>4</td></tr><tr><td>Eggs</td><td>1 ✗</td></tr>
+</table>
+<p>Coke 同 Eggs infrequent → No need to generate candidates involving Coke or Eggs。Pairs (2-itemsets)：只由 4 個 frequent items 組合，\( \binom{4}{2} = 6 \) 個：</p>
+<table>
+<tr><th>Itemset</th><th>Count</th></tr>
+<tr><td>{Bread, Milk}</td><td>3</td></tr><tr><td>{Bread, Beer}</td><td>2 ✗</td></tr><tr><td>{Bread, Diaper}</td><td>3</td></tr><tr><td>{Milk, Beer}</td><td>2 ✗</td></tr><tr><td>{Milk, Diaper}</td><td>3</td></tr><tr><td>{Beer, Diaper}</td><td>3</td></tr>
+</table>
+<p>Triplets (3-itemsets)：slide 21 列出 4 個 candidates：{Beer, Diaper, Milk} 2、{Beer, Bread, Diaper} 2、{Bread, Diaper, Milk} 2、{Beer, Bread, Milk} 1——全部 &lt; 3，冇 frequent 3-itemset。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：數 candidates</span>
+<ul>
+  <li>If every subset is considered：\( \binom{6}{1} + \binom{6}{2} + \binom{6}{3} = 6 + 15 + 20 = 41 \)</li>
+  <li>With support-based pruning：\( 6 + 6 + 4 = 16 \)（slide 16–21）</li>
+  <li>再用 Apriori 嘅 candidate pruning（任何 2-subset infrequent 就刪）：\( 6 + 6 + 1 = 13 \)（slide 22）——4 個 triplets 之中，只有 {Bread, Diaper, Milk} 嘅三個 pairs 全部 frequent；其餘三個都含 {Bread, Beer} 或 {Milk, Beer}。</li>
+</ul></div>
+
+<h2>6. Apriori Algorithm</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：Algorithm steps</span>
+<p>\( F_k \)：frequent k-itemsets；\( L_k \)：candidate k-itemsets</p>
+<ol>
+  <li>Let \( k = 1 \)</li>
+  <li>Generate \( F_1 \) = {frequent 1-itemsets}</li>
+  <li>Repeat until \( F_k \) is empty：
+    <ul>
+      <li><b>Candidate Generation</b>：Generate \( L_{k+1} \) from \( F_k \)</li>
+      <li><b>Candidate Pruning</b>：Prune candidate itemsets in \( L_{k+1} \) containing subsets of length \( k \) that are infrequent</li>
+      <li><b>Support Counting</b>：Count the support of each candidate in \( L_{k+1} \) by scanning the DB</li>
+      <li><b>Candidate Elimination</b>：Eliminate candidates in \( L_{k+1} \) that are infrequent, leaving only those that are frequent ⇒ \( F_{k+1} \)</li>
+    </ul></li>
+</ol></div>
+<div class="box warn"><span class="label">⚠️ 易混淆：Pruning vs Elimination</span><p><b>Candidate pruning</b> 唔使 scan database，只係睇 \( F_k \)：candidate 有某個 k-subset 唔喺 \( F_k \) 就刪。<b>Candidate elimination</b> 要 scan database 數 support 之後，先刪 support &lt; minsup 嘅。Pruning 喺 counting 之前做，目的係減少要數嘅 candidates。</p></div>
+
+<h3>Candidate Generation 方法</h3>
+<ul>
+  <li><b>Brute-force method</b>（slide 24）：由 items 組合所有可能 k-itemsets，再 prune——candidates 太多。</li>
+  <li><b>Merge \( F_{k-1} \) and \( F_1 \) itemsets</b>（slide 25）：每個 frequent \( (k-1) \)-itemset 加一個 frequent item。</li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24、25、28 嘅例子係圖片，文字擷取不到；請對照原 slide。</p></div>
+
+<div class="box exam"><span class="label">⭐ 考試重點：\( F_{k-1} \times F_{k-1} \) Method</span>
+<p>Merge two frequent \( (k-1) \)-itemsets if their <b>first \( (k-2) \) items are identical</b>（items 要按 lexicographic order 排好）。</p>
+<p>\( F_3 \) = {ABC, ABD, ABE, ACD, BCD, BDE, CDE}</p>
+<ul>
+  <li>Merge(<b>AB</b>C, <b>AB</b>D) = ABCD</li>
+  <li>Merge(<b>AB</b>C, <b>AB</b>E) = ABCE</li>
+  <li>Merge(<b>AB</b>D, <b>AB</b>E) = ABDE</li>
+  <li>Do not merge(<b>A</b>BD, <b>A</b>CD) because they share only prefix of length 1 instead of length 2</li>
+</ul>
+<p><b>Candidate pruning</b>：\( L_4 \) = {ABCD, ABCE, ABDE}</p>
+<ul>
+  <li>Prune ABCE because ACE and BCE are infrequent</li>
+  <li>Prune ABDE because ADE is infrequent</li>
+  <li>After candidate pruning：\( L_4 \) = {ABCD}（ABCD 嘅 subsets ABC、ABD、ACD、BCD 全部喺 \( F_3 \)）</li>
+</ul></div>
+<p>回到超市例子（slide 29）：frequent pairs 按字母排係 {Beer, Diaper}、{Bread, Diaper}、{Bread, Milk}、{Diaper, Milk}。只有 {Bread, Diaper} 同 {Bread, Milk} 嘅第一個 item 相同 → 只產生 <b>一個</b> 3-itemset {Bread, Diaper, Milk}，support count = 2 &lt; 3，喺 support counting 之後被 eliminate。所以 \( 6 + 6 + 1 = 13 \)。</p>
+
+<h3>Alternate \( F_{k-1} \times F_{k-1} \) Method</h3>
+<p>Merge two frequent \( (k-1) \)-itemsets if the <b>last \( (k-2) \) items of the first one</b> is identical to the <b>first \( (k-2) \) items of the second</b>。</p>
+<p>\( F_3 \) = {ABC, ABD, ABE, ACD, BCD, BDE, CDE}</p>
+<ul>
+  <li>Merge(A<b>BC</b>, <b>BC</b>D) = ABCD</li>
+  <li>Merge(A<b>BD</b>, <b>BD</b>E) = ABDE</li>
+  <li>Merge(A<b>CD</b>, <b>CD</b>E) = ACDE</li>
+  <li>Merge(B<b>CD</b>, <b>CD</b>E) = BCDE</li>
+</ul>
+<p>Candidate pruning：\( L_4 \) = {ABCD, ABDE, ACDE, BCDE}</p>
+<ul>
+  <li>Prune ABDE because ADE is infrequent</li>
+  <li>Prune ACDE because ACE and ADE are infrequent</li>
+  <li>Prune BCDE because BCE is infrequent</li>
+  <li>After candidate pruning：\( L_4 \) = {ABCD}</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>兩種 merge 方法產生嘅 candidates 唔同（第一種 3 個，alternate 4 個），但經過 candidate pruning 之後結果一樣（{ABCD}）。兩種都 <b>complete</b>（唔會漏 frequent itemset），亦避免重複產生同一個 candidate。</p></div>
+
+<h2>7. Support Counting 與 Hash Tree</h2>
+<p>Scan database 決定每個 candidate 嘅 support：每個 candidate 都要同每個 transaction match，代價好高。</p>
+<p>改善：將 candidate itemsets 儲喺 <mark class="k">hash structure</mark>，每個 transaction 只同 hashed buckets 入面嘅 candidates match，唔使同每個 candidate 比較。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Hash tree 例子</span>
+<p>15 個 candidate 3-itemsets：{1 4 5}, {1 2 4}, {4 5 7}, {1 2 5}, {4 5 8}, {1 5 9}, {1 3 6}, {2 3 4}, {5 6 7}, {3 4 5}, {3 5 6}, {3 5 7}, {6 8 9}, {3 6 7}, {3 6 8}。</p>
+<p>問：transaction (1, 2, 3, 5, 6) support 幾多個 candidates？</p>
+<p>需要：</p>
+<ul>
+  <li><b>Hash function</b>：1, 4, 7 → 左 branch；2, 5, 8 → 中 branch；3, 6, 9 → 右 branch（即 item mod 3）。Level 1 hash 第 1 個 item，Level 2 hash 第 2 個，Level 3 hash 第 3 個。</li>
+  <li><b>Max leaf size</b>：一個 leaf node 最多儲幾多個 itemsets；超過就 split node。</li>
+</ul>
+<p>Transaction 嘅 3-subsets（\( \binom{5}{3} = 10 \) 個）：123, 125, 126, 135, 136, 156, 235, 236, 256, 356。逐層 enumerate：<code>1 + 2 3 5 6</code>、<code>2 + 3 5 6</code>、<code>3 + 5 6</code>，再分 <code>1 2 + 3 5 6</code>、<code>1 3 + 5 6</code>、<code>1 5 + 6</code> 等，只去對應嘅 leaf。</p>
+<p>結果：Match transaction against <b>11 out of 15 candidates</b>（唔使比較全部 15 個）；當中真正被 support 嘅係 {1 2 5}、{1 3 6}、{3 5 6} = <b>3 個</b>。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 34–41 嘅 hash tree 結構（每個 leaf 放邊幾個 itemsets）係由 shapes 砌成；「3 個」係我按 candidate list 自己計，slides 冇直接寫出答案。請對照原 slide 睇 tree 嘅 traversal。</p></div>
+
+<h2>8. Rule Generation</h2>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>Given a frequent itemset \( L \)，find all non-empty subsets \( f \subset L \) such that \( f \rightarrow L - f \) satisfies the minimum confidence requirement。</p>
+<p>If {A,B,C,D} is a frequent itemset，candidate rules：</p>
+<p>ABC→D, ABD→C, ACD→B, BCD→A,<br>A→BCD, B→ACD, C→ABD, D→ABC,<br>AB→CD, AC→BD, AD→BC, BC→AD, BD→AC, CD→AB</p>
+<p>If \( |L| = k \)，then there are \( 2^k - 2 \) candidate association rules（ignoring \( L \rightarrow \emptyset \) and \( \emptyset \rightarrow L \)）。上例 \( 2^4 - 2 = 14 \)。</p></div>
+<h3>Confidence 嘅 anti-monotone property</h3>
+<ul>
+  <li>一般而言，confidence <b>冇</b> anti-monotone property：\( c(ABC \rightarrow D) \) 可以大過或者細過 \( c(AB \rightarrow D) \)。</li>
+  <li>但同一個 itemset 產生嘅 rules，confidence 有 anti-monotone property。例如 {A,B,C,D} 係 frequent 4-itemset：</li>
+</ul>
+<div class="formula">$$ c(ABC \rightarrow D) \geq c(AB \rightarrow CD) \geq c(A \rightarrow BCD) $$</div>
+<p><span class="tag exam">Exam</span> Confidence is anti-monotone w.r.t. number of items on the <b>RHS</b> of the rule。</p>
+<div class="box tip"><span class="label">💡 點解？</span><p>三條 rule 分子都係 \( \sigma(ABCD) \)；分母分別係 \( \sigma(ABC) \leq \sigma(AB) \leq \sigma(A) \)（support anti-monotone）。分母越大，confidence 越細。所以將 items 由 LHS 搬去 RHS，confidence 只會跌或者唔變。</p></div>
+<p><b>Lattice of rules</b>（slide 44）：頂層係 ABCD⇒{ }，下一層 BCD⇒A、ACD⇒B、ABD⇒C、ABC⇒D，再落係 RHS 有 2 個 items、3 個 items 嘅 rules。如果某條 rule（例如 BCD⇒A）低 confidence，佢下面所有 RHS 包含 A 嘅 rules（CD⇒AB、BD⇒AC、BC⇒AD、D⇒ABC、C⇒ABD、B⇒ACD）都可以 prune。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 44 嘅圖用顏色標示「Pruned Rules」，邊幾條被標示擷取不到；上面 BCD⇒A 例子係按 anti-monotone property 推導嘅示範，請對照原 slide。</p></div>
+
+<h2>9. Factors Affecting Complexity of Apriori</h2>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+<tr><th>Factor</th><th>影響</th></tr>
+<tr><td>Choice of minimum support threshold</td><td>降低 support threshold → 更多 frequent itemsets；可能增加 candidates 數目同 frequent itemsets 嘅最大長度</td></tr>
+<tr><td>Dimensionality (number of items)</td><td>要更多 space 儲每個 item 嘅 support count；如果 frequent items 數目亦增加，computation 同 I/O costs 都可能增加</td></tr>
+<tr><td>Size of database</td><td>Apriori 要 multiple passes，run time 隨 transactions 數目增加</td></tr>
+<tr><td>Average transaction width</td><td>Denser data sets 嘅 transaction width 增加；可能增加 frequent itemsets 最大長度同 hash tree traversals（transaction 嘅 subsets 數目隨 width 增加）</td></tr>
+</table></div>
+<p><b>Impact of support based pruning</b>（slide 46）：同一組 transactions，Minimum Support = 3 時 41 vs 16；改成 Minimum Support = 2，Coke 都變 frequent，if every subset is considered 變成 \( \binom{6}{1} + \binom{6}{2} + \binom{6}{3} + \binom{6}{4} = 6 + 15 + 20 + 15 = 56 \)。</p>
+<p>Slide 47（textbook Figure 6.13）：support = 0.1%、0.2%、0.5% 三條線；support 越低，candidate 同 frequent itemsets 數目越多（0.1% 時峰值達 \( 3.5 \times 10^5 \) 以上），而且 itemset size 延伸到 15–20。</p>
+
+<h2>10. Compact Representation：Maximal Frequent Itemset</h2>
+<p>有啲 frequent itemsets 係 redundant，因為佢哋嘅 supersets 都 frequent。Slide 48 例子：15 個 transactions，T1–5 有 A1–A10，T6–10 有 B1–B10，T11–15 有 C1–C10；support threshold = 5：</p>
+<div class="formula">$$ \text{Number of frequent itemsets} = 3 \times \sum_{k=1}^{10} \binom{10}{k} = 3 \times (2^{10} - 1) = 3069 $$</div>
+<p>→ Need a compact representation。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：定義</span>
+<p><b>Maximal frequent itemset</b>：An itemset is maximal frequent if it is frequent and <b>none of its immediate supersets is frequent</b>。</p>
+<p>喺 lattice 上，maximal itemsets 就喺 frequent / infrequent 之間嘅 <b>border</b> 上面（frequent 嗰邊）。上面 A/B/C 例子嘅 maximal frequent itemsets 係 {A1,…,A10}、{B1,…,B10}、{C1,…,C10}——3 個就代表晒 3069 個。</p></div>
+
+<h3>Illustrative example 1（slide 51–54）</h3>
+<p>10 transactions × items A–J（由 slide 表格填色還原）：</p>
+<table>
+<tr><th>TID</th><th>Items</th></tr>
+<tr><td>1</td><td>A, C, D, E, F, J</td></tr>
+<tr><td>2</td><td>C, D, E, F, H</td></tr>
+<tr><td>3</td><td>C, D, E, F, J</td></tr>
+<tr><td>4</td><td>E, F</td></tr>
+<tr><td>5</td><td>F</td></tr>
+<tr><td>6</td><td>J</td></tr>
+<tr><td>7</td><td>—</td></tr>
+<tr><td>8</td><td>J</td></tr>
+<tr><td>9–10</td><td>—</td></tr>
+</table>
+<p>Support counts：F = 5，E = 4，J = 4，C = D = 3，{E,F} = 4，{C,D,E,F} = 3。</p>
+<table>
+<tr><th>Support threshold (by count)</th><th>Frequent itemsets</th><th>Maximal itemsets</th></tr>
+<tr><td>5</td><td>{F}</td><td>{F}</td></tr>
+<tr><td>4</td><td>{E}, {F}, {E,F}, {J}</td><td>{E,F}, {J}</td></tr>
+<tr><td>3</td><td>All subsets of {C,D,E,F} + {J}</td><td>{C,D,E,F}, {J}</td></tr>
+</table>
+
+<h3>Another illustrative example（slide 55）</h3>
+<p>Transactions：T1–T3 = {A,B,C}，T4 = {A,B}，T5 = {A,C}，T7 = {B,C}。所以 A = B = C = 5，{A,B} = {A,C} = {B,C} = 4，{A,B,C} = 3。</p>
+<table>
+<tr><th>Support threshold</th><th>Maximal itemsets</th></tr>
+<tr><td>5</td><td>{A}, {B}, {C}</td></tr>
+<tr><td>4</td><td>{A,B}, {A,C}, {B,C}</td></tr>
+<tr><td>3</td><td>{A,B,C}</td></tr>
+</table>
+
+<h2>11. Closed Itemset</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：定義</span>
+<p><b>Closed itemset</b>：An itemset X is closed if <b>none of its immediate supersets has the same support</b> as the itemset X。</p>
+<p>X is <b>not closed</b> if at least one of its immediate supersets has the same support count as X。</p></div>
+<p>Slide 57 例子：</p>
+<table>
+<tr><th>TID</th><th>Items</th></tr>
+<tr><td>1</td><td>{A,B}</td></tr><tr><td>2</td><td>{B,C,D}</td></tr><tr><td>3</td><td>{A,B,C,D}</td></tr><tr><td>4</td><td>{A,B,D}</td></tr><tr><td>5</td><td>{A,B,C,D}</td></tr>
+</table>
+<table>
+<tr><th>Itemset</th><th>Support</th><th>Itemset</th><th>Support</th></tr>
+<tr><td>{A}</td><td>4</td><td>{A,B,C}</td><td>2</td></tr>
+<tr><td>{B}</td><td>5</td><td>{A,B,D}</td><td>3</td></tr>
+<tr><td>{C}</td><td>3</td><td>{A,C,D}</td><td>2</td></tr>
+<tr><td>{D}</td><td>4</td><td>{B,C,D}</td><td>2</td></tr>
+<tr><td>{A,B}</td><td>4</td><td>{A,B,C,D}</td><td>2</td></tr>
+<tr><td>{A,C}</td><td>2</td><td></td><td></td></tr>
+<tr><td>{A,D}</td><td>3</td><td></td><td></td></tr>
+<tr><td>{B,C}</td><td>3</td><td></td><td></td></tr>
+<tr><td>{B,D}</td><td>4</td><td></td><td></td></tr>
+<tr><td>{C,D}</td><td>3</td><td></td><td></td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ Slide 數字要小心</span><p>按上面 transactions 自己數，{B,C,D} 出現喺 T2、T3、T5，support 應該係 <b>3</b>，但 slide 嘅表寫 2。用 support = 3 去判斷：closed itemsets 係 {B}(5)、{A,B}(4)、{B,D}(4)、{A,B,D}(3)、{B,C,D}(3)、{A,B,C,D}(2)。例如 {A} 唔係 closed，因為 {A,B} 同佢一樣係 4；{C} 唔係 closed，因為 {B,C} = 3 = {C}。考試遇到要自己由 transactions 數。</p></div>
+
+<h3>Maximal vs Closed Itemsets（slide 58–59）</h3>
+<p>Transactions：1 = ABC，2 = ABCD，3 = BCE，4 = ACDE，5 = DE。Lattice 每個 node 旁邊寫住 supporting transaction IDs（例如 A：124；C：1234；ABCDE：not supported by any transactions）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Minimum support = 2</span>
+<ul>
+  <li># Closed frequent = <b>9</b>：{C}, {D}, {E}, {A,C}, {B,C}, {C,E}, {D,E}, {A,B,C}, {A,C,D}</li>
+  <li># Maximal frequent = <b>4</b>：{A,B,C}, {A,C,D}, {C,E}, {D,E}（呢 4 個係 <b>closed and maximal</b>）</li>
+  <li><b>Closed but not maximal</b>：{C}, {D}, {E}, {A,C}, {B,C}</li>
+</ul>
+<p>（列出嘅 itemsets 係按 transactions 計出嚟，同 slide 上嘅 9 / 4 數目吻合；slide 用顏色標示邊個係邊類。）</p></div>
+<div class="box exam"><span class="label">⭐ 關係</span>
+<div class="formula">$$ \text{Maximal Frequent Itemsets} \subseteq \text{Closed Frequent Itemsets} \subseteq \text{Frequent Itemsets} $$</div>
+<p>每個 maximal frequent itemset 一定係 closed（如果有 immediate superset 同佢 support 一樣，嗰個 superset 都 frequent，咁佢就唔係 maximal）。反之唔成立。</p>
+<ul>
+  <li><b>Maximal</b>：最 compact，可以推返所有 frequent itemsets（所有 subsets），但 <b>失去 support 資訊</b>。</li>
+  <li><b>Closed</b>：冇 maximal 咁 compact，但可以推返每個 frequent itemset 嘅 <b>準確 support</b>（= 包含佢嘅 closed itemsets 之中最大嘅 support）。</li>
+</ul></div>
+<p>Slide 60：A/B/C 例子嘅 closed itemsets 亦係 {A1–A10}、{B1–B10}、{C1–C10}——因為 A-block 任何 proper subset 嘅 support 都係 5，同 {A1,…,A10} 一樣，所以唔係 closed。</p>
+
+<h3>Closed itemsets examples（slide 61–65）</h3>
+<table>
+<tr><th>Example</th><th>Transactions</th><th>Supports</th><th>Closed itemsets</th></tr>
+<tr><td>1</td><td>T2, T3 = {C,D}；T4 = {C}</td><td>{C} 3, {D} 2, {C,D} 2</td><td>{C}, {C,D}（{D} 唔係，{C,D} 同佢都係 2）</td></tr>
+<tr><td>2</td><td>T2, T3 = {C,D,E}；T4 = {C}</td><td>{C} 3；其餘全部 2</td><td>{C}, {C,D,E}</td></tr>
+<tr><td>3</td><td>T2, T3 = {C,D,E,F}；T4 = {C,F}</td><td>{C} = {F} = {C,F} = 3；{C,D,E,F} = 2</td><td>{C,D,E,F}, {C,F}</td></tr>
+<tr><td>4</td><td>T2, T3 = {C,D,E,F}；T4 = {C}；T5 = {F}</td><td>{C} = {F} = 3；{C,F} = 2；{C,D,E,F} = 2</td><td>{C,D,E,F}, {C}, {F}</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 快速判斷 closed 嘅技巧</span><p>一個 itemset 係 closed ⇔ 佢就係「所有含佢嘅 transactions 嘅 intersection」。例 3：含 C 嘅 transactions 係 T2、T3、T4，intersection = {C,F}，所以 {C} 唔 closed，{C,F} closed。例 4：含 C 嘅係 T2、T3、T4，intersection = {C}，所以 {C} closed。</p></div>
+
+<h3>Example question（slide 67）</h3>
+<p>三個 datasets（每個 10,000 transactions，圖中每行約 1,000 個 transactions；深色 = item present），support threshold = 20%（2,000 transactions）：</p>
+<ul>
+  <li><b>Data Set A</b>：一半 transactions 有 A–E，另一半有 F–J。</li>
+  <li><b>Data Set B</b>：所有 transactions 有 A、B；第 4 行加 D、E；第 6–7 行加 G。</li>
+  <li><b>Data Set C</b>：第 1、3 行 {A,B,C}；第 5 行 {B,C,D}；第 7 行 {C,D}；第 9 行 {D,…,J}。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 參考答案（自己計，slides 冇提供答案）</span>
+<table>
+<tr><th>問題</th><th>A</th><th>B</th><th>C</th><th>答案</th></tr>
+<tr><td># frequent itemsets</td><td>\( 2 \times (2^5 - 1) = 62 \)</td><td>7：{A},{B},{G},{A,B},{A,G},{B,G},{A,B,G}</td><td>9：{A},{B},{C},{D},{A,B},{A,C},{B,C},{C,D},{A,B,C}</td><td>最多：A</td></tr>
+<tr><td>Longest frequent itemset</td><td>5</td><td>3</td><td>3</td><td>A</td></tr>
+<tr><td>Highest maximum support</td><td>50%</td><td>100%（{A},{B},{A,B}）</td><td>40%（{C}）</td><td>B</td></tr>
+<tr><td>Mixed support（20% 至 &gt; 70%）</td><td>—</td><td>{A,B,G}：A、B 100%，G 20%</td><td>—</td><td>B</td></tr>
+<tr><td># maximal frequent</td><td>2：{A..E},{F..J}</td><td>1：{A,B,G}</td><td>2：{A,B,C},{C,D}</td><td>A、C 打和</td></tr>
+<tr><td># closed frequent</td><td>2</td><td>2：{A,B},{A,B,G}</td><td>5：{C},{D},{B,C},{C,D},{A,B,C}</td><td>C</td></tr>
+</table>
+<p>計算假設每行剛好 1,000 個 transactions（由圖嘅 y-axis 刻度推斷）；D、E 及 E–J 只得 10%，唔 frequent。</p></div>
+
+<h2>12. Pattern Evaluation 與 Contingency Table</h2>
+<ul>
+  <li>Association rule algorithms 會產生大量 rules。</li>
+  <li><mark class="k">Interestingness measures</mark> 可以用嚟 prune / rank patterns。</li>
+  <li>In the original formulation，support &amp; confidence 係唯一用嘅 measures。</li>
+</ul>
+<p>Given \( X \rightarrow Y \) 或 {X, Y}，計 interestingness 所需資訊可以由 <mark class="k">contingency table</mark> 得到：</p>
+<table>
+<tr><th></th><th>\( Y \)</th><th>\( \overline{Y} \)</th><th></th></tr>
+<tr><th>\( X \)</th><td>\( f_{11} \)</td><td>\( f_{10} \)</td><td>\( f_{1+} \)</td></tr>
+<tr><th>\( \overline{X} \)</th><td>\( f_{01} \)</td><td>\( f_{00} \)</td><td>\( f_{0+} \)</td></tr>
+<tr><th></th><td>\( f_{+1} \)</td><td>\( f_{+0} \)</td><td>\( N \)</td></tr>
+</table>
+<p>\( f_{11} \)：support of X and Y；\( f_{10} \)：support of X and \( \overline{Y} \)；\( f_{01} \)：support of \( \overline{X} \) and Y；\( f_{00} \)：support of \( \overline{X} \) and \( \overline{Y} \)。用嚟定義 support、confidence、Gini、entropy 等 measures。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個 2×2 contingency table 同 COM6005 Module 3b <b>Chi-square test of independence</b> 用嘅 table 完全一樣；Gini、entropy 就係 COM6004 Chapter 3 decision tree 嘅 impurity measures。</p></div>
+
+<h2>13. Drawback of Confidence</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：Tea → Coffee</span>
+<table>
+<tr><th></th><th>Coffee</th><th>\( \overline{\text{Coffee}} \)</th><th></th></tr>
+<tr><th>Tea</th><td>150</td><td>50</td><td>200</td></tr>
+<tr><th>\( \overline{\text{Tea}} \)</th><td>650</td><td>150</td><td>800</td></tr>
+<tr><th></th><td>800</td><td>200</td><td>1000</td></tr>
+</table>
+<p>Association Rule：Tea → Coffee</p>
+<ul>
+  <li>Confidence \( = P(\text{Coffee} \mid \text{Tea}) = 150/200 = 0.75 \)。Confidence &gt; 50%，即飲茶嘅人飲咖啡多過唔飲咖啡，rule 睇落合理。</li>
+  <li>但 \( P(\text{Coffee}) = 0.8 \)，即係知道一個人飲茶，反而 <b>降低</b> 佢飲咖啡嘅機率！</li>
+  <li>注意 \( P(\text{Coffee} \mid \overline{\text{Tea}}) = 650/800 = 0.8125 \)。</li>
+</ul></div>
+<p><b>Tea → Honey</b>（slide 72）：Confidence \( = P(\text{Honey} \mid \text{Tea}) = 100/200 = 0.50 \)，好似話飲茶對用唔用蜜糖冇乜影響，rule 睇落 uninteresting。但 \( P(\text{Honey}) = 120/1000 = 0.12 \)，所以飲茶嘅人用蜜糖嘅機會其實高好多（Lift = 0.5 / 0.12 ≈ 4.17）。</p>
+<div class="box exam"><span class="label">⭐ 我哋真正想要嘅 rules</span>
+<ul>
+  <li>Confidence(X → Y) 要夠高：確保買 X 嘅人買 Y 多過唔買 Y。</li>
+  <li><b>Confidence(X → Y) &gt; support(Y)</b>：否則 rule 會誤導，因為有 X 其實降低咗同一個 transaction 有 Y 嘅機會。</li>
+  <li>有冇 measure 捕捉到呢個 constraint？有，好多。</li>
+</ul></div>
+
+<h2>14. Statistical Independence 與 Lift / Interest</h2>
+<p>條件 confidence(X → Y) = support(Y) 等價於：</p>
+<div class="formula">$$ P(Y \mid X) = P(Y) \iff P(X, Y) = P(X) \times P(Y) \quad (X \text{ and } Y \text{ are independent}) $$</div>
+<ul>
+  <li>If \( P(X, Y) &gt; P(X) \times P(Y) \)：X &amp; Y are <b>positively correlated</b></li>
+  <li>If \( P(X, Y) &lt; P(X) \times P(Y) \)：X &amp; Y are <b>negatively correlated</b></li>
+</ul>
+<div class="box exam"><span class="label">⭐ 考試重點：Measures that take into account statistical dependence（slide 75）</span>
+<div class="formula">$$ \text{Lift} = \frac{P(Y \mid X)}{P(Y)} \qquad \text{Interest} = \frac{P(X, Y)}{P(X)P(Y)} $$</div>
+<div class="formula">$$ PS = P(X, Y) - P(X)P(Y) $$</div>
+<div class="formula">$$ \phi\text{-coefficient} = \frac{P(X, Y) - P(X)P(Y)}{\sqrt{P(X)[1 - P(X)]\,P(Y)[1 - P(Y)]}} $$</div>
+<p><b>Lift is used for rules while interest is used for itemsets</b>（兩者數值相同，因為 \( \frac{P(Y \mid X)}{P(Y)} = \frac{P(X, Y)}{P(X)P(Y)} \)）。</p>
+<p>Lift = 1：independent；&gt; 1：positively associated；&lt; 1：negatively associated。</p>
+<p><b>例子</b>：Tea → Coffee：Interest \( = \frac{0.15}{0.2 \times 0.8} = 0.9375 \)（&lt; 1，therefore is negatively associated）。</p></div>
+
+<h3>Lift 嘅問題（slide 77）</h3>
+<table>
+<tr><th>Table 1</th><th>\( Y \)</th><th>\( \overline{Y} \)</th><th></th><th></th><th>Table 2</th><th>\( Y \)</th><th>\( \overline{Y} \)</th><th></th></tr>
+<tr><th>\( X \)</th><td>10</td><td>0</td><td>10</td><td></td><th>\( X \)</th><td>90</td><td>0</td><td>90</td></tr>
+<tr><th>\( \overline{X} \)</th><td>0</td><td>90</td><td>90</td><td></td><th>\( \overline{X} \)</th><td>0</td><td>10</td><td>10</td></tr>
+<tr><th></th><td>10</td><td>90</td><td>100</td><td></td><th></th><td>90</td><td>10</td><td>100</td></tr>
+</table>
+<div class="formula">$$ \text{Lift}_1 = \frac{0.1}{(0.1)(0.1)} = 10 \qquad \text{Lift}_2 = \frac{0.9}{(0.9)(0.9)} = 1.11 $$</div>
+<p>Table 2 嘅 X 同 Y 有 90% 一齊出現，關係明明更強，但 lift 只得 1.11；Table 1 只有 10% 一齊出現，lift 反而係 10。Lift 對 <b>rare items</b> 偏高。所以單靠 confidence 或 interest 去 prune 都唔夠。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Independence \( P(X, Y) = P(X)P(Y) \)、conditional probability \( P(Y \mid X) \) 同 COM6005 Module 2 probability 一樣；φ-coefficient 就係兩個 binary variables 嘅 Pearson correlation（COM6005 / COM6004 Chapter 2 correlation）。</p></div>
+
+<h2>15. 唔同 Measures 同佢哋嘅 Properties</h2>
+<p>文獻提出咗好多 measures（slide 78 列出 21 個：φ-coefficient、Goodman-Kruskal's λ、odds ratio α、Yule's Q、Yule's Y、Kappa κ、Mutual Information、J-Measure、Gini index、Support、Confidence、Laplace、Conviction、Interest、cosine (IS)、Piatetsky-Shapiro's (PS)、Certainty factor、Added Value、Collective strength、Jaccard、Klosgen）。</p>
+<p><b>Comparing different measures</b>（slide 79）：用 10 個 contingency tables（E1–E10）比較唔同 measures 嘅 ranking，排名可以差好遠。例如 E10（\( f_{11} = 61, f_{10} = 2483, f_{01} = 4, f_{00} = 7452 \)）用 Gini index (G) 排第 10，但用 Interest (I) 排第 1。</p>
+
+<h3>Property under Variable Permutation（symmetry）</h3>
+<p>將 contingency table 嘅 A、B 對調（transpose），\( M(A, B) = M(B, A) \) 嗎？</p>
+<ul>
+  <li><b>Symmetric measures</b>：support、lift、collective strength、cosine、Jaccard 等</li>
+  <li><b>Asymmetric measures</b>：confidence、conviction、Laplace、J-measure 等</li>
+</ul>
+<div class="box tip"><span class="label">💡 用途</span><p>Symmetric measures 適合評估 <b>itemsets</b>；asymmetric measures 適合評估 <b>rules</b>（因為 X → Y 同 Y → X 意義唔同，例如 confidence \( P(Y \mid X) \neq P(X \mid Y) \)）。</p></div>
+
+<h3>Property under Row/Column Scaling</h3>
+<p>Grade-Gender Example (Mosteller, 1968)：</p>
+<table>
+<tr><th></th><th>Male</th><th>Female</th><th></th><th></th><th></th><th>Male (2x)</th><th>Female (3x)</th><th></th></tr>
+<tr><th>High</th><td>30</td><td>20</td><td>50</td><td></td><th>High</th><td>60</td><td>60</td><td>120</td></tr>
+<tr><th>Low</th><td>40</td><td>10</td><td>50</td><td></td><th>Low</th><td>80</td><td>30</td><td>110</td></tr>
+<tr><th></th><td>70</td><td>30</td><td>100</td><td></td><th></th><td>140</td><td>90</td><td>230</td></tr>
+</table>
+<p>Mosteller：Underlying association should be independent of the relative number of male and female students in the samples。<b>Odds-Ratio</b> 有呢個 property：</p>
+<div class="formula">$$ \alpha = \frac{f_{11} f_{00}}{f_{10} f_{01}} : \quad \frac{30 \times 10}{20 \times 40} = 0.375 = \frac{60 \times 30}{60 \times 80} $$</div>
+<p>Mask / Covid 例子（slide 82）：Covid-Positive column ×2、Covid-Free column ×10：</p>
+<div class="formula">$$ \frac{20 \times 10}{30 \times 40} = \frac{200}{1200} \approx 0.167 = \frac{40 \times 100}{300 \times 80} = \frac{4000}{24000} $$</div>
+<div class="box warn"><span class="label">⚠️ Slide 公式</span><p>Slide 文字寫 odds ratio 係「\( (f_{11} + f_{00}) / (f_{10} + f_{10}) \)」，似係排版錯誤；標準 odds ratio 係 <b>乘積</b> \( \frac{f_{11} f_{00}}{f_{10} f_{01}} \)（slide 78 公式表亦係乘積），上面數字都係用乘積驗證。</p></div>
+
+<h3>Property under Inversion Operation</h3>
+<p>Inversion：將所有 0/1 對調（item 有 ↔ 冇），即 \( f_{11} \leftrightarrow f_{00} \)、\( f_{10} \leftrightarrow f_{01} \)。Slide 84 例子：inversion 前後 correlation 都係 −0.1667（不變），但 IS/cosine 由 0.0 變成 0.825（改變）。</p>
+<p><b>φ-coefficient 例子</b>（slide 85）：φ-coefficient is analogous to correlation coefficient for continuous variables。</p>
+<table>
+<tr><th></th><th>\( Y \)</th><th>\( \overline{Y} \)</th><th></th><th></th><th></th><th>\( Y \)</th><th>\( \overline{Y} \)</th><th></th></tr>
+<tr><th>\( X \)</th><td>60</td><td>10</td><td>70</td><td></td><th>\( X \)</th><td>20</td><td>10</td><td>30</td></tr>
+<tr><th>\( \overline{X} \)</th><td>10</td><td>20</td><td>30</td><td></td><th>\( \overline{X} \)</th><td>10</td><td>60</td><td>70</td></tr>
+<tr><th></th><td>70</td><td>30</td><td>100</td><td></td><th></th><td>30</td><td>70</td><td>100</td></tr>
+</table>
+<div class="formula">$$ \phi_1 = \frac{0.6 - 0.7 \times 0.7}{\sqrt{0.7 \times 0.3 \times 0.7 \times 0.3}} = 0.5238 \qquad \phi_2 = \frac{0.2 - 0.3 \times 0.3}{\sqrt{0.7 \times 0.3 \times 0.7 \times 0.3}} = 0.5238 $$</div>
+<p>φ Coefficient is the same for both tables——但直覺上 Table 1（X、Y 60% 一齊出現）嘅關聯應該強過 Table 2（只 20%）。原因：Table 2 就係 Table 1 嘅 inversion，φ 係 inversion-invariant，將「一齊冇」同「一齊有」視為同等證據。對 asymmetric binary data（例如購物籃，大部分 items 都係 0）呢個未必合理。</p>
+
+<h3>Property under Null Addition</h3>
+<p>Null addition：加入大量 <b>X、Y 都冇</b> 嘅 transactions（即只增加 \( f_{00} \)）。</p>
+<ul>
+  <li><b>Invariant measures</b>：cosine、Jaccard、All-confidence、confidence</li>
+  <li><b>Non-invariant measures</b>：correlation、Interest/Lift、odds ratio 等</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>超市加多 10,000 張只買咗米嘅單，唔應該改變「啤酒同尿片」之間嘅關聯。Cosine \( = \frac{P(A, B)}{\sqrt{P(A)P(B)}} \)、Jaccard \( = \frac{P(A, B)}{P(A) + P(B) - P(A, B)} \) 只用 \( f_{11}, f_{10}, f_{01} \)，所以唔受影響；Lift 分母有 \( N \)，會變。</p></div>
+
+<div class="box exam"><span class="label">⭐ 考試重點：Different measures have different properties（slide 87）</span>
+<table>
+<tr><th>Symbol</th><th>Measure</th><th>Inversion</th><th>Null Addition</th><th>Scaling</th></tr>
+<tr><td>\( \phi \)</td><td>φ-coefficient</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>\( \alpha \)</td><td>odds ratio</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td>\( \kappa \)</td><td>Cohen's</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>\( I \)</td><td>Interest</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>\( IS \)</td><td>Cosine</td><td>No</td><td>Yes</td><td>No</td></tr>
+<tr><td>\( PS \)</td><td>Piatetsky-Shapiro's</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>\( S \)</td><td>Collective strength</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>\( \zeta \)</td><td>Jaccard</td><td>No</td><td>Yes</td><td>No</td></tr>
+<tr><td>\( h \)</td><td>All-confidence</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>\( s \)</td><td>Support</td><td>No</td><td>No</td><td>No</td></tr>
+</table>
+<p>（Yes = 喺該 operation 下 invariant。）</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 83、86 嘅 inversion / null addition 示意圖係圖片，擷取不到；上面解釋根據 slide 文字同 textbook 定義。另外 slide 86 文字將 All-confidence 列為 null-addition invariant，但 slide 87 表寫 No——兩頁有出入，請以 lecturer 講法為準。</p></div>
+
+<h2>16. Simpson's Paradox</h2>
+<p>HDTV / Exercise Machine 例子（slide 88–89）：</p>
+<table>
+<tr><th>Buy HDTV</th><th>Exercise Machine: Yes</th><th>No</th><th>Total</th></tr>
+<tr><td>Yes</td><td>99</td><td>81</td><td>180</td></tr>
+<tr><td>No</td><td>54</td><td>66</td><td>120</td></tr>
+<tr><td></td><td>153</td><td>147</td><td>300</td></tr>
+</table>
+<p>\( c(\{\text{HDTV = Yes}\} \rightarrow \{\text{Exercise Machine = Yes}\}) = 99/180 = 55\% \)；\( c(\{\text{HDTV = No}\} \rightarrow \{\text{Exercise Machine = Yes}\}) = 54/120 = 45\% \)。⇒ 好似「買 HDTV 嘅客較大機會買 exercise machine」。</p>
+<p>但按 customer group 分層（stratify）：</p>
+<table>
+<tr><th>Group</th><th>Buy HDTV</th><th>EM Yes</th><th>EM No</th><th>Total</th><th>c(→ EM = Yes)</th></tr>
+<tr><td rowspan="2">College Students</td><td>Yes</td><td>1</td><td>9</td><td>10</td><td>1/10 = 10%</td></tr>
+<tr><td>No</td><td>4</td><td>30</td><td>34</td><td>4/34 = 11.8%</td></tr>
+<tr><td rowspan="2">Working Adult</td><td>Yes</td><td>98</td><td>72</td><td>170</td><td>98/170 = 57.7%</td></tr>
+<tr><td>No</td><td>50</td><td>36</td><td>86</td><td>50/86 = 58.1%</td></tr>
+</table>
+<p>喺 <b>每一個 group 入面</b>，買 HDTV 嘅人買 exercise machine 嘅比例反而 <b>較低</b>——關係反轉咗！原因：working adults 本身兩樣都較大機會買，而 HDTV 買家大部分係 working adults（170 / 180）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Simpson's Paradox</span>
+<ul>
+  <li>Observed relationship in data may be influenced by the presence of other <b>confounding factors (hidden variables)</b>。</li>
+  <li>Hidden variables may cause the observed relationship to <b>disappear or reverse its direction</b>!</li>
+  <li><b>Proper stratification</b> is needed to avoid generating spurious patterns。</li>
+</ul>
+<p><b>Hospital 例子</b>：Recovery rate from Covid：Hospital A 80%，Hospital B 90%。邊間好啲？分層之後：older population A 50% vs B 30%；younger population A 99% vs B 98%。A 喺兩個年齡組都較好，整體較差只因為 A 收較多（恢復率低嘅）年長病人。</p>
+<p><b>County 例子</b>：Covid-19 death per 100,000：County A 15，County B 10。分層之後：older A 20 vs B 40；younger A 2 vs B 5。A 喺兩組死亡率都較低，整體較高係因為 A 人口較老。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Confounding variable 同 COM6005 嘅 regression（加 control variables）同 study design 有關；做 COM6001 pandas 分析時，用 <code>groupby</code> 按 group 分層計比例就係 stratification。</p></div>
+
+<h2>17. Python 示範（自己加，唔喺 slides）</h2>
+<p>用 Section 1 嘅 5 transactions 驗證 support / confidence / lift（純 Python，唔使額外 library）：</p>
+<pre><code>T = [{'Bread','Milk'},
+     {'Bread','Diaper','Beer','Eggs'},
+     {'Milk','Diaper','Beer','Coke'},
+     {'Bread','Milk','Diaper','Beer'},
+     {'Bread','Milk','Diaper','Coke'}]
+
+def sigma(itemset):                       # support count
+    return sum(1 for t in T if itemset &lt;= t)
+
+def rule(X, Y):
+    s = sigma(X | Y) / len(T)             # support
+    c = sigma(X | Y) / sigma(X)           # confidence
+    lift = c / (sigma(Y) / len(T))
+    return round(s, 2), round(c, 2), round(lift, 2)
+
+print(rule({'Milk','Diaper'}, {'Beer'}))  # (0.4, 0.67, 1.11)
+print(rule({'Milk','Beer'}, {'Diaper'}))  # (0.4, 1.0, 1.25)</code></pre>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 用 Section 1 嘅 5 transactions，計 {Bread} → {Milk} 嘅 support、confidence 同 lift。</summary><p>\( \sigma(\{\text{Bread, Milk}\}) = 3 \)（T1, T4, T5），\( s = 3/5 = 0.6 \)；\( \sigma(\{\text{Bread}\}) = 4 \)，\( c = 3/4 = 0.75 \)；\( P(\text{Milk}) = 4/5 = 0.8 \)，Lift \( = 0.75 / 0.8 = 0.9375 &lt; 1 \)，輕微負相關。</p></details>
+<details class="q"><summary>Q2. \( d = 4 \) 個 items，有幾多個 possible itemsets（包括 null）同 association rules？</summary><p>Itemsets：\( 2^4 = 16 \)。Rules：\( 3^4 - 2^5 + 1 = 81 - 32 + 1 = 50 \)。</p></details>
+<details class="q"><summary>Q3. 用自己嘅說話解釋 Apriori principle，同佢點樣減少計算。</summary><p>如果一個 itemset frequent，佢所有 subsets 都一定 frequent，因為 support 係 anti-monotone：\( X \subseteq Y \Rightarrow s(X) \geq s(Y) \)。反過嚟，一發現某 itemset infrequent，就可以唔產生佢所有 supersets 做 candidates，減少 \( M \) 同 database scans。</p></details>
+<details class="q"><summary>Q4. \( F_2 \) = {AB, AC, AD, BC, BD, CE}。用 \( F_{k-1} \times F_{k-1} \) 產生 \( L_3 \)，再做 candidate pruning。</summary><p>Merge（第一個 item 相同）：AB+AC → ABC；AB+AD → ABD；AC+AD → ACD；BC+BD → BCD。Pruning：ABC 嘅 subsets AB、AC、BC 都喺 \( F_2 \) ✓；ABD：AB、AD、BD ✓；ACD：CD 唔喺 \( F_2 \) ✗；BCD：CD ✗。結果 \( L_3 \) = {ABC, ABD}。</p></details>
+<details class="q"><summary>Q5. Frequent itemset {A,B,C} 有幾多條 candidate rules？如果 \( c(BC \rightarrow A) \) 低過 minconf，邊啲 rules 可以直接 prune？</summary><p>\( 2^3 - 2 = 6 \) 條。Confidence 對 RHS 數目 anti-monotone：RHS 包含 A 而且 LHS 係 {B,C} 嘅 subset 嘅 rules——\( B \rightarrow AC \) 同 \( C \rightarrow AB \)——confidence 一定 ≤ \( c(BC \rightarrow A) \)，可以 prune。</p></details>
+<details class="q"><summary>Q6. Transactions：1 = ABC，2 = ABCD，3 = BCE，4 = ACDE，5 = DE；minsup = 2。{A,C} 係 closed 嗎？係 maximal 嗎？</summary><p>\( \sigma(\{A, C\}) = 3 \)（T1, T2, T4）。Immediate supersets：ABC = 2、ACD = 2、ACE = 1，冇一個係 3 → <b>closed</b>。但 ABC、ACD 都 frequent（≥ 2）→ <b>唔係 maximal</b>。</p></details>
+<details class="q"><summary>Q7. 點解 maximal frequent itemsets 一定係 closed？</summary><p>假設 X maximal 但唔 closed，即有 immediate superset Y 同 X support 一樣。咁 Y 都 ≥ minsup，係 frequent，同「X 冇 frequent immediate supersets」矛盾。所以 Maximal ⊆ Closed。</p></details>
+<details class="q"><summary>Q8. 1000 個客：Tea 200 人，當中 150 人飲 Coffee；全部 Coffee 800 人。Tea → Coffee confidence 0.75 好高，點解呢條 rule 誤導？計 lift。</summary><p>\( P(\text{Coffee}) = 0.8 &gt; 0.75 \)，即 confidence &lt; support(Y)：飲茶反而降低飲咖啡機率。Lift \( = \frac{0.15}{0.2 \times 0.8} = 0.9375 &lt; 1 \)，negatively associated。</p></details>
+<details class="q"><summary>Q9. 邊啲 measures 喺 null addition 下 invariant？點解對 market-basket data 重要？</summary><p>Cosine、Jaccard、All-confidence、confidence（按 slide 86）。Market-basket data 大部分 transactions 都唔含某兩件貨，\( f_{00} \) 好大而且隨 database 擴大；理想 measure 唔應該因為加入無關 transactions 而改變。</p></details>
+<details class="q"><summary>Q10. 解釋 Simpson's paradox，用 hospital 例子說明。</summary><p>整體數據顯示 B（90%）好過 A（80%），但按年齡分層後，A 喺年長（50% vs 30%）同年輕（99% vs 98%）兩組都較好。年齡係 confounding (hidden) variable：A 收較多恢復率低嘅年長病人，拉低整體比率。所以要 proper stratification。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li>\( \sigma(X) \) = support count；\( s(X \rightarrow Y) = \sigma(X \cup Y)/|T| \)；\( c(X \rightarrow Y) = \sigma(X \cup Y)/\sigma(X) = P(Y \mid X) \)。</li>
+  <li>Task：搵 support ≥ minsup 同 confidence ≥ minconf 嘅 rules；brute-force prohibitive。</li>
+  <li>\( d \) items：\( 2^d \) itemsets；\( R = 3^d - 2^{d+1} + 1 \) rules（\( d = 6 \) → 602）。</li>
+  <li>同一 itemset 嘅 rules：support 一樣，confidence 唔同 → two-step：frequent itemset generation → rule generation。</li>
+  <li>Brute-force counting \( O(NMw) \)，\( M = 2^d \)；策略：減 \( M \)（pruning）、減 \( N \)（DHP / vertical）、減 \( NM \)（hash tree）。</li>
+  <li>Apriori principle：frequent ⇒ subsets frequent；support anti-monotone \( X \subseteq Y \Rightarrow s(X) \geq s(Y) \)。</li>
+  <li>例子 minsup = 3：41（全部）→ 16（support-based）→ 13（\( F_{k-1} \times F_{k-1} \)）。minsup = 2 → 全部 56。</li>
+  <li>Apriori：\( F_1 \) → loop {Candidate Generation \( L_{k+1} \)；Candidate Pruning；Support Counting；Candidate Elimination → \( F_{k+1} \)} until empty。</li>
+  <li>\( F_{k-1} \times F_{k-1} \)：頭 \( k-2 \) items 相同先 merge；Alternate：第一個嘅尾 \( k-2 \) = 第二個嘅頭 \( k-2 \)。Pruning：任何 \( (k-1) \)-subset infrequent 就刪。</li>
+  <li>Hash tree：hash function（1,4,7 / 2,5,8 / 3,6,9）+ max leaf size；transaction (1,2,3,5,6) 只同 11/15 candidates 比較。</li>
+  <li>Rule generation：\( |L| = k \) → \( 2^k - 2 \) rules；同一 itemset confidence 對 RHS items 數目 anti-monotone：\( c(ABC \rightarrow D) \geq c(AB \rightarrow CD) \geq c(A \rightarrow BCD) \)。</li>
+  <li>Complexity factors：minsup、dimensionality、database size、average transaction width。</li>
+  <li>Maximal：frequent 而且冇 immediate superset frequent。Closed：冇 immediate superset 有同樣 support。Maximal ⊆ Closed ⊆ Frequent；closed 保留 support 資訊。</li>
+  <li>Contingency table \( f_{11}, f_{10}, f_{01}, f_{00} \)；confidence 缺點：Tea → Coffee c = 0.75 &lt; P(Coffee) = 0.8。</li>
+  <li>Lift \( = P(Y \mid X)/P(Y) \)（rules）；Interest \( = P(X, Y)/(P(X)P(Y)) \)（itemsets）；PS \( = P(X, Y) - P(X)P(Y) \)；φ = correlation for binary。=1 independent，&gt;1 positive，&lt;1 negative。</li>
+  <li>Lift 對 rare items 偏高（10 vs 1.11）。</li>
+  <li>Symmetric：support、lift、cosine、Jaccard、collective strength；Asymmetric：confidence、conviction、Laplace、J-measure。</li>
+  <li>Scaling invariant：odds ratio \( f_{11}f_{00}/(f_{10}f_{01}) \)。Inversion invariant：φ、odds ratio、κ、PS、S。Null addition invariant：cosine、Jaccard（+ confidence）。</li>
+  <li>Simpson's paradox：confounding / hidden variables 令關係消失或反轉 → proper stratification（HDTV、hospital、county 例子）。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6004-ch5.html">← Chapter 5 Cluster Analysis</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

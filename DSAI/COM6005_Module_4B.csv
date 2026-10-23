@@ -1,0 +1,51 @@
+What three model-building techniques does Lecture 4b add to multiple linear regression?,"Categorical predictors, quadratic/cubic (polynomial) terms, and interaction terms."
+"Why can't a categorical variable such as College = {Science, Engineering, Humanity} enter $Y = \beta_0 + \beta_1 X_1 + \text{error}$ directly?",A category label cannot be multiplied by $\beta_1$; it must first be converted into 0/1 dummy variables.
+What is a dummy variable?,A 0/1 variable that equals 1 if an observation is in a given category and 0 otherwise.
+How many dummy variables does the statistics approach use for a categorical variable with $k$ categories?,$k - 1$.
+How many dummy variables are needed for Part-time/Full-time?,"One: $X_F = 1$ if Full-time, 0 otherwise."
+How many dummy variables are needed for College = Eng/Hum/Sci?,"Two: $X_H = 1$ if Hum, $X_S = 1$ if Sci (each 0 otherwise)."
+How many dummy variables are needed for day of the week (Sun/Mon/…/Sat)?,Six: $X_{MON}$ to $X_{SAT}$.
+What is the baseline (reference) category?,"The category with no dummy of its own: all its dummies are 0, so its mean is the intercept."
+What is the dummy variable trap?,"Including all $k$ dummies plus an intercept: the dummies sum to 1 in every row, matching the intercept column, so $X^T X$ is singular (perfect multicollinearity)."
+What is the bad data format for a categorical regression?,"One column per category (Engineering, Science, Humanity), so the $Y$ values are spread over several columns."
+What rule defines the good data format?,"All $Y$ should be in the same column: one column for $X$ (College) and one for $Y$ (Score), one row per observation."
+"After the transform, how are Engineering, Science and Humanity coded as $(X_S, X_H)$?","Engineering = [0,0], Science = [1,0], Humanity = [0,1]."
+What is the DM (data mining) approach to categorical predictors?,One-hot encoding (`get_dummies()`): $k$ categories become $k$ columns.
+"How does one-hot encoding code Engineering, Science and Humanity?","Engineering = [1,0,0], Science = [0,1,0], Humanity = [0,0,1]."
+Write the regression model for Score with College coded by two dummies.,$Score = \beta_0 + \beta_1 X_S + \beta_2 X_H + \text{error}$.
+"In Python, how is the dummy transform done automatically?",Apply `astype('category')` to the variable; statsmodels then creates the dummies itself.
+"If Python builds the dummies automatically, why learn the transform?",It is needed to understand the Python output: what each coefficient means.
+"For $Y = 56 + 5.25X_H + 2.8X_S + \text{error}$, what are the predicted scores for Eng, Hum and Sci?","Eng = 56, Hum = 61.25, Sci = 58.8."
+"In $Y = 56 + 5.25X_H + 2.8X_S$, what does the intercept 56 represent?","The mean score of the baseline group, Engineering."
+"In $Y = 56 + 5.25X_H + 2.8X_S$, what does 5.25 represent?","Humanity scores 5.25 more on average than the baseline, Engineering."
+"In the machines data, how were the observations collected?","Six workers were chosen randomly to operate each machine (A, B, C) three times."
+What are the three variables in the machines data?,"`Worker` (unique worker identifier), `Machine` (machine brand), `score` (productivity score)."
+Why must `Worker` be converted with `astype('category')` even though it is stored as 1–6?,"The numbers are only staff IDs; treated as numeric, the model would fit a meaningless single slope on the ID."
+"With 6 workers and 3 machines, how many dummies enter `score ~ Worker + Machine`?","Five worker dummies (W2–W6) and two machine dummies (MB, MC)."
+What are the baseline worker and machine in `score ~ Worker + Machine`?,Worker 1 and Machine A.
+Write the machines model with dummies.,$score = \beta_0 + \beta_1 W_2 + \beta_2 W_3 + \beta_3 W_4 + \beta_4 W_5 + \beta_5 W_6 + \beta_6 M_B + \beta_7 M_C + \text{error}$.
+Which statsmodels call fits the machines model without interaction?,"`smf.ols('score ~ Worker + Machine', data=machines_data).fit()`"
+How does the statsmodels output name the dummy for Machine C?,`Machine[T.C]` (and `Worker[T.2]` … `Worker[T.6]` for the workers).
+"In the machines output, what does the intercept 53.6167 mean?",The predicted score of the baseline combination: Worker 1 on Machine A.
+"In the machines output, how is `Machine[T.C]` = 13.9167 interpreted?","For the same worker, Machine C scores 13.92 higher on average than Machine A."
+"In the machines output, `Worker[T.2]` has $p = 0.056$. What is the conclusion at the 5% level?","Not significant: no evidence that Worker 2 differs from Worker 1 (its 95% CI, −5.922 to 0.078, contains 0)."
+What assumption does linear regression make that polynomials relax?,"That the relationship between $X$ and $Y$ is linear; when it does not hold, squares, cubes, … of the data can be included."
+Write the quadratic model for mileage on horsepower.,$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \text{error}$.
+Which dataset does the lecture use for the polynomial and interaction examples?,"""Auto"" from the textbook's Python package ISLP."
+How do you write a squared term in a statsmodels formula?,"Wrap it in `I()`: `smf.ols('y ~ x + I(x**2)', data=data).fit()`."
+What does the `I()` function do in a formula?,Tells the formula processor to treat the operators inside it as ordinary maths rather than formula operators.
+"In a formula, what do `~`, `+` and `- 1` do?",`~` separates $Y$ (left) from the predictors (right); `+` adds a variable; `- 1` removes the intercept.
+What is the difference between `y ~ x1:x2` and `y ~ x1*x2`?,`x1:x2` includes only the product $x_1 \times x_2$; `x1*x2` expands to `x1 + x2 + x1:x2`.
+What does the lecture's pro-tip suggest instead of writing many `I()` terms for a high-order polynomial?,"`poly()`, e.g. `poly(x2, degree=2, raw=True)`, to generate the polynomial terms automatically."
+What does wrapping a variable in `C()` do in a formula?,"Treats it as categorical (one-hot encoded), with the first alphabetical category dropped as the baseline."
+When do you wrap a column name in `Q()`?,"When it contains spaces or special characters, e.g. `Q('dependent var') ~ Q('independent var')`."
+Can NumPy functions be used directly inside a formula string?,"Yes, vectorised functions work, e.g. `np.log(y) ~ x1 + np.sqrt(x2)`."
+Which transformations does the lecture list beyond polynomials?,$Y = ae^{bX}$ or $\log Y = a + bX$; $Y = aX^b$ or $\log Y = a + b\log X$; and $Y = a + \frac{b}{X}$.
+"Mathematically, what is the interaction term of $A$ and $B$?",The product $AB$.
+How does the printer-and-ink example illustrate an interaction?,"Value(Printer) + Value(Ink) < Value(Printer + Ink): a complementary effect, and the extra is the interaction."
+Write the interaction model for mileage with horsepower $A$ and weight $B$.,$Y = \beta_0 + \beta_1 A + \beta_2 B + \beta_3 AB + \text{error}$.
+How is the interaction model written in statsmodels?,"`smf.ols('y~A+B+A:B', data=data).fit()` — the interaction term is `A:B`."
+$A$ has 3 categories and $B$ has 4. How many interaction terms are there?,$2 \times 3 = 6$: $(3-1)$ dummies of $A$ times $(4-1)$ dummies of $B$.
+Give the two ways the lecture fits Worker × Machine with interaction.,"`score ~ Worker + Machine + Worker:Machine` (after `astype('category')`), or `score ~ C(Worker)*Machine`."
+"What terms does `y~A*B*C` fit, and what does `y~A:B:C` fit?","`A*B*C`: all terms (main effects, all two-way interactions and $ABC$); `A:B:C`: only $ABC$."
+"Which levels of interaction does the lecture list, and which is less important?","Main effects, second-order, third-order and higher-order interactions; higher-order ones are less important."

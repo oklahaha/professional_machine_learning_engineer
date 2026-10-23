@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 4b Model Building</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m4b">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 4b</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 4b · Source: L4b_Model_building_L02_Complete.pdf (28 slides)</p>
+<h1>Model Building Techniques</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>點解 categorical variable 唔可以直接乘 \( \beta \)；用 <b>dummy variables</b>：k 個 categories → \( k-1 \) 個 dummies（statistics approach）vs one-hot encoding k 個（DM approach）。</li>
+    <li>Data 要用 <b>good format</b>（long format：所有 Y 喺同一個 column）。</li>
+    <li>讀有 categorical predictors 嘅 output：intercept = <b>baseline</b> group，每個 dummy coefficient = 同 baseline 嘅差。</li>
+    <li>Python：<code>astype('category')</code>、<code>C()</code>、<code>smf.ols('score ~ Worker + Machine', ...)</code>。</li>
+    <li><b>Polynomials</b>：\( Y=\beta_0+\beta_1X+\beta_2X^2+\text{error} \)，formula 入面要用 <code>I(x**2)</code>；log / reciprocal transformations。</li>
+    <li><b>Interaction terms</b>：\( Y=\beta_0+\beta_1A+\beta_2B+\beta_3AB+\text{error} \)；<code>A:B</code> vs <code>A*B</code>；categorical × categorical 嘅 interaction 數目。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>k 個 categories → <b>\( k-1 \)</b> 個 dummy variables（2 → 1、3 → 2、7 → 6）；冇 dummy 嗰個係 baseline。</li>
+    <li>\( Y = 56 + 5.25X_H + 2.8X_S \)：Eng = 56、Hum = 61.25、Sci = 58.8——coefficient = 同 baseline (Eng) 嘅平均差。</li>
+    <li>Machines output：Intercept 53.6167 = Worker 1 用 Machine A；Machine[T.C] = 13.9167 → 同一個 worker，用 C 比 A 平均高 13.92 分。</li>
+    <li>Formula operators：<code>+</code> 加 variable、<code>-</code> 移除（<code>-1</code> 冇 intercept）、<code>:</code> 只有 interaction、<code>*</code> = main effects + interaction；<code>I()</code> 做數學運算。</li>
+    <li>Interaction 嘅意思：A 對 Y 嘅 effect 取決於 B（\( \partial Y/\partial A = \beta_1+\beta_3B \)）；categorical：\( (k_A-1)(k_B-1) \) 個 interaction terms（3 × 4 categories → \( 2\times3=6 \)）。</li>
+  </ol>
+</div>
+
+<h2>1. 點解要 Model building？</h2>
+<p>Slide 1：Lecture 4 嘅 multiple linear regression \( Y=\beta_0+\beta_1X_1+\cdots+\beta_pX_p+\text{error} \) 假設每個 X 都係 numerical、同 Y 係直線關係、而且各自獨立咁影響 Y。現實唔一定咁，所以本講教三種「擴充」model 嘅技巧：</p>
+<table>
+<tr><th>技巧</th><th>解決咩問題</th><th>Formula 寫法</th></tr>
+<tr><td>Categorical predictors（dummy variables）</td><td>X 係類別（college、machine、weekday），唔可以直接乘 \( \beta \)</td><td><code>y ~ C(group)</code></td></tr>
+<tr><td>Quadratic / cubic terms（polynomials）</td><td>X 同 Y 嘅關係係彎曲（non-linear）</td><td><code>y ~ x + I(x**2)</code></td></tr>
+<tr><td>Interaction terms</td><td>A 嘅 effect 會隨 B 改變</td><td><code>y ~ A + B + A:B</code> 或 <code>y ~ A*B</code></td></tr>
+</table>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 4 講過嘅 residual vs fitted plot：見到曲線 pattern = non-linearity → 本講嘅 polynomial terms 就係其中一個補救方法。加 terms 後記得用 Module 4 嘅 out-of-sample RMSE / AIC / BIC 比較 model，避免 overfitting。</p></div>
+
+<h2>2. Categorical predictors：Dummy variables（slides 2–9）</h2>
+<p>Slide 2：model \( Y=\beta_0+\beta_1X_1+\cdots \) 要將 \( \beta_1 \) 乘 \( X_1 \)。如果 \( X_1 = \{\text{Science}, \text{Engineering}, \text{Humanity}\} \)，「\( \beta_1 \times \text{Science} \)」冇意思——<b>categorical variables cannot be multiplied directly by \( \beta_1 \)</b>。解決方法：轉做 0/1 數字。</p>
+
+<h3>2.1 Statistics approach：\( k-1 \) dummy variables（slide 3）</h3>
+<div class="box exam"><span class="label">⭐ Dummy variable 數目</span>
+<table>
+<tr><th>Categories</th><th>例子</th><th>Dummy variables</th></tr>
+<tr><td>2</td><td>Part-time / Full-time</td><td><b>1</b>：\( X_F = 1 \) if Full-time, 0 otherwise</td></tr>
+<tr><td>3</td><td>Eng / Hum / Sci</td><td><b>2</b>：\( X_H = 1 \) if Hum；\( X_S = 1 \) if Sci</td></tr>
+<tr><td>7</td><td>Sun / Mon / … / Sat</td><td><b>6</b>：\( X_{MON} \) 至 \( X_{SAT} \)</td></tr>
+</table>
+<p>規則：<b>k 個 categories → \( k-1 \) 個 dummy variables</b>。冇自己 dummy 嗰個 category（上面嘅 Part-time、Eng、Sun）叫 <b>baseline / reference category</b>，佢嘅所有 dummies 都係 0。</p></div>
+<div class="box tip"><span class="label">💡 點解係 \( k-1 \) 唔係 k？</span><p>知道 \( X_H \) 同 \( X_S \) 之後，Eng 已經確定（兩個都係 0 就係 Eng），第三個 dummy 係多餘嘅資訊。更重要：如果三個 dummies 都放，\( X_E+X_H+X_S = 1 \) 每一行都成立，等於 intercept 嗰欄（全部 1）——X matrix 嘅 columns linearly dependent，\( X'X \) 冇 inverse，Module 4 嘅 \( \hat\beta=(X'X)^{-1}X'Y \) 計唔到。呢個叫 <b>dummy variable trap</b>（perfect multicollinearity）。</p></div>
+
+<h3>2.2 Data format（slides 4–6）</h3>
+<p>Slide 4 <b>Bad format</b>：每個 college 一個 column（wide format），Score (Y) 分散喺三個 column。Slide 5 <b>Good format</b>：<b>All Y should be in the same column</b>——一個 column 係 X = College，一個 column 係 Y = Score（long format），每行一個 observation。</p>
+<table>
+<tr><th>Bad (wide)</th><th>Good (long)</th></tr>
+<tr><td>Engineering: 45, 65, 58<br>Science: 36, 75, 49, 62, 72<br>Humanity: 86, 49, 67, 43</td><td>(Engineering, 45), (Engineering, 65), (Engineering, 58), (Science, 36), …, (Humanity, 43)——共 12 行</td></tr>
+</table>
+<p>Slide 6：Good format transform 之後，College 變成兩個 dummy columns \( (X_S, X_H) \)：</p>
+<table>
+<tr><th>College</th><th>\( X_S \)</th><th>\( X_H \)</th></tr>
+<tr><td>Engineering（baseline）</td><td>0</td><td>0</td></tr>
+<tr><td>Science</td><td>1</td><td>0</td></tr>
+<tr><td>Humanity</td><td>0</td><td>1</td></tr>
+</table>
+<pre><code>import pandas as pd
+# Bad format（wide）→ Good format（long）
+wide = pd.DataFrame({'Engineering': [45, 65, 58, None, None],
+                     'Science':     [36, 75, 49, 62, 72],
+                     'Humanity':    [86, 49, 67, 43, None]})
+df = wide.melt(var_name='College', value_name='Score').dropna()   # 12 行，Y 喺同一個 column</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 pandas：<code>melt()</code>（wide → long）同 <code>pivot()</code>（long → wide）。Good format 就係 “tidy data”：每個 variable 一個 column、每個 observation 一行——亦係 COM6002 relational table 嘅形式。</p></div>
+
+<h3>2.3 DM approach：One-hot encoding（slide 7）</h3>
+<p>Data Mining 嘅做法係 <code>get_dummies()</code>（slide 寫 <code>get_dummy()</code>，pandas 正確名係 <code>pd.get_dummies</code>）＝ <b>one-hot encoding</b>：k 個 categories → k 個 columns，Engineering = [1,0,0]、Science = [0,1,0]、Humanity = [0,0,1]。</p>
+<table>
+<tr><th></th><th>Statistics approach</th><th>DM approach (one-hot)</th></tr>
+<tr><td>Columns 數</td><td>\( k-1 \)</td><td>k</td></tr>
+<tr><td>Engineering</td><td>[0, 0]</td><td>[1, 0, 0]</td></tr>
+<tr><td>Science</td><td>[1, 0]</td><td>[0, 1, 0]</td></tr>
+<tr><td>Humanity</td><td>[0, 1]</td><td>[0, 0, 1]</td></tr>
+<tr><td>用喺</td><td>有 intercept 嘅 regression（避免 dummy variable trap）</td><td>Decision tree、kNN、neural network 等 DM / ML models</td></tr>
+</table>
+<pre><code>pd.get_dummies(df['College'], dtype=int)                    # one-hot：3 columns
+pd.get_dummies(df['College'], drop_first=True, dtype=int)   # k-1：drop 第一個（Engineering）→ Humanity, Science</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 2 Data preprocessing：將 nominal attribute 轉 binary attributes 就係 one-hot encoding。</p></div>
+
+<h3>2.4 Model 同 coefficient 解讀（slides 8–9）</h3>
+<div class="formula">$$ \text{Score} = \beta_0 + \beta_1 X_S + \beta_2 X_H + \text{error} $$</div>
+<p>Slide 8：Python 入面，對 variable 用 <code>astype('category')</code> 之後，transform 會<b>自動</b>做，唔使自己整 dummies。<b>BUT this is important for the understanding of Python output</b>——你要識讀出嚟嘅 coefficients 代表咩。</p>
+<p>Slide 9 嘅 fitted model：</p>
+<div class="formula">$$ \hat Y = 56 + 5.25X_H + 2.8X_S $$</div>
+<div class="box exam"><span class="label">⭐ 逐個 case 代入（slide 9）</span>
+<table>
+<tr><th>Case</th><th>\( X_H \)</th><th>\( X_S \)</th><th>\( \hat Y \)</th></tr>
+<tr><td>Eng</td><td>0</td><td>0</td><td>56</td></tr>
+<tr><td>Hum</td><td>1</td><td>0</td><td>56 + 5.25 = 61.25</td></tr>
+<tr><td>Sci</td><td>0</td><td>1</td><td>56 + 2.8 = 58.8</td></tr>
+</table>
+<ul>
+<li><b>Intercept 56</b> = baseline group（Engineering）嘅平均 score。</li>
+<li><b>\( \hat\beta_H = 5.25 \)</b>：Humanity 學生平均比 Engineering <b>高 5.25 分</b>。</li>
+<li><b>\( \hat\beta_S = 2.8 \)</b>：Science 平均比 Engineering 高 2.8 分。</li>
+<li>Hum vs Sci：\( 5.25 - 2.8 = 2.45 \)（唔使再 fit，直接相減）。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 驗證：只有一個 categorical X 時，fitted value = 每組嘅 sample mean</span>
+<p>用 slides 4–5 嘅數據：Eng \( (45+65+58)/3 = 56 \)；Sci \( (36+75+49+62+72)/5 = 294/5 = 58.8 \)；Hum \( (86+49+67+43)/4 = 245/4 = 61.25 \)。完全同 slide 9 一樣——OLS 喺每組入面最小化 squared error，答案就係組平均。所以 coefficient = 組平均 − baseline 平均：\( 61.25 - 56 = 5.25 \)、\( 58.8 - 56 = 2.8 \)。</p>
+<pre><code>import statsmodels.formula.api as smf
+model = smf.ols('Score ~ College', data=df).fit()   # College 係 string，自動當 categorical
+print(model.params)
+# Intercept              56.00
+# College[T.Humanity]     5.25
+# College[T.Science]      2.80</code></pre></div>
+<div class="box warn"><span class="label">⚠️ 易錯：Dummy coefficient 唔係「該組嘅平均」</span><p>\( \hat\beta_H = 5.25 \) 係 Hum <b>同 baseline 嘅差</b>，唔係 Hum 嘅平均（61.25）。而 coefficient 嘅 t-test \( H_0: \beta_H = 0 \) 係測試「Hum 平均 = Eng 平均」，唔係測試 Hum 平均 = 0。換 baseline（例如 Science），所有 coefficients 數值都會變，但 fitted values 唔變。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 3a：只有 2 個 categories（1 個 dummy）時，dummy coefficient 嘅 t-test 等同 pooled-variance two-sample t-test；3 個或以上 categories 時，整個 model 嘅 F-test 就係 one-way ANOVA（\( H_0 \)：所有組平均相等）。</p></div>
+<p>Slide 10 只係一張插圖（實驗室人員操作機器），引入下一個例子，冇額外內容。</p>
+
+<h2>3. Real data：Machines（slides 11–16）</h2>
+<p>Slide 11：<b>Six workers were chosen randomly to operate each machine three times.</b>（Source：Pinheiro and Bates，R package MEMSS）</p>
+<ul>
+<li><code>Worker</code>：worker 嘅 unique identifier（1–6，staff ID）</li>
+<li><code>Machine</code>：machine brand（A / B / C）</li>
+<li><code>score</code>：productivity score（Y）</li>
+</ul>
+<p>總共 \( 6 \times 3 \times 3 = 54 \) 個 observations。</p>
+
+<h3>3.1 Worker 雖然係數字，都係 categorical（slides 12–14）</h3>
+<p>Slide 12 good format：每行 (Worker, Machine, Score)。Worker 用 1–6 表示，但 1、2、3 只係 <b>ID label</b>——Worker 6 唔係「Worker 1 嘅六倍」。如果唔處理，Python 會當 Worker 係 numerical，只 fit 一條 slope（每加 1 號 worker，score 變幾多），完全冇意思。所以要：</p>
+<pre><code>machines_data['Worker'] = machines_data['Worker'].astype('category')</code></pre>
+<p>Slide 13 transform 後：Worker 6 levels → 5 dummies（W2–W6，Python 叫 <code>T.2</code>–<code>T.6</code>），Machine 3 levels → 2 dummies（MB、MC，即 <code>T.B</code>、<code>T.C</code>）。Baseline = Worker 1、Machine A。</p>
+<div class="formula">$$ \text{score} = \beta_0 + \beta_1W_2 + \beta_2W_3 + \beta_3W_4 + \beta_4W_5 + \beta_5W_6 + \beta_6M_B + \beta_7M_C + \text{error} $$</div>
+<div class="box exam"><span class="label">⭐ Parameter 數目</span><p>1 (intercept) + \( (6-1) \) + \( (3-1) \) = <b>8</b> 個 \( \beta \)；Df Model = 7（唔計 intercept）；Df Residuals = \( 54 - 8 = 46 \)。</p></div>
+<div class="box note"><span class="label">📝 註</span><p>Slides 12–13 表入面嘅 score（45、65、58…）同 college 例子嘅數字一樣，應該係示範 format 用嘅；slide 16 顯示嘅真實 <code>machines_data</code> 頭幾行係 Worker 1, Machine A：52.0、52.8、53.1。</p></div>
+
+<h3>3.2 Python program（slide 15）</h3>
+<pre><code>import pandas as pd
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+machines_data = pd.read_csv("machines.csv")
+machines_data['Worker'] = machines_data['Worker'].astype('category')   # ID → categorical
+model = smf.ols('score ~ Worker + Machine', data=machines_data).fit()  # Machine 係 string，自動 categorical
+print(model.summary())</code></pre>
+
+<h3>3.3 讀 output（slide 16）</h3>
+<table>
+<tr><th>項目</th><th>值</th></tr>
+<tr><td>No. Observations / Df Residuals / Df Model</td><td>54 / 46 / 7</td></tr>
+<tr><td>R-squared / Adj. R-squared</td><td>0.867 / 0.847</td></tr>
+<tr><td>F-statistic / Prob (F)</td><td>42.83 / 4.61e-18</td></tr>
+<tr><td>AIC / BIC</td><td>284.9 / 300.8</td></tr>
+</table>
+<table>
+<tr><th></th><th>coef</th><th>std err</th><th>t</th><th>P&gt;|t|</th><th>[0.025</th><th>0.975]</th></tr>
+<tr><td>Intercept</td><td>53.6167</td><td>1.217</td><td>44.059</td><td>0.000</td><td>51.167</td><td>56.066</td></tr>
+<tr><td>Worker[T.2]</td><td>−2.9222</td><td>1.490</td><td>−1.961</td><td>0.056</td><td>−5.922</td><td>0.078</td></tr>
+<tr><td>Worker[T.3]</td><td>5.2111</td><td>1.490</td><td>3.496</td><td>0.001</td><td>2.211</td><td>8.211</td></tr>
+<tr><td>Worker[T.4]</td><td>−1.3333</td><td>1.490</td><td>−0.895</td><td>0.376</td><td>−4.333</td><td>1.667</td></tr>
+<tr><td>Worker[T.5]</td><td>1.8111</td><td>1.490</td><td>1.215</td><td>0.231</td><td>−1.189</td><td>4.811</td></tr>
+<tr><td>Worker[T.6]</td><td>−10.3333</td><td>1.490</td><td>−6.933</td><td>0.000</td><td>−13.333</td><td>−7.333</td></tr>
+<tr><td>Machine[T.B]</td><td>7.9667</td><td>1.054</td><td>7.559</td><td>0.000</td><td>5.845</td><td>10.088</td></tr>
+<tr><td>Machine[T.C]</td><td>13.9167</td><td>1.054</td><td>13.205</td><td>0.000</td><td>11.795</td><td>16.038</td></tr>
+</table>
+<p>Slide 16 用紅框圈住 <code>Worker[T.2]</code> … <code>Machine[T.C]</code>——即係 slide 13 嘅 dummy columns，<code>T.</code> = Treatment coding（同 baseline 比較）。</p>
+<div class="box exam"><span class="label">⭐ 點樣解讀（考試寫法）</span>
+<ul>
+<li><b>Intercept 53.6167</b>：baseline 組合（Worker 1 用 Machine A）嘅預測 score。</li>
+<li><b>Machine[T.B] 7.9667</b>：<b>同一個 worker</b>（holding worker constant），用 Machine B 比 Machine A 平均高 7.97 分；\( p = 0.000 \) → 顯著。</li>
+<li><b>Machine[T.C] 13.9167</b>：Machine C 比 A 平均高 13.92 分；C vs B：\( 13.9167 - 7.9667 = 5.95 \)。</li>
+<li><b>Worker[T.6] −10.3333</b>：喺同一部機上，Worker 6 平均比 Worker 1 低 10.33 分（顯著，CI \([-13.333, -7.333]\) 唔包 0）。</li>
+<li><b>Worker[T.2] −2.9222</b>，\( p = 0.056 &gt; 0.05 \)：喺 5% level，冇足夠證據話 Worker 2 同 Worker 1 唔同（CI \([-5.922, 0.078]\) 包 0）。T.4、T.5 亦唔顯著。</li>
+<li>\( t = \text{coef}/\text{std err} \)：\( 7.9667/1.054 = 7.559 \) ✔</li>
+</ul></div>
+<div class="box exam"><span class="label">⭐ 手計 prediction</span>
+<p>Worker 3 用 Machine C：\( 53.6167 + 5.2111 + 13.9167 = 72.7445 \)。<br>Worker 6 用 Machine B：\( 53.6167 - 10.3333 + 7.9667 = 51.2501 \)。<br>Worker 1 用 Machine A：只有 intercept = 53.6167。</p></div>
+<div class="box tip"><span class="label">💡 呢個 model 隱含嘅假設</span><p>Machine 嘅 effect 對所有 workers 一樣（例如 C 永遠比 A 高 13.92，唔理邊個 worker）——即係<b>冇 interaction</b>。如果某啲 worker 特別擅長某部機，就要加 Worker:Machine interaction（見 §5.3）。</p></div>
+
+<h2>4. Polynomials 同 transformations（slides 17–22）</h2>
+<p>Slide 17：multiple linear regression 假設 linear relationship，但 <b>linear relationship does not always hold</b>。呢個時候可以加原數據嘅 squares、cubes……</p>
+<div class="formula">$$ Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \text{error} \qquad (Y = \text{mileage},\ X = \text{horsepower}) $$</div>
+<p>Slide 18：用教科書 Python package <b>ISLP</b> 入面嘅 dataset “Auto”。<b>If a transformed value is used, the formula need to be bracketed to avoid confusion</b>：</p>
+<pre><code>model = smf.ols('y ~ x + I(x**2)', data=data).fit()   # smf 可以用 string formula 指定 model
+# Auto 例子（ISLP）：
+# from ISLP import load_data
+# Auto = load_data('Auto')
+# model = smf.ols('mpg ~ horsepower + I(horsepower**2)', data=Auto).fit()</code></pre>
+<div class="box exam"><span class="label">⭐ Polynomial regression 仍然係 “linear” regression</span><p>“Linear” 指 model 對 <b>parameters \( \beta \)</b> 係線性，唔係對 X。將 \( X^2 \) 當成另一個 predictor \( X_2 \)，就係普通 multiple linear regression，OLS / \( \hat\beta=(X'X)^{-1}X'Y \) 照用。</p></div>
+<div class="box tip"><span class="label">💡 Quadratic term 點解讀</span><p>X 嘅 effect 唔再係常數：\( \dfrac{dY}{dX} = \beta_1 + 2\beta_2X \)。\( \beta_2 &gt; 0 \) → 向上彎（U 形）；\( \beta_2 &lt; 0 \) → 向下彎（∩ 形），轉折點喺 \( X = -\beta_1/(2\beta_2) \)。例如（假設數字）\( \hat Y = 10 + 4X - 0.5X^2 \)：\( X = 4 \) 時 Y 最高；\( X &lt; 4 \) 時 X 越大 Y 越大，\( X &gt; 4 \) 之後反而下降。所以唔好單獨解讀 \( \beta_1 \)。</p></div>
+
+<h3>4.1 Formula syntax（slides 19–21）</h3>
+<div class="box exam"><span class="label">⭐ Basic formula structure &amp; common operators（slide 19）</span>
+<pre><code>model = smf.ols(formula="y ~ x1 + x2", data=df).fit()   # y = dependent；x1, x2 = independent</code></pre>
+<table>
+<tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Equivalent expansion / result</th></tr>
+<tr><td><code>~</code></td><td>分隔 dependent（左）同 independent variables（右）</td><td><code>y ~ x1</code></td><td></td></tr>
+<tr><td><code>+</code></td><td>Add variable</td><td><code>y ~ x1 + x2</code></td><td>包括 \( x_1 \) 同 \( x_2 \)</td></tr>
+<tr><td><code>-</code></td><td>Remove variable or intercept</td><td><code>y ~ x1 - 1</code></td><td>包括 \( x_1 \)，<b>without an intercept</b></td></tr>
+<tr><td><code>:</code></td><td>Interaction term</td><td><code>y ~ x1:x2</code></td><td><b>只有</b> product \( x_1 \times x_2 \)</td></tr>
+<tr><td><code>*</code></td><td>Main effects and interactions</td><td><code>y ~ x1*x2</code></td><td><code>y ~ x1 + x2 + x1:x2</code></td></tr>
+</table></div>
+<p>Slide 20：<b><code>I()</code> function</b> 叫 formula processor 將括號入面嘅 operators 當成<b>普通數學運算</b>，唔係 formula operators：</p>
+<pre><code># 包括 x1、x2 同 x2 嘅平方
+model = smf.ols(formula="y ~ x1 + x2 + I(x2**2)", data=df).fit()</code></pre>
+<div class="box warn"><span class="label">⚠️ 唔加 I() 會靜靜雞錯</span><p>喺 formula 入面 <code>**</code> 係 formula operator（interaction 嘅次方），<code>x**2</code> 會被理解成 <code>x</code> 同自己嘅 interaction ＝ 就係 <code>x</code>。我喺 statsmodels 0.15 試過：<code>'y ~ x + x**2'</code> 只 fit 到 Intercept 同 x，<b>冇報錯</b>、冇 \( x^2 \)。同樣 <code>y ~ x1 + x2</code> 唔等於 <code>y ~ I(x1 + x2)</code>：前者兩個 predictors，後者一個（兩者之和）。</p></div>
+<p>Slide 20 Pro-Tip：fit 高次 polynomial（cubic、quartic）寫好多個 <code>I()</code> 好麻煩，可以用 <code>poly()</code> 生成 orthogonal polynomials：</p>
+<pre><code># 自動生成 x2 嘅 linear 同 quadratic terms
+model = smf.ols(formula="y ~ x1 + poly(x2, degree=2, raw=True)", data=df).fit()</code></pre>
+<div class="box warn"><span class="label">⚠️ poly() 唔係個個版本都用到</span><p>我喺 statsmodels 0.15（預設用 patsy 處理 formula）試 <code>poly(x, degree=2, raw=True)</code>，出 <code>NameError: name 'poly' is not defined</code>。如果你部機都係咁，就照用 <code>I(x**2) + I(x**3)</code>。另外 <code>raw=True</code> 係直接用 \( x, x^2 \)；<code>raw=False</code> 先係 orthogonal polynomials。</p></div>
+<div class="box exam"><span class="label">⭐ Categorical variables &amp; functions（slide 21）</span>
+<ul>
+<li><b><code>C()</code></b>：text strings 或者包喺 <code>C()</code> 入面嘅 variables 自動當 categorical（one-hot encoded），<b>first alphabetical category dropped as the baseline intercept</b>。例：<code>y ~ C(group)</code>；machines 例子可以寫 <code>C(Worker)</code> 代替 <code>astype('category')</code>。</li>
+<li><b>NumPy / custom functions</b>：可以直接喺 formula 用 vectorized functions，例：<code>np.log(y) ~ x1 + np.sqrt(x2)</code>。</li>
+<li><b><code>Q()</code></b>：column 名有空格或特殊字符時用，例：<code>Q('dependent var') ~ Q('independent var')</code>。</li>
+</ul></div>
+<div class="box tip"><span class="label">💡 Baseline = 第一個 alphabetical category</span><p>College 例子：Engineering &lt; Humanity &lt; Science（字母次序）→ Engineering 係 baseline，所以 output 係 <code>College[T.Humanity]</code>、<code>College[T.Science]</code>。Machine：A 係 baseline。想換 baseline：<code>C(College, Treatment('Science'))</code> → 得到 Intercept 58.8、Engineering −2.8、Humanity 2.45（我實際跑過）。</p></div>
+
+<h3>4.2 Beyond polynomials（slide 22）</h3>
+<table>
+<tr><th>Non-linear model</th><th>Transform 成 linear</th><th>smf formula</th></tr>
+<tr><td>\( Y = a\,e^{bX} \)（exponential）</td><td>\( \log Y = \log a + bX \)</td><td><code>np.log(y) ~ x</code></td></tr>
+<tr><td>\( Y = aX^b \)（power）</td><td>\( \log Y = \log a + b\log X \)</td><td><code>np.log(y) ~ np.log(x)</code></td></tr>
+<tr><td>\( Y = a + \dfrac{b}{X} \)（reciprocal）</td><td>本身已經對 a、b 線性，predictor 係 \( 1/X \)</td><td><code>y ~ I(1/x)</code></td></tr>
+</table>
+<p>（Slide 寫 \( \log Y = a + bX \)，嗰度嘅 a 其實係 transform 後嘅 intercept \( \log a \)。）</p>
+<div class="box tip"><span class="label">💡 Log transform 嘅解讀</span><p>\( \log Y = a + bX \)：X 加 1，Y 大約變 \( 100b\% \)（b 細嗰陣）。\( \log Y = a + b\log X \)：X 加 1%，Y 大約變 \( b\% \)——即 elasticity。Log Y 亦常用嚟處理 Module 4 提過嘅 heteroskedasticity（漏斗形 residuals）。注意 log 只適用於正數。</p></div>
+
+<h2>5. Interaction terms（slides 23–28）</h2>
+<h3>5.1 咩係 interaction（slide 23）</h3>
+<p>數學上，A 同 B 嘅 interaction term 就係 <b>AB</b>（相乘）。Slide 23 用打印機做例子：</p>
+<div class="formula">$$ \text{Value(Printer)} + \text{Value(Ink)} \;&lt;\; \text{Value(Printer + Ink)} $$</div>
+<p>單獨一部 printer（冇墨）或者單獨一盒 ink（冇機）價值都好低，合埋先有用——<b>complementary effect</b>。合埋多出嚟嗰部分（<b>the extra</b>）就係 <b>interaction</b>。</p>
+<div class="box exam"><span class="label">⭐ 冇 interaction vs 有 interaction</span>
+<table>
+<tr><th></th><th>冇 interaction</th><th>有 interaction</th></tr>
+<tr><td>Model</td><td>\( Y=\beta_0+\beta_1A+\beta_2B \)</td><td>\( Y=\beta_0+\beta_1A+\beta_2B+\beta_3AB \)</td></tr>
+<tr><td>A 對 Y 嘅 effect</td><td>\( \beta_1 \)（固定，唔理 B 係幾多）</td><td>\( \beta_1+\beta_3B \)（隨 B 改變）</td></tr>
+<tr><td>Effect 點樣加埋</td><td>Additive：各自貢獻相加</td><td>合埋有額外（\( \beta_3&gt;0 \)，complementary）或者抵消（\( \beta_3&lt;0 \)）</td></tr>
+</table></div>
+<div class="box tip"><span class="label">💡 數字例子（假設數字，唔係 slides 嘅 output）</span><p>\( \hat Y = 10 + 2A + 3B + 4AB \)。<br>\( B = 0 \)：A 每加 1，Y 加 2。\( B = 1 \)：A 每加 1，Y 加 \( 2 + 4 = 6 \)。<br>A = 1、B = 1 時：\( 10 + 2 + 3 + 4 = 19 \)；如果只係 additive（冇 \( 4AB \)）就係 15——多出嘅 4 就係 interaction（printer + ink 嘅 “extra”）。</p></div>
+
+<h3>5.2 Continuous × continuous（slide 24）</h3>
+<div class="formula">$$ Y = \beta_0 + \beta_1A + \beta_2B + \beta_3AB + \text{error} \qquad (Y=\text{mileage},\ A=\text{horsepower},\ B=\text{weight}) $$</div>
+<pre><code># 同樣用 ISLP 嘅 Auto dataset；Python 入面 interaction term 寫 A:B
+model = smf.ols('y~A+B+A:B', data=data).fit()
+# 等同 smf.ols('y~A*B', data=data).fit()
+# Auto：smf.ols('mpg ~ horsepower + weight + horsepower:weight', data=Auto).fit()</code></pre>
+<p>直覺：horsepower 對 mileage 嘅影響，可能取決於架車有幾重——\( \beta_3 \) 量度呢個「取決於」。Slides 冇提供呢個 model 嘅 output，所以呢度唔列數字。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>加 interaction 時通常要保留 main effects（用 <code>A*B</code> 或 <code>A+B+A:B</code>），唔好淨係寫 <code>y ~ A:B</code>——後者只有 product 一項，等於假設 A、B 各自冇 effect。有 interaction 時，\( \beta_1 \) 只代表 \( B = 0 \) 時 A 嘅 effect，唔可以再講「A 每加 1，Y 變 \( \beta_1 \)」。</p></div>
+
+<h3>5.3 Categorical × categorical（slides 25–27）</h3>
+<p>Slide 25：用 <code>statsmodels.formula.api</code>，</p>
+<ul>
+<li>A 有 3 categories（Eng / Sci / Hum）→ 2 個 dummy variables（\( A_S, A_H \)）</li>
+<li>B 有 4 categories（Year 1 / 2 / 3 / 4）→ 3 個 dummy variables（\( B_2, B_3, B_4 \)）</li>
+<li>Interaction terms（最少）\( = 2 \times 3 = \) <b>6</b>：\( A_SB_2, A_SB_3, A_SB_4, A_HB_2, A_HB_3, A_HB_4 \)</li>
+<li>Python output 命名：例如 \( A_SB_2 \) 會顯示成 <code>A[T.S]:B[T.2]</code>（slide 寫 “T.S T.2”）</li>
+</ul>
+<div class="box exam"><span class="label">⭐ 數 terms 公式</span>
+<p>A 有 \( k_A \) 個 categories、B 有 \( k_B \) 個：</p>
+<div class="formula">$$ \underbrace{1}_{\text{intercept}} + \underbrace{(k_A-1)}_{A} + \underbrace{(k_B-1)}_{B} + \underbrace{(k_A-1)(k_B-1)}_{A:B} = k_A k_B $$</div>
+<p>College × Year：\( 1 + 2 + 3 + 6 = 12 = 3 \times 4 \)。Machines（Worker × Machine）：\( 1 + 5 + 2 + 10 = 18 = 6 \times 3 \)——即每個 worker-machine 組合有自己嘅平均。每個組合有 3 次重複，所以 residual df = \( 54 - 18 = 36 \)。</p></div>
+<p>Slides 26–27：同一個 machines data 加 interaction——即係問「Machine 嘅 effect 係咪對每個 worker 都一樣？」</p>
+<pre><code>machines_data = pd.read_csv("machines.csv")
+# Approach 1：先轉 category，再明確寫 main effects + interaction
+machines_data['Worker'] = machines_data['Worker'].astype('category')
+model = smf.ols('score ~ Worker + Machine + Worker:Machine', data=machines_data).fit()
+model.summary()
+# Approach 2：用 C() 同 *，一行搞掂（結果一樣）
+model = smf.ols('score ~ C(Worker)*Machine', data=machines_data).fit()</code></pre>
+<div class="box tip"><span class="label">💡 點解呢個 data 可以 fit interaction？</span><p>因為每個 worker 喺每部機都做咗 <b>3 次</b>。如果每個組合只得 1 個 observation，18 個 parameters fit 18 個數據點會 perfect fit（residual df = 0），冇辦法估計 error，亦做唔到 test。Slides 冇提供 interaction model 嘅 output。</p></div>
+
+<h3>5.4 Higher-order interactions（slide 28）</h3>
+<pre><code>y ~ A*B*C     # All terms：A + B + C + A:B + A:C + B:C + A:B:C
+y ~ A:B:C     # Only ABC（只有三者相乘一項）</code></pre>
+<table>
+<tr><th>層次</th><th>A, B, C 嘅例子</th><th>數目</th></tr>
+<tr><td>Main effects</td><td>A, B, C</td><td>3</td></tr>
+<tr><td>Second-order interactions</td><td>AB, AC, BC</td><td>3</td></tr>
+<tr><td>Third-order interactions</td><td>ABC</td><td>1</td></tr>
+<tr><td>Higher-order interactions</td><td>（4 個或以上 variables 相乘）</td><td><b>less important</b></td></tr>
+</table>
+<div class="box tip"><span class="label">💡 點解 higher-order 冇咁重要</span><p>Terms 數目增長得好快（categorical 仲要乘 dummy 數），parameters 多咗 → Module 4 講嘅 overfitting、要好多數據；而且三個以上 variables 嘅 interaction 好難解讀。實務上通常只考慮 main effects 同 second-order interactions，再用 AIC / BIC / out-of-sample RMSE 決定留唔留。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Variable “Region” 有 North / East / South / West / Central 5 個 categories。Regression（有 intercept）要幾多個 dummy variables？如果用 one-hot encoding 全部放入去會點？</summary><p>\( 5 - 1 = 4 \) 個。放晒 5 個 + intercept：5 個 dummies 每行加埋都係 1，同 intercept column 一樣 → perfect multicollinearity（dummy variable trap），\( X'X \) 冇 inverse，OLS 冇唯一解。Python <code>C(Region)</code> 會自動 drop 第一個 alphabetical category（Central）做 baseline。</p></details>
+<details class="q"><summary>Q2. \( \hat Y = 70 - 4X_B + 6X_C \)（baseline = Group A）。計三組嘅預測值，並解讀 \( -4 \)。B 同 C 差幾多？</summary><p>A = 70；B = 66；C = 76。\( -4 \)：Group B 平均比 baseline Group A 低 4 單位。C − B = \( 6 - (-4) = 10 \)。</p></details>
+<details class="q"><summary>Q3. 數據：Group P：10, 14；Group Q：20, 22, 24；Group R：5, 7。用 <code>y ~ C(group)</code> fit，寫出 fitted equation。</summary><p>組平均：P = 12、Q = 22、R = 6。Baseline = P（字母最前）。\( \hat Y = 12 + 10X_Q - 6X_R \)。</p></details>
+<details class="q"><summary>Q4. 用 machines output（slide 16）：預測 Worker 5 用 Machine C 嘅 score；Worker 3 同 Worker 6 用同一部機，差幾多？</summary><p>Worker 5, C：\( 53.6167 + 1.8111 + 13.9167 = 69.3445 \)。Worker 3 − Worker 6 = \( 5.2111 - (-10.3333) = 15.5444 \)（冇 interaction，所以任何一部機都係呢個差）。</p></details>
+<details class="q"><summary>Q5. Worker[T.2] 嘅 coef = −2.9222，\( p = 0.056 \)，95% CI \([-5.922, 0.078]\)。用 \( \alpha = 0.05 \) 寫結論。</summary><p>\( H_0: \beta = 0 \)（Worker 2 同 Worker 1 喺同一部機嘅平均 score 一樣）。\( p = 0.056 &gt; 0.05 \)，CI 包 0 → do not reject \( H_0 \)：喺 5% level 冇足夠證據話 Worker 2 同 Worker 1 有分別。</p></details>
+<details class="q"><summary>Q6. 點解 <code>Worker</code>（數值 1–6）要 <code>astype('category')</code>？唔做會 fit 咗咩 model？</summary><p>Worker 號碼只係 ID label，冇大小意義。唔轉嘅話會當 numerical，只 fit 一個 slope：\( \text{score} = \beta_0 + \beta_1\cdot\text{Worker} + \cdots \)，即假設 worker 號碼每加 1，score 線性變 \( \beta_1 \)——毫無意義，亦只用 1 個 parameter 而唔係 5 個。</p></details>
+<details class="q"><summary>Q7. 以下 formula 各自 fit 咗咩 terms？(a) <code>y ~ x + x**2</code> (b) <code>y ~ x + I(x**2)</code> (c) <code>y ~ a*b</code> (d) <code>y ~ a:b - 1</code></summary><p>(a) Intercept、x——<code>**</code> 被當 formula operator，冇 \( x^2 \)！(b) Intercept、x、\( x^2 \)。(c) Intercept、a、b、a:b。(d) 只有 a × b，冇 intercept。</p></details>
+<details class="q"><summary>Q8. \( \hat Y = 5 + 1.5A + 2B - 0.5AB \)。B = 0 同 B = 4 時，A 加 1 單位 Y 變幾多？呢個 interaction 係 complementary 定係抵消？</summary><p>A 嘅 effect = \( 1.5 - 0.5B \)。B = 0：+1.5；B = 4：\( 1.5 - 2 = -0.5 \)。\( \beta_3 &lt; 0 \)：B 越大，A 嘅正面 effect 越細甚至反轉——抵消（唔係 complementary）。</p></details>
+<details class="q"><summary>Q9. A = Faculty（4 categories），B = Gender（2），C = Mode（Full-time / Part-time）。<code>y ~ A*B*C</code> 有幾多個 parameters（包括 intercept）？</summary><p>Dummies：A 3、B 1、C 1。Main：\( 3+1+1=5 \)；second-order：\( AB=3,\ AC=3,\ BC=1 \)，共 7；third-order：\( ABC = 3 \)。總數 \( 1+5+7+3 = 16 = 4\times2\times2 \)。</p></details>
+<details class="q"><summary>Q10. 寫出 \( Y = aX^b \) 嘅 linearised form 同 smf formula。如果 fit 出 slope = 0.8，點解讀？</summary><p>\( \log Y = \log a + b\log X \)；<code>smf.ols('np.log(y) ~ np.log(x)', data=df).fit()</code>。\( b = 0.8 \)：X 增加 1%，Y 大約增加 0.8%（elasticity）。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Categorical X 唔可以直接乘 \( \beta \) → dummy variables；k categories → <b>\( k-1 \)</b> dummies（2→1、3→2、7→6）；全 0 嗰個 = baseline。</li>
+<li>One-hot（DM，<code>pd.get_dummies</code>）= k columns；regression 有 intercept 時放 k 個 → dummy variable trap（\( X'X \) singular）。<code>drop_first=True</code> → \( k-1 \)。</li>
+<li>Good format：所有 Y 喺同一 column（long format，<code>melt()</code>）。</li>
+<li>\( \hat Y = 56 + 5.25X_H + 2.8X_S \)：Eng 56、Hum 61.25、Sci 58.8；intercept = baseline 平均，dummy coef = 同 baseline 嘅差（= 組平均差）。</li>
+<li>Python：<code>astype('category')</code> 或 <code>C(var)</code>；baseline = first alphabetical；<code>C(x, Treatment('B'))</code> 換 baseline；output 名 <code>Var[T.level]</code>。</li>
+<li>Machines：<code>score ~ Worker + Machine</code>，8 params，df 46，\( R^2 = 0.867 \)；Intercept 53.6167（W1, A）；B +7.9667、C +13.9167；W6 −10.3333；W2 \( p = 0.056 \) 唔顯著。</li>
+<li>Polynomial：\( Y=\beta_0+\beta_1X+\beta_2X^2 \)，對 \( \beta \) 仍然 linear；<code>I(x**2)</code>（唔加 I() 會靜靜雞冇咗 \( x^2 \)）；effect = \( \beta_1+2\beta_2X \)。</li>
+<li>Operators：<code>~</code> 分 Y/X；<code>+</code> 加；<code>-1</code> 冇 intercept；<code>:</code> 只有 product；<code>*</code> = main + interaction；<code>I()</code> 數學運算；<code>Q()</code> 特殊 column 名；<code>np.log()</code> 可直接用。</li>
+<li>Transform：\( Y=ae^{bX} \to \log Y=\log a+bX \)；\( Y=aX^b \to \log Y=\log a+b\log X \)；\( Y=a+b/X \) 用 <code>I(1/x)</code>。</li>
+<li>Interaction = AB；complementary effect（printer + ink）；\( \partial Y/\partial A=\beta_1+\beta_3B \)；保留 main effects。</li>
+<li>Categorical interaction：\( (k_A-1)(k_B-1) \) terms（3×4 → 6）；總 params = \( k_Ak_B \)；<code>Worker + Machine + Worker:Machine</code> ≡ <code>C(Worker)*Machine</code>。</li>
+<li><code>y~A*B*C</code> = 3 main + 3 second-order + 1 third-order；<code>y~A:B:C</code> 只有 ABC；higher-order 較唔重要。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m4.html">← Module 4 Linear Regression</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

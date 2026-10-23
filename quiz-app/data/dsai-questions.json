@@ -18577,5 +18577,665 @@
     "course": "COM6005",
     "unit": "Module_4",
     "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "1cd349d0f724",
+    "question": "A categorical variable has 7 categories (Sun to Sat). Using the statistics approach, how many dummy variables enter a regression with an intercept?",
+    "options": [
+      {
+        "label": "A",
+        "text": "6",
+        "explanation": "Correct: $k$ categories need $k - 1 = 6$ dummies, $X_{MON}$ to $X_{SAT}$, with Sunday as the baseline."
+      },
+      {
+        "label": "B",
+        "text": "7",
+        "explanation": "Seven dummies is one-hot encoding; with an intercept the dummies would be perfectly collinear."
+      },
+      {
+        "label": "C",
+        "text": "1",
+        "explanation": "One dummy is enough only for two categories, such as Part-time/Full-time."
+      },
+      {
+        "label": "D",
+        "text": "3",
+        "explanation": "Three dummies cannot separate seven categories; the count is the number of categories minus one."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "One category is left out to act as the reference.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "dd07dce7d571",
+    "question": "Why can't the variable College = {Science, Engineering, Humanity} be put directly into $Y = \\beta_0 + \\beta_1 X_1 + \\text{error}$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Regression only allows one predictor at a time",
+        "explanation": "Multiple linear regression has many predictors; the number of predictors is not the issue."
+      },
+      {
+        "label": "B",
+        "text": "A category label cannot be multiplied by $\\beta_1$",
+        "explanation": "Correct: the slide's point is that categorical values cannot be multiplied directly by $\\beta_1$, so they are converted to dummies."
+      },
+      {
+        "label": "C",
+        "text": "College has too few observations to estimate $\\beta_1$",
+        "explanation": "The sample size is not the problem; the values are labels, not numbers."
+      },
+      {
+        "label": "D",
+        "text": "$Y$ must also be categorical when $X$ is",
+        "explanation": "$Y$ (Score) stays numerical; only the predictor needs recoding."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Think about what $\\beta_1 \\times X_1$ means when $X_1$ is a word.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "86307f091c93",
+    "question": "Which layout is the \"good format\" for fitting Score on College?",
+    "options": [
+      {
+        "label": "A",
+        "text": "One column per college, each holding that college's scores",
+        "explanation": "This is the slide's bad format: $Y$ is spread across several columns."
+      },
+      {
+        "label": "B",
+        "text": "One row per college, each holding the college's mean score",
+        "explanation": "Collapsing to means throws away the individual observations the regression needs."
+      },
+      {
+        "label": "C",
+        "text": "A column for College and a column for Score, one row per student",
+        "explanation": "Correct: all $Y$ values sit in the same column, with the category in its own column."
+      },
+      {
+        "label": "D",
+        "text": "A column per score value, with a college count in each cell",
+        "explanation": "That is a frequency table, not a dataset the regression can use."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The slide's rule is about where all the $Y$ values live.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "9cd9635a30c1",
+    "question": "With Engineering as the baseline, how is a Humanity student coded as $(X_S, X_H)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "[0, 0]",
+        "explanation": "[0, 0] is the baseline, Engineering."
+      },
+      {
+        "label": "B",
+        "text": "[1, 0]",
+        "explanation": "[1, 0] is Science."
+      },
+      {
+        "label": "C",
+        "text": "[1, 1]",
+        "explanation": "No student is in two colleges, so both dummies are never 1 together."
+      },
+      {
+        "label": "D",
+        "text": "[0, 1]",
+        "explanation": "Correct: Humanity has $X_H = 1$ and $X_S = 0$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Each dummy switches on only for its own college.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "6be625986d16",
+    "question": "How does the DM (one-hot) approach differ from the statistics approach for a variable with $k$ categories?",
+    "options": [
+      {
+        "label": "A",
+        "text": "One-hot creates $k$ columns; the statistics approach creates $k - 1$",
+        "explanation": "Correct: `get_dummies()` gives Engineering = [1,0,0] etc., while the statistics approach drops one category as the baseline."
+      },
+      {
+        "label": "B",
+        "text": "One-hot creates $k - 1$ columns; the statistics approach creates $k$",
+        "explanation": "This reverses the two: one-hot keeps a column for every category."
+      },
+      {
+        "label": "C",
+        "text": "Both create $k$ columns but one-hot uses −1/+1 coding",
+        "explanation": "One-hot uses 0/1 coding, and the statistics approach uses $k - 1$ columns."
+      },
+      {
+        "label": "D",
+        "text": "One-hot creates a single column numbered 1 to $k$",
+        "explanation": "Numbering the categories 1 to $k$ would impose a false order; that is not one-hot encoding."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare Engineering = [0,0] with Engineering = [1,0,0].",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "751c615b6532",
+    "question": "The fitted model is $Y = 56 + 5.25X_H + 2.8X_S$ (Engineering is the baseline). What is the predicted score for a Science student?",
+    "options": [
+      {
+        "label": "A",
+        "text": "56",
+        "explanation": "56 is the Engineering (baseline) prediction, with both dummies 0."
+      },
+      {
+        "label": "B",
+        "text": "61.25",
+        "explanation": "61.25 is the Humanity prediction, $56 + 5.25$."
+      },
+      {
+        "label": "C",
+        "text": "58.8",
+        "explanation": "Correct: $X_H = 0$, $X_S = 1$, so $56 + 2.8 = 58.8$."
+      },
+      {
+        "label": "D",
+        "text": "64.05",
+        "explanation": "64.05 adds both coefficients, but no student has both dummies equal to 1."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Set the Science dummy to 1 and the other to 0.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "6a8c63f5de83",
+    "question": "In $Y = 56 + 5.25X_H + 2.8X_S$, what does the coefficient 5.25 tell you?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The average score of Humanity students is 5.25",
+        "explanation": "The Humanity average is $56 + 5.25 = 61.25$; 5.25 is a difference."
+      },
+      {
+        "label": "B",
+        "text": "Humanity students score 5.25 more than Science students on average",
+        "explanation": "Humanity versus Science is $5.25 - 2.8 = 2.45$."
+      },
+      {
+        "label": "C",
+        "text": "Each extra Humanity course raises the score by 5.25",
+        "explanation": "$X_H$ is a 0/1 indicator, not a count of courses."
+      },
+      {
+        "label": "D",
+        "text": "Humanity students score 5.25 more than Engineering students on average",
+        "explanation": "Correct: a dummy coefficient is the difference from the baseline group, Engineering."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "A dummy coefficient is always compared with the category that has no dummy.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "366297580d0e",
+    "question": "In the same model, how much higher is the predicted Humanity score than the predicted Science score?",
+    "options": [
+      {
+        "label": "A",
+        "text": "8.05",
+        "explanation": "8.05 adds the two coefficients instead of taking their difference."
+      },
+      {
+        "label": "B",
+        "text": "2.45",
+        "explanation": "Correct: $61.25 - 58.8 = 5.25 - 2.8 = 2.45$."
+      },
+      {
+        "label": "C",
+        "text": "5.25",
+        "explanation": "5.25 is Humanity's difference from Engineering, not from Science."
+      },
+      {
+        "label": "D",
+        "text": "2.8",
+        "explanation": "2.8 is Science's difference from Engineering."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Both coefficients are measured against the same baseline.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "9845605fd22f",
+    "question": "In the machines data, `Worker` is stored as the numbers 1 to 6. What happens if it enters `smf.ols('score ~ Worker + Machine', ...)` without `astype('category')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "statsmodels raises an error because IDs are not allowed",
+        "explanation": "No error is raised; numeric columns are accepted as they are."
+      },
+      {
+        "label": "B",
+        "text": "It is fitted as one numeric slope on the ID number, which has no meaning",
+        "explanation": "Correct: the IDs would be treated as a quantity, so the model would assume score changes linearly with the staff number."
+      },
+      {
+        "label": "C",
+        "text": "It is automatically converted to five dummy variables",
+        "explanation": "Automatic dummies happen for text columns or after `astype('category')`, not for plain numbers."
+      },
+      {
+        "label": "D",
+        "text": "Worker is dropped from the model",
+        "explanation": "The column stays in the model, but as a numeric predictor."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Is Worker 6 really \"six times\" Worker 1?",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "e1c51c74b6b0",
+    "question": "How many $\\beta$ parameters, including the intercept, does `score ~ Worker + Machine` estimate with 6 workers and 3 machines?",
+    "options": [
+      {
+        "label": "A",
+        "text": "9",
+        "explanation": "9 counts one dummy per level of each variable; one level of each is the baseline."
+      },
+      {
+        "label": "B",
+        "text": "7",
+        "explanation": "7 is the number of dummy coefficients (Df Model), not counting the intercept."
+      },
+      {
+        "label": "C",
+        "text": "8",
+        "explanation": "Correct: $1 + (6 - 1) + (3 - 1) = 8$, i.e. $\\beta_0$ to $\\beta_7$."
+      },
+      {
+        "label": "D",
+        "text": "18",
+        "explanation": "18 would be every worker–machine combination, which needs interaction terms."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Each categorical variable contributes its number of levels minus one.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "bfeaa1a5b947",
+    "question": "In the machines output, the intercept is 53.6167 and `Machine[T.C]` is 13.9167. How is `Machine[T.C]` interpreted?",
+    "options": [
+      {
+        "label": "A",
+        "text": "For the same worker, Machine C scores 13.92 more than Machine A on average",
+        "explanation": "Correct: the coefficient is the difference from the baseline machine, A, holding the worker constant."
+      },
+      {
+        "label": "B",
+        "text": "Machine C's average score is 13.92",
+        "explanation": "Machine C's predicted score for Worker 1 is $53.6167 + 13.9167$; the coefficient is a difference."
+      },
+      {
+        "label": "C",
+        "text": "Machine C scores 13.92 more than Machine B on average",
+        "explanation": "C versus B is $13.9167 - 7.9667 = 5.95$."
+      },
+      {
+        "label": "D",
+        "text": "Worker C scores 13.92 more than Worker 1",
+        "explanation": "C is a machine brand, not a worker."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Identify the baseline machine first.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "8365897af1cc",
+    "question": "Using intercept 53.6167, `Worker[T.3]` = 5.2111 and `Machine[T.C]` = 13.9167, what is the predicted score for Worker 3 on Machine C?",
+    "options": [
+      {
+        "label": "A",
+        "text": "53.6167",
+        "explanation": "That is only the baseline, Worker 1 on Machine A."
+      },
+      {
+        "label": "B",
+        "text": "67.5334",
+        "explanation": "This adds only the Machine C effect and forgets Worker 3's coefficient."
+      },
+      {
+        "label": "C",
+        "text": "58.8278",
+        "explanation": "This adds only the Worker 3 effect and forgets Machine C's coefficient."
+      },
+      {
+        "label": "D",
+        "text": "72.7445",
+        "explanation": "Correct: $53.6167 + 5.2111 + 13.9167 = 72.7445$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Switch on one worker dummy and one machine dummy.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "11e9cdf30c21",
+    "question": "`Worker[T.2]` has coefficient −2.9222, $p = 0.056$ and 95% CI $[-5.922, 0.078]$. What is the conclusion at the 5% level?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Worker 2 scores significantly lower than Worker 1",
+        "explanation": "Significance at 5% needs $p < 0.05$; here $p = 0.056$."
+      },
+      {
+        "label": "B",
+        "text": "Worker 2 scores significantly higher than Worker 1",
+        "explanation": "The estimate is negative and not significant."
+      },
+      {
+        "label": "C",
+        "text": "There is not enough evidence that Worker 2 differs from Worker 1",
+        "explanation": "Correct: $p > 0.05$ and the confidence interval contains 0, so $H_0: \\beta = 0$ is not rejected."
+      },
+      {
+        "label": "D",
+        "text": "Worker 2's average score is −2.92",
+        "explanation": "A dummy coefficient is a difference from Worker 1, not a group average."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Check whether the interval contains zero.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "62657bc49d42",
+    "question": "Which formula fits $Y = \\beta_0 + \\beta_1 X + \\beta_2 X^2 + \\text{error}$ in statsmodels?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`'y ~ x + x**2'`",
+        "explanation": "Without `I()`, `**` is read as a formula operator, not as squaring, so the squared term is not created as intended."
+      },
+      {
+        "label": "B",
+        "text": "`'y ~ x + I(x**2)'`",
+        "explanation": "Correct: the slide says a transformed value must be bracketed, and `I()` makes `**` ordinary arithmetic."
+      },
+      {
+        "label": "C",
+        "text": "`'y ~ x:x'`",
+        "explanation": "`:` builds an interaction term, not a square written in maths form."
+      },
+      {
+        "label": "D",
+        "text": "`'y ~ I(x + x**2)'`",
+        "explanation": "This creates a single predictor equal to $x + x^2$, so the two terms would share one coefficient."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The lecture warns that transformed values need bracketing.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "7a6647d8b9b8",
+    "question": "What terms does the formula `y ~ x1*x2` include besides the intercept?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Only the product $x_1 \\times x_2$",
+        "explanation": "That is `y ~ x1:x2`."
+      },
+      {
+        "label": "B",
+        "text": "$x_1$ and $x_2$ only",
+        "explanation": "That is `y ~ x1 + x2`, with no interaction."
+      },
+      {
+        "label": "C",
+        "text": "$x_1 \\times x_2$ with no intercept",
+        "explanation": "Removing the intercept needs `- 1`; `*` does not remove it."
+      },
+      {
+        "label": "D",
+        "text": "$x_1$, $x_2$ and $x_1:x_2$",
+        "explanation": "Correct: `*` means main effects and interactions, `x1 + x2 + x1:x2`."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "`*` and `:` are not the same operator.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "786f13ad640a",
+    "question": "What does `y ~ x1 - 1` fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$x_1$ without an intercept",
+        "explanation": "Correct: `-` removes a term, and `- 1` removes the default intercept."
+      },
+      {
+        "label": "B",
+        "text": "$x_1 - 1$ as a single shifted predictor",
+        "explanation": "To subtract 1 arithmetically you would need `I(x1 - 1)`."
+      },
+      {
+        "label": "C",
+        "text": "An intercept only, with $x_1$ removed",
+        "explanation": "`- 1` removes the intercept, not $x_1$."
+      },
+      {
+        "label": "D",
+        "text": "$x_1$ and an intercept fixed at 1",
+        "explanation": "The intercept is dropped, not fixed to a value."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "In a formula, `1` stands for the intercept.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "d2582932821d",
+    "question": "A column is called `sales amount`, with a space. How can it be used safely in a statsmodels formula?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`C('sales amount')`",
+        "explanation": "`C()` marks a variable as categorical; it does not handle special names."
+      },
+      {
+        "label": "B",
+        "text": "`I('sales amount')`",
+        "explanation": "`I()` treats operators as ordinary maths; it is not for column names."
+      },
+      {
+        "label": "C",
+        "text": "`Q('sales amount')`",
+        "explanation": "Correct: `Q()` quotes column names that contain spaces or special characters."
+      },
+      {
+        "label": "D",
+        "text": "`np.log('sales amount')`",
+        "explanation": "`np.log` transforms values; it does not resolve a column name."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "One of these wrappers exists purely for awkward names.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "1f0729a41413",
+    "question": "A text variable `group` has levels \"low\", \"mid\" and \"high\". Which level becomes the baseline in `y ~ C(group)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "\"low\"",
+        "explanation": "Alphabetically \"low\" comes after \"high\", so it is not dropped."
+      },
+      {
+        "label": "B",
+        "text": "\"high\"",
+        "explanation": "Correct: `C()` drops the first alphabetical category as the baseline, and \"high\" < \"low\" < \"mid\"."
+      },
+      {
+        "label": "C",
+        "text": "\"mid\"",
+        "explanation": "\"mid\" is last alphabetically."
+      },
+      {
+        "label": "D",
+        "text": "None; all three get a coefficient",
+        "explanation": "With an intercept, one category is always dropped as the baseline."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Sort the labels alphabetically, not by meaning.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "cdaaa21af727",
+    "question": "Which model can be written as a linear regression by taking logs of both sides, $\\log Y = a + b \\log X$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$Y = a + \\frac{b}{X}$",
+        "explanation": "This is already linear in $a$ and $b$ with predictor $1/X$; no log is needed."
+      },
+      {
+        "label": "B",
+        "text": "$Y = ae^{bX}$",
+        "explanation": "Taking logs gives $\\log Y$ linear in $X$, not in $\\log X$."
+      },
+      {
+        "label": "C",
+        "text": "$Y = a + bX + cX^2$",
+        "explanation": "A polynomial is handled by adding $X^2$ as a term, not by logs."
+      },
+      {
+        "label": "D",
+        "text": "$Y = aX^b$",
+        "explanation": "Correct: the power model becomes $\\log Y = a + b \\log X$ (with $a$ the log-scale intercept)."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Which model has $X$ raised to the power $b$?",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "609f3ca0fb23",
+    "question": "A has 3 categories and B has 4 categories. How many interaction terms (minimum) does a categorical A × B interaction add?",
+    "options": [
+      {
+        "label": "A",
+        "text": "12",
+        "explanation": "12 is $3 \\times 4$, which multiplies categories rather than dummy variables."
+      },
+      {
+        "label": "B",
+        "text": "7",
+        "explanation": "7 adds the categories instead of multiplying the dummies."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "explanation": "Correct: A gives 2 dummies and B gives 3, so there are $2 \\times 3 = 6$ interaction terms."
+      },
+      {
+        "label": "D",
+        "text": "5",
+        "explanation": "5 is the number of main-effect dummies, $2 + 3$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Interactions are built from the dummy variables, not the categories.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "deck": "COM6005_Module_4B"
   }
 ]

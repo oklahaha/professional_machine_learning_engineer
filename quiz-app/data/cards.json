@@ -10868,5 +10868,515 @@
     "topic": "",
     "tag": "COM6005::Module_4",
     "deck": "COM6005_Module_4"
+  },
+  {
+    "id": "6c2bdb473c0f",
+    "front": "What three model-building techniques does Lecture 4b add to multiple linear regression?",
+    "back": "Categorical predictors, quadratic/cubic (polynomial) terms, and interaction terms.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "25cd6f865be5",
+    "front": "Why can't a categorical variable such as College = {Science, Engineering, Humanity} enter $Y = \\beta_0 + \\beta_1 X_1 + \\text{error}$ directly?",
+    "back": "A category label cannot be multiplied by $\\beta_1$; it must first be converted into 0/1 dummy variables.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "3438d1562203",
+    "front": "What is a dummy variable?",
+    "back": "A 0/1 variable that equals 1 if an observation is in a given category and 0 otherwise.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "0810db2cdd43",
+    "front": "How many dummy variables does the statistics approach use for a categorical variable with $k$ categories?",
+    "back": "$k - 1$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "7ffb09c29b79",
+    "front": "How many dummy variables are needed for Part-time/Full-time?",
+    "back": "One: $X_F = 1$ if Full-time, 0 otherwise.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "18faf7509e22",
+    "front": "How many dummy variables are needed for College = Eng/Hum/Sci?",
+    "back": "Two: $X_H = 1$ if Hum, $X_S = 1$ if Sci (each 0 otherwise).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "f155281f5e30",
+    "front": "How many dummy variables are needed for day of the week (Sun/Mon/…/Sat)?",
+    "back": "Six: $X_{MON}$ to $X_{SAT}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "40af4dcf8bd4",
+    "front": "What is the baseline (reference) category?",
+    "back": "The category with no dummy of its own: all its dummies are 0, so its mean is the intercept.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "03adcd15abb5",
+    "front": "What is the dummy variable trap?",
+    "back": "Including all $k$ dummies plus an intercept: the dummies sum to 1 in every row, matching the intercept column, so $X^T X$ is singular (perfect multicollinearity).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "b61a7ee566e3",
+    "front": "What is the bad data format for a categorical regression?",
+    "back": "One column per category (Engineering, Science, Humanity), so the $Y$ values are spread over several columns.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "db401b7eff19",
+    "front": "What rule defines the good data format?",
+    "back": "All $Y$ should be in the same column: one column for $X$ (College) and one for $Y$ (Score), one row per observation.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "b6b961a0a392",
+    "front": "After the transform, how are Engineering, Science and Humanity coded as $(X_S, X_H)$?",
+    "back": "Engineering = [0,0], Science = [1,0], Humanity = [0,1].",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "beb1f99a79ac",
+    "front": "What is the DM (data mining) approach to categorical predictors?",
+    "back": "One-hot encoding (`get_dummies()`): $k$ categories become $k$ columns.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "9a83f699459f",
+    "front": "How does one-hot encoding code Engineering, Science and Humanity?",
+    "back": "Engineering = [1,0,0], Science = [0,1,0], Humanity = [0,0,1].",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "9245d0bc3afb",
+    "front": "Write the regression model for Score with College coded by two dummies.",
+    "back": "$Score = \\beta_0 + \\beta_1 X_S + \\beta_2 X_H + \\text{error}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "1b64b29ad6e6",
+    "front": "In Python, how is the dummy transform done automatically?",
+    "back": "Apply `astype('category')` to the variable; statsmodels then creates the dummies itself.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "aa15348878bf",
+    "front": "If Python builds the dummies automatically, why learn the transform?",
+    "back": "It is needed to understand the Python output: what each coefficient means.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "be05c371a042",
+    "front": "For $Y = 56 + 5.25X_H + 2.8X_S + \\text{error}$, what are the predicted scores for Eng, Hum and Sci?",
+    "back": "Eng = 56, Hum = 61.25, Sci = 58.8.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "b0bef4354500",
+    "front": "In $Y = 56 + 5.25X_H + 2.8X_S$, what does the intercept 56 represent?",
+    "back": "The mean score of the baseline group, Engineering.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "55419a3b5ef3",
+    "front": "In $Y = 56 + 5.25X_H + 2.8X_S$, what does 5.25 represent?",
+    "back": "Humanity scores 5.25 more on average than the baseline, Engineering.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "d5343d292c97",
+    "front": "In the machines data, how were the observations collected?",
+    "back": "Six workers were chosen randomly to operate each machine (A, B, C) three times.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "9e8bd697bb07",
+    "front": "What are the three variables in the machines data?",
+    "back": "`Worker` (unique worker identifier), `Machine` (machine brand), `score` (productivity score).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "0a3c74c5fb1f",
+    "front": "Why must `Worker` be converted with `astype('category')` even though it is stored as 1–6?",
+    "back": "The numbers are only staff IDs; treated as numeric, the model would fit a meaningless single slope on the ID.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "638f5af7d3d7",
+    "front": "With 6 workers and 3 machines, how many dummies enter `score ~ Worker + Machine`?",
+    "back": "Five worker dummies (W2–W6) and two machine dummies (MB, MC).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "cf7fc716981b",
+    "front": "What are the baseline worker and machine in `score ~ Worker + Machine`?",
+    "back": "Worker 1 and Machine A.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "66f42c3b02c4",
+    "front": "Write the machines model with dummies.",
+    "back": "$score = \\beta_0 + \\beta_1 W_2 + \\beta_2 W_3 + \\beta_3 W_4 + \\beta_4 W_5 + \\beta_5 W_6 + \\beta_6 M_B + \\beta_7 M_C + \\text{error}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "fa245c8988bb",
+    "front": "Which statsmodels call fits the machines model without interaction?",
+    "back": "`smf.ols('score ~ Worker + Machine', data=machines_data).fit()`",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "fa39c89cfa5e",
+    "front": "How does the statsmodels output name the dummy for Machine C?",
+    "back": "`Machine[T.C]` (and `Worker[T.2]` … `Worker[T.6]` for the workers).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "6fe5dac739db",
+    "front": "In the machines output, what does the intercept 53.6167 mean?",
+    "back": "The predicted score of the baseline combination: Worker 1 on Machine A.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "3f91e0f65c09",
+    "front": "In the machines output, how is `Machine[T.C]` = 13.9167 interpreted?",
+    "back": "For the same worker, Machine C scores 13.92 higher on average than Machine A.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "bba84806ad04",
+    "front": "In the machines output, `Worker[T.2]` has $p = 0.056$. What is the conclusion at the 5% level?",
+    "back": "Not significant: no evidence that Worker 2 differs from Worker 1 (its 95% CI, −5.922 to 0.078, contains 0).",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "b0913039807b",
+    "front": "What assumption does linear regression make that polynomials relax?",
+    "back": "That the relationship between $X$ and $Y$ is linear; when it does not hold, squares, cubes, … of the data can be included.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "31e0d0b3501b",
+    "front": "Write the quadratic model for mileage on horsepower.",
+    "back": "$Y = \\beta_0 + \\beta_1 X + \\beta_2 X^2 + \\text{error}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "ecdb4c15a863",
+    "front": "Which dataset does the lecture use for the polynomial and interaction examples?",
+    "back": "\"Auto\" from the textbook's Python package ISLP.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "b88f8ff36076",
+    "front": "How do you write a squared term in a statsmodels formula?",
+    "back": "Wrap it in `I()`: `smf.ols('y ~ x + I(x**2)', data=data).fit()`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "88307250893c",
+    "front": "What does the `I()` function do in a formula?",
+    "back": "Tells the formula processor to treat the operators inside it as ordinary maths rather than formula operators.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "d3dcde13417b",
+    "front": "In a formula, what do `~`, `+` and `- 1` do?",
+    "back": "`~` separates $Y$ (left) from the predictors (right); `+` adds a variable; `- 1` removes the intercept.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "281e288c2cdd",
+    "front": "What is the difference between `y ~ x1:x2` and `y ~ x1*x2`?",
+    "back": "`x1:x2` includes only the product $x_1 \\times x_2$; `x1*x2` expands to `x1 + x2 + x1:x2`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "0c6446f8faff",
+    "front": "What does the lecture's pro-tip suggest instead of writing many `I()` terms for a high-order polynomial?",
+    "back": "`poly()`, e.g. `poly(x2, degree=2, raw=True)`, to generate the polynomial terms automatically.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "068d8019d274",
+    "front": "What does wrapping a variable in `C()` do in a formula?",
+    "back": "Treats it as categorical (one-hot encoded), with the first alphabetical category dropped as the baseline.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "04014666d8f7",
+    "front": "When do you wrap a column name in `Q()`?",
+    "back": "When it contains spaces or special characters, e.g. `Q('dependent var') ~ Q('independent var')`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "d083f119c980",
+    "front": "Can NumPy functions be used directly inside a formula string?",
+    "back": "Yes, vectorised functions work, e.g. `np.log(y) ~ x1 + np.sqrt(x2)`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "f6fbf3c411b6",
+    "front": "Which transformations does the lecture list beyond polynomials?",
+    "back": "$Y = ae^{bX}$ or $\\log Y = a + bX$; $Y = aX^b$ or $\\log Y = a + b\\log X$; and $Y = a + \\frac{b}{X}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "e2814bb49724",
+    "front": "Mathematically, what is the interaction term of $A$ and $B$?",
+    "back": "The product $AB$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "c24d48a09d99",
+    "front": "How does the printer-and-ink example illustrate an interaction?",
+    "back": "Value(Printer) + Value(Ink) < Value(Printer + Ink): a complementary effect, and the extra is the interaction.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "d7034e766d92",
+    "front": "Write the interaction model for mileage with horsepower $A$ and weight $B$.",
+    "back": "$Y = \\beta_0 + \\beta_1 A + \\beta_2 B + \\beta_3 AB + \\text{error}$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "a3fb2002b56a",
+    "front": "How is the interaction model written in statsmodels?",
+    "back": "`smf.ols('y~A+B+A:B', data=data).fit()` — the interaction term is `A:B`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "258825ce2795",
+    "front": "$A$ has 3 categories and $B$ has 4. How many interaction terms are there?",
+    "back": "$2 \\times 3 = 6$: $(3-1)$ dummies of $A$ times $(4-1)$ dummies of $B$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "63dea58f9f1a",
+    "front": "Give the two ways the lecture fits Worker × Machine with interaction.",
+    "back": "`score ~ Worker + Machine + Worker:Machine` (after `astype('category')`), or `score ~ C(Worker)*Machine`.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "502400eb6f76",
+    "front": "What terms does `y~A*B*C` fit, and what does `y~A:B:C` fit?",
+    "back": "`A*B*C`: all terms (main effects, all two-way interactions and $ABC$); `A:B:C`: only $ABC$.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "2956a493dc5c",
+    "front": "Which levels of interaction does the lecture list, and which is less important?",
+    "back": "Main effects, second-order, third-order and higher-order interactions; higher-order ones are less important.",
+    "course": "COM6005",
+    "unit": "Module_4B",
+    "topic": "",
+    "tag": "COM6005::Module_4B",
+    "deck": "COM6005_Module_4B"
   }
 ]

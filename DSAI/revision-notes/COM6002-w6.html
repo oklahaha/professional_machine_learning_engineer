@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 6 Distributed Database Systems</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w6">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 6</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 6 · Source: 6-DDB.pptx (54 slides)</p>
+<h1>Distributed Database Systems</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>Why distributed：data 的分佈性、Reliability &amp; Availability、Scalability、Economic benefits；Location transparency</li>
+    <li>三大 challenges：Security、Distributed Query Processing、Distributed Transaction Management</li>
+    <li>Fragmentation (Sharding)：Horizontal / Vertical / Mixed；HF vs VF 的優點；Replication 的 benefits &amp; costs</li>
+    <li>Distributed Query Processing 四步：Decomposition → Optimization &amp; Localization → Local Execution → Result Reconstruction</li>
+    <li>Distributed 2PL：Centralized、Primary copy、Distributed (majority vote)；distributed deadlock detection 的難處</li>
+    <li>Timestamp-based concurrency control：Wound-Wait、Wait-Die、Timestamp Ordering (T/O) + Thomas Write Rule、MVTO / MVCC</li>
+    <li>Raft consensus（leader / followers / heartbeat / majority）</li>
+    <li>CAP theorem（C in CAP ≠ C in ACID）、CA / CP / AP、BASE、NewSQL</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>HF vs VF：定義、邊條 query 用邊種較好（slide 11 Q1 / Q2）、優點（UNION vs JOIN、data locality、security）</li>
+    <li>三種 distributed 2PL 的運作同 pros / cons（single point of failure、network congestion、message 數量、deadlock detection）</li>
+    <li>Wound-Wait vs Wait-Die：規則（邊個 wait、邊個 rollback）、點解冇 deadlock、abort rate / abort cost 比較表</li>
+    <li>T/O 的 Read / Write rules（RTS、WTS、Thomas Write Rule）同 MVTO 例題（slide 37–38 讀邊個 version、write 會唔會 abort）</li>
+    <li>CAP theorem：三個定義、CA / CP / AP 例子（MongoDB write majority vs minimal write）、CAP 的 C vs ACID 的 C、BASE 三個字母</li>
+  </ol>
+</div>
+
+<h2>1. Why distributed?</h2>
+<p>Week 1 講過 <b>Scale up</b>（買更勁的一部機）同 <b>Scale out</b>（加多幾部機）。Distributed database 就係 scale out 用喺 database 上面。Slide 2 列出四個原因：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Why distributed?</span>
+<table>
+<tr><th>原因</th><th>Slide 原文</th><th>解釋</th></tr>
+<tr><td><b>Distributed Nature of Data</b></td><td>Data naturally resides where it is generated</td><td>香港分行的交易喺香港產生、倫敦分行的喺倫敦產生；data 本身就係分散的</td></tr>
+<tr><td><b>Increased Reliability and Availability (RA)</b></td><td>Failure of one site does not halt the entire system；Data is <b>replicated</b> across multiple nodes</td><td>一個 site 壞咗，其他 site 仍有 copy，系統照行</td></tr>
+<tr><td><b>Improved Performance (Scalability)</b></td><td>Queries can be executed in parallel across multiple sites；Processing closer to the data reduces network latency</td><td>多部機 parallel 做 query；喺 data 附近處理，少咗 network 來回</td></tr>
+<tr><td><b>Economic Benefits</b></td><td>Connect smaller, cheaper machines vs a single, monolithic mainframe</td><td>好多部平機加埋，往往比一部超級 mainframe 更抵</td></tr>
+</table>
+</div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3「Example cost difference」係 Dell PowerEdge server 價錢的截圖，文字擷取不到；重點係高階 server 價錢唔係按性能線性上升，請對照原 slide 第 3 頁睇實際數字。</p></div>
+
+<h2>2. Distributed database system 與 Location transparency</h2>
+<p><mark class="k">Distributed database system</mark>：Host the database on multiple machines (<b>nodes</b>)。Goal：<b>As if it were a single, centralized database</b>，即係 user 用起上嚟要好似只得一個 database，唔使理 data 實際放喺邊部機。</p>
+<p>Example concern：<mark class="k">Location transparency</mark>，user 唔需要知道 data 喺邊個 location。Slide 4 的 idea：<b>Map the domain name to different locations (IP addresses) depending on the requester's location</b>。例如同一個 <code>db.example.com</code>，香港 user 解析到香港 node 的 IP，歐洲 user 解析到歐洲 node 的 IP（即 DNS-based routing）。User 只記一個名，系統自動帶佢去最近的 site。</p>
+
+<h2>3. Challenges</h2>
+<p>Designing, implementing, and maintaining distributed systems is <b>inherently difficult</b>。三大挑戰：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Three challenges</span>
+<ul>
+<li><b>Security</b>：Protecting data distributed across multiple sites and networks（多咗 site、多咗 network 傳輸 → 多咗攻擊點）</li>
+<li><b>Distributed Query Processing</b>：Minimizing network traffic while optimizing response time（見 Section 6）</li>
+<li><b>Distributed Transaction Management</b>：Ensuring <b>ACID</b> across network boundaries（見 Section 7–10）</li>
+</ul>
+</div>
+
+<h2>4. Fragmentation and Replication</h2>
+<p><mark class="k">Fragmentation</mark> is also known as <mark class="k">Sharding</mark>：Partitioning a table into smaller, <b>non-overlapping</b> subsets。設計時要決定：</p>
+<ul>
+<li><b>What</b> data to store（點樣切）</li>
+<li><b>Where</b> to store it（放喺邊個 site）</li>
+<li><b>How many copies</b> to keep（Replication，見 4.4）</li>
+</ul>
+
+<h3>4.1 Types of Fragmentation</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：HF / VF / Mixed</span>
+<table>
+<tr><th>Type</th><th>Definition</th><th>Example systems / notes</th></tr>
+<tr><td><b>Horizontal Fragmentation (HF)</b></td><td>Splitting a relation by <b>rows</b> (records)</td><td>MongoDB, Google Spanner</td></tr>
+<tr><td><b>Vertical Fragmentation (VF)</b></td><td>Splitting a relation by <b>columns</b> (attributes)</td><td>For RDBMS, this can be implemented at <b>application level</b>；Example：MonetDB</td></tr>
+<tr><td><b>Mixed Fragmentation</b></td><td>Applying both horizontal and vertical fragmentation</td><td>Most complex, most flexible</td></tr>
+</table>
+</div>
+
+<h3>4.2 Example data（slides 8–10）</h3>
+<p>Table <code>T</code>（10 個 employees）：</p>
+<table>
+<tr><th>EmployeeID</th><th>Name</th><th>Department</th><th>Salary</th><th>StartDate</th><th>IsFullTime</th></tr>
+<tr><td>101</td><td>Alice Johnson</td><td>Sales</td><td>$60,000</td><td>2022-08-15</td><td>True</td></tr>
+<tr><td>102</td><td>Bob Smith</td><td>Marketing</td><td>$75,000</td><td>2021-05-20</td><td>True</td></tr>
+<tr><td>103</td><td>Charlie Brown</td><td>Engineering</td><td>$95,000</td><td>2023-01-10</td><td>True</td></tr>
+<tr><td>104</td><td>Diana Prince</td><td>HR</td><td>$55,000</td><td>2024-03-01</td><td>False</td></tr>
+<tr><td>105</td><td>Ethan Hunt</td><td>Engineering</td><td>$110,000</td><td>2020-11-25</td><td>True</td></tr>
+<tr><td>106</td><td>Fiona Glenanne</td><td>Sales</td><td>$62,000</td><td>2023-09-01</td><td>False</td></tr>
+<tr><td>107</td><td>George Costanza</td><td>Marketing</td><td>$70,000</td><td>2022-04-12</td><td>True</td></tr>
+<tr><td>108</td><td>Hannah Baker</td><td>HR</td><td>$58,000</td><td>2024-01-20</td><td>True</td></tr>
+<tr><td>109</td><td>Ian Malcolm</td><td>Engineering</td><td>$105,000</td><td>2021-07-01</td><td>True</td></tr>
+<tr><td>110</td><td>Jessica Day</td><td>Sales</td><td>$59,000</td><td>2023-05-18</td><td>False</td></tr>
+</table>
+<p><b>Horizontal Fragmentation（slide 9）</b>：按 rows 切開兩份。Fragment 1 = EmployeeID 101–105（\(\text{EmployeeID} \le 105\)），Fragment 2 = 106–110（\(\text{EmployeeID} &gt; 105\)）。每個 fragment 都有齊全部 6 個 columns。</p>
+<p><b>Vertical Fragmentation（slide 10）</b>：按 columns 切開兩份。Fragment A = (EmployeeID, Name, Department, Salary)，Fragment B = (EmployeeID, StartDate, IsFullTime)。每個 fragment 都有齊 10 個 rows。</p>
+<div class="box warn"><span class="label">⚠️ 易忽略</span><p>留意 VF 的兩個 fragments <b>都保留咗 EmployeeID</b>。Primary key 一定要喺每個 vertical fragment 都出現，否則之後冇辦法用 JOIN 砌返原本的 table。所以 VF 的「non-overlapping」只係指非 key columns 唔重疊。</p></div>
+<pre><code>-- Horizontal fragmentation：按條件切 rows
+CREATE TABLE T_site1 AS SELECT * FROM T WHERE EmployeeID &lt;= 105;
+CREATE TABLE T_site2 AS SELECT * FROM T WHERE EmployeeID &gt; 105;
+-- 重組：UNION（fragments 不重疊，用 UNION ALL 已足夠）
+SELECT * FROM T_site1 UNION ALL SELECT * FROM T_site2;
+
+-- Vertical fragmentation：按 columns 切，每份都要保留 key
+CREATE TABLE T_A AS SELECT EmployeeID, Name, Department, Salary FROM T;
+CREATE TABLE T_B AS SELECT EmployeeID, StartDate, IsFullTime FROM T;
+-- 重組：JOIN on key
+SELECT * FROM T_A JOIN T_B ON T_A.EmployeeID = T_B.EmployeeID;</code></pre>
+
+<h3>4.3 Example queries：HF 定 VF 好？（slide 11）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：揀 fragmentation 要睇 query</span>
+<table>
+<tr><th>Query</th><th>較好</th><th>原因</th></tr>
+<tr><td>Q1: <code>SELECT * FROM T WHERE EmployeeID = 107</code></td><td><b>HF</b></td><td>要成條 record（所有 columns）。HF 下只需去 Site 2 一個地方攞一條完整 record；VF 下要去兩個 fragments 再 JOIN</td></tr>
+<tr><td>Q2: <code>SELECT COUNT(*) FROM T WHERE Salary &gt; 50000</code></td><td><b>VF</b></td><td>只需要 Salary 一個 column。VF 下只讀 Fragment A（4 columns），唔使讀 StartDate、IsFullTime；HF 下兩個 site 都要掃全部 columns</td></tr>
+</table>
+<p>（Q2 答案 = 10，因為全部人 salary 都 &gt; 50,000。）</p>
+</div>
+
+<h3>4.4 Comparisons：HF vs VF 優點（slide 12）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Advantages</span>
+<table>
+<tr><th>Advantages of HF</th><th>Advantages of VF</th></tr>
+<tr><td><b>High Data Locality</b>：The entire record is stored in one (most frequently accessed) site。Example：account records in Hong Kong stored in HK database</td><td>Queries <b>only read the columns they need</b></td></tr>
+<tr><td><b>Simpler Reconstruction</b>：<b>UNION</b> (in HF) vs <b>JOIN</b> (in VF)</td><td><b>Enhanced Security</b>：Sensitive columns (e.g., salary) can be isolated to a high-security server</td></tr>
+<tr><td><b>Easier to implement</b></td><td></td></tr>
+<tr><td>Queries that target different sets of records can run <b>in parallel</b> across different sites</td><td></td></tr>
+</table>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>UNION 只係將兩疊紙疊埋一齊，好平；JOIN 要逐條 record 配對 key，貴好多（Week 3/4 講過 JOIN 要 index 或 sort 先夠快）。所以 HF 重組簡單得多。VF 就似 column store（Week 5 的 VertiPaq 都係 column-based）：analytics query 通常只睇幾個 columns，所以 VF 有著數。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 pandas：HF 就係 row filtering <code>df[df.EmployeeID &lt;= 105]</code>，重組用 <code>pd.concat([f1, f2])</code>（= UNION）；VF 就係 column selection <code>df[['EmployeeID','Salary']]</code>，重組用 <code>pd.merge(a, b, on='EmployeeID')</code>（= JOIN）。</p></div>
+
+<h3>4.5 Trade-offs of Replication（slide 13）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Replication benefits vs costs</span>
+<table>
+<tr><th>Benefits</th><th>Costs</th></tr>
+<tr><td><b>Availability</b>：If one copy fails, others are available</td><td><b>Update Overhead</b>：Every update must be propagated to all copies (increased network traffic)</td></tr>
+<tr><td><b>Reduced Latency</b>：Queries can access the closest copy</td><td><b>Concurrency Control</b>：Ensuring all copies remain mutually consistent is complex (<b>Consistency vs. Availability</b>)</td></tr>
+<tr><td><b>Parallelism</b>：Read queries can be executed in parallel</td><td></td></tr>
+</table>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Replication 對 <b>read</b> 有利（多個 copy 可揀最近、可 parallel），對 <b>write</b> 不利（要寫晒所有 copy、仲要保持一致）。所以 read-heavy 的 data 適合多 copy，write-heavy 的就要小心。「Consistency vs. Availability」呢個 tension 就係之後 CAP theorem 的伏筆（Section 12）。</p></div>
+
+<h2>5. Overview of Distributed Query Processing</h2>
+<p><b>Goal</b>：Transform a high-level query (e.g., SQL) into a series of <b>local operations</b> and <b>inter-site data transfers</b> that minimize cost。</p>
+<div class="box exam"><span class="label">⭐ 考試重點</span><p><b>Dominant Cost Factor = Network communication (latency and volume)</b> → 目標係 <b>Minimize data transfer</b>。喺單機 database，cost 主要係 disk I/O；喺 distributed database，傳 data 過 network 先係最貴的部分。</p></div>
+
+<h3>5.1 Steps of Distributed Query Processing（slide 15）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Four steps</span>
+<ol>
+<li><b>Query Decomposition</b>：Translating the high-level query into local queries</li>
+<li><b>Distributed Optimization and Localization</b>：Determine which specific site (fragment) holds the required data；Query transformation where appropriate</li>
+<li><b>Local Execution</b>：Local DBMS at each site executes the localized sub-query on its fragment</li>
+<li><b>Result Reconstruction</b>：Reconstruct the global result from local results</li>
+</ol>
+</div>
+
+<h3>5.2 Example 1：<code>WHERE EmployeeID = 107</code>（slides 16–17）</h3>
+<p>用返 HF 例子：Site 1 放 \(\text{EmployeeID} \le 105\)，Site 2 放 \(\text{EmployeeID} &gt; 105\)。User 對住 <b>global view</b>（成個 T）落 query：</p>
+<pre><code>SELECT * FROM T WHERE EmployeeID = 107</code></pre>
+<ul>
+<li><b>Query Decomposition / Localization</b>：107 &gt; 105 → <b>Only Site 2 is relevant</b>，只將 query send 去 Site 2</li>
+<li><b>Local Execution</b>：Site 2 執行，得到 (107, George Costanza, Marketing, $70,000, 2022-04-12, True)</li>
+<li><b>Result Reconstruction</b>：<b>Not necessary</b> as there is only one local result</li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 有一幅 global view → Site 1 / Site 2 的示意圖（圖片），文字只擷取到兩個 site 的條件；請對照原 slide 第 16 頁。</p></div>
+
+<h3>5.3 Example 2：Sales 的 full-time 員工（slide 18）</h3>
+<pre><code>SELECT Name, Salary FROM T
+WHERE Department = 'Sales' AND IsFullTime = True</code></pre>
+<ul>
+<li><b>Query Decomposition</b>：條件同 EmployeeID 無關，冇辦法排除任何 site → <b>Send the query to both sites</b></li>
+<li><b>Local Execution</b>：Site 1 → (Alice Johnson, $60,000)；Site 2 → Fiona（False）同 Jessica（False）都唔係 full-time → 空</li>
+<li><b>Result Reconstruction</b>：Use <b>“Union”</b> to get the final result → 只得 Alice Johnson, $60,000</li>
+</ul>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>點樣切 fragment 會影響 query cost：WHERE 條件用到 fragmentation key（EmployeeID）就可以 <b>prune</b> 走無關的 site（Example 1）；用其他 column 就要問晒所有 site（Example 2）。所以揀 shard key 時要睇最常用的 query 用邊個 column 做 filter。</p></div>
+
+<h2>6. Distributed transactions</h2>
+<p><b>Challenge</b>：A transaction that involves data located at <b>more than one site</b>。Example：Transferring money between two accounts held at different sites（A 戶口喺 Site 1 扣錢、B 戶口喺 Site 2 加錢）。</p>
+<p><b>Goal</b>：Ensuring <b>all sites agree on the outcome (commit or abort)</b> despite network partitions or site failures。即係唔可以 Site 1 扣咗錢但 Site 2 冇加到（違反 Atomicity）。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 3 講過單機的 transaction、ACID、2PL 同 deadlock（wait-for graph）。Week 3 slide 已預告「Other methods：Timestamp ordering、MVCC、Raft algorithm」，今個星期就逐個講，而且係擺喺 distributed 環境入面講。</p></div>
+
+<h2>7. Two-phase Locking (2PL) in distributed environment</h2>
+<p>Purpose：to achieve <b>ACID</b> in RDBMS。重溫 Week 3：<b>growing phase</b> 只攞 lock、<b>shrinking phase</b> 只放 lock；Readlock 之間 no conflict，涉及 Writelock 就 conflict。問題係：data 有幾個 copies 分散喺唔同 node，<b>邊個負責批 lock？</b> 三種做法：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Three variants</span>
+<table>
+<tr><th>Variant</th><th>邊個批 lock</th></tr>
+<tr><td><b>Centralized 2PL</b></td><td>One site is designated as the <b>central manager (for all data items)</b></td></tr>
+<tr><td><b>Primary copy 2PL</b></td><td>There is a central manager <b>for each data item</b>；the central managers of different data items can be different（Stonebraker, Distributed Ingres, 1979）</td></tr>
+<tr><td><b>Distributed 2PL</b></td><td><b>Majority vote</b>：Proceed when <b>more than half of the nodes</b> grant the lock（Bernstein &amp; Goodman）</td></tr>
+</table>
+</div>
+<p>以下三個例子都用同一個 setting：transaction <b>T1 = Read(x), Write(y)</b>；<b>x 放喺 Node 1, 3, 7</b>；<b>y 放喺 Node 2, 5, 8</b>。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 21、23、25 的箭嘴圖係由 shapes 畫成，文字擷取到 node 名同步驟編號，但箭嘴方向擷取唔到。以下步驟根據擷取到的文字同 slide 的 analysis 整理，請對照原 slide 確認每條箭嘴。</p></div>
+
+<h3>7.1 Centralized 2PL（slides 21–22）</h3>
+<p>假設 Node 1 同 Node 2 最近 user，另有一個 Centralized node 做 lock manager：</p>
+<ol>
+<li><b>Readlock(x)</b> → 問 Centralized node</li>
+<li><b>Read(x)</b> → 去最近的 copy（Node 1）讀</li>
+<li><b>Writelock(y)</b> → 問 Centralized node</li>
+<li><b>Write(y)</b> → 寫晒 y 的所有 copies：Node 2, 5, 8（write 要更新所有 replicas）</li>
+</ol>
+<p><b>Q: What is the read cost if no locking is required?</b> 只需直接去最近的 Node 1 讀 x，一個來回就搞掂。呢種「先唔鎖，照做」的做法叫 <mark class="k">optimistic concurrency control</mark>（Let's go without locking）。加咗 locking 就要多一程去 Centralized node。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Centralized 2PL analysis</span>
+<table>
+<tr><th>Cons</th><th>Pros（compared to other 2PL methods）</th></tr>
+<tr><td>
+<ul>
+<li><b>Network congestion</b> may happen at the centralized node</li>
+<li>The scale is limited to the capability of the centralized node</li>
+<li>Increased cost（network cost to the centralized node is higher than to the closest node）</li>
+<li><b>Single point of failure</b>：What if the centralized node is down?</li>
+</ul></td>
+<td>
+<ul>
+<li><b>Easy to detect deadlock</b>（所有 lock 資訊都喺同一個 node，可以直接畫 wait-for graph）</li>
+<li><b>Easiest to implement</b></li>
+</ul></td></tr>
+</table>
+</div>
+
+<h3>7.2 Primary copy 2PL（slides 23–24）</h3>
+<p>x 的 manager 係 <b>Node 3</b>，y 的 manager 係 <b>Node 8</b>：</p>
+<ol>
+<li><b>Readlock(x)</b> → 問 x 的 primary copy Node 3</li>
+<li><b>Read(x)</b> → <b>Read from the primary copy only</b>（Node 3）；other copies serve as backup</li>
+<li><b>Writelock(y)</b> → 問 y 的 primary copy Node 8</li>
+<li><b>Write(y)</b> → 寫 Node 8 同其他 copies（Node 2, 5）</li>
+</ol>
+<div class="box exam"><span class="label">⭐ 考試重點：Primary copy 2PL analysis</span>
+<table>
+<tr><th>Cons</th><th>Pros（compared to other 2PL methods）</th></tr>
+<tr><td>
+<ul>
+<li>Network congestion may happen for <b>hot data items</b>（熱門 item 的 manager 好忙）</li>
+<li><b>Does not take into account geographical locations</b>（primary copy 可能離 user 好遠，例如 Node 3 唔係最近的 Node 1）</li>
+<li><b>Single point of failure for data items</b>：What if the manager node is down?</li>
+</ul></td>
+<td>
+<ul>
+<li>A bit <b>better scalability</b> than Centralized 2PL（lock 工作分散到唔同 managers）</li>
+<li><b>Easier to implement and more efficient</b> than Distributed 2PL</li>
+</ul></td></tr>
+</table>
+</div>
+
+<h3>7.3 Distributed 2PL（slides 25–26）</h3>
+<p>假設 Node 1, 2, 3, 5 比較近。x 有 3 個 copies，majority = 2；y 都係：</p>
+<ol>
+<li><b>Readlock(x)</b> → 問最近的兩個 x copies：Node 1 同 Node 3（超過一半 = 2/3 grant 就得）</li>
+<li><b>Read(x)</b> → 喺最近的 copy 讀（Node 1）</li>
+<li><b>Writelock(y)</b> → 問最近的兩個 y copies：Node 2 同 Node 5</li>
+<li><b>Write(y)</b> → 寫晒 Node 2, 5, 8</li>
+</ol>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>點解 majority 就夠？兩個 transactions 如果都攞到「超過一半」的 lock，佢哋的 node 集合一定會重疊（3 個入面揀 2 個，兩組 2 個必定有共同 node）。重疊的 node 唔會同時 grant 兩個 conflicting locks，所以唔會兩個都成功。</p></div>
+<div class="box exam"><span class="label">⭐ 考試重點：Distributed 2PL analysis</span>
+<table>
+<tr><th>Cons</th><th>Pros（compared to other 2PL methods）</th></tr>
+<tr><td>
+<ul>
+<li><b>Significantly larger number of messages</b> in the network</li>
+<li><b>Complex implementation</b></li>
+<li><b>How to detect deadlock?</b></li>
+</ul></td>
+<td>
+<ul>
+<li><b>Improved availability</b> by avoiding single point of failure</li>
+<li>Also avoided manager that is far away（可以揀近的 nodes 投票）</li>
+</ul></td></tr>
+</table>
+</div>
+
+<h3>7.4 三種 2PL 一覽</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Comparison</span>
+<table>
+<tr><th></th><th>Centralized</th><th>Primary copy</th><th>Distributed</th></tr>
+<tr><td>Lock manager</td><td>1 個 node 管所有 items</td><td>每個 item 一個 manager</td><td>Majority of copies</td></tr>
+<tr><td>Read 邊個 copy</td><td>最近的 copy</td><td>Primary copy only</td><td>最近的 copy</td></tr>
+<tr><td>Single point of failure</td><td>有（整個系統）</td><td>有（per data item）</td><td>冇</td></tr>
+<tr><td>Congestion</td><td>Central node</td><td>Hot data items</td><td>Messages 多</td></tr>
+<tr><td>Geographical location</td><td>Central 可能好遠</td><td>唔考慮</td><td>可揀近的 nodes</td></tr>
+<tr><td>Deadlock detection</td><td>Easy</td><td>Complex</td><td>Complex</td></tr>
+<tr><td>Implementation</td><td>Easiest</td><td>中等</td><td>Most complex</td></tr>
+</table>
+</div>
+
+<h3>7.5 Deadlock detection（slide 27）</h3>
+<p><b>Except Centralized 2PL, deadlock detection becomes complex</b>。Example：</p>
+<ul>
+<li>T1 is waiting for T2 at <b>Site 1</b> (item x)</li>
+<li>T2 is waiting for T1 at <b>Site 2</b> (item y)</li>
+</ul>
+<p>Site 1 的 local wait-for graph 只有 T1 → T2；Site 2 只有 T2 → T1。<b>No single site is able to realize the deadlock loop without communication</b>：要將兩邊合併成 global wait-for graph，先見到 cycle T1 → T2 → T1。</p>
+<p>If communication is required，就有新問題：<b>When do the sites communicate?</b>（幾耐交換一次？太密 = network 負擔，太疏 = deadlock 拖好耐先發現）<b>What data is exchanged?</b>（成個 local graph？定只係部分 edges？）</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 3 Q6 用 wait-for graph 搵 cycle 判斷 deadlock。喺 distributed 環境，每個 site 只得 graph 的一部分，所以先需要 communication，或者改用下一節「根本唔會 deadlock」的 timestamp 方法。</p></div>
+
+<h2>8. Timestamp-based concurrency control</h2>
+<p>Modern high-performance distributed database systems <b>prefer time-based methods</b>。</p>
+<p><b>Requirement</b>：Each transaction gets a <b>unique timestamp</b>。兩種派 timestamp 的方法：</p>
+<ul>
+<li><b>Centralized</b>：A single site is responsible to assign a timestamp to each transaction（又係 single point of failure / bottleneck）</li>
+<li><b>Distributed</b>：Combine local timestamp with unique site identifier</li>
+</ul>
+<div class="formula">$$ TS(T) = \text{Local\_Timestamp} \;\|\; \text{Site\_ID} $$</div>
+<p>\(\|\) 係 concatenation（駁埋）。例如 Site 3 喺 local time 1005 開始一個 transaction，Site 7 都喺 1005 開始一個：兩個 TS 分別係 1005‖3 同 1005‖7，因為 Site_ID 唔同，所以一定 unique。Local timestamp 放前面（high-order），所以比較先睇時間，時間一樣先睇 Site_ID。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：Timestamp 慣例</span><p><b>Smaller timestamp = older transaction</b>（早啲開始）；<b>larger timestamp = younger</b>。以下所有 protocols 都係 older transactions have priority。</p></div>
+
+<h3>8.1 Wound-Wait Protocol（slide 29）</h3>
+<p>When <b>T1 requests a lock</b> on a data item that is currently <b>held by T2</b>：</p>
+<ul>
+<li>If T1 is <b>older</b> (smaller timestamp) → <b>wound</b>：Kill T2 (<b>T2 rollbacks</b>)</li>
+<li>If T1 is <b>younger</b> (larger timestamp) → <b>wait</b></li>
+</ul>
+<p>As <b>the older never waits for a younger</b>, a deadlock can never happen。</p>
+
+<h3>8.2 Wait-Die Protocol（slide 30）</h3>
+<p>Same rule（older has priority）。When T1 requests a lock held by T2：</p>
+<ul>
+<li>If T1 is <b>older</b> (smaller timestamp) → <b>wait</b></li>
+<li>If T1 is <b>younger</b> (larger timestamp) → <b>die</b>（<b>T1 rollbacks</b>）</li>
+</ul>
+<p>As <b>the younger never waits for an older</b>, a deadlock can never happen。</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點：記法</span>
+<table>
+<tr><th>Requester T1 vs Holder T2</th><th>Wound-Wait</th><th>Wait-Die</th></tr>
+<tr><td>T1 older</td><td>T1 <b>wounds</b> T2（T2 rollback）</td><td>T1 <b>waits</b></td></tr>
+<tr><td>T1 younger</td><td>T1 <b>waits</b></td><td>T1 <b>dies</b>（T1 rollback）</td></tr>
+<tr><td>Wait 方向</td><td>只有 younger 等 older</td><td>只有 older 等 younger</td></tr>
+</table>
+<p>口訣：名字的<b>第一個字</b>係「requester 較 old 時」的動作。Wound-Wait：old → wound、young → wait；Wait-Die：old → wait、young → die。兩個 protocol <b>被 rollback 的永遠係 younger 那個</b>。</p>
+</div>
+<div class="box tip"><span class="label">💡 點解冇 deadlock</span><p>Deadlock 需要 wait-for graph 有 cycle，例如 T1 → T2 → T1。喺 Wound-Wait，所有 wait edge 都係 younger → older，timestamp 沿住 edge 一路變細，冇可能兜返轉頭，所以冇 cycle。Wait-Die 就反過來，所有 edge 都係 older → younger，一樣冇 cycle。</p></div>
+
+<h3>8.3 Comparisons（slide 31）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Wound-Wait vs Wait-Die vs 2PL</span>
+<ul>
+<li><b>Wound-wait</b>（compared against Wait-Die）：<b>Lower abort rate, but more expensive aborts</b>。Wounded transactions might have done <b>substantial work</b> before being aborted.</li>
+<li><b>Wait-Die</b>（compared against Wound-Wait）：<b>Higher abort rate, but cheaper aborts</b>。Younger transactions <b>die early</b>, minimizing wasted work.</li>
+</ul>
+<table>
+<tr><th></th><th>2PL</th><th>Wound-Wait</th><th>Wait-Die</th></tr>
+<tr><td>Goal</td><td>Correct result</td><td>Correct result and Prevent Deadlocks</td><td>Correct result and Prevent Deadlocks</td></tr>
+<tr><td>Deadlock May Happen?</td><td><b>Yes</b></td><td>No</td><td>No</td></tr>
+<tr><td>Unnecessary abort?</td><td>No</td><td><b>Yes</b></td><td><b>Yes</b></td></tr>
+</table>
+</div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>「Unnecessary abort」意思係：就算根本唔會形成 deadlock，只要 timestamp 條件中咗，都會 rollback 某個 transaction。呢個係 deadlock prevention 的代價。2PL 唔會無端 abort，但可能 deadlock。</p></div>
+
+<h2>9. Timestamp Ordering (T/O) Concurrency Control</h2>
+<p>Each transaction is assigned a timestamp；each data item X is associated with two timestamp values：</p>
+<div class="box exam"><span class="label">⭐ 考試重點：RTS / WTS</span>
+<ul>
+<li><b>Read Timestamp \(RTS(X)\)</b>：The timestamp of the <b>youngest</b> transaction that successfully <b>read</b> X</li>
+<li><b>Write Timestamp \(WTS(X)\)</b>：The timestamp of the <b>youngest</b> transaction that successfully <b>wrote</b> (updated) X</li>
+<li><b>Core idea</b>：If T1 has a smaller timestamp than T2, <b>T1 must finish before T2</b>（結果要等同按 timestamp 次序 serial execution）</li>
+</ul>
+</div>
+
+<h3>9.1 T/O Concurrency Rules（slides 33–34）</h3>
+<p>Let \(t\) be the timestamp of the transaction.</p>
+<div class="box exam"><span class="label">⭐ 考試重點：T/O rules</span>
+<p><b>Rule 1: Read Operation READ(X)</b></p>
+<ul>
+<li>If \(t &lt; WTS(X)\) → <b>Too late</b>：A younger transaction has already written X → <b>Die (Rollback)</b></li>
+<li>Else → \(RTS(X) := \max(RTS(X),\, t)\)</li>
+</ul>
+<p><b>Rule 2: Write Operation WRITE(X)</b></p>
+<ul>
+<li>If \(t &lt; RTS(X)\) → <b>Too late</b>：A younger transaction has already read X → <b>Die (Rollback)</b></li>
+<li>Else if \(t &lt; WTS(X)\) → <b>Outdated but does not affect the correctness</b>：The write action is simply ignored（<mark class="k">Thomas Write Rule</mark>）→ <b>Do nothing</b></li>
+<li>Else → \(WTS(X) := t\)</li>
+</ul>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>想像要按 timestamp 次序排隊做事。<b>Read 太遲</b>：你（舊）想讀 X，但後生的已經改咗 X；照道理你應該見到改之前的值，但舊值已經冇咗，所以只能 rollback。<b>Write 太遲（有人讀咗）</b>：後生的已經讀咗 X 的舊值，你而家先寫，佢應該見到你寫的值但冇見到，所以 rollback。<b>Write 過時（有人寫咗）</b>：後生的已經寫咗 X，按次序你的值本來就會被佢覆蓋，而中間冇人讀過你的值，所以直接當你寫咗再被蓋過，ignore 就得（Thomas Write Rule）。</p></div>
+
+<h3>9.2 Worked example（自擬）</h3>
+<p>開始時 \(RTS(X) = 5\)，\(WTS(X) = 3\)。依次處理：</p>
+<table>
+<tr><th>Operation</th><th>檢查</th><th>結果</th><th>\(RTS(X)\)</th><th>\(WTS(X)\)</th></tr>
+<tr><td>READ(X), \(t=4\)</td><td>\(4 &lt; 3\)? No</td><td>OK</td><td>\(\max(5,4)=5\)</td><td>3</td></tr>
+<tr><td>READ(X), \(t=2\)</td><td>\(2 &lt; 3\)? Yes</td><td><b>Die</b></td><td>5</td><td>3</td></tr>
+<tr><td>WRITE(X), \(t=4\)</td><td>\(4 &lt; RTS=5\)? Yes</td><td><b>Die</b></td><td>5</td><td>3</td></tr>
+<tr><td>WRITE(X), \(t=6\)</td><td>\(6 &lt; 5\)? No；\(6 &lt; 3\)? No</td><td>OK，寫入</td><td>5</td><td>6</td></tr>
+<tr><td>WRITE(X), \(t=5\)</td><td>\(5 &lt; 5\)? No；\(5 &lt; 6\)? Yes</td><td><b>Ignore</b>（Thomas Write Rule）</td><td>5</td><td>6</td></tr>
+<tr><td>READ(X), \(t=7\)</td><td>\(7 &lt; 6\)? No</td><td>OK</td><td>7</td><td>6</td></tr>
+</table>
+
+<h3>9.3 Analysis of T/O（slide 35）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+<tr><th>Pros</th><th>Cons</th></tr>
+<tr><td><b>No locking</b> is required；<b>No waiting</b> is required</td><td><b>High abort rate</b>；May lead to <b>cascading aborts</b></td></tr>
+</table>
+</div>
+<p><b>Cascading abort</b>：T2 讀咗 T1 寫的值，之後 T1 被 rollback，咁 T2 讀到的係「從未正式存在」的值，T2 都要 abort；如果 T3 又讀咗 T2 寫的值，就一路連鎖落去。</p>
+
+<h2>10. Multiversion Timestamp Ordering (MVTO) 與 MVCC</h2>
+<p>Instead of a single copy of the data, MVTO keeps <b>all the versions</b> of the data（每個 version 標住寫入佢的 transaction timestamp）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：MVTO rules（slide 36）</span>
+<ul>
+<li><b>Read never aborts</b>：Just get the right version to read（timestamp \(\le t\) 之中最新的 version）</li>
+<li><b>Write</b>：Check with the youngest read timestamp → If it is too late, <b>abort</b>；Otherwise, <b>add the version</b> to the database</li>
+</ul>
+</div>
+
+<h3>10.1 Example（slides 37–38）</h3>
+<p>X 的 versions：</p>
+<table>
+<tr><th>t</th><th>value</th></tr>
+<tr><td>1</td><td>10</td></tr>
+<tr><td>3</td><td>30</td></tr>
+<tr><td>5</td><td>20</td></tr>
+<tr><td>8</td><td>15</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 考試重點：READ(X)</span>
+<ul>
+<li>\(t = 2\) → 讀 \(\le 2\) 之中最新的 version（t = 1）→ <b>Gets 10</b></li>
+<li>\(t = 6\) → \(\le 6\) 之中最新的係 t = 5 → <b>Gets 20</b></li>
+<li>Read <b>never fails</b></li>
+</ul>
+<p><b>WRITE(X) = 40</b>，Last read timestamp = 6：</p>
+<ul>
+<li>\(t = 4\) → \(4 &lt; 6\)：timestamp 6 的 transaction 已經讀咗 X（佢讀的版本冇包括你的寫入），太遲 → <b>Abort!</b></li>
+<li>\(t = 6\)（no other transaction has t = 6, it is me!）→ 讀的就係自己，冇問題 → <b>Add a version of 40 at t = 6</b></li>
+<li>\(t = 7\) → \(7 &gt; 6\) → <b>Add a version of 40 at t = 7</b>（就算已經有 t = 8 的 version 都得，因為係多版本，插入中間就可以）</li>
+</ul>
+</div>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>Slide 的規則係簡化版：同「youngest read timestamp」比較。考試請跟 slide 的做法：\(t &lt;\) last read timestamp 就 abort。另外 \(t = 7\) 喺 basic T/O 會因為 \(7 &lt; WTS = 8\) 被 ignore，但 MVTO 照樣加入 version，呢個就係多版本的分別。</p></div>
+
+<h3>10.2 Analysis of MVTO（against Basic T/O）（slide 39）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<table>
+<tr><th>Pros</th><th>Cons</th></tr>
+<tr><td><b>Significantly lower abort rate</b>；<b>Read never aborts</b></td><td><b>Higher storage cost</b>：Multiple versions of the data are kept<br><b>Garbage collection overhead</b>：Old versions are deleted to reclaim space；Garbage collection is complex</td></tr>
+</table>
+<p><b>Weakness</b>：<b>Write abort remains</b>。Usually the write actions are at the <b>end</b> of the transaction and other transactions may have read the data（做到最尾先寫，好大機會已經有後生的讀咗 → abort，前面做的嘢都白費）。</p>
+</div>
+
+<h3>10.3 Multi-Version Concurrency Control (MVCC)（slides 40–42）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：MVCC vs MVTO</span>
+<p><b>MVCC is the general approach while MVTO is a specific algorithm of MVCC</b>。Note：most systems have their own adaptions about how MVCC is implemented，<b>no single, standard MVCC algorithm</b>。</p>
+</div>
+<ul>
+<li>MVCC used by many modern database systems：<b>Oracle</b>、<b>PostgreSQL</b>、<b>MySQL</b> (InnoDB)</li>
+<li>MVCC in distributed database systems：BrightDB、CockroachDB、Google Cloud Spanner、TiDB、YugabyteDB、MongoDB、CouchDB</li>
+</ul>
+<p><b>Example：MVCC in PostgreSQL</b>（slide 42）：</p>
+<ul>
+<li><b>MVCC handles read-write conflicts</b>（reader 讀舊 version，唔使等 writer）</li>
+<li><b>Locking is used for write-write conflicts</b></li>
+<li>Locking is also applied to：<b>Schema changes</b>（the entire table is locked）；<b>Explicit record locking</b>（the <code>SELECT FOR UPDATE</code> statement）</li>
+</ul>
+<pre><code>-- PostgreSQL：明確鎖住要改的 record，防止其他 transaction 同時修改
+BEGIN;
+SELECT * FROM account WHERE id = 1 FOR UPDATE;
+UPDATE account SET balance = balance - 100 WHERE id = 1;
+COMMIT;</code></pre>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>現實系統通常係混合做法：讀用 multi-version（快、唔使等），寫同寫之間仍然用 lock（簡單、可靠）。</p></div>
+
+<h2>11. Raft algorithm：Consensus</h2>
+<p><b>Purpose</b>：<b>Handle failure</b> in a distributed environment → <b>Fault-tolerance protocol</b> → <b>Increased Availability</b>（Ongaro &amp; Ousterhout, 2014, “In Search of an Understandable Consensus Algorithm”）。Existing databases using Raft：BrightDB、MongoDB、TiDB、YugabyteDB。</p>
+
+<h3>11.1 Raft mechanism（slide 44）</h3>
+<ul>
+<li>A single <b>Raft group</b> is responsible for a single <b>partition/shard</b></li>
+<li><b>Key idea</b>：There is a <b>leader</b> of the nodes；the nodes <b>elect one unique leader</b>；other nodes are <b>followers</b></li>
+</ul>
+<div class="box warn"><span class="label">⚠️ Reminder（slide 強調）</span><p>Raft <b>does not distribute the database workload</b>。The leader node carries <b>extra workload</b>（e.g., synchronization）beyond handling client queries。The primary goal is to <b>handle potential failures (fault tolerance)</b>，唔係提升 performance。</p></div>
+
+<h3>11.2 Handling request (normal situation)（slide 45）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：Raft normal operation</span>
+<ol>
+<li>The client <b>only communicates with the leader</b></li>
+<li>The leader will handle the request</li>
+<li>The update at the leader will also be sent to the <b>followers</b></li>
+<li><b>Acknowledgement from majority (consensus)</b> is required to officially declare the operation is done</li>
+</ol>
+</div>
+<p>例如一個 group 有 1 個 leader + 2 個 followers（共 3 個 nodes）：leader 自己加一個 follower ack 就係 2/3 majority，即可宣佈完成；就算第三個 node 壞咗都唔影響。</p>
+
+<h3>11.3 Detecting problems（slide 46）</h3>
+<ul>
+<li><b>Heartbeat</b>：The leader <b>periodically</b> sends heartbeats to all followers to maintain authority</li>
+<li>When the leader is found “dead”（followers 收唔到 heartbeat）→ <b>a new leader is elected</b></li>
+<li>When a failed node recovers, it <b>synchronizes data from the group</b></li>
+</ul>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Raft 的「majority ack」同 Section 7.3 Distributed 2PL 的「majority vote」、同 Section 12 MongoDB 的「write majority」係同一個思路：只要超過一半 nodes 同意，任何兩個 majority 必定有重疊，系統就唔會出現兩個互相矛盾的決定。</p></div>
+
+<h2>12. Distributed database features：CAP</h2>
+<div class="box exam"><span class="label">⭐ 考試重點：CAP definitions（slide 47）</span>
+<ul>
+<li><b>Consistency</b>：Every read receives the <b>most recent write or an error</b></li>
+<li><b>Availability</b>：Every request received by a <b>non-failing</b> node must result in a response</li>
+<li><b>Partition tolerance</b>：Partition refers to <b>network partitions</b>。The system continues to operate despite an arbitrary number of messages being dropped (or delayed) by the network between nodes。<b>The system must be distributed!</b></li>
+</ul>
+</div>
+
+<h3>12.1 Consistency in CAP vs ACID（slide 48）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：They are different!</span>
+<table>
+<tr><th>C in CAP</th><th>C in ACID</th></tr>
+<tr><td>About <b>data freshness</b>。The problem arises in a distributed environment, where the most up-to-date data may reside in one site but not all the sites</td><td>About <b>data correctness</b>（transaction 令 database 由一個 consistent state 去另一個 consistent state，例如轉帳前後總金額不變）</td></tr>
+</table>
+</div>
+
+<h3>12.2 CAP Theorem（slide 49）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<p>Any distributed database system can provide <b>at most two</b> of the following three features：C, A, P。</p>
+<ul>
+<li>2000：Brewer 提出時係 <b>conjecture</b>（PODC 2000）</li>
+<li>2002：Seth Gilbert &amp; Nancy Lynch (MIT) published a <b>formal proof</b> → 成為 <b>theorem</b></li>
+</ul>
+</div>
+
+<h3>12.3 Category of database systems（slide 50）</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：CA / CP / AP</span>
+<table>
+<tr><th>Category</th><th>意思</th><th>Example / 口吻</th></tr>
+<tr><td><b>CA</b></td><td>冇 P，即係唔係 distributed</td><td>Traditional centralized DBMS</td></tr>
+<tr><td><b>CP</b>（sacrifice A）</td><td>Distributed system，有 P，揀 C</td><td>“If I can't be sure this is the latest answer, I'll return an error (unavailability)”</td></tr>
+<tr><td><b>AP</b>（sacrifice C）</td><td>Distributed system，有 P，揀 A</td><td>“I will always return an answer (availability), but I can't promise it's the latest one (potential inconsistency)”</td></tr>
+</table>
+<p>With P（distributed system）→ 一定要喺 C 同 A 之間做 <b>tradeoff</b>。</p>
+</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>想像香港同倫敦兩個 site 之間條網線斷咗（network partition）。有人喺倫敦改咗 X，香港 user 而家想讀 X。香港只有兩個選擇：(1) 答「暫時唔知最新值」，回 error，即係保 C、犧牲 A；(2) 照答手上的舊值，即係保 A、犧牲 C。冇第三個選擇，呢個就係 CAP 的核心。</p></div>
+
+<h3>12.4 Which system is CP / AP?（slide 51）</h3>
+<p>In fact, many systems <b>can be configured</b> to adapt to either goal! Example：<b>MongoDB</b></p>
+<div class="box exam"><span class="label">⭐ 考試重點：MongoDB example</span>
+<table>
+<tr><th>Setting</th><th>Category</th><th>運作</th></tr>
+<tr><td><b>Write majority</b> setting</td><td><b>CP</b></td><td>Writes must go to majority sites；the system becomes <b>unavailable</b> when majority sites can't communicate</td></tr>
+<tr><td><b>Minimal write</b> setting</td><td><b>AP</b></td><td>Writes require acknowledgement from the <b>primary site only</b>；when the primary site is disconnected from others, another site may stand up and act as the new primary site (<b>with the old data</b>)</td></tr>
+</table>
+<p>Note：As a transaction may read an old data, <b>ACID is not guaranteed</b>!</p>
+</div>
+
+<h2>13. From ACID to BASE (for AP)</h2>
+<p><b>Not every application requires ACID</b>。Discussion：Is it a big deal when a transaction reads an old value? Example scenario：application 由 database summarize 新聞，生成一篇「summary news」。如果漏咗幾條最新新聞，問題大唔大？其實唔大，下次再 summarize 就會包埋。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：BASE</span>
+<p><b>B</b>asically <b>A</b>vailable, <b>S</b>oft-state, <b>E</b>ventually-consistent：A <b>relaxed version of ACID</b>（for AP systems）。</p>
+<ul>
+<li><b>Basically available</b>：Reading and writing operations are available as much as possible (using all nodes of a database cluster)；might not be consistent (a read might not get the latest write)</li>
+<li><b>Soft-state</b>：Without consistency guarantees, after some amount of time, we only have <b>some probability</b> of knowing the state, since it might not yet have converged</li>
+<li><b>Eventually consistent</b>：If we execute some writes and then the system functions long enough, we can know the state of the data；any further reads of that data item will return the <b>same value</b></li>
+</ul>
+<p>Note：<b>ACID is still very important in some scenarios, like bank account transactions!</b></p>
+</div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>BASE 唔係「冇 consistency」，而係 <b>eventually</b> consistent：短時間內唔同 node 可能答唔同值，但停止寫入一段時間後，所有 node 會收斂到同一個值。揀 ACID 定 BASE 要睇應用：銀行轉帳用 ACID；社交媒體 like 數、新聞摘要可以用 BASE。</p></div>
+
+<h2>14. NewSQL system</h2>
+<p><b>NewSQL</b>：A new class of modern <b>distributed RDBMS</b>。The aim is to achieve：</p>
+<ul>
+<li><b>High scalability</b></li>
+<li><b>Distributed ACID</b>（essentially <b>CP</b>）</li>
+<li>Use the familiar <b>SQL</b> language</li>
+</ul>
+<div class="box warn"><span class="label">⚠️ Note（slide 強調）</span><p><b>NewSQL is not a language like SQL!</b> 佢係一類 database system 的名稱。前面 slides 提過的 CockroachDB、TiDB、YugabyteDB、Google Spanner 都係常見的 NewSQL 例子（用 MVCC + Raft 做到 distributed ACID）。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 1：scale out 好難，因為要處理 machine failure 同協調。今個星期就係答案：Fragmentation + Replication 解決 data 放邊；2PL / timestamp / MVCC 解決 concurrency；Raft 解決 failure；CAP 說明有啲取捨避唔到。Week 5 的 OLTP 需要 ACID，所以適合 CP / NewSQL；OLAP 讀舊少少的 data 問題唔大，可以接受 BASE。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 用 slide 8 的 employee table：(a) <code>SELECT Name, StartDate FROM T WHERE EmployeeID = 103</code>；(b) <code>SELECT AVG(Salary) FROM T</code>。各自 HF 定 VF 較好？點解？</summary><p>(a) HF 較好：用 EmployeeID 可以 localize 到 Site 1（\(103 \le 105\)），一個 site 就攞到成條 record。VF 下 Name 喺 Fragment A、StartDate 喺 Fragment B，要讀兩個 fragments 再 JOIN。(b) VF 較好：只需 Salary 一個 column，但要掃晒所有 rows。VF 只讀 (EmployeeID, Name, Department, Salary) fragment，唔使讀其他 columns；HF 要兩個 site 都掃全部 columns，再合併兩邊的 sum 同 count。</p></details>
+<details class="q"><summary>Q2. 點解 HF 的 reconstruction 比 VF 簡單？VF 每個 fragment 一定要包含咩？</summary><p>HF 用 UNION（將 rows 疊埋），VF 要用 JOIN（按 key 配對 rows），JOIN 貴好多。VF 每個 fragment 都要包含 primary key（例如 EmployeeID），否則冇辦法 JOIN 返原本的 table。</p></details>
+<details class="q"><summary>Q3. 列出 Replication 的 3 個 benefits 同 2 個 costs。</summary><p>Benefits：Availability（一個 copy 壞咗仲有其他）、Reduced Latency（讀最近的 copy）、Parallelism（read queries 可以 parallel）。Costs：Update Overhead（每次 update 要 propagate 去所有 copies，network traffic 增加）、Concurrency Control（保持所有 copies 一致好複雜，涉及 Consistency vs. Availability）。</p></details>
+<details class="q"><summary>Q4. Distributed query processing 的 dominant cost 係咩？列出四個步驟。</summary><p>Network communication（latency and volume），所以目標係 minimize data transfer。四步：Query Decomposition → Distributed Optimization and Localization → Local Execution → Result Reconstruction。</p></details>
+<details class="q"><summary>Q5. x 放喺 Node 1, 3, 7。用 Distributed 2PL 讀 x，最少要幾多個 nodes grant readlock？相比 Centralized 2PL 有咩好處同壞處？</summary><p>超過一半：3 個 copies 要 2 個 grant。好處：冇 single point of failure，improved availability；可以揀近的 nodes，避免 manager 好遠。壞處：messages 大幅增加、implementation 複雜、deadlock detection 困難。Centralized 2PL 則容易 detect deadlock、最易實作，但有 congestion、scale 受 central node 限制、single point of failure。</p></details>
+<details class="q"><summary>Q6. 點解除咗 Centralized 2PL，distributed deadlock detection 都好難？用 slide 例子解釋。</summary><p>T1 喺 Site 1 等 T2（item x），T2 喺 Site 2 等 T1（item y）。每個 site 的 local wait-for graph 都只有一條 edge，冇 cycle；要合併兩個 site 的資料先見到 T1 → T2 → T1。所以 sites 之間要 communicate，又引出「幾時溝通」同「交換咩 data」的問題。Centralized 2PL 所有 lock 資訊都喺一個 node，所以容易。</p></details>
+<details class="q"><summary>Q7. \(TS(T_A) = 10\)，\(TS(T_B) = 20\)。\(T_B\) 持有 X 的 lock，\(T_A\) 申請 X 的 lock。分別用 Wound-Wait 同 Wait-Die，會發生咩？反過來（\(T_A\) 持有、\(T_B\) 申請）又點？</summary><p>\(T_A\) 較 old（timestamp 細）。<b>\(T_A\) 申請</b>：Wound-Wait → \(T_A\) wound \(T_B\)，\(T_B\) rollback；Wait-Die → \(T_A\) wait。<b>\(T_B\) 申請</b>：Wound-Wait → \(T_B\)（younger）wait；Wait-Die → \(T_B\) die（rollback）。兩種 protocol 被 rollback 的都係 younger 的 \(T_B\)。</p></details>
+<details class="q"><summary>Q8. Wound-Wait 同 Wait-Die 邊個 abort rate 較低？邊個 abort 較平？點解？</summary><p>Wound-Wait abort rate 較低，但 abort 較貴：被 wound 的 transaction 可能已經做咗好多嘢。Wait-Die abort rate 較高，但 abort 較平：younger 喺一開始申請 lock 時就 die，浪費的工作少。兩者都可以 prevent deadlock，但都有 unnecessary abort；2PL 冇 unnecessary abort，但可能 deadlock。</p></details>
+<details class="q"><summary>Q9. Basic T/O：\(RTS(X) = 8\)，\(WTS(X) = 6\)。依次處理 (a) WRITE(X) \(t=7\)；(b) READ(X) \(t=5\)；(c) WRITE(X) \(t=9\)；(d) WRITE(X) \(t=8\)。</summary><p>(a) \(7 &lt; RTS = 8\) → Die（younger 已讀咗 X）。(b) \(5 &lt; WTS = 6\) → Die（younger 已寫咗 X）。(c) \(9 \ge 8\) 而且 \(9 \ge 6\) → 寫入，\(WTS(X) = 9\)。(d) \(8 &lt; RTS = 8\)? No；\(8 &lt; WTS = 9\)? Yes → Thomas Write Rule，ignore（do nothing）。最後 \(RTS = 8\)，\(WTS = 9\)。</p></details>
+<details class="q"><summary>Q10. MVTO：X 的 versions 有 (t=1, 10)、(t=3, 30)、(t=5, 20)、(t=8, 15)。READ(X) \(t=4\) 同 \(t=9\) 各讀到咩？如果 last read timestamp = 6，WRITE(X) \(t=5\) 會點？</summary><p>\(t=4\) → \(\le 4\) 最新的係 t = 3 → 30。\(t=9\) → t = 8 → 15。WRITE \(t=5\)：\(5 &lt; 6\)，timestamp 6 的 transaction 已經讀咗 → abort。（Read never aborts，但 write abort 仍然存在，呢個就係 MVTO 的 weakness。）</p></details>
+<details class="q"><summary>Q11. CAP 的 C 同 ACID 的 C 有咩分別？點解 traditional centralized DBMS 叫做 CA？</summary><p>CAP 的 C 講 data freshness：每次 read 都攞到最新的 write（或 error）。ACID 的 C 講 data correctness：transaction 保持 database 喺 consistent state。Centralized DBMS 冇 network partition 的問題（唔係 distributed，冇 P），所以可以同時有 C 同 A。</p></details>
+<details class="q"><summary>Q12. MongoDB 點樣可以 configure 成 CP 或 AP？AP setting 有咩風險？</summary><p>CP：write majority setting，writes 要去 majority sites；majority 溝通唔到時系統 unavailable。AP：minimal write setting，只需 primary site acknowledge；primary 斷線時，另一個 site 可能頂上做新 primary，但佢手上係舊 data，transaction 可能讀到舊值，所以 ACID is not guaranteed。</p></details>
+<details class="q"><summary>Q13. BASE 三個字代表咩？舉一個適合同一個唔適合 BASE 的應用。</summary><p>Basically Available（盡量用所有 nodes 提供讀寫，但 read 可能唔係最新）、Soft-state（未收斂前只能以某個概率知道 state）、Eventually consistent（系統運作夠耐後，之後所有 reads 回傳同一個值）。適合：新聞摘要，漏幾條新聞問題唔大。唔適合：bank account transactions，必須用 ACID。</p></details>
+<details class="q"><summary>Q14. Raft 的目的係咩？佢會唔會分散 database workload？描述 normal request 的流程。</summary><p>目的係 fault tolerance / handle failure，提高 availability。佢唔會分散 workload，leader 仲要負擔額外的 synchronization 工作。流程：client 只同 leader 溝通 → leader 處理 request → update 傳去 followers → 收到 majority acknowledgement 先正式宣佈完成。Leader 定期發 heartbeat；followers 發現 leader「死咗」就選新 leader；恢復的 node 從 group 同步 data。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Why distributed：data 本身分散、Reliability &amp; Availability（replication）、Scalability（parallel、近 data）、Economic（平機 vs mainframe）</li>
+<li>Goal：as if a single centralized DB；Location transparency（domain name 按 requester 位置 map 去唔同 IP）</li>
+<li>Challenges：Security、Distributed Query Processing、Distributed Transaction Management (ACID)</li>
+<li>Fragmentation = Sharding（non-overlapping）；HF = rows（MongoDB、Spanner）；VF = columns（MonetDB、RDBMS 喺 application level）；Mixed = 最複雜最 flexible</li>
+<li>HF：data locality、UNION 重組、易實作、parallel；VF：只讀需要的 columns、sensitive columns 隔離（security）；VF fragments 要保留 key</li>
+<li>Q1（by ID 攞整條 record）→ HF；Q2（COUNT on Salary）→ VF</li>
+<li>Replication：+ availability、latency、read parallelism；− update overhead、consistency 難（C vs A）</li>
+<li>Query processing：dominant cost = network → minimize data transfer；Decomposition → Optimization &amp; Localization → Local Execution → Reconstruction (UNION)</li>
+<li>Centralized 2PL：一個 manager；易 detect deadlock、最易實作；congestion、scale 受限、成本高、SPOF</li>
+<li>Primary copy 2PL：每 item 一個 manager，只讀 primary；hot items congestion、唔理地理位置、per-item SPOF；scalability 稍好</li>
+<li>Distributed 2PL：majority vote（&gt; half）；冇 SPOF、可揀近 nodes；messages 多、複雜、deadlock detection 難</li>
+<li>Distributed deadlock：每個 site 只見局部 wait-for graph，要 communication（幾時？交換乜？）</li>
+<li>Timestamp：unique；\(TS = \text{Local\_Timestamp} \,\|\, \text{Site\_ID}\)；細 = old = 優先</li>
+<li>Wound-Wait：old 申請 → wound younger；young 申請 → wait。Wait-Die：old → wait；young → die。都係 younger 被 rollback、冇 deadlock、有 unnecessary abort</li>
+<li>Wound-Wait：abort 少但貴；Wait-Die：abort 多但平</li>
+<li>T/O：READ \(t &lt; WTS\) → die，否則 \(RTS = \max(RTS, t)\)；WRITE \(t &lt; RTS\) → die，\(t &lt; WTS\) → ignore（Thomas Write Rule），否則 \(WTS = t\)；no lock、no wait；high abort、cascading aborts</li>
+<li>MVTO：keep all versions；read 攞 \(\le t\) 最新 version，never aborts；write 若 \(t &lt;\) youngest read TS → abort，否則加 version；+ abort 少；− storage、garbage collection；write abort 仍在</li>
+<li>MVCC = general approach，MVTO = specific algorithm；冇 standard algorithm；Oracle、PostgreSQL、MySQL；PostgreSQL：MVCC 處理 read-write，lock 處理 write-write、schema change、SELECT FOR UPDATE</li>
+<li>Raft：fault tolerance，唔分散 workload；一個 group 管一個 shard；elect one leader + followers；client 只同 leader 講；majority ack；heartbeat；新 leader election；恢復的 node 同步</li>
+<li>CAP：C = most recent write or error；A = non-failing node 必回應；P = network partition 下照運作（必須 distributed）；最多揀兩個（Brewer 2000 conjecture → Gilbert &amp; Lynch 2002 proof）</li>
+<li>CAP 的 C = freshness；ACID 的 C = correctness</li>
+<li>CA = centralized DBMS；CP = 唔肯定就回 error；AP = 一定答但可能舊；MongoDB：write majority = CP，minimal write = AP（ACID not guaranteed）</li>
+<li>BASE = Basically Available, Soft-state, Eventually consistent（relaxed ACID for AP）；銀行仍要 ACID</li>
+<li>NewSQL = distributed RDBMS：high scalability + distributed ACID（CP）+ SQL；NewSQL 唔係一種 language</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w5.html">← Week 5 Power BI</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -5320,6 +5320,686 @@
     "deck": "COM6002_Lecture_5"
   },
   {
+    "id": "4be05f172163",
+    "front": "Why is it natural for data to be distributed in the first place?",
+    "back": "Data naturally resides where it is generated, so storing it at multiple sites follows its origin.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "abb6c17c5d54",
+    "front": "How does a distributed database improve reliability and availability?",
+    "back": "Data is replicated across multiple nodes, so the failure of one site does not halt the entire system.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a1bdef9c2aa6",
+    "front": "Name two ways a distributed database improves performance.",
+    "back": "Queries can run in parallel across multiple sites, and processing closer to the data reduces network latency.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "5dde51fd2991",
+    "front": "What is the economic argument for a distributed database?",
+    "back": "It is often more cost-effective to connect many smaller, cheaper machines than to buy a single monolithic mainframe.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "37881c54eb11",
+    "front": "What is the overall goal of a distributed database system?",
+    "back": "To host the database on multiple machines (nodes) while appearing to users as if it were a single, centralized database.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9fed3d7670f4",
+    "front": "What is location transparency, and how can it be achieved for a service?",
+    "back": "Users need not know where data is stored; one idea is mapping a domain name to different IP addresses depending on the requester's location.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "6af135028716",
+    "front": "What are the three main challenges of distributed database systems listed in the lecture?",
+    "back": "Security across sites and networks, distributed query processing (minimising network traffic while optimising response time), and distributed transaction management (ensuring ACID across network boundaries).",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "c90c379431ee",
+    "front": "What is fragmentation (sharding)?",
+    "back": "Partitioning a table into smaller, non-overlapping subsets that can be stored at different sites.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "c4defa13bd89",
+    "front": "What three decisions does fragmentation and replication design involve?",
+    "back": "What data to store, where to store it, and how many copies to keep.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9bc861444faf",
+    "front": "What is horizontal fragmentation (HF)?",
+    "back": "Splitting a relation by rows (records); MongoDB and Google Spanner are examples of systems that use it.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "757834fc2954",
+    "front": "What is vertical fragmentation (VF)?",
+    "back": "Splitting a relation by columns (attributes); in an RDBMS it can be implemented at application level, and MonetDB is an example.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "d03edf7093b1",
+    "front": "What is mixed fragmentation?",
+    "back": "Applying both horizontal and vertical fragmentation; it is the most complex but most flexible option.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "3546e2061a78",
+    "front": "Which fragmentation suits `SELECT * FROM T WHERE EmployeeID = 107`, and why?",
+    "back": "Horizontal fragmentation, because the whole record sits at one site and only that site needs to be queried.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a754b533223c",
+    "front": "Which fragmentation suits `SELECT COUNT(*) FROM T WHERE Salary > 50000`, and why?",
+    "back": "Vertical fragmentation, because the query needs only the `Salary` column and can read just the fragment holding it.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "47a054dfa75c",
+    "front": "How is the original table reconstructed under HF versus VF?",
+    "back": "HF fragments are recombined with a UNION; VF fragments are recombined with a JOIN (on the key), which is more complex.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "de20700c3156",
+    "front": "What is the data-locality advantage of horizontal fragmentation?",
+    "back": "An entire record is stored at its most frequently accessed site, e.g. Hong Kong account records kept in the HK database.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a336a38f9182",
+    "front": "What are the two advantages of vertical fragmentation?",
+    "back": "Queries read only the columns they need, and sensitive columns (e.g. salary) can be isolated on a high-security server.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "606c30562c22",
+    "front": "What are the benefits of replication?",
+    "back": "Availability (another copy survives a failure), reduced latency (read the closest copy) and parallelism (reads run in parallel).",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "ddbc38849e6a",
+    "front": "What are the costs of replication?",
+    "back": "Update overhead, since every update must be propagated to all copies, and complex concurrency control to keep the copies mutually consistent.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "3237ae0851fa",
+    "front": "What is the dominant cost factor in distributed query processing?",
+    "back": "Network communication (latency and volume), so the goal is to minimise data transfer.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "5d34a004fe00",
+    "front": "List the four steps of distributed query processing.",
+    "back": "Query decomposition, distributed optimisation and localisation, local execution, and result reconstruction.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "00fa53108961",
+    "front": "What happens in the localisation step of distributed query processing?",
+    "back": "The system determines which site (fragment) holds the required data and transforms the query where appropriate.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "75875b84e80d",
+    "front": "With HF on `EmployeeID <= 105` (Site 1) and `> 105` (Site 2), how is `WHERE EmployeeID = 107` processed?",
+    "back": "Only Site 2 is relevant, so the query is sent there alone; no reconstruction is needed because there is one local result.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "35c1c9f57b62",
+    "front": "With the same HF split, how is `WHERE Department = 'Sales' AND IsFullTime = True` processed?",
+    "back": "The query is sent to both sites, and the local results are combined with a UNION.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "d3e3d4ec03e7",
+    "front": "What is a distributed transaction, and what is its goal?",
+    "back": "A transaction involving data at more than one site (e.g. a transfer between accounts at different sites); all sites must agree to commit or abort despite partitions or failures.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "45c7ab4ca48f",
+    "front": "What is centralized two-phase locking?",
+    "back": "One site is designated as the central lock manager for all data items.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "0802b65a242c",
+    "front": "What is primary copy two-phase locking?",
+    "back": "Each data item has its own central manager (its primary copy), and different items may have different managers.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "230415b723e8",
+    "front": "How does distributed two-phase locking grant a lock?",
+    "back": "By majority vote: the transaction proceeds when more than half of the nodes holding the item grant the lock.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e77e4ef10356",
+    "front": "What are the drawbacks of centralized 2PL?",
+    "back": "Congestion at the central node, scale limited by that node, higher network cost than using the closest node, and a single point of failure.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "8f9ccb06f567",
+    "front": "What are the advantages of centralized 2PL over the other 2PL variants?",
+    "back": "Deadlocks are easy to detect, and it is the easiest to implement.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "d4c880678049",
+    "front": "In primary copy 2PL, what role do the non-primary copies play?",
+    "back": "Reads go to the primary copy only; the other copies serve as backups.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a9f6ca23fb39",
+    "front": "What are the drawbacks of primary copy 2PL?",
+    "back": "Congestion on hot data items, no account of geographical location, and a single point of failure per data item.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "c8c312a671b5",
+    "front": "What are the trade-offs of distributed 2PL?",
+    "back": "It improves availability (no single point of failure, no distant manager) but sends far more messages, is complex to implement, and makes deadlock detection hard.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "ca426b037fbb",
+    "front": "Why is deadlock detection hard outside centralized 2PL?",
+    "back": "A wait cycle can span sites (T1 waits for T2 at site 1, T2 waits for T1 at site 2), and no single site sees the loop without communicating.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "f4b124bcce95",
+    "front": "How can unique transaction timestamps be generated in a distributed system?",
+    "back": "Centrally, by one site assigning them, or in a distributed way by concatenating a local timestamp with a unique site identifier: $TS(T) = \\text{Local\\_Timestamp} \\,\\|\\, \\text{Site\\_ID}$.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "255a582515ba",
+    "front": "In timestamp-based protocols, which transaction is \"older\" and which has priority?",
+    "back": "The transaction with the smaller timestamp is older, and older transactions have priority over younger ones.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "f1f59713b686",
+    "front": "Wound-Wait: what happens when T1 requests a lock held by T2?",
+    "back": "If T1 is older, it wounds T2 (T2 is rolled back); if T1 is younger, T1 waits.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "837ce666bea7",
+    "front": "Wait-Die: what happens when T1 requests a lock held by T2?",
+    "back": "If T1 is older, T1 waits; if T1 is younger, T1 dies (is rolled back).",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "7edbba3058b1",
+    "front": "Why can neither Wound-Wait nor Wait-Die deadlock?",
+    "back": "In Wound-Wait an older transaction never waits for a younger one; in Wait-Die a younger one never waits for an older one, so no wait cycle can form.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "1a40ef671903",
+    "front": "Compare the abort behaviour of Wound-Wait and Wait-Die.",
+    "back": "Wound-Wait has a lower abort rate but costlier aborts (a wounded transaction may have done much work); Wait-Die aborts more often but cheaply, since young transactions die early.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "40f094c4b26d",
+    "front": "What is the downside of Wound-Wait and Wait-Die compared with plain 2PL?",
+    "back": "They may cause unnecessary aborts, whereas 2PL does not (though 2PL can deadlock).",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "1a0f5a8be8fa",
+    "front": "In Timestamp Ordering, what are $RTS(X)$ and $WTS(X)$?",
+    "back": "The timestamps of the youngest transaction that successfully read X and the youngest that successfully wrote X, respectively.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9027c5e70e96",
+    "front": "What is the core idea of Timestamp Ordering (T/O)?",
+    "back": "If T1 has a smaller timestamp than T2, T1 must take effect before T2.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "776d543b610f",
+    "front": "T/O read rule: what happens when a transaction with timestamp $t$ reads X?",
+    "back": "If $t < WTS(X)$ it is too late and rolls back; otherwise the read succeeds and $RTS(X) := \\max(RTS(X), t)$.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "83906df5ef95",
+    "front": "T/O write rule: what happens when a transaction with timestamp $t$ writes X?",
+    "back": "If $t < RTS(X)$ it rolls back; else if $t < WTS(X)$ the write is ignored (Thomas Write Rule); otherwise $WTS(X) := t$.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "66a827da7f00",
+    "front": "What is the Thomas Write Rule?",
+    "back": "An outdated write ($t < WTS(X)$ but $t \\ge RTS(X)$) is simply ignored, because it does not affect correctness.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "d48b8c927658",
+    "front": "What are the pros and cons of basic T/O?",
+    "back": "No locking and no waiting, but a high abort rate and possible cascading aborts.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9d0629348c6e",
+    "front": "How does Multiversion Timestamp Ordering (MVTO) handle reads?",
+    "back": "It keeps all versions of the data, so a read never aborts: it just returns the right version for its timestamp.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "3a6749f7f53b",
+    "front": "How does MVTO handle writes?",
+    "back": "It checks against the youngest read timestamp; if the write is too late it aborts, otherwise a new version is added.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e709d7126334",
+    "front": "What are the costs and remaining weakness of MVTO?",
+    "back": "Higher storage for multiple versions and complex garbage collection of old versions; write aborts remain, typically late in a transaction.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "7ba63e9e94cd",
+    "front": "How do MVCC and MVTO relate?",
+    "back": "MVCC is the general approach; MVTO is one specific MVCC algorithm. There is no single standard MVCC algorithm.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "c07a5b230193",
+    "front": "How does PostgreSQL combine MVCC and locking?",
+    "back": "MVCC handles read-write conflicts, while locking handles write-write conflicts, schema changes (whole table) and explicit `SELECT FOR UPDATE` row locks.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "03636f254371",
+    "front": "What is the purpose of the Raft algorithm?",
+    "back": "It is a consensus, fault-tolerance protocol that handles failures in a distributed environment and increases availability.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e8c4f4ccdd58",
+    "front": "Does Raft distribute the database workload?",
+    "back": "No. A Raft group serves one partition/shard; the leader carries extra work (e.g. synchronisation), and the goal is fault tolerance.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e29bdfa13c83",
+    "front": "What roles do nodes play in a Raft group?",
+    "back": "The nodes elect one unique leader; the others are followers.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "10ac2a0ec326",
+    "front": "How does Raft handle a client write in normal operation?",
+    "back": "The client talks only to the leader, which sends the update to the followers; the operation is done once a majority acknowledges it.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "56873a2f42ac",
+    "front": "How does Raft detect and recover from leader failure?",
+    "back": "The leader sends periodic heartbeats; if it is found dead, a new leader is elected, and a recovered node resynchronises data from the group.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "7c2ed06ccea9",
+    "front": "Define the three CAP properties.",
+    "back": "Consistency: every read gets the most recent write or an error. Availability: every request to a non-failing node gets a response. Partition tolerance: the system keeps working despite dropped or delayed messages between nodes.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "21fb824a5c30",
+    "front": "How does the C in CAP differ from the C in ACID?",
+    "back": "CAP consistency is about data freshness across sites; ACID consistency is about data correctness.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "87577f9dd633",
+    "front": "What does the CAP theorem state, and who proved it?",
+    "back": "A distributed system can provide at most two of C, A and P; Brewer conjectured it in 2000, and Gilbert and Lynch proved it in 2002.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a6f5085be6b9",
+    "front": "Which kind of system is CA?",
+    "back": "A traditional centralized DBMS; once a system is distributed, partition tolerance forces a trade-off between C and A.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "ec35b4f66e97",
+    "front": "What does a CP system do when it cannot be sure of the latest data?",
+    "back": "It returns an error (sacrificing availability) rather than a possibly stale answer.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "8b3fb23b564e",
+    "front": "What does an AP system do during a partition?",
+    "back": "It always returns an answer but cannot promise it is the latest (sacrificing consistency).",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "db4c10481d76",
+    "front": "How can MongoDB be configured as CP or AP?",
+    "back": "Write-majority makes it CP (unavailable when a majority cannot communicate); minimal write (primary acknowledgement only) makes it AP, where a new primary may serve old data and ACID is not guaranteed.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "46339827ddea",
+    "front": "What does BASE stand for?",
+    "back": "Basically Available, Soft-state, Eventually consistent: a relaxed version of ACID for AP systems.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "4b063bc7a037",
+    "front": "What does \"eventually consistent\" mean?",
+    "back": "If the system runs long enough after some writes, the state becomes known and all further reads of an item return the same value.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "217776d61ab5",
+    "front": "When is BASE acceptable and when is ACID still needed?",
+    "back": "BASE suits tasks tolerant of stale reads (e.g. summarising news); ACID remains essential for cases like bank account transactions.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "c66985dadd2c",
+    "front": "What is a NewSQL system?",
+    "back": "A modern distributed RDBMS aiming for high scalability with distributed ACID (essentially CP) using familiar SQL; NewSQL is not a language.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "topic": "",
+    "tag": "COM6002::Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
     "id": "770efabd252e",
     "front": "Concept: Classification",
     "back": "Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.",

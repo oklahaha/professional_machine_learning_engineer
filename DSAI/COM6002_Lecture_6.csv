@@ -1,0 +1,68 @@
+Why is it natural for data to be distributed in the first place?,"Data naturally resides where it is generated, so storing it at multiple sites follows its origin."
+How does a distributed database improve reliability and availability?,"Data is replicated across multiple nodes, so the failure of one site does not halt the entire system."
+Name two ways a distributed database improves performance.,"Queries can run in parallel across multiple sites, and processing closer to the data reduces network latency."
+What is the economic argument for a distributed database?,"It is often more cost-effective to connect many smaller, cheaper machines than to buy a single monolithic mainframe."
+What is the overall goal of a distributed database system?,"To host the database on multiple machines (nodes) while appearing to users as if it were a single, centralized database."
+"What is location transparency, and how can it be achieved for a service?",Users need not know where data is stored; one idea is mapping a domain name to different IP addresses depending on the requester's location.
+What are the three main challenges of distributed database systems listed in the lecture?,"Security across sites and networks, distributed query processing (minimising network traffic while optimising response time), and distributed transaction management (ensuring ACID across network boundaries)."
+What is fragmentation (sharding)?,"Partitioning a table into smaller, non-overlapping subsets that can be stored at different sites."
+What three decisions does fragmentation and replication design involve?,"What data to store, where to store it, and how many copies to keep."
+What is horizontal fragmentation (HF)?,Splitting a relation by rows (records); MongoDB and Google Spanner are examples of systems that use it.
+What is vertical fragmentation (VF)?,"Splitting a relation by columns (attributes); in an RDBMS it can be implemented at application level, and MonetDB is an example."
+What is mixed fragmentation?,Applying both horizontal and vertical fragmentation; it is the most complex but most flexible option.
+"Which fragmentation suits `SELECT * FROM T WHERE EmployeeID = 107`, and why?","Horizontal fragmentation, because the whole record sits at one site and only that site needs to be queried."
+"Which fragmentation suits `SELECT COUNT(*) FROM T WHERE Salary > 50000`, and why?","Vertical fragmentation, because the query needs only the `Salary` column and can read just the fragment holding it."
+How is the original table reconstructed under HF versus VF?,"HF fragments are recombined with a UNION; VF fragments are recombined with a JOIN (on the key), which is more complex."
+What is the data-locality advantage of horizontal fragmentation?,"An entire record is stored at its most frequently accessed site, e.g. Hong Kong account records kept in the HK database."
+What are the two advantages of vertical fragmentation?,"Queries read only the columns they need, and sensitive columns (e.g. salary) can be isolated on a high-security server."
+What are the benefits of replication?,"Availability (another copy survives a failure), reduced latency (read the closest copy) and parallelism (reads run in parallel)."
+What are the costs of replication?,"Update overhead, since every update must be propagated to all copies, and complex concurrency control to keep the copies mutually consistent."
+What is the dominant cost factor in distributed query processing?,"Network communication (latency and volume), so the goal is to minimise data transfer."
+List the four steps of distributed query processing.,"Query decomposition, distributed optimisation and localisation, local execution, and result reconstruction."
+What happens in the localisation step of distributed query processing?,The system determines which site (fragment) holds the required data and transforms the query where appropriate.
+"With HF on `EmployeeID <= 105` (Site 1) and `> 105` (Site 2), how is `WHERE EmployeeID = 107` processed?","Only Site 2 is relevant, so the query is sent there alone; no reconstruction is needed because there is one local result."
+"With the same HF split, how is `WHERE Department = 'Sales' AND IsFullTime = True` processed?","The query is sent to both sites, and the local results are combined with a UNION."
+"What is a distributed transaction, and what is its goal?",A transaction involving data at more than one site (e.g. a transfer between accounts at different sites); all sites must agree to commit or abort despite partitions or failures.
+What is centralized two-phase locking?,One site is designated as the central lock manager for all data items.
+What is primary copy two-phase locking?,"Each data item has its own central manager (its primary copy), and different items may have different managers."
+How does distributed two-phase locking grant a lock?,By majority vote: the transaction proceeds when more than half of the nodes holding the item grant the lock.
+What are the drawbacks of centralized 2PL?,"Congestion at the central node, scale limited by that node, higher network cost than using the closest node, and a single point of failure."
+What are the advantages of centralized 2PL over the other 2PL variants?,"Deadlocks are easy to detect, and it is the easiest to implement."
+"In primary copy 2PL, what role do the non-primary copies play?",Reads go to the primary copy only; the other copies serve as backups.
+What are the drawbacks of primary copy 2PL?,"Congestion on hot data items, no account of geographical location, and a single point of failure per data item."
+What are the trade-offs of distributed 2PL?,"It improves availability (no single point of failure, no distant manager) but sends far more messages, is complex to implement, and makes deadlock detection hard."
+Why is deadlock detection hard outside centralized 2PL?,"A wait cycle can span sites (T1 waits for T2 at site 1, T2 waits for T1 at site 2), and no single site sees the loop without communicating."
+How can unique transaction timestamps be generated in a distributed system?,"Centrally, by one site assigning them, or in a distributed way by concatenating a local timestamp with a unique site identifier: $TS(T) = \text{Local\_Timestamp} \,\|\, \text{Site\_ID}$."
+"In timestamp-based protocols, which transaction is ""older"" and which has priority?","The transaction with the smaller timestamp is older, and older transactions have priority over younger ones."
+Wound-Wait: what happens when T1 requests a lock held by T2?,"If T1 is older, it wounds T2 (T2 is rolled back); if T1 is younger, T1 waits."
+Wait-Die: what happens when T1 requests a lock held by T2?,"If T1 is older, T1 waits; if T1 is younger, T1 dies (is rolled back)."
+Why can neither Wound-Wait nor Wait-Die deadlock?,"In Wound-Wait an older transaction never waits for a younger one; in Wait-Die a younger one never waits for an older one, so no wait cycle can form."
+Compare the abort behaviour of Wound-Wait and Wait-Die.,"Wound-Wait has a lower abort rate but costlier aborts (a wounded transaction may have done much work); Wait-Die aborts more often but cheaply, since young transactions die early."
+What is the downside of Wound-Wait and Wait-Die compared with plain 2PL?,"They may cause unnecessary aborts, whereas 2PL does not (though 2PL can deadlock)."
+"In Timestamp Ordering, what are $RTS(X)$ and $WTS(X)$?","The timestamps of the youngest transaction that successfully read X and the youngest that successfully wrote X, respectively."
+What is the core idea of Timestamp Ordering (T/O)?,"If T1 has a smaller timestamp than T2, T1 must take effect before T2."
+T/O read rule: what happens when a transaction with timestamp $t$ reads X?,"If $t < WTS(X)$ it is too late and rolls back; otherwise the read succeeds and $RTS(X) := \max(RTS(X), t)$."
+T/O write rule: what happens when a transaction with timestamp $t$ writes X?,If $t < RTS(X)$ it rolls back; else if $t < WTS(X)$ the write is ignored (Thomas Write Rule); otherwise $WTS(X) := t$.
+What is the Thomas Write Rule?,"An outdated write ($t < WTS(X)$ but $t \ge RTS(X)$) is simply ignored, because it does not affect correctness."
+What are the pros and cons of basic T/O?,"No locking and no waiting, but a high abort rate and possible cascading aborts."
+How does Multiversion Timestamp Ordering (MVTO) handle reads?,"It keeps all versions of the data, so a read never aborts: it just returns the right version for its timestamp."
+How does MVTO handle writes?,"It checks against the youngest read timestamp; if the write is too late it aborts, otherwise a new version is added."
+What are the costs and remaining weakness of MVTO?,"Higher storage for multiple versions and complex garbage collection of old versions; write aborts remain, typically late in a transaction."
+How do MVCC and MVTO relate?,MVCC is the general approach; MVTO is one specific MVCC algorithm. There is no single standard MVCC algorithm.
+How does PostgreSQL combine MVCC and locking?,"MVCC handles read-write conflicts, while locking handles write-write conflicts, schema changes (whole table) and explicit `SELECT FOR UPDATE` row locks."
+What is the purpose of the Raft algorithm?,"It is a consensus, fault-tolerance protocol that handles failures in a distributed environment and increases availability."
+Does Raft distribute the database workload?,"No. A Raft group serves one partition/shard; the leader carries extra work (e.g. synchronisation), and the goal is fault tolerance."
+What roles do nodes play in a Raft group?,The nodes elect one unique leader; the others are followers.
+How does Raft handle a client write in normal operation?,"The client talks only to the leader, which sends the update to the followers; the operation is done once a majority acknowledges it."
+How does Raft detect and recover from leader failure?,"The leader sends periodic heartbeats; if it is found dead, a new leader is elected, and a recovered node resynchronises data from the group."
+Define the three CAP properties.,Consistency: every read gets the most recent write or an error. Availability: every request to a non-failing node gets a response. Partition tolerance: the system keeps working despite dropped or delayed messages between nodes.
+How does the C in CAP differ from the C in ACID?,CAP consistency is about data freshness across sites; ACID consistency is about data correctness.
+"What does the CAP theorem state, and who proved it?","A distributed system can provide at most two of C, A and P; Brewer conjectured it in 2000, and Gilbert and Lynch proved it in 2002."
+Which kind of system is CA?,"A traditional centralized DBMS; once a system is distributed, partition tolerance forces a trade-off between C and A."
+What does a CP system do when it cannot be sure of the latest data?,It returns an error (sacrificing availability) rather than a possibly stale answer.
+What does an AP system do during a partition?,It always returns an answer but cannot promise it is the latest (sacrificing consistency).
+How can MongoDB be configured as CP or AP?,"Write-majority makes it CP (unavailable when a majority cannot communicate); minimal write (primary acknowledgement only) makes it AP, where a new primary may serve old data and ACID is not guaranteed."
+What does BASE stand for?,"Basically Available, Soft-state, Eventually consistent: a relaxed version of ACID for AP systems."
+"What does ""eventually consistent"" mean?","If the system runs long enough after some writes, the state becomes known and all further reads of an item return the same value."
+When is BASE acceptable and when is ACID still needed?,BASE suits tasks tolerant of stale reads (e.g. summarising news); ACID remains essential for cases like bank account transactions.
+What is a NewSQL system?,A modern distributed RDBMS aiming for high scalability with distributed ACID (essentially CP) using familiar SQL; NewSQL is not a language.

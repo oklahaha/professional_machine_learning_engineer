@@ -8448,6 +8448,963 @@
     "deck": "COM6002_Lecture_5"
   },
   {
+    "id": "707855019274",
+    "question": "A table of employees is split so that records with `EmployeeID <= 105` live at Site 1 and the rest at Site 2. What kind of fragmentation is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Horizontal fragmentation",
+        "explanation": "The table is divided by rows according to a predicate on `EmployeeID`, so each site holds complete records."
+      },
+      {
+        "label": "B",
+        "text": "Vertical fragmentation",
+        "explanation": "Vertical fragmentation divides columns, but here every site keeps all columns of its records."
+      },
+      {
+        "label": "C",
+        "text": "Replication",
+        "explanation": "Replication stores copies of the same data, whereas these subsets do not overlap."
+      },
+      {
+        "label": "D",
+        "text": "Mixed fragmentation",
+        "explanation": "Mixed fragmentation applies both row and column splits, but only rows are split here."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Ask whether the split cuts across rows or across columns.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a3984cf54f7f",
+    "question": "Under vertical fragmentation of `T` into (`EmployeeID`, `Name`, `Department`, `Salary`) and (`EmployeeID`, `StartDate`, `IsFullTime`), how is the full table rebuilt?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By taking the UNION of the fragments",
+        "explanation": "A UNION stacks rows with the same columns, which is how horizontal fragments are recombined."
+      },
+      {
+        "label": "B",
+        "text": "By joining the fragments on `EmployeeID`",
+        "explanation": "Column fragments must be matched record by record through the shared key, which is a JOIN."
+      },
+      {
+        "label": "C",
+        "text": "By reading only the largest fragment",
+        "explanation": "No single column fragment contains all attributes, so one fragment alone cannot rebuild the table."
+      },
+      {
+        "label": "D",
+        "text": "By replaying the update log at one site",
+        "explanation": "Fragments are rebuilt from the stored data itself, not from a log."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Each fragment holds different attributes of the same employees.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "f6eb02c41ff3",
+    "question": "Which query benefits most from vertical rather than horizontal fragmentation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`SELECT * FROM T WHERE EmployeeID = 107`",
+        "explanation": "This query wants a whole record, which horizontal fragmentation keeps together at one site."
+      },
+      {
+        "label": "B",
+        "text": "`SELECT * FROM T`",
+        "explanation": "Returning every column of every record requires all fragments either way, so vertical fragmentation offers no advantage."
+      },
+      {
+        "label": "C",
+        "text": "`SELECT COUNT(*) FROM T WHERE Salary > 50000`",
+        "explanation": "This query needs only the `Salary` column for every record, so reading a single column fragment avoids fetching unneeded attributes."
+      },
+      {
+        "label": "D",
+        "text": "`SELECT * FROM T WHERE EmployeeID > 105`",
+        "explanation": "Retrieving whole records for a key range matches a horizontal split on `EmployeeID`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Consider which query touches only a small number of attributes across all records.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e1adbaf88a30",
+    "question": "A bank wants staff salaries kept on a high-security server while other employee attributes stay on ordinary servers. Which design supports this most directly?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Horizontal fragmentation",
+        "explanation": "Splitting by rows keeps every attribute of a record together, so salaries would still sit alongside other data."
+      },
+      {
+        "label": "B",
+        "text": "Full replication on every site",
+        "explanation": "Copying all data everywhere spreads salaries to every server, the opposite of isolating them."
+      },
+      {
+        "label": "C",
+        "text": "Centralized two-phase locking",
+        "explanation": "This is a concurrency-control method and has nothing to do with where columns are stored."
+      },
+      {
+        "label": "D",
+        "text": "Vertical fragmentation",
+        "explanation": "Splitting by columns lets the sensitive `Salary` column be stored separately on the secure server."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Think about isolating particular attributes rather than particular records.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e5266cd4fd86",
+    "question": "What is the dominant cost that distributed query processing tries to minimise?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Network communication, in latency and data volume",
+        "explanation": "Transferring data between sites dominates cost, so optimisation aims to minimise data transfer."
+      },
+      {
+        "label": "B",
+        "text": "Local CPU time for parsing SQL",
+        "explanation": "Parsing is cheap relative to moving data between sites over a network."
+      },
+      {
+        "label": "C",
+        "text": "Disk space used by indexes",
+        "explanation": "Storage cost is not the factor that distributed query optimisation targets."
+      },
+      {
+        "label": "D",
+        "text": "The number of columns in the result",
+        "explanation": "Result width matters only insofar as it affects transferred volume; the dominant factor is network communication itself."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Consider what is slowest when sites are connected over a network.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "8c0e22591c96",
+    "question": "Using the HF split at `EmployeeID` 105, the query `SELECT Name, Salary FROM T WHERE Department = 'Sales' AND IsFullTime = True` is issued. How is it processed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is sent only to Site 2",
+        "explanation": "Only a predicate on `EmployeeID` could rule a site out, and this query has none."
+      },
+      {
+        "label": "B",
+        "text": "It is sent to both sites and the local results are combined with a UNION",
+        "explanation": "The predicate is not on `EmployeeID`, so matching rows may be at either site and their row sets are unioned."
+      },
+      {
+        "label": "C",
+        "text": "It is sent to both sites and the results are combined with a JOIN",
+        "explanation": "The sites hold different rows with the same columns, which are combined by a UNION rather than a JOIN."
+      },
+      {
+        "label": "D",
+        "text": "It is sent only to Site 1, since that site is queried first",
+        "explanation": "Site order does not decide relevance; matching Sales staff exist at both sites."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Check whether the predicate tells you which site holds the matching records.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "e803e999ba47",
+    "question": "In the four steps of distributed query processing, which step determines which site or fragment holds the data a query needs?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Query decomposition",
+        "explanation": "Decomposition translates the high-level query into local queries rather than locating fragments."
+      },
+      {
+        "label": "B",
+        "text": "Local execution",
+        "explanation": "During local execution each site's DBMS runs its sub-query; the sites were already chosen."
+      },
+      {
+        "label": "C",
+        "text": "Distributed optimisation and localisation",
+        "explanation": "This step works out which fragments hold the required data and transforms the query where appropriate."
+      },
+      {
+        "label": "D",
+        "text": "Result reconstruction",
+        "explanation": "Reconstruction combines local results into the global answer after execution."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The steps are decomposition, optimisation and localisation, local execution and reconstruction.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "b5f61505c449",
+    "question": "Item x is stored at Nodes 1, 3 and 7, and Node 3 is its manager. A transaction obtains its readlock on x from Node 3 and reads x from Node 3. Which locking scheme is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Centralized two-phase locking",
+        "explanation": "Centralized 2PL uses one manager for all items, whereas here the manager is particular to x."
+      },
+      {
+        "label": "B",
+        "text": "Distributed two-phase locking",
+        "explanation": "Distributed 2PL requests the lock from a majority of copies rather than a single manager."
+      },
+      {
+        "label": "C",
+        "text": "Wait-Die protocol",
+        "explanation": "Wait-Die is a timestamp-based deadlock prevention rule, not a scheme for choosing lock managers."
+      },
+      {
+        "label": "D",
+        "text": "Primary copy two-phase locking",
+        "explanation": "Each data item has its own manager, and reads go to that primary copy while other copies act as backups."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Notice that the manager is specific to the data item.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "75b3083e9891",
+    "question": "Item y is stored at Nodes 2, 5 and 8. Under distributed two-phase locking, when can a transaction proceed with its writelock on y?",
+    "options": [
+      {
+        "label": "A",
+        "text": "When at least two of the three nodes grant the lock",
+        "explanation": "Distributed 2PL proceeds once more than half of the nodes grant the lock, and two of three is a majority."
+      },
+      {
+        "label": "B",
+        "text": "When any one node grants the lock",
+        "explanation": "One of three is not a majority, so it is not enough to proceed."
+      },
+      {
+        "label": "C",
+        "text": "Only when all three nodes grant the lock",
+        "explanation": "Unanimity is not required; a majority suffices."
+      },
+      {
+        "label": "D",
+        "text": "When the designated central manager grants the lock",
+        "explanation": "A single manager is used by centralized or primary copy 2PL, not distributed 2PL."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The scheme uses a vote among the copies.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "2c0eb57d4116",
+    "question": "Which statement correctly describes centralized two-phase locking compared with the other 2PL variants?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It sends the most messages but has no single point of failure",
+        "explanation": "That describes distributed 2PL, which uses majority voting across copies."
+      },
+      {
+        "label": "B",
+        "text": "Deadlocks are easiest to detect, but the central node is a single point of failure",
+        "explanation": "With one manager seeing all locks, cycles are easy to find, yet if that node fails the whole system stalls."
+      },
+      {
+        "label": "C",
+        "text": "It always uses the copy closest to the user, minimising network cost",
+        "explanation": "Lock requests go to the central node, which is often farther than the closest copy."
+      },
+      {
+        "label": "D",
+        "text": "It scales best because lock work is spread across many managers",
+        "explanation": "Scale is limited by the capacity of the single central node."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Weigh what having one manager for everything makes easy and what it makes risky.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "b8eaad2b7e80",
+    "question": "T1 waits for T2 on item x at site 1, while T2 waits for T1 on item y at site 2. Why is this deadlock hard to detect in a distributed system?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Deadlocks cannot occur when items are at different sites",
+        "explanation": "This example shows a deadlock spanning two sites, so they clearly can occur."
+      },
+      {
+        "label": "B",
+        "text": "Timestamps prevent the sites from recording wait relationships",
+        "explanation": "Nothing about timestamps stops sites from tracking waits; the issue is the lack of a global view."
+      },
+      {
+        "label": "C",
+        "text": "No single site sees the whole wait cycle without communicating with others",
+        "explanation": "Each site sees only one waiting edge, so the cycle appears only when sites exchange information."
+      },
+      {
+        "label": "D",
+        "text": "Each site immediately aborts any transaction that waits",
+        "explanation": "Sites do not abort waiting transactions automatically, which is why the cycle can persist."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Ask what each site can see on its own.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9fd9e22ce7ac",
+    "question": "Under the Wound-Wait protocol, T1 (timestamp 5) requests a lock held by T2 (timestamp 9). What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "T1 waits for T2 to release the lock",
+        "explanation": "In Wound-Wait only a younger requester waits, and T1 is the older one."
+      },
+      {
+        "label": "B",
+        "text": "T1 is rolled back",
+        "explanation": "The requester is rolled back in Wait-Die when it is younger, which does not apply here."
+      },
+      {
+        "label": "C",
+        "text": "Both transactions are rolled back",
+        "explanation": "Only the younger holder is wounded; the older requester continues."
+      },
+      {
+        "label": "D",
+        "text": "T2 is rolled back and T1 obtains the lock",
+        "explanation": "T1 is older, so it wounds the younger holder T2, which is rolled back."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "A smaller timestamp means an older transaction.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "165fbb364099",
+    "question": "Under the Wait-Die protocol, T1 (timestamp 12) requests a lock held by T2 (timestamp 4). What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "T1 is rolled back",
+        "explanation": "T1 is younger than the holder, and in Wait-Die a younger requester dies."
+      },
+      {
+        "label": "B",
+        "text": "T1 waits for T2",
+        "explanation": "In Wait-Die only an older requester waits, but T1 is younger."
+      },
+      {
+        "label": "C",
+        "text": "T2 is rolled back so T1 can proceed",
+        "explanation": "Rolling back the holder is the wounding action of Wound-Wait, not Wait-Die."
+      },
+      {
+        "label": "D",
+        "text": "The lock is granted to both transactions",
+        "explanation": "Conflicting locks cannot be held at once, so one transaction must wait or roll back."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare the ages: the smaller timestamp belongs to the older transaction.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "f03a44bf6b5a",
+    "question": "Which comparison of Wound-Wait and Wait-Die is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Wound-Wait aborts more often, but each abort is cheap",
+        "explanation": "Wound-Wait has the lower abort rate, and a wounded transaction may have done substantial work."
+      },
+      {
+        "label": "B",
+        "text": "Wait-Die aborts more often, but each abort wastes less work",
+        "explanation": "Younger transactions die early under Wait-Die, so aborts are frequent but cheap."
+      },
+      {
+        "label": "C",
+        "text": "Both protocols can deadlock, unlike 2PL",
+        "explanation": "It is the other way round: 2PL can deadlock while both timestamp protocols prevent it."
+      },
+      {
+        "label": "D",
+        "text": "Neither protocol ever aborts a transaction unnecessarily",
+        "explanation": "Both may abort transactions that would not actually have deadlocked."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Think about how much work a transaction has done by the time it is aborted under each rule.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a5232e97522c",
+    "question": "A system builds transaction timestamps as $TS(T) = \\text{Local\\_Timestamp} \\,\\|\\, \\text{Site\\_ID}$. What does appending the site identifier achieve?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It lets each site skip concurrency control entirely",
+        "explanation": "Timestamps are an input to concurrency control, not a replacement for it."
+      },
+      {
+        "label": "B",
+        "text": "It routes every transaction to the site that generated it",
+        "explanation": "The identifier only guarantees uniqueness; it does not decide where data is processed."
+      },
+      {
+        "label": "C",
+        "text": "It makes timestamps unique without a central timestamp server",
+        "explanation": "Even if two sites produce the same local timestamp, the site identifier breaks the tie, giving every transaction a unique value."
+      },
+      {
+        "label": "D",
+        "text": "It synchronises all local clocks to the same time",
+        "explanation": "Concatenation does not change the clocks; it just appends an identifier."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Two sites could read the same local clock value.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "ec32f92deb09",
+    "question": "Under basic Timestamp Ordering, item X has $RTS(X) = 8$ and $WTS(X) = 5$. A transaction with $t = 6$ requests `WRITE(X)`. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The write is ignored under the Thomas Write Rule",
+        "explanation": "The Thomas Write Rule applies only when $t \\ge RTS(X)$ and $t < WTS(X)$, but here $t < RTS(X)$."
+      },
+      {
+        "label": "B",
+        "text": "The write succeeds and $WTS(X)$ becomes 6",
+        "explanation": "A write may only succeed if $t \\ge RTS(X)$, which fails here."
+      },
+      {
+        "label": "C",
+        "text": "The transaction waits until $RTS(X)$ drops",
+        "explanation": "Basic T/O never waits; a late operation is rolled back."
+      },
+      {
+        "label": "D",
+        "text": "The transaction is rolled back",
+        "explanation": "Since $t = 6 < RTS(X) = 8$, a younger transaction has already read X, so the write is too late."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Check the write rule against the read timestamp first.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "9a5b32aa0678",
+    "question": "Under basic Timestamp Ordering, item X has $RTS(X) = 4$ and $WTS(X) = 9$. A transaction with $t = 7$ requests `WRITE(X)`. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The write is ignored and the transaction continues",
+        "explanation": "$t = 7 \\ge RTS(X)$, so no one has read a value it should have overwritten, but $t < WTS(X)$ makes it outdated, so the Thomas Write Rule ignores it."
+      },
+      {
+        "label": "B",
+        "text": "The transaction is rolled back",
+        "explanation": "Rollback on a write requires $t < RTS(X)$, and $7 \\ge 4$."
+      },
+      {
+        "label": "C",
+        "text": "The write succeeds and $WTS(X)$ becomes 7",
+        "explanation": "Setting $WTS(X)$ to 7 would move it backwards from 9 and overwrite a newer value."
+      },
+      {
+        "label": "D",
+        "text": "The write succeeds and $RTS(X)$ becomes 7",
+        "explanation": "A write updates the write timestamp, never the read timestamp."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Apply the write rule's two checks in order.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "cd475dcc7c3f",
+    "question": "Under basic Timestamp Ordering, item X has $RTS(X) = 3$ and $WTS(X) = 5$. A transaction with $t = 7$ reads X. What is $RTS(X)$ afterwards?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3",
+        "explanation": "A successful read updates $RTS(X)$ to the larger of the old value and $t$."
+      },
+      {
+        "label": "B",
+        "text": "7",
+        "explanation": "Because $t = 7 \\ge WTS(X)$, the read succeeds and $RTS(X) := \\max(3, 7) = 7$."
+      },
+      {
+        "label": "C",
+        "text": "5",
+        "explanation": "That is the write timestamp, which a read does not copy into $RTS(X)$."
+      },
+      {
+        "label": "D",
+        "text": "The read is rejected, so it stays 3",
+        "explanation": "A read is rejected only when $t < WTS(X)$, and $7 > 5$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The read succeeds if no younger transaction has written X.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "de085f7c330a",
+    "question": "Under MVTO, X has versions written at timestamps 1 (value 10), 3 (value 30), 5 (value 20) and 8 (value 15). A transaction with $t = 6$ reads X. What value does it get?",
+    "options": [
+      {
+        "label": "A",
+        "text": "15",
+        "explanation": "The version at timestamp 8 was written by a younger transaction, so a transaction at 6 must not see it."
+      },
+      {
+        "label": "B",
+        "text": "30",
+        "explanation": "The version at timestamp 3 has been superseded by the one at timestamp 5."
+      },
+      {
+        "label": "C",
+        "text": "20",
+        "explanation": "The latest version written at or before timestamp 6 is the one at timestamp 5, whose value is 20."
+      },
+      {
+        "label": "D",
+        "text": "The read aborts because a younger version exists",
+        "explanation": "Under MVTO reads never abort; they simply pick the appropriate version."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Choose the version a transaction at time 6 should see.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a45cd60302d2",
+    "question": "Under MVTO, the youngest read timestamp of X is 6. Which `WRITE(X)` request is aborted?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A write with $t = 6$",
+        "explanation": "This is the same transaction that did the read, so it may add a version at 6."
+      },
+      {
+        "label": "B",
+        "text": "A write with $t = 7$",
+        "explanation": "This write is younger than the last read, so a new version at 7 is added."
+      },
+      {
+        "label": "C",
+        "text": "A write with $t = 9$",
+        "explanation": "This write is younger than every read, so it simply adds a version."
+      },
+      {
+        "label": "D",
+        "text": "A write with $t = 4$",
+        "explanation": "A transaction at timestamp 6 has already read X, so a write at 4 arrives too late and aborts."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "A write is too late if a younger transaction has already read the value it would replace.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "4acd1b2f1911",
+    "question": "Which is a cost of MVTO compared with basic Timestamp Ordering?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Higher storage use and complex garbage collection of old versions",
+        "explanation": "Keeping multiple versions costs space, and reclaiming old versions is a complex overhead."
+      },
+      {
+        "label": "B",
+        "text": "Reads abort more often",
+        "explanation": "Under MVTO reads never abort, which is its main advantage."
+      },
+      {
+        "label": "C",
+        "text": "Transactions must acquire locks before reading",
+        "explanation": "MVTO is timestamp-based and requires no read locks."
+      },
+      {
+        "label": "D",
+        "text": "Write aborts are eliminated, so long transactions starve",
+        "explanation": "Write aborts remain under MVTO; they are its weakness rather than something eliminated."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "MVTO keeps more than one copy of each item.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "b89fea6a9e27",
+    "question": "In PostgreSQL's concurrency control, how are conflicts handled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Locking handles read-write conflicts, and MVCC handles write-write conflicts",
+        "explanation": "This reverses the roles; versions resolve read-write conflicts."
+      },
+      {
+        "label": "B",
+        "text": "MVCC handles read-write conflicts, and locking handles write-write conflicts",
+        "explanation": "PostgreSQL uses versions so readers and writers do not block each other, while concurrent writers are serialised by locks."
+      },
+      {
+        "label": "C",
+        "text": "Only MVCC is used, with no locking at all",
+        "explanation": "Locks are still used for write-write conflicts, schema changes and `SELECT FOR UPDATE`."
+      },
+      {
+        "label": "D",
+        "text": "Wound-Wait timestamps decide every conflict",
+        "explanation": "The lecture describes PostgreSQL as MVCC plus locking, not Wound-Wait."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "PostgreSQL mixes two mechanisms for different kinds of conflict.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "1716a1fdd6e6",
+    "question": "A Raft group has five nodes. After the leader applies a client update, when is the operation officially declared done?",
+    "options": [
+      {
+        "label": "A",
+        "text": "As soon as the leader writes it locally",
+        "explanation": "The leader alone is not enough; consensus from a majority is required."
+      },
+      {
+        "label": "B",
+        "text": "Only when all five nodes acknowledge it",
+        "explanation": "Raft needs a majority, not every node, so it can tolerate failures."
+      },
+      {
+        "label": "C",
+        "text": "Once a majority of the group acknowledges the update",
+        "explanation": "Raft requires acknowledgement from a majority (consensus), which for five nodes means three."
+      },
+      {
+        "label": "D",
+        "text": "When the client sends a heartbeat to the followers",
+        "explanation": "Heartbeats are sent by the leader to followers to maintain authority, and clients talk only to the leader."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Raft is a consensus protocol.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "b8479436e24b",
+    "question": "Which statement about Raft is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Clients may send writes to any follower, which applies them directly",
+        "explanation": "Clients communicate only with the leader, which handles the request."
+      },
+      {
+        "label": "B",
+        "text": "Each group may have several leaders to share the load",
+        "explanation": "The nodes elect one unique leader per group."
+      },
+      {
+        "label": "C",
+        "text": "A failed leader is replaced only when it recovers",
+        "explanation": "When missing heartbeats reveal the leader is dead, a new leader is elected without waiting for recovery."
+      },
+      {
+        "label": "D",
+        "text": "Its main goal is fault tolerance, not spreading the workload",
+        "explanation": "A Raft group serves one shard, and the leader carries extra synchronisation work; the purpose is to handle failures."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Consider what Raft is designed to provide.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "a3e0283618c0",
+    "question": "During a network partition, a distributed database returns an error rather than risk returning stale data. Which CAP category is it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "CP",
+        "explanation": "It keeps consistency and partition tolerance by sacrificing availability, refusing to answer when it cannot be sure the data is current."
+      },
+      {
+        "label": "B",
+        "text": "AP",
+        "explanation": "An AP system always answers, possibly with stale data, which is the opposite behaviour."
+      },
+      {
+        "label": "C",
+        "text": "CA",
+        "explanation": "CA describes a traditional centralized DBMS; a distributed system facing a partition must choose between C and A."
+      },
+      {
+        "label": "D",
+        "text": "BASE",
+        "explanation": "BASE is a relaxed consistency model associated with AP systems, not a CAP category."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Identify which property is given up by returning an error.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "b05250d28613",
+    "question": "How does consistency in CAP differ from consistency in ACID?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They are the same property expressed in different notations",
+        "explanation": "The lecture stresses that they are different properties."
+      },
+      {
+        "label": "B",
+        "text": "CAP consistency concerns data freshness across sites, while ACID consistency concerns data correctness",
+        "explanation": "In CAP a read must see the most recent write, whereas in ACID a transaction must move the database between valid states."
+      },
+      {
+        "label": "C",
+        "text": "CAP consistency concerns durability after a crash",
+        "explanation": "Durability is the D in ACID, not consistency in CAP."
+      },
+      {
+        "label": "D",
+        "text": "ACID consistency concerns data freshness across sites",
+        "explanation": "This assigns the freshness meaning to the wrong acronym."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "One is about freshness across sites; the other is about validity.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "bf2b0ed07388",
+    "question": "MongoDB is configured so writes need acknowledgement from the primary only. If the primary is cut off and another node takes over with older data, what does the system become?",
+    "options": [
+      {
+        "label": "A",
+        "text": "CP, because writes still go to a primary",
+        "explanation": "The write-majority setting is what makes MongoDB CP; acknowledgement from the primary alone does not."
+      },
+      {
+        "label": "B",
+        "text": "CA, because it has a primary node",
+        "explanation": "Being distributed means partitions must be tolerated, so it cannot be CA."
+      },
+      {
+        "label": "C",
+        "text": "AP, and ACID is not guaranteed",
+        "explanation": "The system stays available with a new primary, but a transaction may read old data, so consistency and ACID are sacrificed."
+      },
+      {
+        "label": "D",
+        "text": "Fully ACID-compliant NewSQL",
+        "explanation": "Reading stale data after failover means ACID is not guaranteed."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Ask whether the system keeps answering during the partition.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "acf39b6f4d19",
+    "question": "An application summarises recent news articles stored in a distributed database. Why might BASE be acceptable here?",
+    "options": [
+      {
+        "label": "A",
+        "text": "BASE guarantees every read returns the latest write",
+        "explanation": "BASE only promises eventual consistency, not that each read is current."
+      },
+      {
+        "label": "B",
+        "text": "BASE is stricter than ACID, so summaries are always correct",
+        "explanation": "BASE is a relaxed version of ACID, not a stricter one."
+      },
+      {
+        "label": "C",
+        "text": "News data cannot be replicated, so consistency issues never arise",
+        "explanation": "News data can be replicated like any other, and stale reads can occur."
+      },
+      {
+        "label": "D",
+        "text": "Missing a few very recent articles in one summary is not a serious problem",
+        "explanation": "Under BASE a read may be stale, which is tolerable when an occasionally incomplete summary does little harm."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Consider the cost of reading a slightly old value in this setting.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
+    "id": "5259c8c65fe9",
+    "question": "Which description of a NewSQL system is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A distributed RDBMS aiming for high scalability with distributed ACID, using SQL",
+        "explanation": "NewSQL systems are essentially CP and keep the familiar SQL language while scaling out."
+      },
+      {
+        "label": "B",
+        "text": "A new query language that replaces SQL",
+        "explanation": "NewSQL is a class of database systems, not a language."
+      },
+      {
+        "label": "C",
+        "text": "A BASE system that abandons transactions for availability",
+        "explanation": "NewSQL aims for distributed ACID, unlike AP systems that adopt BASE."
+      },
+      {
+        "label": "D",
+        "text": "A centralized DBMS that rejects distribution",
+        "explanation": "NewSQL systems are distributed by design."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about what NewSQL tries to combine.",
+    "course": "COM6002",
+    "unit": "Lecture_6",
+    "deck": "COM6002_Lecture_6"
+  },
+  {
     "id": "6cc82ee6420a",
     "question": "Data mining is an interdisciplinary field drawing from multiple domains. Which of the following is NOT explicitly identified in the source text as one of its foundational disciplines?",
     "options": [

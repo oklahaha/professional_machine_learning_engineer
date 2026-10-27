@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 9 map / apply / agg &amp; EDA (1)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w9">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 9</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 9 · Source: Lecture09_EDA_1.pdf / Lecture09_EDA_1.ipynb（Jupyter notebook export, 35 pages）· Lecturer: Dr. Aileen Hou</p>
+<h1>Feature Transformation (3): map / apply &amp; EDA (1): Aggregating Statistics, Sampling, Correlation</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>用 <mark class="k"><code>Series.map()</code></mark> 逐個 element 轉換數值：傳入 dictionary、function name、lambda 或 custom function。</li>
+    <li>用 <mark class="k"><code>df.apply(func, axis=…)</code></mark> 逐個 column（<code>axis=0</code>）或逐個 row（<code>axis=1</code>）套用 function，例如用多個 columns 生成新 feature；知道 <code>apply</code> 慢，係 last resort。</li>
+    <li>知道 <mark class="k">Exploratory Data Analysis (EDA)</mark> 係乜（What / Why / How）同主要類型。</li>
+    <li>Aggregating statistics：<code>mean()</code>、<code>median()</code>、<code>std()</code>、<code>quantile()</code>、<code>sum()</code>、<code>nunique()</code>、<code>mode()</code>、<code>count()</code>、<code>describe()</code>；用 <code>include=</code> / <code>exclude=</code>、<code>numeric_only=True</code>、<code>select_dtypes()</code> 揀 dtype。</li>
+    <li>用 <mark class="k"><code>df.agg()</code></mark> 一次過做多個 aggregation，或者對唔同 columns 用唔同 functions（dictionary mapping）。</li>
+    <li><mark class="k">Sampling</mark>：<code>df.sample()</code> 嘅用途同參數（<code>n</code>、<code>frac</code>、<code>replace</code>、<code>random_state</code>）。</li>
+    <li><mark class="k">Correlation</mark>：<code>df.corr()</code>（Pearson / Kendall / Spearman）、點樣解讀 correlation matrix、用 <code>unstack()</code> 搵最強 correlations。</li>
+    <li>Semi-structured data（XML / JSON）概念同 XML vs JSON vs CSV 幾時用（programming 部分唔考）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><b>map vs apply vs agg</b>：<code>map</code> 逐個 element（Series）；<code>apply</code> 逐個 row / column 套一個 function；<code>agg</code> 一次過套多個 aggregation functions，而且可以每個 column 用唔同 function。</li>
+    <li><code>axis=0</code> = 逐個 <b>column</b> 計（default，結果每個 column 一個值）；<code>axis=1</code> = 逐個 <b>row</b> 計（結果每個 row 一個值）。</li>
+    <li>Built-in function 名要加引號（<code>'mean'</code>），自己 define 嘅 function <b>唔加</b>引號（<code>my_func</code>）。</li>
+    <li>揀 dtype：<code>describe(include=/exclude=)</code>；<code>sum/mean/mode(numeric_only=True)</code>；非數值 columns 先 <code>select_dtypes(exclude='number')</code> 再 aggregate。</li>
+    <li>Correlation coefficient 喺 −1 至 +1：越近 ±1 越強，越近 0 越弱；Pearson 量 <b>linear</b>，Spearman / Kendall 用 <b>ranks</b>（量 monotonic，對 outliers 較 robust）；識讀 correlation matrix（diagonal = 1、symmetric）。</li>
+  </ol>
+</div>
+
+<div class="box note"><span class="label">📄 講義範圍</span><p>開頭 outline 重溫 Feature Transformation（one-hot / ordinal encoding、cleaning texts、scaling），今講接住講 outline 最後兩項 <b>Mapping new values</b> 同 <b>Applying functions</b>，然後開始 EDA。Section 3 Semi-Structured Data 標明「programming not required by exam」，但最尾 Summary 仍然列咗識認 XML / JSON、同 CSV 嘅概念分別、幾時用。</p></div>
+
+<h2>1. Review: Feature Transformation</h2>
+<p>Outline 重溫之前學過嘅 feature transformation 工具：</p>
+<ul>
+  <li>Categorical → numerical：nominal data 用 <mark class="k">one-hot encoding</mark>（<code>pd.get_dummies()</code>）；ordinal data 用 <mark class="k">ordinal encoder</mark>（<code>OrdinalEncoder</code>）。詳見 <a href="COM6001-w7.html">Week 7</a>。</li>
+  <li>Cleaning texts（<code>.str</code> accessor、regex）同 Scaling（Standard / MinMax / Robust）。詳見 <a href="COM6001-w8.html">Week 8</a>。</li>
+  <li>今講新內容：<b>Mapping new values</b>（<code>map</code>）同 <b>Applying functions</b>（<code>apply</code>）。</li>
+</ul>
+
+<h2>2. Mapping new values：<code>Series.map()</code></h2>
+<p><code>map</code> 同 <code>apply</code> 令我哋可以對 DataFrame 嘅每個 element，或者每個 row / column，有效率咁做 custom transformation。</p>
+<div class="box exam"><span class="label">⭐ <code>map()</code> 定義</span>
+<ul>
+  <li><b>Substitute each value</b> in a Series / DataFrame with another value or a function’s output，即係<b>逐個 element</b> 換值。</li>
+  <li>Series 同 DataFrame 都有 <code>map</code>（<code>DataFrame.map</code> 要 pandas 2.1.0+）；課堂用 <code>Series.map()</code>。</li>
+  <li>Mapping dictionary 或 function 經參數 <code>arg=</code> 傳入。</li>
+</ul></div>
+<pre><code>s.map(
+    arg: 'Callable | Mapping | Series',
+    na_action: "Literal['ignore'] | None" = None,
+) -&gt; 'Series'</code></pre>
+<p><code>arg</code> 可以係 <b>Callable</b>（function）、<b>Mapping</b>（dictionary）或 <b>Series</b>。<code>na_action='ignore'</code> 會令 NaN 直接保留做 NaN，唔會傳入 function。</p>
+
+<p>Dataset：<code>air_quality.pkl</code>（95,685 rows × 24 columns 嘅空氣質素 data，有 <code>PM2.5</code>、<code>PM10</code>、<code>TEMP</code>、<code>RAIN</code>、<code>wd</code>（wind direction）、<code>WSPM</code>（wind speed）、<code>station</code>，仲有上堂整好嘅 <code>PM2.5_cat</code>、<code>TEMP_category</code>、<code>day_of_week_name</code> 等）。</p>
+<pre><code>import pandas as pd
+dir_path = "./Datasets/week_9/"
+air_quality = pd.read_pickle(dir_path + "air_quality.pkl")</code></pre>
+
+<h3>2.1 傳入 dictionary 做 <code>arg</code></h3>
+<pre><code># change Mon - Fri to Weekday
+myMap = {'Monday':'Weekday', 'Tuesday':'Weekday', 'Wednesday':'Weekday',
+         'Thursday':'Weekday', 'Friday':'Weekday',
+         'Saturday':'Weekend', 'Sunday':'Weekend', }
+
+air_quality['day_of_week_name'].value_counts()
+# Sunday 13931, Saturday 13812, Friday 13782, Thursday 13633,
+# Monday 13536, Tuesday 13523, Wednesday 13468
+
+air_quality['day_of_week_name'].map(myMap).value_counts()
+# Weekday 67942
+# Weekend 27743</code></pre>
+<p>檢查：Weekend = 13931 + 13812 = 27743 ✓；Weekday = 其餘 5 日加埋 = 67942 ✓。</p>
+<div class="box warn"><span class="label">⚠️ 易錯：dictionary 冇嘅 key → NaN</span><p>用 dictionary 做 <code>map</code> 時，如果某個值<b>唔喺</b> dictionary 入面（例如串錯 <code>'monday'</code>），結果會變 <b>NaN</b>，唔會保留原值。所以 map 完記得 <code>.isna().sum()</code> 檢查。（比較：<code>Series.replace(dict)</code> 就會保留冇對應嘅原值。）</p></div>
+
+<h3>2.2 傳入 function name 做 <code>arg</code></h3>
+<pre><code>air_quality['day_of_week_name'].map(arg=len)      # 'Friday' -&gt; 6, 'Tuesday' -&gt; 7
+air_quality['day_of_week_name'].map(str.upper)    # 'Friday' -&gt; 'FRIDAY'
+air_quality['day_of_week_name'].str.upper()       # 結果一樣（Week 8 嘅 .str accessor）</code></pre>
+<p>注意傳入嘅係 function <b>本身</b>（<code>len</code>、<code>str.upper</code>），<b>唔好加括號</b>：<code>map(len())</code> 係錯，因為咁會即刻 call 咗 function。</p>
+
+<h3>2.3 傳入 lambda function</h3>
+<pre><code>air_quality['day_of_week_name'].map(
+    lambda x: 'Weekend' if x in ['Saturday', 'Sunday'] else 'Weekday')</code></pre>
+<p><mark class="k">lambda</mark> 係一行嘅 anonymous function：<code>lambda 輸入: 輸出</code>。<code>x</code> 每次代表 Series 入面<b>一個</b> value。結果同 dictionary 版本一樣，但寫法短好多（唔使列晒 7 日）。</p>
+
+<h3>2.4 傳入 custom function（function name）</h3>
+<pre><code>def mapfunc(x):
+    if x in ['Saturday', 'Sunday']:
+        return 'weekend_mapfunc'
+    else:
+        return 'weekday_mapfunc'
+
+air_quality['day_of_week_name'] = air_quality['day_of_week_name'].map(mapfunc)</code></pre>
+<p>呢度將結果 assign 返入原 column，所以原本嘅星期名會被覆蓋。Notebook 之後用 <code>pd.read_pickle(...)</code> reset 返個 DataFrame。<code>map</code> 本身唔會 in-place 改 data，<b>一定要 assign</b> 先會保存。</p>
+
+<h3>2.5 Q1：wind direction 例子</h3>
+<p><code>air_quality['wd']</code> 有 16 種方向（NE、ENE、E、NW、N、SW、ESE、SSW、NNE、S、WSW、SE、NNW、WNW、SSE、W）。取第一個字母就可以歸納做 4 個主方向：</p>
+<pre><code>def wd_to_letter(wd_full):
+    return wd_full[0]
+air_quality['wd'].map(wd_to_letter).value_counts()
+# N 34068, S 26054, E 22699, W 12864</code></pre>
+<p>練習答案參考（notebook 留空畀學生做）：</p>
+<pre><code># Q1.1 lambda function -&gt; 'E', 'W', 'S', 'N'
+air_quality['wd'].map(lambda x: x[0]).value_counts()
+
+# Q1.2 full function -&gt; 'East', 'West', 'South', 'North'
+def wd_to_name(wd_full):
+    names = {'E': 'East', 'W': 'West', 'S': 'South', 'N': 'North'}
+    return names[wd_full[0]]
+air_quality['wd'].map(wd_to_name).value_counts()</code></pre>
+<div class="box tip"><span class="label">💡 直覺</span><p>注意 <code>wd_full[0]</code> 只睇第一個字母，所以 "NE"、"NNE"、"NW"、"NNW" 全部歸做 N；"ENE"、"ESE" 歸 E。呢個係一種將 high-cardinality categorical feature 減少類別嘅方法（同 Week 7 嘅 binning 目的相似：減少 categories）。</p></div>
+
+<h2>3. Applying functions：<code>df.apply()</code></h2>
+<div class="box exam"><span class="label">⭐ <code>apply()</code> 重點</span>
+<ul>
+  <li>將同一個 function 套用喺每個 sub-dimension（每個 row 或者每個 column）。</li>
+  <li>Highly flexible，但通常有<b>更快嘅 alternatives</b>：DataFrame / Series 本身有 built-in methods（例如 <code>df.mean()</code>），盡量用佢哋。<code>apply</code> 比較慢，<b>use it as the last resort</b>。</li>
+  <li>沿一個 axis 套用：<code>axis=0</code>（default）= column by column；<code>axis=1</code> = row by row。</li>
+  <li><code>args=()</code> 傳額外 input arguments。</li>
+  <li>Built-in functions 用<b>引號</b>：<code>df.apply('mean')</code>；自己 define 嘅 function <b>唔用引號</b>：<code>df.apply(my_func)</code>。</li>
+</ul></div>
+
+<h3>3.1 Column-wise vs row-wise</h3>
+<pre><code># column-wise（axis=0, default）：每個 column 一個值
+air_quality[['PM2.5', 'PM10']].apply('mean')        # PM2.5 83.477884, PM10 111.899959
+air_quality[['PM2.5', 'PM10']].mean()               # 同樣結果，而且更快
+
+# row-wise（axis=1）：每個 row 一個值
+air_quality[['PM2.5', 'PM10']].apply('mean', axis=1)  # 9.0, 4.0, 4.0, 5.0, 4.5, ...
+air_quality[['PM2.5', 'PM10']].mean(axis=1)           # 同樣結果</code></pre>
+<div class="box exam"><span class="label">⭐ 記 axis 嘅方法</span>
+<table>
+<tr><th></th><th><code>axis=0</code>（default）</th><th><code>axis=1</code></th></tr>
+<tr><td>Function 每次收到</td><td>一整個 <b>column</b></td><td>一整個 <b>row</b></td></tr>
+<tr><td>結果長度</td><td>= column 數（例子：2 個值）</td><td>= row 數（例子：95,685 個值）</td></tr>
+<tr><td>例子</td><td>每個污染物嘅平均值</td><td>每個時間點 PM2.5 同 PM10 嘅平均</td></tr>
+</table>
+<p>口訣：axis 係「沿住邊個方向<b>收埋</b>」：<code>axis=0</code> 將 rows 收埋（剩返 columns），<code>axis=1</code> 將 columns 收埋（剩返 rows）。</p></div>
+
+<h3>3.2 點解 <code>apply(axis=1)</code> 咁慢？（速度比較）</h3>
+<pre><code>def pm_ratio(row):
+    return row['PM2.5']/row['PM10']
+
+%timeit pm_ratio(air_quality)          # 成個 df 傳入，call 一次：44.4 μs
+pm_ratio(air_quality.iloc[0])          # 只傳一個 row：np.float64(1.0)
+
+%%timeit
+air_quality[['PM2.5', 'PM10']].apply(pm_ratio, axis=1)   # call 95,685 次：300 ms
+
+%%timeit
+air_quality['PM2.5']/air_quality['PM10']                 # vectorized，不 call function：44.8 μs</code></pre>
+<div class="box exam"><span class="label">⭐ 結論：vectorized operation 遠快過 apply</span><p><code>pm_ratio(row)</code> 個參數 <code>row</code> 定義得好鬆：只要 <code>row['PM2.5']</code> 攞到數字，佢可以係一個 row，亦可以係成個 DataFrame。直接傳成個 DataFrame 只 call <b>一次</b>，pandas 用 vectorized 運算（44 μs）；<code>apply(axis=1)</code> 要逐 row call <b>95,685 次</b> Python function（300 ms），大約慢 6,700 倍（300 ms ÷ 44.4 μs ≈ 6,757）。所以有 built-in / vectorized 寫法就唔好用 <code>apply</code>。</p></div>
+<div class="box note"><span class="label">ℹ️ 單位</span><p>μs = microsecond = \(10^{-6}\) s；ms = millisecond = \(10^{-3}\) s。<code>%timeit</code> 測一行，<code>%%timeit</code> 測成個 cell（Jupyter magic commands）。</p></div>
+
+<h3>3.3 用 <code>apply()</code> 生成新 features</h3>
+<p><code>apply</code> 最常見用途：用 <code>axis=1</code>，根據<b>多個現有 features</b> 建立新 feature，尤其係 built-in functions 做唔到嘅邏輯。</p>
+<pre><code># prepare the function to generate a new feature about activity decision
+def activity_decision(row):
+    if (row['PM2.5_cat'] in ['Good', 'Moderate']) &amp; (row['TEMP_category'] in ['Warm', 'Hot']) &amp; (row['RAIN'] == 0):
+        return 'Go outside'
+    else:
+        return 'Stay inside'
+
+# call the function using apply along axis=1
+air_quality.apply(activity_decision, axis=1)
+# 0 Stay inside, 1 Stay inside, ...   Length: 95685</code></pre>
+<p>每次 <code>row</code> 係一個 row（Series），所以可以同時睇 <code>PM2.5_cat</code>、<code>TEMP_category</code>、<code>RAIN</code> 三個 columns。要保存就 <code>air_quality['activity'] = air_quality.apply(activity_decision, axis=1)</code>。</p>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>Function 入面 <code>row['PM2.5_cat'] in [...]</code> 得出嘅係普通 Python <code>True</code> / <code>False</code>，所以用 <code>and</code> 都得；Notebook 用 <code>&amp;</code> 都 work，因為兩邊都係 bool。但喺 <b>Boolean mask</b>（成個 Series）嗰陣一定要用 <code>&amp;</code> 加括號，唔可以用 <code>and</code>。</p></div>
+<div class="box exam"><span class="label">⭐ Conclusion</span><p><code>.apply(func)</code> 每次攞 DataFrame 嘅<b>一個 row 或 column</b>（一個 Series），再對嗰個 Series 逐個套用 <code>func</code>。</p></div>
+
+<h2>4. Exploratory Data Analysis (EDA)</h2>
+<div class="box exam"><span class="label">⭐ What / Why / How</span>
+<ul>
+  <li><b>What</b>：EDA is a process of analyzing datasets to <b>summarize their main characteristics</b>. Any method that does <b>not include formal modeling or hypothesis testing</b> to look at the data is EDA, which often involves <b>summary statistics and data visualizations</b>.</li>
+  <li><b>Why</b>：在作任何 assumptions 之前先睇 data。幫手 identify obvious errors、了解 patterns、detect outliers / anomalous events、搵 variables 之間有趣嘅關係。</li>
+  <li><b>How</b>：Check for mistakes, assumptions；Detect outliers (cross-feature)；Discover relationships among features；Preliminary selection of appropriate models。</li>
+</ul></div>
+<h3>Main types of EDA</h3>
+<table>
+<tr><th>類型</th><th>內容</th><th>幾時教</th></tr>
+<tr><td rowspan="3">Summary statistics</td><td>Aggregating statistics</td><td>今講</td></tr>
+<tr><td>Sampling from DataFrames</td><td>今講</td></tr>
+<tr><td>Correlations</td><td>今講</td></tr>
+<tr><td></td><td>Grouping by</td><td>下一講</td></tr>
+<tr><td></td><td>Pivoting tables</td><td>下一講</td></tr>
+<tr><td>Visualization</td><td>Charts / plots</td><td>之後幾講</td></tr>
+</table>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>「EDA 唔包括 formal modeling 或 hypothesis testing」：hypothesis testing 正正係 <a href="COM6005-m3.html">COM6005 Module 3</a> 嘅 inferential statistics；EDA 屬於 <a href="COM6005-m1.html">COM6005 Module 1</a> 嘅 descriptive statistics。COM6004 <a href="COM6004-ch3.html">Chapter 3 Data Visualization</a> 就係 EDA 嘅 visualization 部分。</p></div>
+
+<h2>5. Basic Aggregating Statistic Methods</h2>
+<p>Aggregating statistics 將一堆數值<b>總結成一個值</b>，可以用喺：一個 Series / column、DataFrame by columns、DataFrame by rows。</p>
+<div class="box exam"><span class="label">⭐ 常用 functions 同用途</span>
+<table>
+<tr><th>Function</th><th>用途</th></tr>
+<tr><td><code>mean()</code>、<code>median()</code></td><td>Centre of the data</td></tr>
+<tr><td><code>std()</code></td><td>Spread of the data</td></tr>
+<tr><td><code>min()</code>、<code>max()</code></td><td>Range / span of the data</td></tr>
+<tr><td><code>quantile(0.25)</code>、<code>quantile(0.75)</code></td><td>Check the IQR（\(Q_1\)、\(Q_3\)）</td></tr>
+<tr><td><code>sum()</code></td><td>加總；對 Boolean 就係數 True 嘅數目</td></tr>
+<tr><td><code>nunique()</code></td><td>Number of unique values</td></tr>
+<tr><td><code>describe()</code></td><td>Summary of data</td></tr>
+<tr><td><code>mode()</code></td><td>Most popular values</td></tr>
+<tr><td><code>nlargest()</code>、<code>nsmallest()</code></td><td>Extreme values</td></tr>
+<tr><td><code>count()</code></td><td>Count <b>non-NA</b> cells for each column or row</td></tr>
+</table></div>
+
+<h3>5.1 Series 例子：TEMP 同 PM2.5</h3>
+<pre><code>air_quality['TEMP'].count()       # 95685（non-NA 數目）
+air_quality['PM2.5_cat'].count()  # 95685（category 都數得）
+air_quality['TEMP'].mean()        # 13.729
+air_quality['TEMP'].median()      # 14.6
+[air_quality['TEMP'].quantile(0.25), air_quality['TEMP'].quantile(0.75)]    # [3.5, 23.4]
+air_quality['PM2.5'].mean()       # 83.478
+air_quality['PM2.5'].median()     # 59.0
+[air_quality['PM2.5'].quantile(0.25), air_quality['PM2.5'].quantile(0.75)]  # [23.0, 116.0]
+air_quality['RAIN'].sum()         # 6171.3</code></pre>
+<div class="box tip"><span class="label">💡 點樣解讀（EDA 思維）</span>
+<ul>
+  <li><b>TEMP</b>：mean 13.73 ≈ median 14.6，IQR = 23.4 − 3.5 = 19.9，分佈大致對稱（mean 略低過 median，有少少 left skew）。</li>
+  <li><b>PM2.5</b>：mean 83.48 明顯 &gt; median 59.0 → <b>right-skewed</b>（少數極高污染值拉高 mean）。IQR = 116 − 23 = 93。用 Week 6 嘅 outlier rule：upper fence = \(Q_3 + 1.5 \times IQR = 116 + 139.5 = 255.5\)，max 821 遠高過佢 → 有 outliers。</li>
+  <li>所以 skewed data 用 median / IQR 描述中心同 spread 比 mean / std 更 robust。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Mean vs median、skewness、IQR、five-number summary 同 <a href="COM6005-m1.html">COM6005 Module 1 Descriptive Statistics</a> 一樣；outlier fence 見 <a href="COM6001-w6.html">COM6001 Week 6</a>。</p></div>
+
+<h3>5.2 成個 DataFrame 做 aggregation：<code>numeric_only</code> vs <code>select_dtypes</code></h3>
+<p><code>air_quality.info()</code>：dtypes 有 category(2)、datetime64[ns](1)、float64(12)、int32(6)、object(3)。直接 <code>sum()</code> 成個 DataFrame 會撞到非數值 columns，所以要揀 columns：</p>
+<pre><code>air_quality.sum(numeric_only=True)                  # numerical columns only（bool columns included）
+air_quality.select_dtypes(include='number').sum()   # 數值 columns（bool columns not included）
+air_quality['wd'].sum()                             # object column：會將所有 strings 駁埋一齊（無意義）</code></pre>
+<p>兩個結果喺呢個 dataset 一樣（18 個數值 columns），因為 dataset 冇 bool column。分別只係 bool：<code>numeric_only=True</code> 會計 bool，<code>select_dtypes(include='number')</code> 唔會。</p>
+<pre><code>air_quality['PM2.5_cat'].value_counts()
+# Unhealthy 34257, Moderate 19853, Good 13576,
+# Unhealthy for sensitive groups 12457, Very unhealthy 10821, Hazardous 4721
+air_quality['PM2.5_cat'].mode()        # 0  Unhealthy  （ordered category）
+type(air_quality['PM2.5_cat'].mode())  # pandas.core.series.Series</code></pre>
+<div class="box warn"><span class="label">⚠️ <code>mode()</code> 回傳 Series，唔係單一值</span><p>因為可以有多個 modes（並列最多次）。要攞最常見嗰個值，用 position 0：<code>air_quality['PM2.5_cat'].mode()[0]</code>。</p></div>
+
+<h3>5.3 Separating numerical and categorical columns</h3>
+<div class="box exam"><span class="label">⭐ 三種揀 dtype 嘅方法</span>
+<table>
+<tr><th>方法</th><th>適用</th><th>例子 / 限制</th></tr>
+<tr><td><code>describe(include=…, exclude=…)</code></td><td><code>describe()</code></td><td><code>air_quality.describe(include=['number','category'])</code>；可以一個或多個 types；<b>listed dtype 最少要有一個存在</b>，否則 error（例如 <code>include=['bool']</code>，因為 dataset 冇 bool column）</td></tr>
+<tr><td><code>numeric_only=True</code></td><td><code>sum()</code>、<code>mean()</code>、<code>mode()</code> 等 aggregative functions</td><td><code>air_quality.mean(numeric_only=True)</code>；<b>唔可以指定 dtype</b>；<code>numeric_only=False</code> 唔係「只揀非數值」，而係包晒所有 columns</td></tr>
+<tr><td><code>select_dtypes(include=/exclude=)</code> 然後 aggregate</td><td>想對<b>非數值</b> columns 做 aggregation</td><td><code>air_quality.select_dtypes(exclude='number').mode()</code></td></tr>
+</table></div>
+<pre><code>air_quality.mean(numeric_only=True)     # PM2.5 83.48, PM10 111.90, TEMP 13.73, PRES 1011.40, ...
+air_quality.mode(numeric_only=False)    # 所有 columns：27603 rows × 24 columns（!）</code></pre>
+
+<h3>5.4 Q2–Q4 練習</h3>
+<pre><code># Q2: five-number statistics for all float64 columns
+air_quality.describe(include='float64')
+
+# Q3: describe() for String columns（String 喺 pandas 係 object dtype）
+air_quality.describe(include='object')    # 輸出 count / unique / top / freq
+
+# Q4
+air_quality.select_dtypes(exclude='number').mode()                # 27603 rows × 6 columns
+air_quality.select_dtypes(exclude=['number','datetime']).mode()   # 1 row：
+#    wd   station  PM2.5_cat  TEMP_category  day_of_week_name
+# 0  NE   Tiantan  Unhealthy  coldest        Sunday</code></pre>
+<div class="box exam"><span class="label">⭐ Q4：點解第一個 <code>mode()</code> 有 27603 rows？</span><p><code>date_time</code> column（datetime 唔係 number，所以冇被 exclude）入面好多 timestamps 出現次數一樣多，<b>並列最多次</b>。<code>mode()</code> 會回傳<b>所有</b>並列嘅 modes，所以 <code>date_time</code> 有 27603 個 modes；其他 columns 只有 1 個 mode，餘下 rows 就用 <b>NaN</b> 補齊。Exclude 埋 <code>'datetime'</code> 之後就只剩 1 row。（Q3 亦說明 <code>describe()</code> 對 object column 唔會出 five-number summary，而係 count / unique / top / freq。）</p></div>
+
+<h2>6. <code>agg()</code> for Aggregating Statistics</h2>
+<p>單一 aggregation 直接用 <code>df.mean()</code>、<code>df.sum()</code> 就得。如果想<b>一次過</b>睇幾個（例如 mean 同 sum 喺同一個 output），就用 <code>df.agg()</code>。</p>
+<pre><code>DataFrame.agg(func=None, axis=0, *args, **kwargs)</code></pre>
+<ul>
+  <li><code>func</code>：built-in function 名用引號（<code>.agg('mean')</code>）；user-defined function 唔用引號（<code>.agg(my_func)</code>）。</li>
+  <li><code>axis</code>：default 0。<code>axis=0</code> apply to columns；<code>axis=1</code> apply to rows。</li>
+</ul>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 18 頁 <code>agg.png</code>（agg() 圖解）係圖片，文字擷取不到；請對照原 PDF / notebook。</p></div>
+
+<h3>6.1 單一 function（同 <code>apply</code> 相似）</h3>
+<pre><code>air_quality[['TEMP','PM2.5']].agg('mean', axis=1)   # 每 row：4.25, 1.65, 0.80, ...
+air_quality[['TEMP','PM2.5']].agg('mean', axis=0)   # 每 column：TEMP 13.729446, PM2.5 83.477884</code></pre>
+<p>例如 row 0：TEMP = −0.5，PM2.5 = 9.0 → (−0.5 + 9.0) / 2 = 4.25 ✓。</p>
+
+<h3>6.2 多個 functions（list）</h3>
+<pre><code>def my_sum(df):
+    return df.sum(axis=0)
+
+air_quality[['TEMP','PM2.5']].agg([my_sum, 'min', 'max', 'mean']).T
+#        my_sum        min    max    mean
+# TEMP   1.313702e+06  -16.8  41.6   13.729446
+# PM2.5  7.987581e+06    2.0  821.0  83.477884</code></pre>
+<p><code>.T</code>（transpose）將 rows / columns 對調，令每個 feature 一行，易讀啲。留意 list 入面 <code>my_sum</code> 冇引號，<code>'min'</code> 有引號。</p>
+
+<h3>6.3 用 <code>**kwargs</code> 傳額外參數</h3>
+<pre><code>air_quality[['TEMP','PM2.5']].agg('quantile', q=0.3)   # TEMP 5.6, PM2.5 29.0（30th percentile）
+
+def count_between(col, low, high):
+    return ((col &lt; high) &amp; (col &gt; low)).sum()
+
+air_quality['PM2.5'].agg(count_between, low=20, high=200, axis=0)   # 64692</code></pre>
+<p><code>q=0.3</code>、<code>low=20</code>、<code>high=200</code> 都係 keyword arguments，會原封不動傳入 function。<code>count_between</code> 用 Boolean mask 再 <code>.sum()</code> 數 True（PM2.5 喺 20–200 之間嘅 rows = 64,692）。</p>
+
+<h3>6.4 唔同 features 用唔同 functions（dictionary mapping）</h3>
+<pre><code># this is correct usage of agg() with different functions on different columns
+air_quality[['PM2.5', 'PM2.5_cat']].agg({'PM2.5': ['min','max','mean'],
+                                         'PM2.5_cat':'nunique'})
+#          PM2.5       PM2.5_cat
+# min      2.000000    NaN
+# max      821.000000  NaN
+# mean     83.477884   NaN
+# nunique  NaN         6.0</code></pre>
+<div class="box exam"><span class="label">⭐ The charm of <code>.agg()</code></span><p>可以對<b>唔同 features 用唔同 functions</b>：傳入 <code>{column: function 或 [functions]}</code> dictionary。結果係一個 table，某 column 冇用到嘅 function 位置就係 NaN。呢個係 <code>apply</code> 做唔到（或者好麻煩）嘅。</p></div>
+
+<h3>6.5 Q5：自訂 function + agg</h3>
+<p>要求：WSPM 顯示 min / max / mean；wd 用自訂 function <code>most_two_freq()</code> 回傳最常見兩個值嘅 tuple。</p>
+<pre><code>def most_two_freq(col):
+    vc = col.value_counts()            # 已經由大至小排序
+    return (vc.index[0], vc.index[1])
+
+most_two_freq(air_quality['wd'])       # ('NE', 'ENE')
+
+air_quality[['WSPM', 'wd']].agg({'WSPM': ['min', 'max', 'mean'],
+                                 'wd': most_two_freq})
+#                WSPM       wd
+# min            0.000000   NaN
+# max            12.000000  NaN
+# mean           1.692044   NaN
+# most_two_freq  NaN        (NE, ENE)</code></pre>
+<p>（Notebook 只顯示 expected output，function 留空；以上係參考答案。）</p>
+
+<h3>6.6 Summary on aggregative statistics</h3>
+<ul>
+  <li>可以用一個值總結一個 column 嘅 functions：<code>count()</code>、<code>sum()</code>、<code>mean()</code>、<code>std()</code>、<code>max()</code>、<code>min()</code>、<code>mode()</code>、<code>nunique()</code>…</li>
+  <li><span class="tag exam">Exam</span> 好多都可以加 <code>axis=1</code> 改成 row 方向：<code>df.count(axis=1)</code>、<code>df.nunique(axis=1)</code>、<code>df.sum(axis=1)</code>、<code>df.mean(axis=1)</code>、<code>df.min(axis=1)</code>、<code>df.max(axis=1)</code>、<code>df.mode(axis=1)</code>。</li>
+  <li><code>describe()</code> 用 <code>include=</code> / <code>exclude=</code>；<code>sum()</code>、<code>mean()</code>、<code>mode()</code> 用 <code>numeric_only=True</code>；非數值 columns 先 <code>select_dtypes()</code>。</li>
+  <li><code>.agg()</code> 嘅好處：唔同 features 用唔同 functions。Built-in function 用 <code>' '</code> 包住，user-defined 唔使。</li>
+</ul>
+
+<h3>6.7 map vs apply vs agg 比較</h3>
+<div class="box exam"><span class="label">⭐ 考試重點：揀邊個 method？</span>
+<table>
+<tr><th></th><th><code>map()</code></th><th><code>apply()</code></th><th><code>agg()</code></th></tr>
+<tr><td>作用單位</td><td>每個 <b>element</b></td><td>每個 <b>row / column</b>（一個 Series）</td><td>每個 column（或 row），可以<b>多個 functions</b></td></tr>
+<tr><td>常見對象</td><td>Series</td><td>DataFrame（亦有 Series.apply）</td><td>DataFrame / Series</td></tr>
+<tr><td>輸入 <code>arg / func</code></td><td>dict、function、lambda、Series</td><td>一個 function</td><td>function、list of functions、dict {column: function(s)}</td></tr>
+<tr><td>典型用途</td><td>換值 / recode（Monday → Weekday）</td><td>用多個 columns 生成新 feature（<code>axis=1</code>）</td><td>Summary statistics 一次過出晒</td></tr>
+<tr><td>輸出長度</td><td>同原 Series 一樣</td><td>視乎 function（aggregate → 縮短；逐 row 轉換 → 一 row 一值）</td><td>通常縮短成 summary</td></tr>
+</table></div>
+<h3>Q6 答案參考</h3>
+<ul>
+  <li><b>A</b>：student ID <code>p123456</code> → <code>123456</code>（逐個 cell 轉換）→ <code>map()</code>，例如 <code>df['id'].map(lambda x: x[-6:])</code>，或者 Week 8 嘅 <code>df['id'].str[-6:]</code>。</li>
+  <li><b>B</b>：所有 columns 一行平均值 → 直接用 built-in <code>df.mean()</code>（或 <code>df.agg('mean')</code> / <code>df.apply('mean')</code>）。</li>
+  <li><b>C</b>：salary 用 mean、occupation 用 mode（唔同 columns 唔同 functions）→ <code>agg()</code> with a mapping：<code>df.agg({'salary': 'mean', 'occupation': lambda s: s.mode()[0]})</code>。</li>
+</ul>
+
+<h2>7. Sampling</h2>
+<div class="box exam"><span class="label">⭐ Reasons for sampling</span>
+<ul>
+  <li>用 sampling「take a peek」睇下 data。</li>
+  <li>Large data：random sample 令 computation 容易啲。</li>
+  <li>Machine learning：用一組 random samples train model，另外 hold 一組 samples 做 testing。</li>
+  <li>Outcomes 唔平均（imbalanced）時做 <b>over- 或 under-sampling</b>。</li>
+</ul></div>
+<pre><code>DataFrame.sample(n=None, frac=None, replace=False, weights=None,
+                 random_state=None, axis=None, ignore_index=False)</code></pre>
+<table>
+<tr><th>參數</th><th>意思</th></tr>
+<tr><td><code>n</code></td><td>抽幾多 rows（例如 200）</td></tr>
+<tr><td><code>frac</code></td><td>抽幾大比例（例如 0.1 = 10%）；同 <code>n</code> 二揀一</td></tr>
+<tr><td><code>replace</code></td><td><code>False</code>（default）= without replacement，同一 row 唔會抽兩次；<code>True</code> = with replacement，可能重複</td></tr>
+<tr><td><code>weights</code></td><td>每個 row 被抽中嘅權重（可用嚟 over-sample 少數類）</td></tr>
+<tr><td><code>random_state</code></td><td>Random seed，固定之後每次抽到一樣嘅 sample（reproducible）</td></tr>
+<tr><td><code>ignore_index</code></td><td><code>True</code> 就將結果 index 重設為 0…n−1</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 22–24 頁嘅 <code>Sampling.png</code> 圖解，同 <code>air_quality['TEMP'].hist()</code> vs <code>air_quality.sample(200)["TEMP"].hist()</code> 兩幅 histogram 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<pre><code>air_quality['TEMP'].hist()                # 全部 95,685 rows 嘅 histogram
+air_quality.sample(200)["TEMP"].hist()    # 只用 200 rows，形狀大致相似但較粗糙
+
+air_quality.sample(2000, replace = True).duplicated().sum()   # 16（有重複 rows）</code></pre>
+<p><code>replace=True</code> 唔會避免同一 row 被抽多次，所以 output 可能有 duplicated rows，可以用 <code>duplicated().sum()</code> 檢查（呢次 2000 個入面有 16 個重複）。</p>
+
+<h3>Sample vs population：比較 <code>describe()</code></h3>
+<table>
+<tr><th></th><th>sample(200) 第 1 次</th><th>sample(200) 第 2 次</th><th>全部 95,685 rows</th></tr>
+<tr><td>mean</td><td>14.02</td><td>14.50</td><td>13.73</td></tr>
+<tr><td>std</td><td>11.80</td><td>11.46</td><td>11.32</td></tr>
+<tr><td>min</td><td>−8.0</td><td>−8.4</td><td>−16.8</td></tr>
+<tr><td>25%</td><td>2.98</td><td>4.65</td><td>3.5</td></tr>
+<tr><td>50%</td><td>13.75</td><td>16.2</td><td>14.6</td></tr>
+<tr><td>75%</td><td>24.65</td><td>24.15</td><td>23.4</td></tr>
+<tr><td>max</td><td>35.7</td><td>36.2</td><td>41.6</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 觀察</span><ul>
+  <li>每次 sample 結果都唔同（冇設 <code>random_state</code>）→ <b>sampling variability</b>。</li>
+  <li>Mean、median、std 同全體好接近：200 rows 已經可以大致描述 TEMP 分佈。</li>
+  <li>但 <b>min / max（extreme values）</b>差好遠：極端值好少，細 sample 好難抽中。所以用 sample 搵 outliers 唔可靠。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Sample statistic 估計 population parameter、sampling variability：<a href="COM6005-m1.html">COM6005 Module 1</a>（descriptive vs inferential）同 Module 3 Confidence Interval。COM6004 <a href="COM6004-ch2.html">Chapter 2</a> 亦講 sampling（with / without replacement、sample size）。Train / test split 同 over-/under-sampling 會喺 COM6004 Classification 用到。</p></div>
+
+<h2>8. Correlation</h2>
+<p>假設每個 record 有兩個 random features（兩個 columns），我哋想量度佢哋<b>點樣一齊變動</b>（move together）。例如身高 \(x\) 同體重 \(y\)：身高增加時，體重係咪都傾向增加？<mark class="k">Covariance</mark> 同 <mark class="k">Correlation</mark> 就係用嚟量度呢種 co-movement。</p>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 25 頁 <code>corr.png</code> 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box exam"><span class="label">⭐ Correlation coefficient 解讀</span>
+<ul>
+  <li>Correlation coefficient 喺 <b>−1 至 +1</b> 之間。</li>
+  <li>越接近 1（或 −1），relationship 越<b>強</b>；越接近 0，relationship 越<b>弱</b>。</li>
+  <li>正數 = 一齊升（positive）；負數 = 一個升另一個跌（negative）。</li>
+</ul></div>
+<pre><code>DataFrame.corr(method='pearson', min_periods=1, numeric_only=False)</code></pre>
+<ul>
+  <li><code>method</code>：default 用 <b>Pearson</b> coefficient；亦可以揀 <b>Kendall</b> 或 <b>Spearman</b>。</li>
+  <li><code>min_periods</code>：計 correlation 最少要幾多 observations；唔夠就回傳 NaN。</li>
+  <li><code>numeric_only</code>：只用數值 columns。</li>
+</ul>
+
+<h3>8.1 三種 methods（細 DataFrame 例子）</h3>
+<pre><code>data = {'A': [45, 37, 42],
+        'B': [38, 31, 26],
+        'C': [10, 15, 17]}
+df = pd.DataFrame(data)
+
+df.corr(method='pearson', min_periods=3)
+#           A         B         C
+# A  1.000000  0.458388 -0.583324
+# B  0.458388  1.000000 -0.989268
+# C -0.583324 -0.989268  1.000000
+
+df.corr(method='kendall', min_periods=3)    # A-B 0.333, A-C -0.333, B-C -1.0
+df.corr(method='spearman', min_periods=3)   # A-B 0.5,   A-C -0.5,   B-C -1.0
+df.corr(min_periods=4)                      # 全部 NaN：只有 3 rows，唔夠 4 個 observations</code></pre>
+<div class="box exam"><span class="label">⭐ Pearson vs Kendall vs Spearman</span>
+<table>
+<tr><th></th><th>Pearson</th><th>Spearman</th><th>Kendall</th></tr>
+<tr><td>量度</td><td><b>Linear</b> relationship</td><td><b>Monotonic</b> relationship（strength and direction）</td><td>Strength of dependence（基於 rank 嘅 concordance）</td></tr>
+<tr><td>用乜計</td><td>Actual values</td><td><b>Ranks</b></td><td><b>Ranks</b></td></tr>
+<tr><td>類型</td><td>Parametric</td><td>Non-parametric</td><td>Non-parametric</td></tr>
+<tr><td>Outliers / non-linear</td><td>敏感</td><td>More robust</td><td>More robust</td></tr>
+<tr><td>Range</td><td colspan="3">−1 至 +1（−1 perfect negative，0 none，+1 perfect positive）</td></tr>
+</table></div>
+
+<h3>8.2 手計驗證（補充，slides 冇列公式）</h3>
+<div class="formula">$$r = \frac{\sum_{i}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i}(x_i - \bar{x})^2 \sum_{i}(y_i - \bar{y})^2}}$$</div>
+<p><b>Pearson A vs B</b>：\(\bar{A} = 41.33\)，\(\bar{B} = 31.67\)。Deviations：A = (3.67, −4.33, 0.67)，B = (6.33, −0.67, −5.67)。</p>
+<ul>
+  <li>分子：\(3.67 \times 6.33 + (-4.33)(-0.67) + 0.67 \times (-5.67) = 23.22 + 2.89 - 3.78 = 22.33\)</li>
+  <li>分母：\(\sqrt{32.67 \times 72.67} = \sqrt{2374} \approx 48.72\)</li>
+  <li>\(r = 22.33 / 48.72 \approx 0.458\) ✓（同 output 0.458388 一致）</li>
+</ul>
+<p><b>Spearman A vs B</b>：先轉 ranks。A = (45, 37, 42) → ranks (3, 1, 2)；B = (38, 31, 26) → ranks (3, 2, 1)。Rank 差 \(d = (0, -1, 1)\)，\(\sum d^2 = 2\)，\(n = 3\)：</p>
+<div class="formula">$$\rho = 1 - \frac{6\sum d^2}{n(n^2 - 1)} = 1 - \frac{6 \times 2}{3 \times 8} = 0.5$$</div>
+<p>結果 0.5，同 output 一致 ✓。</p>
+<p><b>Kendall A vs B</b>：3 對 pairs。(row0, row1)：A 跌、B 跌 → concordant；(row0, row2)：A 跌、B 跌 → concordant；(row1, row2)：A 升、B 跌 → discordant。\(\tau = \frac{C - D}{n(n-1)/2} = \frac{2 - 1}{3} = 0.333\) ✓。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Pearson correlation 同 <a href="COM6005-m4.html">COM6005 Module 4 Linear Regression</a> 直接相關（simple linear regression 嘅 \(R^2 = r^2\)）；COM6004 <a href="COM6004-ch2.html">Chapter 2</a> 亦有 correlation 做 similarity measure。</p></div>
+
+<h3>8.3 Linear vs monotonic：S、S1、S2、S3 例子</h3>
+<pre><code>s  = pd.Series([1, 2, 3, 4, 5])
+s1 = pd.Series([5, 6, 7, 8, 9])   # s + 4
+s2 = 5 - s                        # 4, 3, 2, 1, 0
+s3 = s**3                         # 1, 8, 27, 64, 125
+df = pd.DataFrame({'S': s, 'S1': s1, 'S2': s2, 'S3': s3})
+df.corr()
+#            S        S1        S2        S3
+# S   1.000000  1.000000 -1.000000  0.943118
+# S1  1.000000  1.000000 -1.000000  0.943118
+# S2 -1.000000 -1.000000  1.000000 -0.943118
+# S3  0.943118  0.943118 -0.943118  1.000000</code></pre>
+<div class="box exam"><span class="label">⭐ 重點解讀</span>
+<ul>
+  <li>S vs S1 = <b>+1</b>：S1 = S + 4，perfect linear（加常數唔影響 correlation）。</li>
+  <li>S vs S2 = <b>−1</b>：S2 = 5 − S，perfect negative linear。</li>
+  <li>S vs S3 = <b>0.943</b>（唔係 1）：S3 = \(S^3\) 係完全 monotonic（一路升），但唔係直線，所以 Pearson &lt; 1。如果用 <code>method='spearman'</code>，ranks 完全一致，結果會係 <b>1</b>。</li>
+  <li>Correlation 只講兩者<b>一齊變動</b>，唔代表 causation。</li>
+</ul></div>
+
+<h3>8.4 Air quality 例子</h3>
+<pre><code># if you have long columns, this is not recommended
+air_quality[['PM2.5','PM10']].corr()             # 0.877604
+
+# if you have long columns, this is more recommended to avoid long computation time
+air_quality[['PM2.5','PM10']].sample(200).corr() # 0.665054
+
+air_quality[['PM2.5','RAIN']].corr()             # -0.018063（幾乎冇 linear relationship）</code></pre>
+<div class="box warn"><span class="label">⚠️ 留意 sample 嘅代價</span><p>Notebook 建議長 columns 先 <code>sample()</code> 再 <code>corr()</code> 去慳計算時間，但同一對 features，全體得 0.878，200 rows sample 只得 0.665：細 sample 嘅 correlation 估計可以偏差好大（尤其 PM2.5 呢類有極端值嘅 skewed data）。慳時間嘅同時要留意 sample size。</p></div>
+
+<h3>8.5 Q7：所有數值 columns 嘅 correlation matrix</h3>
+<p><code>air_quality.corr()</code> 會出錯，因為有幾個 non-numeric columns。Notebook 嘅 <code>corr_mat</code> shape 係 (12, 12)，columns 係 PM2.5、PM10、SO2、NO2、CO、O3、TEMP、PRES、DEWP、RAIN、WSPM、time_since_2022_weeks，啱啱好係 12 個 <b>float64</b> columns，所以參考答案：</p>
+<pre><code>corr_mat = air_quality.select_dtypes(include='float64').corr()
+corr_mat.shape                       # (12, 12)
+corr_mat.loc['PM2.5','TEMP']         # -0.0903
+corr_mat.loc['PM2.5',:].abs()        # abs() 睇強度，唔理正負
+corr_mat['PM2.5'].nlargest(5)        # PM2.5 1.0, PM10 0.847, CO 0.767, NO2 0.671, SO2 0.464
+corr_mat['PM2.5'].nsmallest(5)       # WSPM -0.311, O3 -0.158, TEMP -0.090, PRES -0.048, time_since_2022_weeks -0.023</code></pre>
+<div class="box note"><span class="label">ℹ️ 數字差異</span><p class="missing">Notebook 入面 <code>corr_mat</code> 嘅 PM2.5–PM10 係 0.846921，但 In[113] 直接計係 0.877604。Notebook 冇顯示 Q7 答案點樣計 <code>corr_mat</code>，所以講義冇交代差異原因；以上 <code>select_dtypes</code> 寫法係根據 shape 同 column 名推斷。</p></div>
+
+<h3>8.6 Q8：解讀 correlation matrix</h3>
+<div class="box exam"><span class="label">⭐ Q8 參考答案</span>
+<ol>
+  <li><b>點解 diagonal 永遠係 1？</b> 每個 feature 同自己比較，完全一齊變動（perfect positive linear relationship）。</li>
+  <li><b>總共幾多個 cross-correlation coefficients？</b> 12 × 12 = 144 格，減 12 個 diagonal = 132 個 off-diagonal；matrix 係 <b>symmetric</b>（\(r_{xy} = r_{yx}\)），所以 unique pairs = \(\frac{12 \times 11}{2} = 66\) 個。</li>
+  <li><b>PM2.5 同其他 features 嘅關係：</b>
+    <ul>
+      <li>Strong positive：PM10（0.85）、CO（0.77）、NO2（0.67）→ 呢啲污染物通常一齊升（同源，例如燃燒 / 交通）。</li>
+      <li>Moderate positive：SO2（0.46）。</li>
+      <li>Weak negative：WSPM（−0.31）→ 風速大，污染物較易被吹散；O3（−0.16）。</li>
+      <li>Almost none（接近 0）：TEMP（−0.09）、PRES（−0.05）、RAIN（−0.02）、time_since_2022_weeks（−0.02）。</li>
+    </ul></li>
+</ol></div>
+
+<h3>8.7 搵最強嘅 six correlations：<code>unstack()</code></h3>
+<pre><code>corr_mat.unstack().sort_values(ascending=False).duplicated()   # Length: 144
+strongest_corr = corr_mat.unstack().sort_values(ascending=False).drop_duplicates().head(6)
+# PM2.5  PM2.5   1.000000
+# PM10   PM2.5   0.846921
+# DEWP   TEMP    0.826201
+# PM2.5  CO      0.766816
+# CO     NO2     0.714192
+# PM2.5  NO2     0.670551</code></pre>
+<ol>
+  <li><code>unstack()</code>：將 12 × 12 matrix 變成 144 個值嘅 Series，index 係 (row, column) pair。</li>
+  <li><code>sort_values(ascending=False)</code>：由大至小排。</li>
+  <li><code>drop_duplicates()</code>：因為 matrix symmetric，(PM10, PM2.5) 同 (PM2.5, PM10) 數值一樣，排完會相鄰；drop 走重複值。12 個 diagonal 1.0 亦會縮剩一個。</li>
+  <li><code>head(6)</code>：攞頭 6 個。</li>
+</ol>
+<div class="box warn"><span class="label">⚠️ 細節</span><ul>
+  <li>結果第一個係 PM2.5–PM2.5 嘅 1.0（self-correlation），所以真正嘅 feature pairs 只有 5 對。</li>
+  <li><code>drop_duplicates()</code> 係按<b>數值</b>去重：如果兩對唔同 features 恰巧 correlation 一模一樣，都會被 drop 錯。</li>
+  <li><code>ascending=False</code> 只搵最強 <b>positive</b>；想包括強 negative，要先 <code>.abs()</code> 再排。</li>
+</ul></div>
+
+<h2>9. Semi-Structured Data（programming 唔考）</h2>
+<div class="box note"><span class="label">ℹ️ 範圍</span><p>標題寫明「Introduction to Semi-Structured Data (programming not required by exam)」。但 Summary 要求：can recognize XML or JSON format；can tell conceptually their differences from CSV；can tell when to use them。所以概念要識，parsing code 唔使背。</p></div>
+<h3>9.1 Structured vs Semi-structured vs Unstructured</h3>
+<div class="box exam"><span class="label">⭐ 三種 data 比較</span>
+<table>
+<tr><th>Data Type</th><th>Structure</th><th>Examples</th><th>Characteristics</th></tr>
+<tr><td><b>Structured</b></td><td>Rigid schema, fixed format</td><td>SQL databases、CSV files、Excel spreadsheets</td><td>Pre-defined schema、tabular format、consistent structure</td></tr>
+<tr><td><b>Semi-Structured</b></td><td>Flexible schema, self-describing</td><td>XML、JSON、YAML、NoSQL databases</td><td>Schema is embedded in data、hierarchical、flexible structure</td></tr>
+<tr><td><b>Unstructured</b></td><td>No predefined structure</td><td>Text documents、images、videos、audio files</td><td>No organized schema、difficult to parse programmatically</td></tr>
+</table></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>同 <a href="COM6002-w1.html">COM6002 Week 1</a> 嘅 structured / semi-structured / unstructured data 分類一樣；JSON / API data collection 見 <a href="COM6002-w2.html">COM6002 Week 2 Data Collection</a>。</p></div>
+
+<h3>9.2 點解 XML 同 JSON 係 semi-structured</h3>
+<pre><code>&lt;students&gt;
+  &lt;student id="101"&gt;
+    &lt;name&gt;Alice&lt;/name&gt;
+    &lt;grades&gt;
+      &lt;math&gt;A&lt;/math&gt;
+      &lt;science&gt;B+&lt;/science&gt;
+    &lt;/grades&gt;
+  &lt;/student&gt;
+  &lt;student id="102"&gt;
+    &lt;name&gt;Bob&lt;/name&gt;
+    &lt;!-- Different structure allowed --&gt;
+    &lt;attendance&gt;95%&lt;/attendance&gt;
+  &lt;/student&gt;
+&lt;/students&gt;</code></pre>
+<pre><code>{
+  "students": [
+    {"id": 101, "name": "Alice",
+     "grades": {"math": "A", "science": "B+"}},
+    {"id": 102, "name": "Bob", "attendance": "95%"}
+  ]
+}</code></pre>
+<ul>
+  <li><b>Self-describing</b>：每個值都帶住自己嘅名（tag <code>&lt;name&gt;</code> 或 key <code>"name"</code>），schema 嵌喺 data 入面。</li>
+  <li><b>Hierarchical</b>：可以 nested（<code>grades</code> 入面有 <code>math</code>、<code>science</code>）。</li>
+  <li><b>Flexible</b>：Alice 有 grades，Bob 冇 grades 但有 attendance，兩個 records 結構唔同都得；CSV 就要每 row 同一組 columns。</li>
+  <li>認樣：XML 用 <code>&lt;tag&gt;…&lt;/tag&gt;</code> 同 attributes（<code>id="101"</code>）；JSON 用 <code>{ }</code> objects、<code>[ ]</code> arrays、<code>"key": value</code>。</li>
+</ul>
+
+<h3>9.3 XML vs JSON vs CSV：幾時用</h3>
+<div class="box exam"><span class="label">⭐ Data format comparison</span>
+<table>
+<tr><th>Format</th><th>Use when…</th></tr>
+<tr><td><b>XML</b></td><td>需要 strong schema validation 同 data integrity（用 XML schema definition <code>.xsd</code> file 檢查 conformance，睇 .xsd 就知所有 tags 同 tree structure，例如 data.gov.hk 嘅 special traffic news）；document-oriented data；enterprise systems 要 standardized data exchange；需要 rich metadata 同 namespaces</td></tr>
+<tr><td><b>JSON</b></td><td>Building web APIs / web services；application configuration files；mobile app development；real-time data exchange</td></tr>
+<tr><td><b>CSV</b></td><td>Spreadsheet / simple tabular data；quick data analysis 同 prototyping；data migration between systems；non-technical users 要睇 / 改 data</td></tr>
+</table></div>
+
+<h3>9.4 Parsing 例子（只供參考，唔考 programming）</h3>
+<pre><code>import xml.etree.ElementTree as ET
+tree = ET.parse(dir_path+'CountryData.xml')
+root = tree.getroot()
+print("Root Tag:", root.tag)            # data
+for child in root:
+    print(child.tag, child.attrib)      # country {'name': 'Liechtenstein'} / Singapore / Panama
+
+for country in root.findall('country'):
+    name = country.get('name')                  # 讀 attribute
+    gdppc = int(country.find('gdppc').text)     # 讀 child tag 嘅 text
+# Highest 141100, Lowest 13600, Average 71533.33</code></pre>
+<p>XML 係一棵 tree：<code>root</code> → children（<code>country</code>）→ 再落一層（<code>gdppc</code>）。Attribute 用 <code>.get()</code>，tag 入面嘅文字用 <code>.find(...).text</code>。</p>
+<pre><code>import requests
+url = "https://nominatim.openstreetmap.org/search"
+params = {"q": "Shatin", "format": "jsonv2", "limit": 1}
+headers = {"User-Agent": "my-notebook-geocoder/1.0 (...)"}   # Nominatim usage policy 要求
+response = requests.get(url, params=params, headers=headers, timeout=15)
+response.raise_for_status()
+results = response.json()        # JSON → Python list / dict
+top = results[0]
+float(top["lat"]), float(top["lon"])   # 22.3815527, 114.1904697</code></pre>
+<p>JSON API 例子（OpenStreetMap geocoder）：送 HTTP request，<code>response.json()</code> 將 JSON 轉成 Python list / dict，再用 key 攞值。</p>
+
+<h2>10. Summary</h2>
+<ul>
+  <li><b>Semi-structured data</b>：識認 XML / JSON format；概念上分得清同 CSV 嘅分別；知道幾時用。</li>
+  <li><b>EDA: Aggregating statistics</b>：
+    <ul>
+      <li>Basic aggregating stat functions：<code>sum()</code>、<code>mean()</code>…</li>
+      <li>Aggregate 之前識揀唔同 dtypes。</li>
+      <li><span class="tag exam">Exam</span> 知道 <b>map / apply / agg</b> 嘅分別。</li>
+      <li><span class="tag exam">Exam</span> 知道<b>點解要 sample</b>。</li>
+      <li><span class="tag exam">Exam</span> 識計 correlation matrix 同描述佢（邊啲 features strongly / weakly correlated）。</li>
+    </ul></li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. <code>s = pd.Series(['Mon', 'Sat', 'mon'])</code>，<code>s.map({'Mon': 'Weekday', 'Sat': 'Weekend'})</code> 輸出係乜？</summary><p><code>['Weekday', 'Weekend', NaN]</code>。Dictionary mapping 冇對應 key（<code>'mon'</code> 細楷）就變 NaN，唔會保留原值。</p></details>
+<details class="q"><summary>Q2. <code>df[['PM2.5','PM10']].apply('mean')</code> 同 <code>df[['PM2.5','PM10']].apply('mean', axis=1)</code> 各自輸出幾多個值？</summary><p>第一個（<code>axis=0</code>）：每個 column 一個值 → 2 個值。第二個（<code>axis=1</code>）：每個 row 一個值 → 95,685 個值。</p></details>
+<details class="q"><summary>Q3. 點解 <code>df['PM2.5']/df['PM10']</code>（44.8 μs）比 <code>df[['PM2.5','PM10']].apply(pm_ratio, axis=1)</code>（300 ms）快咁多？</summary><p>前者係 vectorized operation，pandas 一次過喺底層處理成個 column；後者要逐 row call Python function 95,685 次，每次都有 function call 同建立 row Series 嘅 overhead。所以 <code>apply</code> 係 last resort。</p></details>
+<details class="q"><summary>Q4. 以下邊句會出錯？(a) <code>df.apply('mean')</code> (b) <code>df.apply(my_func)</code> (c) <code>df.apply('my_func')</code>（<code>my_func</code> 係 notebook 自己 define）</summary><p>(c)。自己 define 嘅 function 唔應該加引號；字串會被當成 pandas built-in function 名去搵，搵唔到就出錯。(a) built-in 加引號正確；(b) user-defined 唔加引號正確。</p></details>
+<details class="q"><summary>Q5. 寫一行 code：對 <code>Price</code> 計 min、max、mean，同時對 <code>District</code> 計 <code>nunique</code>。</summary><p><code>df.agg({'Price': ['min', 'max', 'mean'], 'District': 'nunique'})</code>。輸出係 4 rows × 2 columns 嘅 table，冇用到嘅組合係 NaN。</p></details>
+<details class="q"><summary>Q6. <code>describe(include=['bool'])</code> 喺 air_quality 會出錯，點解？想對 object columns 計 mode 應該點寫？</summary><p>因為 <code>include=</code> 列出嘅 dtype 最少要有一個喺 DataFrame 存在，而 air_quality 冇 bool column。Object columns 計 mode：<code>air_quality.select_dtypes(include='object').mode()</code>（<code>numeric_only</code> 唔可以揀非數值 columns）。</p></details>
+<details class="q"><summary>Q7. 一個 column 嘅 mean = 83.5，median = 59.0。描述分佈形狀，並建議用乜統計量描述中心。</summary><p>Mean 明顯大過 median → right-skewed（少數極大值拉高 mean）。應該用 median（同 IQR）描述中心同 spread，因為佢哋對 outliers robust。</p></details>
+<details class="q"><summary>Q8. 列出三個 sampling 嘅原因；<code>sample(2000, replace=True)</code> 同 <code>sample(2000)</code> 有乜分別？</summary><p>原因：(1) large data 用 random sample 令計算容易；(2) ML 用 random samples train，hold 另一組做 testing；(3) outcomes 唔平均時做 over-/under-sampling。<code>replace=True</code> 係 with replacement，同一 row 可以被抽多次（可用 <code>duplicated().sum()</code> 檢查）；default <code>replace=False</code> 每 row 最多抽一次。</p></details>
+<details class="q"><summary>Q9. \(x = (1, 2, 3, 4)\)，\(y = x^2 = (1, 4, 9, 16)\)。Pearson 同 Spearman correlation 邊個會等於 1？點解？</summary><p>Spearman = 1：ranks 完全一樣（1, 2, 3, 4），monotonic increasing。Pearson &lt; 1（約 0.98）：關係唔係直線。同 notebook S vs S3（0.943）道理一樣。</p></details>
+<details class="q"><summary>Q10. 一個 10 × 10 correlation matrix 有幾多個 unique cross-correlation coefficients？點解 <code>unstack()</code> 之後要 <code>drop_duplicates()</code>？</summary><p>\(\frac{10 \times 9}{2} = 45\) 個。Matrix 係 symmetric，(A, B) 同 (B, A) 數值一樣，<code>unstack()</code> 後每對出現兩次（diagonal 1.0 亦重複 10 次），排序後 drop 重複先唔會重複計。</p></details>
+<details class="q"><summary>Q11. 以下 data 各適合 XML、JSON 定 CSV？(a) 手機 app 同 server 實時交換資料；(b) 銀行之間要嚴格 schema validation 嘅 data exchange；(c) 俾 non-technical 同事用 Excel 改嘅銷售表。</summary><p>(a) JSON（mobile app / real-time / web API）；(b) XML（strong schema validation，用 .xsd；enterprise standardized exchange）；(c) CSV（spreadsheet / simple tabular，non-technical users 可睇可改）。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li><code>s.map(arg)</code>：逐 element；<code>arg</code> = dict（冇 key → NaN）、function name（<code>len</code>、<code>str.upper</code>，唔加括號）、lambda（<code>lambda x: … if … else …</code>）、custom function；要 assign 先保存。</li>
+  <li><code>df.apply(func, axis=0/1, args=())</code>：每次一個 column（0, default）或 row（1）；built-in 用 <code>'mean'</code>，自訂用 <code>my_func</code>；慢，last resort；<code>axis=1</code> 用多個 columns 生成新 feature。</li>
+  <li>Vectorized（<code>df['a']/df['b']</code>，μs）≫ <code>apply(axis=1)</code>（ms，逐 row call）。</li>
+  <li>EDA = 唔包 formal modeling / hypothesis testing，用 summary statistics + visualization 總結 data；目的：搵 errors、patterns、outliers、relationships、初步揀 model。</li>
+  <li>Aggregation：<code>mean/median</code> centre；<code>std</code> spread；<code>min/max</code> range；<code>quantile(0.25/0.75)</code> IQR；<code>sum</code>（Boolean 數 True）；<code>nunique</code>；<code>mode</code>（回傳 Series，用 <code>[0]</code>）；<code>count</code>（non-NA）；<code>nlargest/nsmallest</code>；<code>describe</code>。</li>
+  <li>揀 dtype：<code>describe(include=/exclude=)</code>（dtype 要存在）；<code>sum/mean/mode(numeric_only=True)</code>（唔可以指定 dtype，包 bool）；非數值 → <code>select_dtypes(exclude='number')</code> 再 aggregate。</li>
+  <li><code>mode()</code> 對 datetime 會回傳所有並列 modes → 好多 rows + NaN 補齊。</li>
+  <li><code>df.agg(func, axis, **kwargs)</code>：單一（<code>'mean'</code>）、list（<code>[my_sum,'min','max']</code>）、kwargs（<code>'quantile', q=0.3</code>）、dict（<code>{'PM2.5':['min','max'], 'PM2.5_cat':'nunique'}</code>）。<code>.T</code> transpose。</li>
+  <li>選 method：逐 cell 換值 → <code>map</code>；成行 / 成列套 function → <code>apply</code>；多個 / 唔同 columns 唔同 summary → <code>agg</code>。</li>
+  <li><code>df.sample(n, frac, replace, weights, random_state)</code>；原因：peek、大 data 易計、train/test、over-/under-sampling；sample 估 mean/std 準，但 min/max 唔準。</li>
+  <li><code>df.corr(method='pearson'|'kendall'|'spearman', min_periods)</code>；−1 至 +1，近 ±1 強、近 0 弱；Pearson = linear（actual values），Spearman / Kendall = ranks（non-parametric、robust to outliers、monotonic）；observations &lt; <code>min_periods</code> → NaN。</li>
+  <li>Matrix：diagonal = 1，symmetric，unique pairs = \(\frac{k(k-1)}{2}\)；PM2.5 強正相關 PM10 / CO / NO2，弱負 WSPM，近 0 TEMP / RAIN。</li>
+  <li>最強 pairs：<code>corr_mat.unstack().sort_values(ascending=False).drop_duplicates().head(6)</code>（第一個係 self 1.0）。</li>
+  <li>Structured（rigid schema：SQL、CSV）/ Semi-structured（self-describing、hierarchical、flexible：XML、JSON、YAML、NoSQL）/ Unstructured（text、image、video）。XML → schema validation（.xsd）、enterprise、metadata；JSON → web API、config、mobile、real-time；CSV → tabular、quick analysis、migration、non-technical users。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w8.html">← Week 8 Text Cleaning &amp; Feature Scaling</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

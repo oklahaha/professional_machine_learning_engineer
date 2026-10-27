@@ -1,0 +1,46 @@
+What does `Series.map()` do?,"It substitutes each value in the Series with another value or with a function's output, element by element."
+Which pandas version added `DataFrame.map()`?,"pandas 2.1.0; before that, `map()` was available on a Series only."
+Through which parameter do you pass the mapping or function to `s.map()`?,"`arg=`; it accepts a callable, a mapping (such as a dictionary) or a Series."
+How do you turn `Monday`–`Friday` into `Weekday` and `Saturday`/`Sunday` into `Weekend` with `map()`?,"Build a dictionary such as `{'Monday':'Weekday', …, 'Sunday':'Weekend'}` and pass it: `air_quality['day_of_week_name'].map(myMap)`."
+What does `air_quality['day_of_week_name'].map(arg=len)` return?,"A Series holding the length of each day name, e.g. 6 for `Friday` and 7 for `Tuesday`."
+Write a `map()` call with a lambda that labels Saturday and Sunday `Weekend` and every other day `Weekday`.,"`s.map(lambda x: 'Weekend' if x in ['Saturday', 'Sunday'] else 'Weekday')`"
+What does `df.apply(func)` do?,It applies the same function to each sub-dimension of the DataFrame: one column at a time (`axis=0`) or one row at a time (`axis=1`).
+"What is the default `axis` of `df.apply()`, and what does it mean?",`axis=0`: the function is applied column by column.
+Why does the lecture call `apply()` a last resort?,It is flexible but slow; built-in methods such as `df.mean()` or vectorised column arithmetic are usually much faster.
+How do you pass a built-in function versus your own function to `apply()`?,"Built-in names go in quotation marks, `df.apply('mean')`; a function defined in the notebook is passed bare, `df.apply(my_func)`."
+"In the lecture's timing, how did `apply(pm_ratio, axis=1)` compare with `air_quality['PM2.5']/air_quality['PM10']`?",About 300 ms against about 45 μs: the row-wise `apply()` was thousands of times slower than the vectorised division.
+What is the usual purpose of `apply()` with `axis=1`?,"Creating a new feature from several existing features of the same row, when no built-in function does the job."
+What is Exploratory Data Analysis (EDA)?,"Analysing a dataset to summarise its main characteristics, with summary statistics and visualisations, without formal modelling or hypothesis testing."
+Why do EDA before modelling?,"To look at the data before making assumptions: find obvious errors, understand patterns, detect outliers or anomalies, and find relations among variables."
+What are the main types of EDA?,"Summary statistics (aggregating statistics, sampling, correlations, group-by, pivot tables) and visualisation."
+Which aggregating methods describe the centre and the spread of a column?,`mean()` and `median()` for the centre; `std()` for the spread.
+How do you get the interquartile range boundaries of a column?,`quantile(0.25)` and `quantile(0.75)`; the IQR is their difference.
+What does `count()` return?,The number of non-NA cells for each column (or each row with `axis=1`).
+How can `sum()` be used to count?,"Summing a Boolean Series counts the `True` values, because `True` counts as 1."
+Which methods find extreme or most popular values?,"`mode()` for the most frequent value(s), and `nlargest()` / `nsmallest()` for the largest or smallest values."
+What type does `s.mode()` return?,"A Series, because several values can tie for most frequent."
+"For `TEMP` the mean was 13.7 and the median 14.6, while for `PM2.5` the mean was 83.5 and the median 59. What does the PM2.5 gap suggest?","The mean is pulled well above the median, so PM2.5 has a long right tail of high values."
+How do you limit `describe()` to certain dtypes?,"Use `include=` or `exclude=`, e.g. `df.describe(include=['number','category'])`."
+Why does `air_quality.describe(include=['bool'])` raise an error?,"At least one of the listed dtypes must exist in the DataFrame, and `air_quality` has no bool columns."
+"How do you restrict `sum()`, `mean()` or `mode()` to numerical columns?",Pass `numeric_only=True`; these functions cannot be given a list of dtypes.
+How do you aggregate only the non-numerical columns?,"Select them first, then aggregate: `df.select_dtypes(exclude='number').mode()`."
+"Why did `air_quality.select_dtypes(exclude='number').mode()` return 27,603 rows?","The `date_time` column was included; many timestamps tie for most frequent, `mode()` returns every tied value, and the other columns are padded with NaN."
+When do you need `agg()` rather than calling `df.mean()` directly?,"When you want several aggregate functions in one output, or different functions on different columns."
+How do you pass keyword arguments through `agg()` to the function?,"Add them to the call, e.g. `df.agg('quantile', q=0.3)` or `s.agg(count_between, low=20, high=200)`."
+How do you apply different functions to different columns with `agg()`?,"Pass a dictionary: `df.agg({'PM2.5': ['min','max','mean'], 'PM2.5_cat': 'nunique'})`."
+"Summarise the difference between `map()`, `apply()` and `agg()`.","`map()` transforms each element of a Series; `apply()` runs a function on each row or column; `agg()` summarises columns, possibly with different functions per column."
+Why sample a dataset?,"To peek at the data, to make computation easier on large data, to split training and test sets, and to over- or under-sample when outcomes are uneven."
+What does `replace=True` change in `df.sample()`?,"Rows are drawn with replacement, so the same row can be selected more than once; `.duplicated().sum()` reveals the repeats."
+"What range does a correlation coefficient take, and how is it read?","From $-1$ to $+1$; the closer to $\pm 1$, the stronger the relationship, and the closer to 0, the weaker."
+"Which correlation methods does `df.corr()` support, and which is the default?","`'pearson'` (default, linear relationship), `'kendall'` and `'spearman'` (both based on ranks)."
+Why are Kendall and Spearman correlation more robust than Pearson?,"They use the ranks of the data rather than the actual values, so they are less affected by outliers and non-linear relationships."
+What does `min_periods` do in `df.corr()`?,"Sets the minimum number of observations needed for a coefficient; with fewer, the result is NaN."
+Why are the diagonal entries of a correlation matrix always 1?,"Each is a feature's correlation with itself, which is perfect."
+Why is it recommended to sample before calling `corr()` on long columns?,It avoids a long computation; the estimate from a sample is close but not identical (0.67 on 200 rows against 0.88 on all rows for PM2.5 and PM10).
+How do you list the five features most positively correlated with PM2.5?,`corr_mat['PM2.5'].nlargest(5)`; use `nsmallest(5)` for the most negative.
+How do you find the strongest correlations across a whole correlation matrix?,`corr_mat.unstack().sort_values(ascending=False).drop_duplicates().head(6)`
+Why is `drop_duplicates()` needed after `corr_mat.unstack()`?,"The matrix is symmetric, so every pair appears twice, once as (A, B) and once as (B, A)."
+What is semi-structured data?,"Data with a flexible, self-describing schema embedded in the data itself, often hierarchical, e.g. XML, JSON, YAML and NoSQL databases."
+When should you choose XML over JSON or CSV?,"When you need strong schema validation (an `.xsd` file), document-oriented data, standardised enterprise exchange, or rich metadata and namespaces."
+When should you choose JSON?,"For web APIs and web services, application configuration files, mobile apps and real-time data exchange."
+How do you read an XML file's root element with the standard library?,"`tree = ET.parse(path)` then `root = tree.getroot()`, with `import xml.etree.ElementTree as ET`."

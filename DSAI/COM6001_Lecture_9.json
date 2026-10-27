@@ -1,0 +1,622 @@
+[
+  {
+    "question": "You need to convert each student ID such as `p123456` into `123456`, cell by cell, in one column. Which method fits best?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`map()` with a function that drops the first character",
+        "Explanation": "Correct. The transformation is element-wise on one Series, which is exactly what `map()` does."
+      },
+      {
+        "label": "B",
+        "text": "`agg()` with a dictionary of functions",
+        "Explanation": "`agg()` summarises columns into aggregate values; it does not return a transformed value for every cell."
+      },
+      {
+        "label": "C",
+        "text": "`apply()` with `axis=1` over the whole DataFrame",
+        "Explanation": "Row-wise `apply()` works but is the slow last resort, and this task needs only one column, not whole rows."
+      },
+      {
+        "label": "D",
+        "text": "`describe(include='object')`",
+        "Explanation": "`describe()` produces summary statistics, not a new value for each cell."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The task touches each value on its own, not a whole row or a whole column.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Which call returns, for each row, the average of the `PM2.5` and `PM10` columns?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`air_quality[['PM2.5','PM10']].apply('mean')`",
+        "Explanation": "The default `axis=0` works column by column, so this returns two values: the mean of each column."
+      },
+      {
+        "label": "B",
+        "text": "`air_quality[['PM2.5','PM10']].apply('mean', axis=1)`",
+        "Explanation": "Correct. `axis=1` applies the function to each row, giving one mean per row."
+      },
+      {
+        "label": "C",
+        "text": "`air_quality[['PM2.5','PM10']].map('mean')`",
+        "Explanation": "`map()` substitutes values element by element; it does not average across a row."
+      },
+      {
+        "label": "D",
+        "text": "`air_quality[['PM2.5','PM10']].mean(axis=0)`",
+        "Explanation": "`axis=0` again gives one mean per column, not per row."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about which axis runs across the columns of a single row.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "`s = pd.Series(['Friday', 'Tuesday'])`. What does `s.map(len)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The single number 2",
+        "Explanation": "That is `len(s)`, the length of the Series itself, not what `map()` returns."
+      },
+      {
+        "label": "B",
+        "text": "The single number 13",
+        "Explanation": "`map()` does not add the results; it returns one result per element."
+      },
+      {
+        "label": "C",
+        "text": "A Series with the values 6 and 7",
+        "Explanation": "Correct. `map()` calls `len` on each element: `'Friday'` has 6 characters and `'Tuesday'` has 7."
+      },
+      {
+        "label": "D",
+        "text": "An error, because `len` must be written in quotation marks",
+        "Explanation": "`map()` takes the function itself; quoting function names is a convention of `apply()` and `agg()` for built-in pandas methods."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "`len` is called on each string separately.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Why does the lecture recommend vectorised arithmetic such as `air_quality['PM2.5']/air_quality['PM10']` over `apply(pm_ratio, axis=1)`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`apply()` returns a different numerical result",
+        "Explanation": "Both approaches compute the same ratio; the difference is speed."
+      },
+      {
+        "label": "B",
+        "text": "`apply()` cannot use custom functions",
+        "Explanation": "`apply()` accepts custom functions; it is simply slower."
+      },
+      {
+        "label": "C",
+        "text": "Vectorised arithmetic ignores missing values while `apply()` does not",
+        "Explanation": "The lecture compares the two only on speed, not on missing-value handling."
+      },
+      {
+        "label": "D",
+        "text": "Row-wise `apply()` calls the Python function once per row, which was thousands of times slower in the lecture's timing",
+        "Explanation": "Correct. About 300 ms for `apply()` against about 45 μs for the vectorised division."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare how many times the Python function is called in each case.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "A column has mean 83.5 and median 59. What does this suggest about its distribution?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It has a long right tail of high values pulling the mean up",
+        "Explanation": "Correct. The mean is sensitive to large values, while the median is not, so mean well above median points to a right skew."
+      },
+      {
+        "label": "B",
+        "text": "It is symmetric around 59",
+        "Explanation": "In a symmetric distribution the mean and median would be close."
+      },
+      {
+        "label": "C",
+        "text": "It has a long left tail of low values",
+        "Explanation": "Low extremes would drag the mean below the median, not above it."
+      },
+      {
+        "label": "D",
+        "text": "Most values are above 83.5",
+        "Explanation": "With a median of 59, half the values are below 59, so most values are well below 83.5."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask which of the two statistics is pulled by extreme values.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "What does `air_quality['TEMP'].count()` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The number of distinct temperatures",
+        "Explanation": "That is `nunique()`."
+      },
+      {
+        "label": "B",
+        "text": "The number of non-NA values in the column",
+        "Explanation": "Correct. `count()` counts the non-missing cells."
+      },
+      {
+        "label": "C",
+        "text": "The sum of all temperatures",
+        "Explanation": "That is `sum()`."
+      },
+      {
+        "label": "D",
+        "text": "How often the most frequent temperature occurs",
+        "Explanation": "That would come from `value_counts()`; `count()` counts all non-NA cells."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "This method ignores one particular kind of cell.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "`air_quality` has no bool columns. What happens with `air_quality.describe(include=['bool'])`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It returns an empty DataFrame",
+        "Explanation": "pandas does not quietly return an empty result here; it fails."
+      },
+      {
+        "label": "B",
+        "text": "It describes all columns instead",
+        "Explanation": "The `include=` filter is not ignored when nothing matches."
+      },
+      {
+        "label": "C",
+        "text": "It raises an error",
+        "Explanation": "Correct. At least one of the listed dtypes must exist in the calling DataFrame."
+      },
+      {
+        "label": "D",
+        "text": "It describes the numerical columns only",
+        "Explanation": "Numerical columns are the default without `include=`, but an explicit unmatched filter is an error."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The listed dtypes must match something in the DataFrame.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "You want the most frequent value of every non-numerical column. Which approach does the lecture recommend?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`air_quality.select_dtypes(exclude='number').mode()`",
+        "Explanation": "Correct. Select the non-numerical columns first, then apply the aggregate."
+      },
+      {
+        "label": "B",
+        "text": "`air_quality.mode(numeric_only=False)`",
+        "Explanation": "`numeric_only=False` includes all columns, numerical ones too; it cannot select non-numerical columns only."
+      },
+      {
+        "label": "C",
+        "text": "`air_quality.mode(include='object')`",
+        "Explanation": "`include=` belongs to `describe()`; `mode()` has no such parameter."
+      },
+      {
+        "label": "D",
+        "text": "`air_quality.mode(numeric_only=True)`",
+        "Explanation": "This keeps only the numerical columns, the opposite of what is wanted."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Aggregations such as `mode()` cannot be told which dtypes to use directly.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Why did `air_quality.select_dtypes(exclude='number').mode()` return 27,603 rows while excluding `datetime` as well returned one row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`mode()` returns one row per row of the DataFrame",
+        "Explanation": "The DataFrame has 95,685 rows, and the second call returned just one."
+      },
+      {
+        "label": "B",
+        "text": "The datetime column contains 27,603 missing values",
+        "Explanation": "The `info()` output shows `date_time` with no missing values."
+      },
+      {
+        "label": "C",
+        "text": "`mode()` cannot handle datetimes and repeats the last row",
+        "Explanation": "`mode()` handles datetimes; the many rows are genuine ties."
+      },
+      {
+        "label": "D",
+        "text": "Many `date_time` values tie for most frequent, and `mode()` returns every tied value",
+        "Explanation": "Correct. The other columns have a single mode and are padded with NaN below it."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider what `mode()` returns when several values are equally frequent.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Which call shows the minimum, maximum and mean of `PM2.5` and the number of categories of `PM2.5_cat` in a single output?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.apply(['min','max','mean','nunique'])`",
+        "Explanation": "This would apply all four functions to every column instead of mapping them per column."
+      },
+      {
+        "label": "B",
+        "text": "`df.agg({'PM2.5': ['min','max','mean'], 'PM2.5_cat': 'nunique'})`",
+        "Explanation": "Correct. A dictionary passed to `agg()` applies different functions to different columns."
+      },
+      {
+        "label": "C",
+        "text": "`df.map({'PM2.5': 'mean', 'PM2.5_cat': 'nunique'})`",
+        "Explanation": "`map()` substitutes values; it does not aggregate."
+      },
+      {
+        "label": "D",
+        "text": "`df.describe(include=['number','category'])`",
+        "Explanation": "`describe()` gives a fixed set of statistics, not this chosen mix of functions."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One function lets you map each column to its own functions.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "`def my_sum(df): return df.sum(axis=0)`. Which call applies it together with the built-in minimum?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.agg(['my_sum', 'min'])`",
+        "Explanation": "Quoting `my_sum` makes pandas look for a built-in method of that name, which does not exist."
+      },
+      {
+        "label": "B",
+        "text": "`df.agg([my_sum(), 'min'])`",
+        "Explanation": "This calls `my_sum` immediately without an argument instead of passing the function to `agg()`."
+      },
+      {
+        "label": "C",
+        "text": "`df.agg([my_sum, 'min'])`",
+        "Explanation": "Correct. User-defined functions are passed without quotation marks; built-in names are quoted."
+      },
+      {
+        "label": "D",
+        "text": "`df.agg(my_sum, 'min')`",
+        "Explanation": "The functions must be passed together as a list; a second positional argument is not a second function."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Built-in function names and your own functions are passed differently.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "How do you pass `q=0.3` to the quantile function inside `agg()`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.agg('quantile(0.3)')`",
+        "Explanation": "The string must be a function name, not a call with arguments."
+      },
+      {
+        "label": "B",
+        "text": "`df.agg({'quantile': 0.3})`",
+        "Explanation": "A dictionary maps column names to functions, not functions to arguments."
+      },
+      {
+        "label": "C",
+        "text": "`df.agg('quantile').q(0.3)`",
+        "Explanation": "The result of `agg()` has no `q` method; the argument must go into the call itself."
+      },
+      {
+        "label": "D",
+        "text": "`df.agg('quantile', q=0.3)`",
+        "Explanation": "Correct. Keyword arguments given to `agg()` are passed on to the aggregation function."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "`agg()` forwards extra arguments to the function it runs.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "You call `air_quality.sample(2000, replace=True).duplicated().sum()` and get 16. Why can duplicates appear?",
+    "options": [
+      {
+        "label": "A",
+        "text": "With replacement, the same row can be drawn more than once",
+        "Explanation": "Correct. `replace=True` allows a row to be selected again, so the sample can contain repeats."
+      },
+      {
+        "label": "B",
+        "text": "The original data already contains 16 duplicated rows",
+        "Explanation": "Sampling without replacement would not produce these repeats; they come from drawing rows again."
+      },
+      {
+        "label": "C",
+        "text": "`replace=True` replaces missing values with copies of other rows",
+        "Explanation": "`replace` controls sampling, not missing-value handling."
+      },
+      {
+        "label": "D",
+        "text": "`sample()` always returns 16 duplicates by default",
+        "Explanation": "The default is `replace=False`, which never repeats a row."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about what `replace` controls in sampling.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Which is NOT a reason for sampling given in the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To guarantee that summary statistics match the full data exactly",
+        "Explanation": "Correct, this is not a reason. Each sample's `describe()` gave slightly different values from the full data."
+      },
+      {
+        "label": "B",
+        "text": "To make computation easier on large data",
+        "Explanation": "This is a reason given: a random sample is cheaper to compute on."
+      },
+      {
+        "label": "C",
+        "text": "To hold out a set of samples for testing a model",
+        "Explanation": "This is a reason given: train on some samples and test on others."
+      },
+      {
+        "label": "D",
+        "text": "To over- or under-sample when outcomes are uneven",
+        "Explanation": "This is a reason given in the lecture."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Three of these are about computation, model evaluation or uneven outcomes.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "`s = pd.Series([1,2,3,4,5])`. What is the Pearson correlation between `s` and `5 - s`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$+1$",
+        "Explanation": "That would need both series to rise together."
+      },
+      {
+        "label": "B",
+        "text": "$-1$",
+        "Explanation": "Correct. `5 - s` is a perfect decreasing linear function of `s`."
+      },
+      {
+        "label": "C",
+        "text": "$0$",
+        "Explanation": "There is a perfect linear relationship, so the correlation cannot be zero."
+      },
+      {
+        "label": "D",
+        "text": "$5$",
+        "Explanation": "A correlation coefficient always lies between $-1$ and $+1$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One series falls by exactly one each time the other rises by one.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "With `s = pd.Series([1,2,3,4,5])`, the Pearson correlation of `s` and `s**3` was 0.943. What would Spearman correlation give?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.943$",
+        "Explanation": "That is the Pearson value, which measures the linear fit; the relationship is not linear but it is perfectly monotonic."
+      },
+      {
+        "label": "B",
+        "text": "$1$",
+        "Explanation": "Correct. `s**3` increases whenever `s` increases, so the ranks match exactly and Spearman gives a perfect 1."
+      },
+      {
+        "label": "C",
+        "text": "$-1$",
+        "Explanation": "Both series rise together, so the relationship is positive."
+      },
+      {
+        "label": "D",
+        "text": "$0$",
+        "Explanation": "There is a clear increasing relationship, not none."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Spearman works on ranks and measures monotonic relationships.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "`df` has three rows. What does `df.corr(min_periods=4)` return?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The usual Pearson matrix",
+        "Explanation": "The minimum of 4 observations is not met, so no coefficient is computed."
+      },
+      {
+        "label": "B",
+        "text": "An error",
+        "Explanation": "pandas does not raise; it returns NaN for each coefficient."
+      },
+      {
+        "label": "C",
+        "text": "A matrix of NaN",
+        "Explanation": "Correct. Every coefficient needs at least 4 observations, but only 3 exist, so each is NaN."
+      },
+      {
+        "label": "D",
+        "text": "A matrix of zeros",
+        "Explanation": "Missing results are shown as NaN, not as zero correlation."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The parameter sets a minimum number of observations.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "A correlation matrix covers 12 features. How many distinct cross-correlations between two different features does it contain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "144",
+        "Explanation": "That is every cell of the $12 \\times 12$ matrix, including the diagonal and both copies of each pair."
+      },
+      {
+        "label": "B",
+        "text": "132",
+        "Explanation": "This removes the diagonal but still counts each pair twice."
+      },
+      {
+        "label": "C",
+        "text": "66",
+        "Explanation": "Correct. $12 \\times 11 / 2 = 66$ distinct pairs."
+      },
+      {
+        "label": "D",
+        "text": "12",
+        "Explanation": "That is the number of diagonal entries, each a feature's correlation with itself."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Ignore the diagonal, and remember the matrix is symmetric.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Why is `drop_duplicates()` used in `corr_mat.unstack().sort_values(ascending=False).drop_duplicates()`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`unstack()` copies every row twice",
+        "Explanation": "`unstack()` turns the matrix into a Series with one entry per cell, without copying rows."
+      },
+      {
+        "label": "B",
+        "text": "To remove the negative correlations",
+        "Explanation": "`drop_duplicates()` removes repeated values, not negative ones."
+      },
+      {
+        "label": "C",
+        "text": "To remove missing values",
+        "Explanation": "That would be `dropna()`."
+      },
+      {
+        "label": "D",
+        "text": "The matrix is symmetric, so each pair's coefficient appears twice",
+        "Explanation": "Correct. (A, B) and (B, A) hold the same value, and only one should be kept."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Look at where the value for (A, B) also appears in the matrix.",
+    "course": "COM6001",
+    "week": "9"
+  },
+  {
+    "question": "Which format is the lecture's choice when you need strong schema validation, checked against an `.xsd` file?",
+    "options": [
+      {
+        "label": "A",
+        "text": "CSV",
+        "Explanation": "CSV is for simple tabular data and has no schema validation."
+      },
+      {
+        "label": "B",
+        "text": "JSON",
+        "Explanation": "The lecture recommends JSON for web APIs, configuration and real-time exchange."
+      },
+      {
+        "label": "C",
+        "text": "A plain text document",
+        "Explanation": "Plain text is unstructured, with no schema at all."
+      },
+      {
+        "label": "D",
+        "text": "XML",
+        "Explanation": "Correct. XML schema definition (`.xsd`) files are used to check that a document conforms."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The schema definition file's extension gives it away.",
+    "course": "COM6001",
+    "week": "9"
+  }
+]

@@ -3080,6 +3080,466 @@
     "deck": "COM6001_Lecture_8"
   },
   {
+    "id": "09df274e85fa",
+    "front": "What does `Series.map()` do?",
+    "back": "It substitutes each value in the Series with another value or with a function's output, element by element.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "f3977e6629ba",
+    "front": "Which pandas version added `DataFrame.map()`?",
+    "back": "pandas 2.1.0; before that, `map()` was available on a Series only.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "d01bc70b5596",
+    "front": "Through which parameter do you pass the mapping or function to `s.map()`?",
+    "back": "`arg=`; it accepts a callable, a mapping (such as a dictionary) or a Series.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "8820d246c6ea",
+    "front": "How do you turn `Monday`–`Friday` into `Weekday` and `Saturday`/`Sunday` into `Weekend` with `map()`?",
+    "back": "Build a dictionary such as `{'Monday':'Weekday', …, 'Sunday':'Weekend'}` and pass it: `air_quality['day_of_week_name'].map(myMap)`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "8b5b4c4dc51f",
+    "front": "What does `air_quality['day_of_week_name'].map(arg=len)` return?",
+    "back": "A Series holding the length of each day name, e.g. 6 for `Friday` and 7 for `Tuesday`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "a3ba1115a310",
+    "front": "Write a `map()` call with a lambda that labels Saturday and Sunday `Weekend` and every other day `Weekday`.",
+    "back": "`s.map(lambda x: 'Weekend' if x in ['Saturday', 'Sunday'] else 'Weekday')`",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "602b8727ec02",
+    "front": "What does `df.apply(func)` do?",
+    "back": "It applies the same function to each sub-dimension of the DataFrame: one column at a time (`axis=0`) or one row at a time (`axis=1`).",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "c167ccabbef9",
+    "front": "What is the default `axis` of `df.apply()`, and what does it mean?",
+    "back": "`axis=0`: the function is applied column by column.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "deb265a58386",
+    "front": "Why does the lecture call `apply()` a last resort?",
+    "back": "It is flexible but slow; built-in methods such as `df.mean()` or vectorised column arithmetic are usually much faster.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "b164bd1319ad",
+    "front": "How do you pass a built-in function versus your own function to `apply()`?",
+    "back": "Built-in names go in quotation marks, `df.apply('mean')`; a function defined in the notebook is passed bare, `df.apply(my_func)`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "11b0cb5af67e",
+    "front": "In the lecture's timing, how did `apply(pm_ratio, axis=1)` compare with `air_quality['PM2.5']/air_quality['PM10']`?",
+    "back": "About 300 ms against about 45 μs: the row-wise `apply()` was thousands of times slower than the vectorised division.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "472d79e2ab5f",
+    "front": "What is the usual purpose of `apply()` with `axis=1`?",
+    "back": "Creating a new feature from several existing features of the same row, when no built-in function does the job.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "09b609724a3c",
+    "front": "What is Exploratory Data Analysis (EDA)?",
+    "back": "Analysing a dataset to summarise its main characteristics, with summary statistics and visualisations, without formal modelling or hypothesis testing.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "d650eb87a7e0",
+    "front": "Why do EDA before modelling?",
+    "back": "To look at the data before making assumptions: find obvious errors, understand patterns, detect outliers or anomalies, and find relations among variables.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "07a58eca08f3",
+    "front": "What are the main types of EDA?",
+    "back": "Summary statistics (aggregating statistics, sampling, correlations, group-by, pivot tables) and visualisation.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "939745b1ce5a",
+    "front": "Which aggregating methods describe the centre and the spread of a column?",
+    "back": "`mean()` and `median()` for the centre; `std()` for the spread.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "92ac5871e417",
+    "front": "How do you get the interquartile range boundaries of a column?",
+    "back": "`quantile(0.25)` and `quantile(0.75)`; the IQR is their difference.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "2d3623cd4941",
+    "front": "What does `count()` return?",
+    "back": "The number of non-NA cells for each column (or each row with `axis=1`).",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "31167388caf0",
+    "front": "How can `sum()` be used to count?",
+    "back": "Summing a Boolean Series counts the `True` values, because `True` counts as 1.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "271f6c471b73",
+    "front": "Which methods find extreme or most popular values?",
+    "back": "`mode()` for the most frequent value(s), and `nlargest()` / `nsmallest()` for the largest or smallest values.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "575a081860e3",
+    "front": "What type does `s.mode()` return?",
+    "back": "A Series, because several values can tie for most frequent.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "0c31da61c602",
+    "front": "For `TEMP` the mean was 13.7 and the median 14.6, while for `PM2.5` the mean was 83.5 and the median 59. What does the PM2.5 gap suggest?",
+    "back": "The mean is pulled well above the median, so PM2.5 has a long right tail of high values.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "7ede4ecbeaef",
+    "front": "How do you limit `describe()` to certain dtypes?",
+    "back": "Use `include=` or `exclude=`, e.g. `df.describe(include=['number','category'])`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "fe03121df510",
+    "front": "Why does `air_quality.describe(include=['bool'])` raise an error?",
+    "back": "At least one of the listed dtypes must exist in the DataFrame, and `air_quality` has no bool columns.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "3793f7155d38",
+    "front": "How do you restrict `sum()`, `mean()` or `mode()` to numerical columns?",
+    "back": "Pass `numeric_only=True`; these functions cannot be given a list of dtypes.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "acfc1c1f02b6",
+    "front": "How do you aggregate only the non-numerical columns?",
+    "back": "Select them first, then aggregate: `df.select_dtypes(exclude='number').mode()`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "b801ce6f0437",
+    "front": "Why did `air_quality.select_dtypes(exclude='number').mode()` return 27,603 rows?",
+    "back": "The `date_time` column was included; many timestamps tie for most frequent, `mode()` returns every tied value, and the other columns are padded with NaN.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "e42107c7f3dd",
+    "front": "When do you need `agg()` rather than calling `df.mean()` directly?",
+    "back": "When you want several aggregate functions in one output, or different functions on different columns.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "cb3aee97f0eb",
+    "front": "How do you pass keyword arguments through `agg()` to the function?",
+    "back": "Add them to the call, e.g. `df.agg('quantile', q=0.3)` or `s.agg(count_between, low=20, high=200)`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "d2baabb59081",
+    "front": "How do you apply different functions to different columns with `agg()`?",
+    "back": "Pass a dictionary: `df.agg({'PM2.5': ['min','max','mean'], 'PM2.5_cat': 'nunique'})`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "1b2e4bf278a1",
+    "front": "Summarise the difference between `map()`, `apply()` and `agg()`.",
+    "back": "`map()` transforms each element of a Series; `apply()` runs a function on each row or column; `agg()` summarises columns, possibly with different functions per column.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "e27ebbd5b178",
+    "front": "Why sample a dataset?",
+    "back": "To peek at the data, to make computation easier on large data, to split training and test sets, and to over- or under-sample when outcomes are uneven.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "b7538550af40",
+    "front": "What does `replace=True` change in `df.sample()`?",
+    "back": "Rows are drawn with replacement, so the same row can be selected more than once; `.duplicated().sum()` reveals the repeats.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "b7359a9d6b5b",
+    "front": "What range does a correlation coefficient take, and how is it read?",
+    "back": "From $-1$ to $+1$; the closer to $\\pm 1$, the stronger the relationship, and the closer to 0, the weaker.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "f4cf443a8c73",
+    "front": "Which correlation methods does `df.corr()` support, and which is the default?",
+    "back": "`'pearson'` (default, linear relationship), `'kendall'` and `'spearman'` (both based on ranks).",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "29b7971e79d6",
+    "front": "Why are Kendall and Spearman correlation more robust than Pearson?",
+    "back": "They use the ranks of the data rather than the actual values, so they are less affected by outliers and non-linear relationships.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "dca6d2d3c456",
+    "front": "What does `min_periods` do in `df.corr()`?",
+    "back": "Sets the minimum number of observations needed for a coefficient; with fewer, the result is NaN.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "9f8d81cd9f73",
+    "front": "Why are the diagonal entries of a correlation matrix always 1?",
+    "back": "Each is a feature's correlation with itself, which is perfect.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "3c06e3a1597a",
+    "front": "Why is it recommended to sample before calling `corr()` on long columns?",
+    "back": "It avoids a long computation; the estimate from a sample is close but not identical (0.67 on 200 rows against 0.88 on all rows for PM2.5 and PM10).",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "69cb95282e2d",
+    "front": "How do you list the five features most positively correlated with PM2.5?",
+    "back": "`corr_mat['PM2.5'].nlargest(5)`; use `nsmallest(5)` for the most negative.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "4192bb1c258d",
+    "front": "How do you find the strongest correlations across a whole correlation matrix?",
+    "back": "`corr_mat.unstack().sort_values(ascending=False).drop_duplicates().head(6)`",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "4014f329e136",
+    "front": "Why is `drop_duplicates()` needed after `corr_mat.unstack()`?",
+    "back": "The matrix is symmetric, so every pair appears twice, once as (A, B) and once as (B, A).",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "20e94b949d06",
+    "front": "What is semi-structured data?",
+    "back": "Data with a flexible, self-describing schema embedded in the data itself, often hierarchical, e.g. XML, JSON, YAML and NoSQL databases.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "5f4042e9d3e0",
+    "front": "When should you choose XML over JSON or CSV?",
+    "back": "When you need strong schema validation (an `.xsd` file), document-oriented data, standardised enterprise exchange, or rich metadata and namespaces.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "1975acd5209b",
+    "front": "When should you choose JSON?",
+    "back": "For web APIs and web services, application configuration files, mobile apps and real-time data exchange.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
+    "id": "e18a3eb7f8d2",
+    "front": "How do you read an XML file's root element with the standard library?",
+    "back": "`tree = ET.parse(path)` then `root = tree.getroot()`, with `import xml.etree.ElementTree as ET`.",
+    "course": "COM6001",
+    "unit": "Lecture_9",
+    "topic": "",
+    "tag": "COM6001::Lecture_9",
+    "deck": "COM6001_Lecture_9"
+  },
+  {
     "id": "7e4e6b9457df",
     "front": "What is the primary write inefficiency associated with file-based data management?",
     "back": "The entire file must be re-written even when making a tiny update.",

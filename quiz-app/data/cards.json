@@ -6460,6 +6460,486 @@
     "deck": "COM6002_Lecture_6"
   },
   {
+    "id": "6dd40fecc4c8",
+    "front": "What does NoSQL stand for, and what class of system does it describe?",
+    "back": "Not Only SQL: a broad class of non-relational DBMS, often with a flexible schema, although some still use a table structure.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "cd3ee6d4930a",
+    "front": "Name the example system the lecture gives for each NoSQL type: graph, column-oriented, wide-column, in-memory, search engine, document.",
+    "back": "Neo4j, KDB, Cassandra, Redis, Elasticsearch, and MongoDB (covered in the next chapter).",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "9fb36800d41e",
+    "front": "A graph fits in an edge table, so what is the problem with using an RDBMS for it?",
+    "back": "Joins are expensive, and discovering relationships between nodes requires a large number of joins.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "275d5a80e84a",
+    "front": "What is index-free adjacency?",
+    "back": "Storing pointers between connected nodes directly, which gives graph databases constant traversal time.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "9a949c1fba23",
+    "front": "How does breadth-first search explore a graph, and what is an example application?",
+    "back": "It explores all direct neighbours at depth 1 before moving to depth 2, and so on; for example, checking whether a user is within a certain distance of another user on a social network.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "5add2f999989",
+    "front": "What does PageRank measure, and what is an example application?",
+    "back": "The relative importance or influence of nodes in a network; for example, identifying key opinion leaders on social media.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "8eaafc643935",
+    "front": "What are weakly connected components, as defined in the lecture?",
+    "back": "Subgraphs where every pair of nodes is reachable from one another; their number equals the number of islands.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "bbc1d45a264c",
+    "front": "How is the graph built to detect someone operating hundreds of fake accounts?",
+    "back": "Each account is a node, and an edge joins two accounts sharing a value on one or more features (IP, credit card, Wi-Fi, delivery address); the fake accounts form a big weakly connected component.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "c23813112624",
+    "front": "What three techniques reduce false positives in graph-based fraud detection?",
+    "back": "Filtering supernodes such as public computers, adding weights and a connectivity threshold, and only considering activities within a tight time window.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "bb38ab621942",
+    "front": "How does community detection by label propagation work?",
+    "back": "Each node starts with a unique label and iteratively adopts the majority label among its immediate neighbours until convergence.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1ab9f1f7d1a6",
+    "front": "What does the local clustering coefficient measure, and what is an example application?",
+    "back": "How close a node's immediate neighbours are to forming a complete graph; it is used in spam and fake account detection.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "207ebd625814",
+    "front": "What are the three components of an RDF record, and what is its query language?",
+    "back": "Subject, predicate and object; it is queried with SPARQL, the query language of the Semantic Web.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "73e897b29be8",
+    "front": "What is the core difference between a standard RDBMS and a column-oriented database?",
+    "back": "An RDBMS stores data on disk by rows; a column-oriented database stores it by columns.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "11ee2e8a130c",
+    "front": "With 3 values per disk I/O, why does summing one column of a 3-row, 4-column table take 3 I/Os in an RDBMS but 1 in a column store?",
+    "back": "The RDBMS has the column's values spread across the row-ordered data, whereas the column store keeps them together in one block.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "8834d8f046ed",
+    "front": "With 3 values per disk I/O, how many I/Os does inserting a 4-value record take in each storage layout?",
+    "back": "An RDBMS may need 2, while a column-oriented database needs 4, one for each column.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "2e78fa077db0",
+    "front": "Why can column-based storage achieve a higher compression rate?",
+    "back": "Data within the same column are of very similar nature; this lowers storage cost and speeds up processing.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "ca5a3cc49c4e",
+    "front": "What does run-length encoding produce for `F, F, F, M, M, F, F`?",
+    "back": "`F3M2F2`",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "81410aac1f0e",
+    "front": "How does dictionary encoding compress a district column?",
+    "back": "It stores each distinct value as a small code plus a lookup, so Sha Tin, Central, Sha Tin, Tai Po becomes 1, 2, 1, 3 with the dictionary Sha Tin→1, Central→2, Tai Po→3.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1c142041b1b5",
+    "front": "How do an RDBMS and a column-oriented database compare on reads and writes?",
+    "back": "An RDBMS is write-optimized; a column-oriented database is read-optimized, so more efficient for reads and less efficient for writes.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "ddcfe6fb15c9",
+    "front": "What is the purpose of a wide-column database, and which system did the idea originate from?",
+    "back": "To be highly scalable through horizontal scaling; it originates from Google Bigtable (OSDI 2006), with Cassandra and HBase as examples.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1be2af590d74",
+    "front": "What is the Bigtable data model?",
+    "back": "A map `(row:string, column:string, time:int64) -> string`: given the row ID, column ID and timestamp, you get the data contents, so different versions can be retrieved.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "4dd558f3e44d",
+    "front": "What is notable about the query language of Cassandra?",
+    "back": "CQL is SQL-like, but it has no JOIN operator.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "27adb52209ef",
+    "front": "How does a Log-Structured Merge-tree handle writes?",
+    "back": "It buffers incoming writes in memory, occasionally flushes them to disk as immutable sorted records, and continuously merges and compacts them in the background, cleaning up deleted or outdated records.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "3a9a32cf1e44",
+    "front": "What are the advantages of a wide-column database?",
+    "back": "Massive horizontal scalability with the same underlying schema for all, fast write throughput from append-only mode (no locking), and no null overhead.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "baa72501a19a",
+    "front": "What are the problems of a wide-column database?",
+    "back": "Poor support for queries needing joins, higher read latency than an RDBMS because of the effort to find the latest data in LSM trees, and only eventual consistency.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "f02c2f1483dc",
+    "front": "Give the benchmark read/write speeds that motivate an in-memory database.",
+    "back": "Magnetic hard disk 80–160 MB/s, SSD 200–550 MB/s, RAM 2–20 GB/s.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "46a8276f6ee3",
+    "front": "What querying limitations does Redis have as a key-value store?",
+    "back": "It indexes only the key, with no secondary index on other fields, so its querying power is limited.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1db5b3648116",
+    "front": "What are the two Redis persistence mechanisms?",
+    "back": "Snapshots of the dataset at specified intervals, and AOF, which logs every write so it can be replayed at startup; they can also be combined, or persistence turned off.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "dd2f44b0d74a",
+    "front": "Why is B-tree indexing unsuitable for an in-memory database, and what is preferred?",
+    "back": "B-trees are designed to be I/O optimal and are suboptimal in memory; a hash table is preferred, with $O(1)$ access but no range queries.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "20df8554b95f",
+    "front": "What is NVRAM, and how could Redis use it?",
+    "back": "RAM that keeps data when the power is off but is slower than volatile RAM; it could serve as a faster layer for backup and recovery, not as primary memory.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "57dc3bb5b494",
+    "front": "Give three use cases for an in-memory database.",
+    "back": "User session management, leaderboards in gaming, and high-frequency trading.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "429e641ce2ec",
+    "front": "What is the key component of Elasticsearch?",
+    "back": "An inverted index, which maps words to document IDs.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "6dd2a259d7d8",
+    "front": "What does each component of the Elastic Stack (ELK) do?",
+    "back": "Logstash is a data pipeline ingesting from multiple sources, Elasticsearch is the core engine, and Kibana is a frontend interface.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "759272f603f1",
+    "front": "List the stages of the text analysis pipeline in order.",
+    "back": "Character filter, tokenizer, normalization, stopword filter, stemming filter; a synonym filter can also replace or add tokens.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "6fb5421738f3",
+    "front": "What is the formula for TF-IDF, and how do the textbook and scikit-learn versions of TF differ?",
+    "back": "$\\text{TF-IDF}(t,d)=\\text{TF}(t,d)\\times\\text{IDF}(t)$. Textbook TF is the count of $t$ in $d$ divided by the total terms in $d$; scikit-learn TF is just the count.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1cb4ba258b97",
+    "front": "How do the textbook and scikit-learn versions of IDF differ?",
+    "back": "Textbook: $\\log_{10}\\left(\\frac{N}{\\text{df}(t)}\\right)$. Scikit-learn: $\\ln\\left(\\frac{N+1}{\\text{df}(t)+1}\\right)+1$.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "40215820f593",
+    "front": "In the lecture's 3-document corpus, what is the scikit-learn IDF of \"cat\" (in all 3) and of \"chased\" (in 1)?",
+    "back": "$\\ln(4/4)+1=1$ for \"cat\" and $\\ln(4/2)+1=\\ln(2)+1$ for \"chased\".",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "a1b5a25b4bb5",
+    "front": "What are the problems of TF-IDF?",
+    "back": "TF is counted linearly with no saturation, normalization is insufficient so longer documents are favoured, and there are no hyperparameters to tune.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "e075acaa2f4e",
+    "front": "What two limitations of TF-IDF does BM25 address?",
+    "back": "Term frequency saturation, through a TF function capping how fast frequency raises the score, and length normalization, through tuneable parameters.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "4c742cd194f8",
+    "front": "What is fuzzy search in Elasticsearch?",
+    "back": "Returning results for similar words as well, with similarity measured by edit distance; it handles typos such as \"box\" for \"fox\".",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "c7a5c282a99d",
+    "front": "What does an embedding model do?",
+    "back": "It is a neural network mapping data (text, image or other types) to a dense vector, so that semantically similar inputs have close vectors.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "b0106d3247fc",
+    "front": "What are the steps of semantic search in a vector database?",
+    "back": "Chunk the text and embed each chunk into a vector, embed the query, then run a k nearest neighbour search for the closest data vectors.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "4a9c529c4053",
+    "front": "What are cosine similarity and cosine distance?",
+    "back": "Cosine similarity is $\\frac{x\\cdot y}{|x||y|}=\\cos\\theta$, with $\\theta$ the angle between the vectors; cosine distance is $1$ minus the cosine similarity.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "32344bde9bb6",
+    "front": "When does cosine similarity reduce to a dot product?",
+    "back": "When the embedding model outputs unit vectors, because their magnitude is 1.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "b553ebc7f062",
+    "front": "How does the Inverted File Index (IVF) speed up kNN search?",
+    "back": "The data is clustered by K-means and the search narrows to candidate clusters; average $O(\\sqrt{n})$, worst case $O(n)$, with approximate results.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "09f20cbeab93",
+    "front": "How are the layers of HNSW structured?",
+    "back": "Each higher layer is a sparser subset of the lower one, the ground layer contains all vectors, and each node keeps edges to its neighbours in each layer.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "870e0cf3cb43",
+    "front": "How does an HNSW search proceed?",
+    "back": "From the top layer it greedily hops to the closest neighbours, then moves to a denser layer; at the ground layer it refines the closest neighbours and returns the top K.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "e269b1f20247",
+    "front": "What is the advantage of IVF over HNSW, and of HNSW over IVF?",
+    "back": "IVF uses less memory; HNSW searches faster, $O(\\lg n)$ against $O(\\sqrt{n})$, and needs no re-training, whereas IVF requires K-means clustering.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "topic": "",
+    "tag": "COM6002::Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
     "id": "770efabd252e",
     "front": "Concept: Classification",
     "back": "Definition: A predictive task that learns a model to map input attributes to a categorical class attribute. Example: Classifying credit card transactions as either legitimate or fraudulent.",
@@ -12518,5 +12998,455 @@
     "topic": "",
     "tag": "COM6005::Module_4B",
     "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "3f0cabe75d52",
+    "front": "Within the generalized linear model framework, which kind of $Y$ does logistic regression handle?",
+    "back": "Binary data $Y$: a target with two outcomes, such as Hungry/Not hungry or Rain/Not rain.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "20de862dbcd3",
+    "front": "What does a logistic regression output for the target Hungry/Not hungry?",
+    "back": "A probability, $\\text{Prob(Hungry)}$, not the label itself.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "4a8fd2e0bbef",
+    "front": "Using the slide's Hungry example, what is predicted for $P(\\text{Hungry}) = 1$, $0$ and $0.2$?",
+    "back": "Hungry, Not hungry and Not hungry.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "79570727162b",
+    "front": "When does linear regression $Y = \\beta_0 + \\beta_1 X_1 + \\beta_2 X_2 + \\cdots + \\beta_p X_p + \\text{error}$ fail?",
+    "back": "When $Y$ is not continuous. Generalized linear regression can handle many different kinds of $Y$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "0674203e2d01",
+    "front": "What must you identify first before you can predict or classify?",
+    "back": "The kind of $Y$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "374cbb5e4132",
+    "front": "What does it mean for $Y$ to be binomial?",
+    "back": "$Y$ has only two possible values.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "f0458e2074ef",
+    "front": "Give four examples of binomial data from the slides.",
+    "back": "0/1, Yes/No, Healthy/Cancer, Good debt/Bad debt.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "84bd0b331cc1",
+    "front": "How do you use logistic regression to predict $\\{\\text{Red, Blue, Green}\\}$?",
+    "back": "Fit three models: {Red, not Red}, {Blue, not Blue} and {Green, not Green}.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "cda91d056008",
+    "front": "Why can't binomial data be described directly by $\\beta_0 + \\beta_1 X_1 + \\beta_2 X_2 + \\cdots + \\beta_p X_p$?",
+    "back": "Binomial data is categorical, so it is not a number the linear expression can equal.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "019ae2df8a3b",
+    "front": "What numeric quantity does logistic regression model instead of the category?",
+    "back": "The probability of getting 1, which must lie in $[0,1]$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "006681a8b17f",
+    "front": "Why can't we simply set $P(Y=\\text{Rain}) = X\\beta + \\text{error}$?",
+    "back": "$X\\beta$ is arbitrary, in $[-\\infty, \\infty]$, while a probability is restricted to $[0,1]$. A transform is needed.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "1bd10f20a301",
+    "front": "What links the linear expression to the probability?",
+    "back": "The logistic function, which is also used in other machine learning methods.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "c921659bfdd5",
+    "front": "What is logistic regression, as a statistical method, used to obtain?",
+    "back": "The estimate $\\hat{\\beta}$, which is then used to classify new data.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "e26db10900aa",
+    "front": "How do you compute $\\eta_{\\text{new}}$ for a new observation?",
+    "back": "$\\eta_{\\text{new}} = \\beta_0 + \\beta_1 X_{1,\\text{new}} + \\beta_2 X_{2,\\text{new}} + \\cdots + \\beta_p X_{p,\\text{new}}$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "6eb2a48bab0c",
+    "front": "How do you turn $\\eta_{\\text{new}}$ into a probability?",
+    "back": "$P(y_{\\text{new}} = 1) = \\dfrac{e^{\\eta_{\\text{new}}}}{1 + e^{\\eta_{\\text{new}}}}$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "1b0ab20ed506",
+    "front": "What is the default decision rule for logistic regression?",
+    "back": "Threshold 0.5: classify $y_{\\text{new}} = 1$ if $P(y_{\\text{new}} = 1) > 0.5$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "9a0b846c67de",
+    "front": "What does the condition $P(y_{\\text{new}} = 1) > 0.5$ mean in terms of $\\eta_{\\text{new}}$?",
+    "back": "$\\eta_{\\text{new}} > 0$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "8745ae2c0434",
+    "front": "If $P(\\text{Rain=True}) = 0.4$, what do we claim under the default rule?",
+    "back": "Tomorrow will not rain, because 0.4 is not above the 0.5 threshold.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "884700e6e47a",
+    "front": "What is the logit function?",
+    "back": "$\\text{logit}(P) = \\ln\\left(\\dfrac{P}{1-P}\\right)$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "a7f55f60cbf0",
+    "front": "What are the input and output ranges of the logit function?",
+    "back": "Input: $P$ in $[0,1]$. Output: $[-\\infty, \\infty]$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "2fcef2eb9db9",
+    "front": "What is the logistic function?",
+    "back": "$P = \\dfrac{e^{\\text{logit}(P)}}{1 + e^{\\text{logit}(P)}}$, an S-shaped curve.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "3899d331df55",
+    "front": "What are the input and output ranges of the logistic function?",
+    "back": "Input: $[-\\infty, \\infty]$. Output: a probability in $[0,1]$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "726867dd354d",
+    "front": "What method fits a linear regression, and what does it minimize?",
+    "back": "Ordinary Least Squares (OLS), which minimizes the sum of squared errors.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "615ce04b3649",
+    "front": "What method fits a logistic regression?",
+    "back": "Maximum Likelihood Estimation (MLE).",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "4b28710e2063",
+    "front": "Why can't logistic regression use the sum of squared errors?",
+    "back": "For categorical $Y$, an error cannot be defined by subtraction: Cloudy $-$ Sunny has no meaning.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "2fbb16162a3a",
+    "front": "Roughly speaking, what does likelihood mean?",
+    "back": "The probability of observing what you observed. It is directly proportional to that probability, so $L_1 > L_2$ means $P_1 > P_2$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "908d7edbd1bd",
+    "front": "What is the likelihood in logistic regression?",
+    "back": "$\\prod_{t=1}^{n} P(Y_t = y_t \\mid X_t)$, based on the actual observations.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "b77028a257d9",
+    "front": "How do statisticians obtain the unknown parameters in logistic regression?",
+    "back": "They maximize the likelihood.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "b144c202ebb6",
+    "front": "What is numerical analysis?",
+    "back": "A class of methods that find a max/min and solve equations approximately using repetitive steps. It handles problems with no explicit solution, such as $x \\sin x = 1$. Details are out of syllabus.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "564bdc406362",
+    "front": "With $p = 1$, $\\beta_0 = 3$, $\\beta_1 = 2$ and new data $x = 5$, what are $\\eta_{\\text{new}}$ and $P(Y=1)$?",
+    "back": "$\\eta_{\\text{new}} = 3 + 2 \\times 5 = 13$, and $P(Y=1) = \\dfrac{e^{13}}{1 + e^{13}} \\approx 1$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "f994dedeceb3",
+    "front": "What is the example dataset for classification in Python, and how large is it?",
+    "back": "The South African heart disease data (SAheart; Rousseauw et al, 1983), with $n = 462$ and 10 columns.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "00b59d0e6e1e",
+    "front": "What is the response variable in SAheart, and how is it coded?",
+    "back": "`chd`, the coronary heart disease diagnosis: 0/negative or 1/positive.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "9982092207bc",
+    "front": "What do `sbp` and `ldl` measure in SAheart?",
+    "back": "`sbp` is systolic blood pressure (mm Hg); `ldl` is low-density lipoprotein cholesterol.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "506b6190fb94",
+    "front": "What do `tobacco` and `alcohol` measure in SAheart?",
+    "back": "`tobacco` is cumulative tobacco use (kg); `alcohol` is current alcohol consumption.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "05aca550e686",
+    "front": "What do `adiposity` and `obesity` measure in SAheart?",
+    "back": "`adiposity` is an adiposity/obesity measure; `obesity` is a body mass index (BMI) measure.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "c0111212da17",
+    "front": "What do `famhist` and `typea` measure in SAheart?",
+    "back": "`famhist` is family history of ischemic heart disease (Absent/Present or 0/1); `typea` is a Type-A behavior score on a scale of 12–84.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "4bfcc7469f5d",
+    "front": "Which module provides `smf.mnlogit` in the lecture's code?",
+    "back": "`statsmodels.formula.api`, imported as `smf`. It is not a standard routine in Python.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "f2ea8348f15e",
+    "front": "How does the lecture fit the logistic regression on SAheart?",
+    "back": "`model = smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart).fit()`, then `print(model.summary())`.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "b6a5f4881a53",
+    "front": "What does `heart['chd'].astype('category').cat.codes` do?",
+    "back": "It converts the target class variable into integer codes.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "9c4dacc19f80",
+    "front": "How do you get predicted probabilities and predicted classes for new data?",
+    "back": "`pred_probs = model.predict(newdata)` gives the probabilities; `pred_classes = pred_probs.idxmax(axis=1)` gives the classes.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "e9a8a8736930",
+    "front": "What do `axis=0` and `axis=1` return in `idxmax`?",
+    "back": "`idxmax` gives the index of the first occurrence of the maximum: `axis=0` returns the row index, `axis=1` the column index.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "76badea495e5",
+    "front": "What are the steps to get an out-of-sample misclassification rate?",
+    "back": "Split the full data into training and unseen testing data (e.g. 70% vs 30%), fit on the training data, then pretend you don't know $Y$ in the test data and apply `predict()`.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "16354ad54d6e",
+    "front": "What are the two equivalent formulas for the misclassification rate?",
+    "back": "$\\dfrac{\\text{wrong}}{\\text{total}}$, or $1 - \\dfrac{\\text{correct}}{\\text{total}}$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "85a52fa79526",
+    "front": "Predicted High risk: 50 actually High, 6 actually Low. Predicted Low risk: 8 actually High, 35 actually Low. What is the misclassification rate?",
+    "back": "$\\dfrac{6+8}{50+6+8+35} = \\dfrac{14}{99} \\approx 0.141$.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "59adf0d75692",
+    "front": "How does the lecture's code compute the error rate from the confusion matrix?",
+    "back": "`misclassification = confusion_matrix(actual_class, predicted_class)`, then `error_rate = 1 - np.trace(misclassification) / np.sum(misclassification)`.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "topic": "",
+    "tag": "COM6005::Module_5",
+    "deck": "COM6005_Module_5"
   }
 ]

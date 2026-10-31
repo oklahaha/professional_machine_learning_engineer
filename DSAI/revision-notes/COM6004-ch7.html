@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6004 · Chapter 7 Matrix Algebra Review</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6004-ch7">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6004 Data Mining › Chapter 7 (Supplement)</span>
+  <span class="spacer"></span>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6004 · Chapter 7 Supplement · Source: COM6004_Chapter_7_supp_Matrix_Algebra_Review.pptx (34 slides)</p>
+<h1>Matrix Algebra Review（非考試範圍）</h1>
+
+<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>COM6004 考試範圍只包括 <b>Chapter 1–6</b>，所以呢頁冇 Exam 標記，亦冇 Exam-only 按鈕。趕時間可以直接跳過，先溫 <a href="COM6004-ch1.html">Chapter 1</a> 至 <a href="COM6004-ch6.html">Chapter 6</a>。</p></div>
+
+<div class="overview">
+  <h3>🎯 本講內容</h3>
+  <ul>
+    <li>Scalars、vectors、Euclidean distance、norm、unit vector。</li>
+    <li>Matrix：transpose、symmetric、加減乘、trace、determinant、inverse。</li>
+    <li>Inner product 同角度、orthogonal matrix。</li>
+    <li>Eigenvalue、eigenvector，同 \( A=\boldsymbol{X}'\boldsymbol{X} \) 嘅性質。</li>
+    <li>Decomposition：\( A=V\Lambda V' \)，由此計 \( A^{\frac12} \)、\( A^{-1} \)、trace、rank 同 determinant。</li>
+  </ul>
+  <h3>🧭 邊啲部分喺其他地方仍然有用？</h3>
+  <table>
+  <tr><th>呢頁嘅內容</th><th>用喺邊度</th></tr>
+  <tr><td>Euclidean distance、cosine</td><td><a href="COM6004-ch2.html">COM6004 Chapter 2</a> 嘅 distance / similarity 計算、<a href="COM6004-ch5.html">Chapter 5</a> clustering。呢啲計算請跟 Chapter 2 溫。</td></tr>
+  <tr><td>Transpose、matrix multiplication、inverse</td><td><a href="COM6005-m4.html">COM6005 Module 4</a> 嘅 \( \hat\beta=(X'X)^{-1}X'Y \)。</td></tr>
+  <tr><td>Eigenvalue、eigenvector、\( \boldsymbol{X}'\boldsymbol{X} \)</td><td>Chapter 2 有介紹 PCA；溫考試跟 Chapter 2 頁面就得，呢頁只係背後可能用到嘅數學工具。</td></tr>
+  </table>
+</div>
+
+<div class="box note"><span class="label">🖼️ 內容來源</span><p>原 slides 第 3–33 頁嘅內容全部係圖片。呢頁嘅定義、公式同例子係逐張圖片睇過之後整理，公式如有疑問可以對照原 slide。</p></div>
+
+<h2>1. Scalars 同 Vectors（slides 3–5）</h2>
+<p><b>Scalar</b>：a single value, constant, or observation，例如 \( x=5 \)。</p>
+<p><b>Vector</b>：a row or column of values, responses, or observations。\( d \)-dimensional column vector 同 row vector：</p>
+<div class="formula">$$ \boldsymbol{x}=\begin{pmatrix}x_1\\x_2\\\vdots\\x_{d-1}\\x_d\end{pmatrix},\qquad \boldsymbol{x}'=(x_1,x_2,\ldots,x_{d-1},x_d) $$</div>
+<p>留意 notation：<b>prime</b> \( ' \) 代表 transpose，所以冇 prime 嘅 \( \boldsymbol{x} \) 係 column，\( \boldsymbol{x}' \) 係 row。</p>
+<div class="formula">$$ \text{Euclidean Distance: }|\boldsymbol{x}-\boldsymbol{y}|=\sqrt{\sum_{i=1}^{d}(x_i-y_i)^2} $$</div>
+<div class="formula">$$ \text{Norm / Length: }|\boldsymbol{x}|=\sqrt{x_1^2+\cdots+x_d^2} $$</div>
+<p>Norm 就係 \( \boldsymbol{x} \) 同原點 \( \boldsymbol{0} \) 嘅距離。<b>Unit vector</b> 就係 \( |\boldsymbol{x}|=1 \)。</p>
+<p><b>例（slide 5）</b>：\( \boldsymbol{x}_1=(3,9,4,3)' \)，\( \boldsymbol{x}_2=(7,9,4,2)' \)。</p>
+<div class="formula">$$ |\boldsymbol{x}_1|=\sqrt{3^2+9^2+4^2+3^2}=\sqrt{115},\quad |\boldsymbol{x}_2|=\sqrt{7^2+9^2+4^2+2^2}=\sqrt{150} $$</div>
+<div class="formula">$$ |\boldsymbol{x}_1-\boldsymbol{x}_2|=\sqrt{(-4)^2+0^2+0^2+1^2}=\sqrt{17} $$</div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>同一個符號 \( |\cdot| \) 有兩個意思：vector 嘅 \( |\boldsymbol{x}| \) 係 <b>norm</b>，matrix 嘅 \( |A| \) 係 <b>determinant</b>。</p></div>
+
+<h2>2. Matrix 基本概念（slides 6–8）</h2>
+<p>Matrix \( A\in\mathbb{R}^{n\times p} \) 係一個 \( n\times p \) array of numbers，可以睇成一堆 column vectors（每個 \( \boldsymbol{a}_i\in\mathbb{R}^n \)），又或者一堆 row vectors（每個 \( \tilde{\boldsymbol{a}}_j\in\mathbb{R}^p \)）：</p>
+<div class="formula">$$ A=\begin{pmatrix}6&amp;5&amp;3\\2&amp;6&amp;7\end{pmatrix},\qquad A=(\boldsymbol{a}_1\ \boldsymbol{a}_2\ \cdots\ \boldsymbol{a}_p)=\begin{pmatrix}\tilde{\boldsymbol{a}}_1\\\tilde{\boldsymbol{a}}_2\\\vdots\\\tilde{\boldsymbol{a}}_n\end{pmatrix} $$</div>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p>Data Mining 嘅 data matrix 通常就係 \( n \) 個 rows（objects）、\( p \) 個 columns（attributes）。</p></div>
+<p><b>Transpose</b>（slide 7）就係 flipping the matrix，rows 變 columns：</p>
+<div class="formula">$$ A=\begin{pmatrix}8&amp;8&amp;1\\9&amp;0&amp;3\end{pmatrix},\quad A'=\begin{pmatrix}8&amp;9\\8&amp;0\\1&amp;3\end{pmatrix},\qquad (ABCD)'=D'C'B'A' $$</div>
+<p>注意次序會<b>倒轉</b>。</p>
+<p><b>Square matrix</b>（slide 8）：\( n=p \)。<b>Symmetric matrix</b>：square 而且 \( A=A' \)：</p>
+<div class="formula">$$ A=\begin{pmatrix}6&amp;1&amp;2\\1&amp;4&amp;6\\2&amp;6&amp;9\end{pmatrix}=A' $$</div>
+
+<h2>3. 加減同乘法（slides 9–11）</h2>
+<p><b>加減</b>：equal-sized matrices，逐格加減。</p>
+<div class="formula">$$ A=\begin{pmatrix}6&amp;8\\4&amp;4\end{pmatrix},\ B=\begin{pmatrix}1&amp;3\\2&amp;6\end{pmatrix},\quad A+B=\begin{pmatrix}7&amp;11\\6&amp;10\end{pmatrix},\ A-B=\begin{pmatrix}5&amp;5\\2&amp;-2\end{pmatrix} $$</div>
+<p><b>Matrix × vector</b>（slide 10）：\( n\times p \) 嘅 \( A \) 乘 \( p\times1 \) 嘅 \( \boldsymbol{x} \)。Slide 嘅重點句：<b>matrix multiplication = weights columns of \( A \) by \( \boldsymbol{x} \)</b>。</p>
+<div class="formula">$$ A\boldsymbol{x}=\sum_{i=1}^{p}\boldsymbol{a}_ix_i,\qquad \begin{pmatrix}6&amp;8\\4&amp;4\end{pmatrix}\begin{pmatrix}1\\2\end{pmatrix}=1\begin{pmatrix}6\\4\end{pmatrix}+2\begin{pmatrix}8\\4\end{pmatrix}=\begin{pmatrix}22\\12\end{pmatrix} $$</div>
+<p><b>Matrix × matrix</b>（slide 11）：\( n\times p \) 乘 \( p\times m \)，逐個 column 做上面嘅運算：</p>
+<div class="formula">$$ AB=A[\boldsymbol{b}_1\ \boldsymbol{b}_2\ \ldots\ \boldsymbol{b}_m]=[A\boldsymbol{b}_1\ A\boldsymbol{b}_2\ \ldots\ A\boldsymbol{b}_m] $$</div>
+<p>例：\( A=\begin{pmatrix}6&amp;8\\4&amp;4\end{pmatrix} \)，\( B=\begin{pmatrix}1&amp;3\\2&amp;4\end{pmatrix} \)：\( A\boldsymbol{b}_1=(22,12)' \)，\( A\boldsymbol{b}_2=(50,28)' \)，所以 \( AB=\begin{pmatrix}22&amp;50\\12&amp;28\end{pmatrix} \)。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>乘法要中間 dimension 夾到（\( n\times\boldsymbol{p} \) 配 \( \boldsymbol{p}\times m \)），結果係 \( n\times m \)。而且一般 \( AB\ne BA \)：上面例子 \( BA=\begin{pmatrix}18&amp;20\\28&amp;32\end{pmatrix} \)。</p></div>
+
+<h2>4. Trace、Determinant、Inverse（slides 12–15）</h2>
+<p><b>Trace</b>（slide 12）：sum of diagonal elements。上面 symmetric matrix 嘅 \( tr(A)=6+4+9=19 \)。性質：\( tr(AB)=tr(BA) \)。上一節嘅例子驗證：\( tr(AB)=22+28=50 \)，\( tr(BA)=18+32=50 \)。</p>
+<p><b>Determinant</b>（slide 13）：</p>
+<div class="formula">$$ \begin{vmatrix}a&amp;b\\c&amp;d\end{vmatrix}=ad-bc $$</div>
+<div class="formula">$$ \begin{vmatrix}a&amp;b&amp;c\\d&amp;e&amp;f\\g&amp;h&amp;i\end{vmatrix}=a\begin{vmatrix}e&amp;f\\h&amp;i\end{vmatrix}-b\begin{vmatrix}d&amp;f\\g&amp;i\end{vmatrix}+c\begin{vmatrix}d&amp;e\\g&amp;h\end{vmatrix} $$</div>
+<p>自編例子：</p>
+<div class="formula">$$ \begin{vmatrix}6&amp;1&amp;2\\1&amp;4&amp;6\\2&amp;6&amp;9\end{vmatrix}=6(36-36)-1(9-12)+2(6-8)=0+3-4=-1 $$</div>
+<p><b>\( p\times p \) determinant 嘅性質</b>（slide 14）：</p>
+<ul>
+<li>\( |A'|=|A| \)</li>
+<li>\( |diag(d_1,d_2,\ldots,d_p)|=\prod_{i=1}^{p}d_i \)</li>
+<li>\( |\alpha A|=\alpha^p|A| \)</li>
+<li>\( |AB|=|A||B| \)</li>
+</ul>
+<p>驗證 \( |AB|=|A||B| \)：\( |A|=6\times4-8\times4=-8 \)，\( |B|=1\times4-3\times2=-2 \)，\( |AB|=22\times28-50\times12=16=(-8)(-2) \)。</p>
+<p><b>Inverse</b>（slide 15）：\( AA^{-1}=A^{-1}A=I \)。性質：</p>
+<ul>
+<li>\( (A')^{-1}=(A^{-1})' \)</li>
+<li>\( (AB)^{-1}=B^{-1}A^{-1} \)（次序同樣倒轉）</li>
+<li>\( |A^{-1}|=1/|A| \)</li>
+<li>如果 \( D=diag(d_1,d_2,\ldots,d_p) \)，咁 \( D^{-1}=diag(d_1^{-1},d_2^{-1},\ldots,d_p^{-1}) \)</li>
+</ul>
+
+<h2>5. Inner Product（slides 16–20）</h2>
+<div class="formula">$$ \boldsymbol{x}'\boldsymbol{y}=\sum_{i=1}^{n}x_iy_i=|\boldsymbol{x}||\boldsymbol{y}|\cos(\theta),\qquad \boldsymbol{x}'\boldsymbol{y}=\boldsymbol{y}'\boldsymbol{x} $$</div>
+<p>Vectors \( \boldsymbol{x},\boldsymbol{y}\in\mathbb{R}^n \) 就係 size \( n\times1 \) 嘅 matrices，所以 \( \boldsymbol{x}' \)（\( 1\times n \)）乘 \( \boldsymbol{y} \)（\( n\times1 \)）得出一個 scalar。</p>
+<p>對 <b>unit vectors</b>（\( |\boldsymbol{x}|=|\boldsymbol{y}|=1 \)，slide 17）：</p>
+<div class="formula">$$ |\boldsymbol{x}-\boldsymbol{y}|^2=\sum_{i=1}^{n}x_i^2+\sum_{i=1}^{n}y_i^2-2\sum_{i=1}^{n}x_iy_i=2-2\boldsymbol{x}'\boldsymbol{y} $$</div>
+<p>所以兩個 unit vectors 嘅 inner product 越大，距離越近。Slide 18 嘅三個情況：</p>
+<table>
+<tr><th>關係</th><th>\( \theta \)</th><th>\( \sum x_iy_i \)</th></tr>
+<tr><td>\( \boldsymbol{x}=-\boldsymbol{y} \)（相反方向）</td><td>180°</td><td>−1</td></tr>
+<tr><td>\( \boldsymbol{x}\perp\boldsymbol{y} \)（垂直）</td><td>90°</td><td>0</td></tr>
+<tr><td>\( \boldsymbol{x}=\boldsymbol{y} \)（相同方向）</td><td>0°</td><td>1</td></tr>
+</table>
+<p>即係 \( \boldsymbol{x}'\boldsymbol{y} \) “measures” the angle between \( \boldsymbol{x} \) and \( \boldsymbol{y} \)，而且 \( -1\le\sum_{i=1}^{n}x_iy_i\le1\iff180^\circ\ge\theta\ge0^\circ \)。</p>
+<p><b>例（slide 19）</b>：同 slide 5 一樣嘅 \( \boldsymbol{x}_1,\boldsymbol{x}_2 \)：</p>
+<div class="formula">$$ \boldsymbol{x}_1'\boldsymbol{x}_2=3\times7+9\times9+4\times4+3\times2=124,\qquad \cos\theta=\frac{124}{\sqrt{115\times150}}=0.9441 $$</div>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p>呢個就係 COM6004 Chapter 2 嘅 <b>cosine similarity</b>。Chapter 2 係考試範圍，所以 cosine 計算請跟 <a href="COM6004-ch2.html">Chapter 2</a> 溫。</p></div>
+<p><b>Orthogonality 同距離</b>（slide 20）：\( \boldsymbol{x}\perp\boldsymbol{y} \) if \( \boldsymbol{x}'\boldsymbol{y}=0 \)。距離亦可以寫成 matrix form：</p>
+<div class="formula">$$ |\boldsymbol{x}-\boldsymbol{y}|=\sqrt{\sum_{i=1}^{d}(x_i-y_i)^2}=\sqrt{(\boldsymbol{x}-\boldsymbol{y})'(\boldsymbol{x}-\boldsymbol{y})} $$</div>
+
+<h2>6. Orthogonal Matrix（slides 21–22）</h2>
+<p><b>Definition 2</b>：square \( p\times p \) matrix \( Q=(\boldsymbol{q}_1\ \boldsymbol{q}_2\ \cdots\ \boldsymbol{q}_p) \) 係 <mark class="k">orthogonal</mark>，如果 \( \boldsymbol{q}_i \) 係 non-zero vectors，而且：</p>
+<div class="formula">$$ \boldsymbol{q}_i'\boldsymbol{q}_j=0\ \ (i\ne j),\qquad \boldsymbol{q}_i'\boldsymbol{q}_i=1 $$</div>
+<p>即係每對 columns 互相垂直，每個 column 都係 unit vector。結果：</p>
+<div class="formula">$$ Q'=Q^{-1},\quad\text{i.e. }Q'Q=QQ'=I $$</div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>\( Q'Q \) 嘅 \( (i,j) \) 格就係 \( \boldsymbol{q}_i'\boldsymbol{q}_j \)，所以條件正正講緊對角線係 1、其他係 0，即係 \( I \)。求 inverse 只需要 transpose，非常方便。</p></div>
+<p><b>例（slide 22）</b>：</p>
+<div class="formula">$$ Q=\begin{pmatrix}2/\sqrt5&amp;-1/\sqrt6&amp;1/\sqrt{30}\\1/\sqrt5&amp;2/\sqrt6&amp;-2/\sqrt{30}\\0&amp;1/\sqrt6&amp;5/\sqrt{30}\end{pmatrix} $$</div>
+<p>\( \boldsymbol{q}_1'\boldsymbol{q}_2=\boldsymbol{q}_1'\boldsymbol{q}_3=\boldsymbol{q}_2'\boldsymbol{q}_3=0 \)，\( \boldsymbol{q}_1'\boldsymbol{q}_1=\boldsymbol{q}_2'\boldsymbol{q}_2=\boldsymbol{q}_3'\boldsymbol{q}_3=1 \)，所以 \( Q \) 係 orthogonal。</p>
+
+<h2>7. Eigenvalue 同 Eigenvector（slides 23–24）</h2>
+<p><b>Definition 3</b>：對 square matrix \( A\in\mathbb{R}^{p\times p} \)，non-zero vector \( \boldsymbol{v} \) 係 <mark class="k">eigenvector</mark>，如果：</p>
+<div class="formula">$$ A\boldsymbol{v}=\lambda\boldsymbol{v},\quad\lambda\in\mathbb{R} $$</div>
+<p>Scalar \( \lambda \) 就係對應 \( \boldsymbol{v} \) 嘅 <mark class="k">eigenvalue</mark>。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>一般 vector 乘 \( A \) 之後方向會變。Eigenvector 係特別方向：乘 \( A \) 之後只會伸縮（或者反轉），伸縮倍數就係 \( \lambda \)。</p></div>
+<ul>
+<li><b>Scale-invariant</b>：\( A\boldsymbol{v}=\lambda\boldsymbol{v}\iff A(c\boldsymbol{v})=\lambda(c\boldsymbol{v}) \)。\( \boldsymbol{v} \) 係 eigenvector iff \( c\boldsymbol{v} \) 都係，\( c\in\mathbb{R}\setminus\{0\} \)。</li>
+<li>為簡單起見，假設 \( |\boldsymbol{v}|=1 \)。</li>
+<li>\( |A-\lambda I_p| \) 係 \( \lambda \) 嘅 degree \( p \) polynomial，eigenvalues \( \lambda_1,\ldots,\lambda_p \) 就係 \( |A-\lambda I_p|=0 \) 嘅 roots。</li>
+</ul>
+<p><b>例（slide 24）</b>：</p>
+<div class="formula">$$ A=\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix},\ \boldsymbol{v}_1=\frac{1}{\sqrt2}\begin{pmatrix}1\\1\end{pmatrix},\ \boldsymbol{v}_2=\frac{1}{\sqrt2}\begin{pmatrix}-1\\1\end{pmatrix};\quad A\boldsymbol{v}_1=3\boldsymbol{v}_1,\ A\boldsymbol{v}_2=-\boldsymbol{v}_2 $$</div>
+<p>Slide 直接驗證。如果要由頭計（自己補充）：\( |A-\lambda I|=(1-\lambda)^2-4=0 \)，得 \( \lambda=3 \) 或 \( -1 \)。</p>
+
+<h2>8. \( A=\boldsymbol{X}'\boldsymbol{X} \) 嘅性質（slides 25–28）</h2>
+<p><b>Theorem 4</b>：假設 \( \boldsymbol{X}\in\mathbb{R}^{n\times p} \) has linearly independent columns。如果 \( A=\boldsymbol{X}'\boldsymbol{X} \)，咁：</p>
+<ol>
+<li>\( \lambda_i&gt;0 \)；</li>
+<li>\( \boldsymbol{v}_i\perp\boldsymbol{v}_j \) if \( \lambda_i\ne\lambda_j \)。</li>
+</ol>
+<p><b>Proof (1)</b>：</p>
+<div class="formula">$$ A\boldsymbol{v}_i=\lambda_i\boldsymbol{v}_i\Rightarrow\boldsymbol{v}_i'A\boldsymbol{v}_i=\lambda_i\boldsymbol{v}_i'\boldsymbol{v}_i\Rightarrow(\boldsymbol{X}\boldsymbol{v}_i)'\boldsymbol{X}\boldsymbol{v}_i=\lambda_i\boldsymbol{v}_i'\boldsymbol{v}_i\Rightarrow\lambda_i&gt;0 $$</div>
+<p>最後一步嘅原因：左邊係 \( |\boldsymbol{X}\boldsymbol{v}_i|^2 \)。Columns linearly independent，所以 \( \boldsymbol{X}\boldsymbol{v}_i\ne\boldsymbol{0} \)，兩邊 \( |\boldsymbol{X}\boldsymbol{v}_i|^2 \) 同 \( \boldsymbol{v}_i'\boldsymbol{v}_i \) 都係正數，\( \lambda_i \) 亦一定係正數。</p>
+<p><b>Proof (2)</b>：將 \( \boldsymbol{v}_j'A\boldsymbol{v}_i \) 用兩個方法計：</p>
+<div class="formula">$$ \boldsymbol{v}_j'A\boldsymbol{v}_i=\lambda_i\boldsymbol{v}_j'\boldsymbol{v}_i,\qquad \boldsymbol{v}_j'A\boldsymbol{v}_i=(A'\boldsymbol{v}_j)'\boldsymbol{v}_i=(A\boldsymbol{v}_j)'\boldsymbol{v}_i=\lambda_j\boldsymbol{v}_j'\boldsymbol{v}_i $$</div>
+<p>所以 \( \lambda_i\boldsymbol{v}_j'\boldsymbol{v}_i=\lambda_j\boldsymbol{v}_j'\boldsymbol{v}_i \)。因為 \( \lambda_i\ne\lambda_j \)，所以 \( \boldsymbol{v}_j'\boldsymbol{v}_i=0 \)。第二行用到 \( A=A' \)，因為 \( \boldsymbol{X}'\boldsymbol{X} \) 係 symmetric。</p>
+<div class="box tip"><span class="label">💡 同 slide 24 比較</span><p>Slide 24 嘅 \( \begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix} \) 有負 eigenvalue −1，呢個冇同 Theorem 4 矛盾，因為 Theorem 4 只講 \( \boldsymbol{X}'\boldsymbol{X} \) 呢種形式，而有負 eigenvalue 嘅 matrix 唔可能寫成呢個形式。</p></div>
+<p><b>例（slide 26）</b>：</p>
+<div class="formula">$$ \boldsymbol{X}=\begin{pmatrix}2&amp;-0.5\\0&amp;1.5\end{pmatrix},\quad A=\boldsymbol{X}'\boldsymbol{X}=\begin{pmatrix}4&amp;-1\\-1&amp;2.5\end{pmatrix},\quad \boldsymbol{v}_1=\frac{1}{\sqrt5}\begin{pmatrix}2\\-1\end{pmatrix},\ \boldsymbol{v}_2=\frac{1}{\sqrt5}\begin{pmatrix}1\\2\end{pmatrix} $$</div>
+<p>驗證到 \( A\boldsymbol{v}_1=4.5\boldsymbol{v}_1 \)、\( A\boldsymbol{v}_2=2\boldsymbol{v}_2 \)，所以 \( \lambda_1=4.5 \)、\( \lambda_2=2 \)。兩個都大過 0，而且 \( \boldsymbol{v}_1'\boldsymbol{v}_2=0 \)。</p>
+<p><b>Corollary 5</b>（slide 27）：將 eigenvectors 排成 \( V=(\boldsymbol{v}_1\ \boldsymbol{v}_2\ \cdots\ \boldsymbol{v}_p) \)，咁 \( V \) 係 orthogonal：\( V'V=VV'=I_p \)。</p>
+<ul>
+<li>\( \boldsymbol{v}_i'\boldsymbol{v}_j \) 係 \( V'V \) 嘅 \( (i,j) \)-entry，而 \( \boldsymbol{v}_i'\boldsymbol{v}_j=0 \)、\( \boldsymbol{v}_i'\boldsymbol{v}_i=1 \)，所以 \( V'V=I_p \)。</li>
+<li>\( V'V=I_p\Rightarrow VV'V=V\Rightarrow(VV'-I_p)V=0\Rightarrow VV'=I_p \)，因為 \( V \) 係 full-rank square matrix。</li>
+</ul>
+<div class="box note"><span class="label">📎 補充</span><p>Theorem 4 只保證 \( \lambda_i\ne\lambda_j \) 時 eigenvectors 垂直。有重複 eigenvalues 時（例如 \( A=I \)），要揀一組互相垂直嘅 eigenvectors，Corollary 5 先成立。呢個情況總係揀得到。</p></div>
+<p><b>例（slide 28）</b>：\( V=\dfrac{1}{\sqrt5}\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix} \)，直接乘得 \( V'V=VV'=I_2 \)。</p>
+
+<h2>9. Decomposition of Matrix（slides 29–33）</h2>
+<p><b>Theorem 6</b>：\( \boldsymbol{X} \) has linearly independent columns，對 \( A=\boldsymbol{X}'\boldsymbol{X} \)：</p>
+<div class="formula">$$ A=V\Lambda V',\qquad V=(\boldsymbol{v}_1\ \cdots\ \boldsymbol{v}_p),\quad\Lambda=diag(\lambda_1,\ldots,\lambda_p) $$</div>
+<p><b>Proof</b>：\( AV=(A\boldsymbol{v}_1\ \cdots\ A\boldsymbol{v}_p)=(\lambda_1\boldsymbol{v}_1\ \cdots\ \lambda_p\boldsymbol{v}_p)=V\Lambda \)。兩邊喺<b>右邊</b>乘 \( V' \)，用 \( VV'=I_p \)，就得 \( A=AVV'=V\Lambda V' \)。</p>
+<p><b>Theorem 7</b>（slide 30）：</p>
+<div class="formula">$$ A^{\frac12}=V\Lambda^{\frac12}V',\quad A^{-1}=V\Lambda^{-1}V' $$</div>
+<div class="formula">$$ \Lambda^{\frac12}=diag(\lambda_1^{\frac12},\ldots,\lambda_p^{\frac12}),\quad \Lambda^{-1}=diag(\lambda_1^{-1},\ldots,\lambda_p^{-1}) $$</div>
+<p>其中 \( A^{\frac12} \) 係 <b>square-root</b>（\( A^{\frac12}A^{\frac12}=A \)），\( A^{-1} \) 係 <b>inverse</b>（\( AA^{-1}=A^{-1}A=I_p \)）。Proof 全靠 \( V'V=I_p \) 喺中間消去：</p>
+<div class="formula">$$ A^{\frac12}A^{\frac12}=V\Lambda^{\frac12}V'V\Lambda^{\frac12}V'=V\Lambda^{\frac12}\Lambda^{\frac12}V'=V\Lambda V'=A $$</div>
+<div class="formula">$$ A^{-1}A=V\Lambda^{-1}V'V\Lambda V'=V\Lambda^{-1}\Lambda V'=VI_pV'=VV'=I_p $$</div>
+<p>\( AA^{-1} \) 嘅證明一樣。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Decomposition 將 \( A \) 轉到 eigenvectors 嘅方向，喺嗰度佢只係一個 diagonal matrix。對 diagonal matrix 做 power 好簡單，逐個 \( \lambda \) 做就得，做完再轉返嚟。</p></div>
+<p><b>例（slides 31–32）</b>：\( A=\begin{pmatrix}4&amp;-1\\-1&amp;2.5\end{pmatrix} \)，\( \lambda_1=4.5 \)，\( \lambda_2=2 \)，\( V=\dfrac{1}{\sqrt5}\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix} \)。</p>
+<div class="formula">$$ A=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}4.5&amp;0\\0&amp;2\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix} $$</div>
+<div class="formula">$$ A^{\frac12}=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\sqrt{4.5}&amp;0\\0&amp;\sqrt2\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}=\begin{pmatrix}1.98&amp;-0.28\\-0.28&amp;1.56\end{pmatrix} $$</div>
+<div class="formula">$$ A^{-1}=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\frac{1}{4.5}&amp;0\\0&amp;\frac12\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}=\frac{1}{18}\begin{pmatrix}5&amp;2\\2&amp;8\end{pmatrix} $$</div>
+<div class="formula">$$ A^{-\frac12}=V\Lambda^{-\frac12}V'=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\frac{1}{\sqrt{4.5}}&amp;0\\0&amp;\frac{1}{\sqrt2}\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}\approx\begin{pmatrix}0.519&amp;0.0943\\0.0943&amp;0.660\end{pmatrix} $$</div>
+<div class="box warn"><span class="label">⚠️ Slide 32 嘅數字</span><p>Slide 32 嘅左上角寫 0.520。用 numpy 計係 0.5185，四捨五入應該係 0.519，只係細微嘅捨入差異。</p></div>
+<p><b>Trace、rank、determinant 同 eigenvalues 嘅關係</b>（slide 33）：</p>
+<div class="formula">$$ tr(A)=tr(V\Lambda V')=tr(\Lambda V'V)=tr(\Lambda)=\sum_{i=1}^{p}\lambda_i $$</div>
+<div class="formula">$$ rank(A)=\#(\lambda_i&gt;0)=\text{number of non-zero eigenvalues} $$</div>
+<div class="formula">$$ |A|=|V\Lambda V'|=|V||\Lambda||V'|=|\Lambda||V'V|=|\Lambda|=\prod_{i=1}^{p}\lambda_i $$</div>
+<p>用上面例子驗證：\( tr(A)=4+2.5=6.5=4.5+2 \)；\( |A|=4\times2.5-(-1)(-1)=9=4.5\times2 \)；rank = 2。Slide 33 最尾個 product 寫成 \( \prod_{=1}^{p}\lambda \)，漏咗 index，應該係 \( \prod_{i=1}^{p}\lambda_i \)。</p>
+<pre><code>import numpy as np
+
+A = np.array([[4, -1], [-1, 2.5]])
+vals, V = np.linalg.eigh(A)           # symmetric matrix 用 eigh；eigenvalues 由細到大
+print(vals)                           # [2.  4.5]
+print(V @ np.diag(vals) @ V.T)        # 還原 A
+print(V @ np.diag(vals**0.5) @ V.T)   # A 嘅 square root
+print(V @ np.diag(1 / vals) @ V.T)    # A 嘅 inverse
+print(np.trace(A), vals.sum())        # 兩者都係 6.5
+print(np.linalg.det(A), vals.prod())  # 兩者都係 9</code></pre>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. \( \boldsymbol{x}=(1,0,1)' \)，\( \boldsymbol{y}=(1,1,0)' \)。求 inner product、距離同 \( \cos\theta \)。</summary><p>\( \boldsymbol{x}'\boldsymbol{y}=1 \)；\( |\boldsymbol{x}-\boldsymbol{y}|=\sqrt{0+1+1}=\sqrt2 \)；\( \cos\theta=\dfrac{1}{\sqrt2\sqrt2}=0.5 \)，即 \( \theta=60^\circ \)。</p></details>
+<details class="q"><summary>Q2. 如果 \( A \) 係 \( 3\times2 \)，\( B \) 係 \( 2\times4 \)，\( AB \) 同 \( BA \) 存唔存在？</summary><p>\( AB \) 存在，size 係 \( 3\times4 \)。\( BA \) 唔存在，因為 \( B \) 有 4 個 columns，但 \( A \) 有 3 個 rows。</p></details>
+<details class="q"><summary>Q3. \( A \) 係 \( 3\times3 \)，\( |A|=2 \)。求 \( |2A| \)、\( |A'| \)、\( |A^{-1}| \)。</summary><p>\( |2A|=2^3\times2=16 \)；\( |A'|=2 \)；\( |A^{-1}|=1/2 \)。</p></details>
+<details class="q"><summary>Q4. Orthogonal matrix 需要滿足咩條件？\( Q^{-1} \) 點求？</summary><p>Square；columns 互相垂直（\( \boldsymbol{q}_i'\boldsymbol{q}_j=0 \)）而且係 unit vectors（\( \boldsymbol{q}_i'\boldsymbol{q}_i=1 \)）。\( Q^{-1}=Q' \)。</p></details>
+<details class="q"><summary>Q5. \( C=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix} \)。求 eigenvalues 同 unit eigenvectors。</summary><p>\( |C-\lambda I|=(2-\lambda)^2-1=0 \)，得 \( \lambda=3,1 \)。\( \lambda=3 \)：\( \dfrac{1}{\sqrt2}(1,1)' \)；\( \lambda=1 \)：\( \dfrac{1}{\sqrt2}(-1,1)' \)。兩者 inner product 係 0。</p></details>
+<details class="q"><summary>Q6. 用 Q5 嘅結果，唔直接展開，求 \( tr(C) \)、\( |C| \) 同 \( C^{-1} \)。</summary><p>\( tr(C)=3+1=4 \)；\( |C|=3\times1=3 \)；\( C^{-1}=V\Lambda^{-1}V'=\dfrac13\begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix} \)。</p></details>
+<details class="q"><summary>Q7. 點解 \( \boldsymbol{X} \) columns linearly independent 時，\( \boldsymbol{X}'\boldsymbol{X} \) 嘅 eigenvalues 一定係正數？</summary><p>\( \lambda_i\boldsymbol{v}_i'\boldsymbol{v}_i=\boldsymbol{v}_i'\boldsymbol{X}'\boldsymbol{X}\boldsymbol{v}_i=|\boldsymbol{X}\boldsymbol{v}_i|^2&gt;0 \)，因為 linearly independent 令 \( \boldsymbol{X}\boldsymbol{v}_i\ne\boldsymbol{0} \)；而 \( \boldsymbol{v}_i'\boldsymbol{v}_i&gt;0 \)，所以 \( \lambda_i&gt;0 \)。</p></details>
+<details class="q"><summary>Q8. \( (ABC)' \) 同 \( (AB)^{-1} \) 點樣展開？</summary><p>\( (ABC)'=C'B'A' \)；\( (AB)^{-1}=B^{-1}A^{-1} \)。兩者次序都會倒轉。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box note"><span class="label">📋 公式速查（非 COM6004 考試範圍）</span><ul>
+<li>Distance：\( |\boldsymbol{x}-\boldsymbol{y}|=\sqrt{\sum(x_i-y_i)^2}=\sqrt{(\boldsymbol{x}-\boldsymbol{y})'(\boldsymbol{x}-\boldsymbol{y})} \)；norm \( |\boldsymbol{x}|=\sqrt{\sum x_i^2} \)。</li>
+<li>Inner product：\( \boldsymbol{x}'\boldsymbol{y}=\sum x_iy_i=|\boldsymbol{x}||\boldsymbol{y}|\cos\theta \)；\( \boldsymbol{x}\perp\boldsymbol{y} \) if \( \boldsymbol{x}'\boldsymbol{y}=0 \)。</li>
+<li>Transpose：\( (ABCD)'=D'C'B'A' \)。Inverse：\( (AB)^{-1}=B^{-1}A^{-1} \)。\( AB\ne BA \)，但 \( tr(AB)=tr(BA) \)。</li>
+<li>\( 2\times2 \)：\( |A|=ad-bc \)。\( |\alpha A|=\alpha^p|A| \)，\( |AB|=|A||B| \)，\( |A^{-1}|=1/|A| \)。</li>
+<li>Orthogonal：\( Q'Q=QQ'=I \)，\( Q'=Q^{-1} \)。</li>
+<li>Eigen：\( A\boldsymbol{v}=\lambda\boldsymbol{v} \)；\( |A-\lambda I_p|=0 \)。</li>
+<li>\( A=\boldsymbol{X}'\boldsymbol{X} \)（linearly independent columns）：\( \lambda_i&gt;0 \)；\( \lambda_i\ne\lambda_j\Rightarrow\boldsymbol{v}_i\perp\boldsymbol{v}_j \)；\( V'V=VV'=I_p \)。</li>
+<li>\( A=V\Lambda V' \)；\( A^{\frac12}=V\Lambda^{\frac12}V' \)；\( A^{-1}=V\Lambda^{-1}V' \)。</li>
+<li>\( tr(A)=\sum\lambda_i \)；\( |A|=\prod\lambda_i \)；\( rank(A)=\#(\lambda_i&gt;0) \)。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6004-ch6.html">← Chapter 6 Association Analysis</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

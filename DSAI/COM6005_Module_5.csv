@@ -1,0 +1,45 @@
+"Within the generalized linear model framework, which kind of $Y$ does logistic regression handle?","Binary data $Y$: a target with two outcomes, such as Hungry/Not hungry or Rain/Not rain."
+What does a logistic regression output for the target Hungry/Not hungry?,"A probability, $\text{Prob(Hungry)}$, not the label itself."
+"Using the slide's Hungry example, what is predicted for $P(\text{Hungry}) = 1$, $0$ and $0.2$?","Hungry, Not hungry and Not hungry."
+When does linear regression $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \text{error}$ fail?,When $Y$ is not continuous. Generalized linear regression can handle many different kinds of $Y$.
+What must you identify first before you can predict or classify?,The kind of $Y$.
+What does it mean for $Y$ to be binomial?,$Y$ has only two possible values.
+Give four examples of binomial data from the slides.,"0/1, Yes/No, Healthy/Cancer, Good debt/Bad debt."
+"How do you use logistic regression to predict $\{\text{Red, Blue, Green}\}$?","Fit three models: {Red, not Red}, {Blue, not Blue} and {Green, not Green}."
+Why can't binomial data be described directly by $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p$?,"Binomial data is categorical, so it is not a number the linear expression can equal."
+What numeric quantity does logistic regression model instead of the category?,"The probability of getting 1, which must lie in $[0,1]$."
+Why can't we simply set $P(Y=\text{Rain}) = X\beta + \text{error}$?,"$X\beta$ is arbitrary, in $[-\infty, \infty]$, while a probability is restricted to $[0,1]$. A transform is needed."
+What links the linear expression to the probability?,"The logistic function, which is also used in other machine learning methods."
+"What is logistic regression, as a statistical method, used to obtain?","The estimate $\hat{\beta}$, which is then used to classify new data."
+How do you compute $\eta_{\text{new}}$ for a new observation?,"$\eta_{\text{new}} = \beta_0 + \beta_1 X_{1,\text{new}} + \beta_2 X_{2,\text{new}} + \cdots + \beta_p X_{p,\text{new}}$."
+How do you turn $\eta_{\text{new}}$ into a probability?,$P(y_{\text{new}} = 1) = \dfrac{e^{\eta_{\text{new}}}}{1 + e^{\eta_{\text{new}}}}$.
+What is the default decision rule for logistic regression?,Threshold 0.5: classify $y_{\text{new}} = 1$ if $P(y_{\text{new}} = 1) > 0.5$.
+What does the condition $P(y_{\text{new}} = 1) > 0.5$ mean in terms of $\eta_{\text{new}}$?,$\eta_{\text{new}} > 0$.
+"If $P(\text{Rain=True}) = 0.4$, what do we claim under the default rule?","Tomorrow will not rain, because 0.4 is not above the 0.5 threshold."
+What is the logit function?,$\text{logit}(P) = \ln\left(\dfrac{P}{1-P}\right)$.
+What are the input and output ranges of the logit function?,"Input: $P$ in $[0,1]$. Output: $[-\infty, \infty]$."
+What is the logistic function?,"$P = \dfrac{e^{\text{logit}(P)}}{1 + e^{\text{logit}(P)}}$, an S-shaped curve."
+What are the input and output ranges of the logistic function?,"Input: $[-\infty, \infty]$. Output: a probability in $[0,1]$."
+"What method fits a linear regression, and what does it minimize?","Ordinary Least Squares (OLS), which minimizes the sum of squared errors."
+What method fits a logistic regression?,Maximum Likelihood Estimation (MLE).
+Why can't logistic regression use the sum of squared errors?,"For categorical $Y$, an error cannot be defined by subtraction: Cloudy $-$ Sunny has no meaning."
+"Roughly speaking, what does likelihood mean?","The probability of observing what you observed. It is directly proportional to that probability, so $L_1 > L_2$ means $P_1 > P_2$."
+What is the likelihood in logistic regression?,"$\prod_{t=1}^{n} P(Y_t = y_t \mid X_t)$, based on the actual observations."
+How do statisticians obtain the unknown parameters in logistic regression?,They maximize the likelihood.
+What is numerical analysis?,"A class of methods that find a max/min and solve equations approximately using repetitive steps. It handles problems with no explicit solution, such as $x \sin x = 1$. Details are out of syllabus."
+"With $p = 1$, $\beta_0 = 3$, $\beta_1 = 2$ and new data $x = 5$, what are $\eta_{\text{new}}$ and $P(Y=1)$?","$\eta_{\text{new}} = 3 + 2 \times 5 = 13$, and $P(Y=1) = \dfrac{e^{13}}{1 + e^{13}} \approx 1$."
+"What is the example dataset for classification in Python, and how large is it?","The South African heart disease data (SAheart; Rousseauw et al, 1983), with $n = 462$ and 10 columns."
+"What is the response variable in SAheart, and how is it coded?","`chd`, the coronary heart disease diagnosis: 0/negative or 1/positive."
+What do `sbp` and `ldl` measure in SAheart?,`sbp` is systolic blood pressure (mm Hg); `ldl` is low-density lipoprotein cholesterol.
+What do `tobacco` and `alcohol` measure in SAheart?,`tobacco` is cumulative tobacco use (kg); `alcohol` is current alcohol consumption.
+What do `adiposity` and `obesity` measure in SAheart?,`adiposity` is an adiposity/obesity measure; `obesity` is a body mass index (BMI) measure.
+What do `famhist` and `typea` measure in SAheart?,`famhist` is family history of ischemic heart disease (Absent/Present or 0/1); `typea` is a Type-A behavior score on a scale of 12–84.
+Which module provides `smf.mnlogit` in the lecture's code?,"`statsmodels.formula.api`, imported as `smf`. It is not a standard routine in Python."
+How does the lecture fit the logistic regression on SAheart?,"`model = smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart).fit()`, then `print(model.summary())`."
+What does `heart['chd'].astype('category').cat.codes` do?,It converts the target class variable into integer codes.
+How do you get predicted probabilities and predicted classes for new data?,`pred_probs = model.predict(newdata)` gives the probabilities; `pred_classes = pred_probs.idxmax(axis=1)` gives the classes.
+What do `axis=0` and `axis=1` return in `idxmax`?,"`idxmax` gives the index of the first occurrence of the maximum: `axis=0` returns the row index, `axis=1` the column index."
+What are the steps to get an out-of-sample misclassification rate?,"Split the full data into training and unseen testing data (e.g. 70% vs 30%), fit on the training data, then pretend you don't know $Y$ in the test data and apply `predict()`."
+What are the two equivalent formulas for the misclassification rate?,"$\dfrac{\text{wrong}}{\text{total}}$, or $1 - \dfrac{\text{correct}}{\text{total}}$."
+"Predicted High risk: 50 actually High, 6 actually Low. Predicted Low risk: 8 actually High, 35 actually Low. What is the misclassification rate?",$\dfrac{6+8}{50+6+8+35} = \dfrac{14}{99} \approx 0.141$.
+How does the lecture's code compute the error rate from the confusion matrix?,"`misclassification = confusion_matrix(actual_class, predicted_class)`, then `error_rate = 1 - np.trace(misclassification) / np.sum(misclassification)`."

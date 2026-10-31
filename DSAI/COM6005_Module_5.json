@@ -1,0 +1,622 @@
+[
+  {
+    "question": "Which target variable fits logistic regression as taught in this lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A patient's systolic blood pressure in mm Hg",
+        "Explanation": "Blood pressure is a continuous number, so it is not a binary outcome."
+      },
+      {
+        "label": "B",
+        "text": "Whether a debt is Good debt or Bad debt",
+        "Explanation": "Correct: this $Y$ has only two possible values, so it is binomial."
+      },
+      {
+        "label": "C",
+        "text": "A person's body mass index",
+        "Explanation": "BMI is numeric and continuous; here it appears as a predictor, not a binary target."
+      },
+      {
+        "label": "D",
+        "text": "Cumulative tobacco use in kg",
+        "Explanation": "An amount in kg is a continuous measurement, not one of two outcomes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Identify the kind of $Y$ first.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "You need to predict a colour from {Red, Blue, Green}. Following the slides, how many logistic regression models do you fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1",
+        "Explanation": "One logistic regression considers only two outcomes, so it cannot separate three colours."
+      },
+      {
+        "label": "B",
+        "text": "2",
+        "Explanation": "The slides' scheme gives every colour its own model, so two models would leave one colour without one."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "Explanation": "This counts ordered pairs of colours; the slides fit one colour-versus-rest model per colour."
+      },
+      {
+        "label": "D",
+        "text": "3",
+        "Explanation": "Correct: one model each for {Red, not Red}, {Blue, not Blue} and {Green, not Green}."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Each model is restricted to two outcomes.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Why is $P(Y=\\text{Rain}) = X\\beta + \\text{error}$ not a usable model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$X\\beta$ can take any value in $[-\\infty, \\infty]$, but a probability must lie in $[0,1]$",
+        "Explanation": "Correct: the two sides do not match, so a transform is needed."
+      },
+      {
+        "label": "B",
+        "text": "A probability is categorical, so it cannot appear in an equation",
+        "Explanation": "The probability of getting 1 is numeric; it is the data $Y$ that is categorical."
+      },
+      {
+        "label": "C",
+        "text": "$X\\beta$ can only be positive, but a probability can be negative",
+        "Explanation": "Both claims are backwards: $X\\beta$ is arbitrary in sign, and a probability is never negative."
+      },
+      {
+        "label": "D",
+        "text": "Rain data has too few predictors to estimate $\\beta$",
+        "Explanation": "The problem is the range of each side, not the number of predictors."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Compare the range of the left-hand side with that of the right-hand side.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "A fitted model has $\\beta_0 = -4$ and $\\beta_1 = 0.5$. For a new $x = 6$, what is $P(Y=1)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\approx 0.731$",
+        "Explanation": "This is $e^{1}/(1+e^{1})$, which comes from dropping the minus sign on $\\eta_{\\text{new}}$."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 0.368$",
+        "Explanation": "This is $e^{-1}$ alone; the denominator $1 + e^{\\eta_{\\text{new}}}$ was left out."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.269$",
+        "Explanation": "Correct: $\\eta_{\\text{new}} = -4 + 0.5 \\times 6 = -1$, and $e^{-1}/(1+e^{-1}) \\approx 0.269$."
+      },
+      {
+        "label": "D",
+        "text": "$0.5$",
+        "Explanation": "A probability of 0.5 needs $\\eta_{\\text{new}} = 0$, but here $\\eta_{\\text{new}} = -1$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compute $\\eta_{\\text{new}}$ first, then apply the logistic function.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "A model has $\\beta_0 = 1$, $\\beta_1 = 0.5$ and $\\beta_2 = -2$. A new observation has $X_1 = 4$ and $X_2 = 1$. What is the result under the default threshold?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\eta = 1$, $P \\approx 0.731$, classify $y = 1$",
+        "Explanation": "Correct: $\\eta = 1 + 2 - 2 = 1$, and $e^1/(1+e^1) \\approx 0.731 > 0.5$."
+      },
+      {
+        "label": "B",
+        "text": "$\\eta = 1$, $P \\approx 0.269$, classify $y = 0$",
+        "Explanation": "The value 0.269 is $e^{-1}/(1+e^{-1})$; here $\\eta$ is $+1$."
+      },
+      {
+        "label": "C",
+        "text": "$\\eta = 5$, $P \\approx 0.993$, classify $y = 1$",
+        "Explanation": "This ignores the negative sign of $\\beta_2$, whose term should subtract 2."
+      },
+      {
+        "label": "D",
+        "text": "$\\eta = 1$, $P = 1$, classify $y = 1$",
+        "Explanation": "$\\eta$ is not itself a probability; it must pass through the logistic function."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Watch the sign of each coefficient.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Without using a calculator, how is an observation with $\\eta_{\\text{new}} = -0.7$ classified under the default rule?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$y_{\\text{new}} = 1$, because $|\\eta_{\\text{new}}| > 0.5$",
+        "Explanation": "The rule compares the probability with 0.5, not the size of $\\eta_{\\text{new}}$."
+      },
+      {
+        "label": "B",
+        "text": "It cannot be classified, because $\\eta_{\\text{new}}$ must lie in $[0,1]$",
+        "Explanation": "$\\eta_{\\text{new}}$ may be any real number; only the probability is limited to $[0,1]$."
+      },
+      {
+        "label": "C",
+        "text": "$y_{\\text{new}} = 0$, because $P(y_{\\text{new}} = 1) = -0.7$",
+        "Explanation": "The class is right but the reason is not: a probability cannot be negative."
+      },
+      {
+        "label": "D",
+        "text": "$y_{\\text{new}} = 0$, because $\\eta_{\\text{new}} < 0$ means $P(y_{\\text{new}} = 1) < 0.5$",
+        "Explanation": "Correct: the 0.5 threshold on the probability is the same as a threshold of 0 on $\\eta_{\\text{new}}$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "What value of $\\eta_{\\text{new}}$ corresponds to a probability of 0.5?",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "What is $\\text{logit}(0.8)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$4$",
+        "Explanation": "This is $\\frac{P}{1-P}$ before the logarithm is taken."
+      },
+      {
+        "label": "B",
+        "text": "$\\ln 4 \\approx 1.386$",
+        "Explanation": "Correct: $\\ln\\left(\\frac{0.8}{1-0.8}\\right) = \\ln 4 \\approx 1.386$."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx -0.223$",
+        "Explanation": "This is $\\ln(0.8)$; the ratio $\\frac{P}{1-P}$ is missing."
+      },
+      {
+        "label": "D",
+        "text": "$\\approx 0.690$",
+        "Explanation": "This puts 0.8 through the logistic function, which is the opposite direction from the logit."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The logit takes a logarithm of a ratio.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Which statement correctly describes the logistic function?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Its input is a probability in $[0,1]$ and its output is in $[-\\infty, \\infty]$",
+        "Explanation": "These are the ranges of the logit function, not the logistic function."
+      },
+      {
+        "label": "B",
+        "text": "Both its input and its output are limited to $[0,1]$",
+        "Explanation": "Its input is $\\text{logit}(P)$, which is unrestricted."
+      },
+      {
+        "label": "C",
+        "text": "Its input is any value in $[-\\infty, \\infty]$ and its output is a probability in $[0,1]$",
+        "Explanation": "Correct: this is what lets the linear expression be turned into a probability."
+      },
+      {
+        "label": "D",
+        "text": "Both its input and its output are in $[-\\infty, \\infty]$",
+        "Explanation": "Its output is a probability, so it cannot leave $[0,1]$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The linear expression goes in and something usable as a probability comes out.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Why does logistic regression replace the sum of squared errors with the likelihood?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Squared errors are always zero when $Y$ is binary",
+        "Explanation": "The issue is not their size; the residual itself is not defined for categories."
+      },
+      {
+        "label": "B",
+        "text": "Likelihood needs fewer observations than least squares",
+        "Explanation": "The slides give no such sample-size argument; the reason lies in the type of $Y$."
+      },
+      {
+        "label": "C",
+        "text": "Least squares can only be used with one predictor",
+        "Explanation": "Least squares fits multiple linear regression too, so the number of predictors is not the reason."
+      },
+      {
+        "label": "D",
+        "text": "For a categorical $Y$, an error cannot be defined by subtraction",
+        "Explanation": "Correct: a difference like Engineering $-$ Humanity has no meaning, so squared errors cannot be formed."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Try computing a residual for Y = Cloudy and a prediction of Sunny.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Which expression is the likelihood maximized when fitting a logistic regression?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\prod_{t=1}^{n} P(Y_t = y_t \\mid X_t)$",
+        "Explanation": "Correct: it is a product over the actual observations."
+      },
+      {
+        "label": "B",
+        "text": "$\\sum_{t=1}^{n} (y_t - \\hat{y}_t)^2$",
+        "Explanation": "This is the sum of squared errors, which OLS minimizes in linear regression."
+      },
+      {
+        "label": "C",
+        "text": "$\\sum_{t=1}^{n} P(Y_t = y_t \\mid X_t)$",
+        "Explanation": "The slide's likelihood multiplies these probabilities rather than adding them."
+      },
+      {
+        "label": "D",
+        "text": "$\\prod_{t=1}^{n} (\\beta_0 + \\beta_1 X_{t1})$",
+        "Explanation": "This multiplies linear expressions, which are not probabilities since they are not limited to $[0,1]$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about the probability of seeing all the observed data.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Two sets of parameter values give likelihoods $L_1 > L_2$ on the same data. What does this imply?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The second set is preferred, because likelihood is minimized like squared error",
+        "Explanation": "Likelihood is maximized; it is the sum of squared errors that is minimized."
+      },
+      {
+        "label": "B",
+        "text": "The first set has a lower misclassification rate on unseen test data",
+        "Explanation": "The likelihood uses the observed data; test error must be measured separately."
+      },
+      {
+        "label": "C",
+        "text": "The observed data is more probable under the first set, so it is preferred",
+        "Explanation": "Correct: likelihood is directly proportional to the probability of observing what you observed, and statisticians maximize it."
+      },
+      {
+        "label": "D",
+        "text": "Nothing, because likelihood values cannot be compared",
+        "Explanation": "The slides state directly that $L_1 > L_2$ implies $P_1 > P_2$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Recall what likelihood is proportional to.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "With $\\beta_0 = 3$, $\\beta_1 = 2$ and $x = 5$, what is the predicted $P(Y=1)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$13$",
+        "Explanation": "13 is $\\eta_{\\text{new}}$, and a probability cannot exceed 1."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 1$",
+        "Explanation": "Correct: $\\eta_{\\text{new}} = 13$, and $e^{13}/(1+e^{13})$ is almost exactly 1."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.929$",
+        "Explanation": "This is $13/14$, which uses $\\eta_{\\text{new}}$ in place of $e^{\\eta_{\\text{new}}}$."
+      },
+      {
+        "label": "D",
+        "text": "$0.5$",
+        "Explanation": "That would need $\\eta_{\\text{new}} = 0$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "How large is $e^{13}$ compared with 1?",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "What does numerical analysis contribute, according to the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It finds a max/min or solves an equation approximately using repetitive steps",
+        "Explanation": "Correct: computers can then handle problems with no explicit solution, such as $x \\sin x = 1$."
+      },
+      {
+        "label": "B",
+        "text": "It gives an exact closed-form solution to every equation",
+        "Explanation": "The methods are approximate and are aimed at problems without explicit solutions."
+      },
+      {
+        "label": "C",
+        "text": "It removes the need to choose a target variable",
+        "Explanation": "Identifying the kind of $Y$ remains a separate first step."
+      },
+      {
+        "label": "D",
+        "text": "It converts categorical predictors into probabilities",
+        "Explanation": "That is not what the slides describe; numerical analysis is about solving and optimizing."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about problems that have no explicit solution.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "In `smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart)`, which column is the response?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`famhist`",
+        "Explanation": "`famhist` is right of the `~`, so it is a predictor."
+      },
+      {
+        "label": "B",
+        "text": "`age`",
+        "Explanation": "`age` is one of the predictors on the right of the `~`."
+      },
+      {
+        "label": "C",
+        "text": "`chd`",
+        "Explanation": "Correct: it is left of the `~`, and it is the coronary heart disease diagnosis."
+      },
+      {
+        "label": "D",
+        "text": "`heart`",
+        "Explanation": "`heart` is the DataFrame passed as `data`, not a column."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Look at which side of the tilde each name sits on.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Why does the lecture run `heart['chd'] = heart['chd'].astype('category').cat.codes` before fitting?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To split the data into training and test sets",
+        "Explanation": "The split is done later with `iloc`."
+      },
+      {
+        "label": "B",
+        "text": "To turn the predicted probabilities into classes",
+        "Explanation": "That is done after fitting, with `idxmax`."
+      },
+      {
+        "label": "C",
+        "text": "To remove `famhist` from the predictors",
+        "Explanation": "`famhist` stays in the formula, and this line only touches `chd`."
+      },
+      {
+        "label": "D",
+        "text": "To convert the target class variable into integer codes",
+        "Explanation": "Correct: that is exactly what the slide's code comment says."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Notice which column the line assigns to.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "`pred_probs` has one row, with column `0` equal to 0.35 and column `1` equal to 0.65. What does `pred_probs.idxmax(axis=1)` return for that row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`0.65`",
+        "Explanation": "0.65 is the maximum value; `idxmax` returns where it is, not what it is."
+      },
+      {
+        "label": "B",
+        "text": "`1`",
+        "Explanation": "Correct: `axis=1` returns the column index of the maximum, and the larger value is in column `1`."
+      },
+      {
+        "label": "C",
+        "text": "`0`",
+        "Explanation": "`0` holds the smaller probability, so it is not the position of the maximum."
+      },
+      {
+        "label": "D",
+        "text": "`0.35`",
+        "Explanation": "0.35 is the smaller value, and `idxmax` does not return values."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The function name says index, not value.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Predicted High risk: 50 actually High, 6 actually Low. Predicted Low risk: 8 actually High, 35 actually Low. What is the misclassification rate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$85/99 \\approx 0.859$",
+        "Explanation": "This is the share of correct predictions, not the misclassification rate."
+      },
+      {
+        "label": "B",
+        "text": "$14/85 \\approx 0.165$",
+        "Explanation": "The denominator must be all 99 cases, not only the correct ones."
+      },
+      {
+        "label": "C",
+        "text": "$14/99 \\approx 0.141$",
+        "Explanation": "Correct: the wrong predictions are $6 + 8 = 14$, out of $50 + 6 + 8 + 35 = 99$."
+      },
+      {
+        "label": "D",
+        "text": "$6/56 \\approx 0.107$",
+        "Explanation": "This uses only the row predicted High risk and misses the 8 errors in the other row."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Add up the off-diagonal cells first.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "A confusion matrix `m` is `[[70, 10], [15, 44]]`. What does `1 - np.trace(m) / np.sum(m)` give?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\approx 0.180$",
+        "Explanation": "Correct: the trace is $70 + 44 = 114$, the total is 139, and $1 - 114/139 \\approx 0.180$."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 0.820$",
+        "Explanation": "This is $114/139$, the correct share, with the subtraction from 1 left out."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.219$",
+        "Explanation": "This is $25/114$, which divides by the correct count rather than by the total."
+      },
+      {
+        "label": "D",
+        "text": "$\\approx 0.072$",
+        "Explanation": "This is $10/139$, which counts only one of the two off-diagonal cells."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The trace is the sum of the diagonal.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "`heart` has 462 rows. The code sets `heart_train = heart.iloc[0:323]` and `heart_test = heart.iloc[323:]`. How large is the test set?",
+    "options": [
+      {
+        "label": "A",
+        "text": "140 rows, about 30%",
+        "Explanation": "140 would need the training set to stop one row earlier, but `iloc[0:323]` holds exactly 323 rows."
+      },
+      {
+        "label": "B",
+        "text": "139 rows, about 30%",
+        "Explanation": "Correct: the training rows are positions 0 to 322, so $462 - 323 = 139$ remain, about 30% of the data."
+      },
+      {
+        "label": "C",
+        "text": "323 rows, about 70%",
+        "Explanation": "323 is the size of the training set."
+      },
+      {
+        "label": "D",
+        "text": "462 rows, the full data",
+        "Explanation": "The test set holds only the rows from position 323 onwards."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Subtract the training rows from the total.",
+    "course": "COM6005",
+    "week": "5"
+  },
+  {
+    "question": "Which procedure gives an out-of-sample estimate of the misclassification rate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fit on the full data, then apply `predict()` to the same full data",
+        "Explanation": "These rows were used in fitting, so this is in-sample prediction."
+      },
+      {
+        "label": "B",
+        "text": "Fit on the full data, then apply `predict()` to 30% of it",
+        "Explanation": "That 30% was seen during fitting, so it is not unseen test data."
+      },
+      {
+        "label": "C",
+        "text": "Fit on the training data, then apply `predict()` to the same training data",
+        "Explanation": "This predicts rows the model has already seen, so it is in-sample."
+      },
+      {
+        "label": "D",
+        "text": "Fit on the training data, then apply `predict()` to the test data and compare with its actual $Y$",
+        "Explanation": "Correct: the test data is unseen during fitting, with its $Y$ treated as unknown until the comparison."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The evaluation rows must be unseen when the model is fitted.",
+    "course": "COM6005",
+    "week": "5"
+  }
+]

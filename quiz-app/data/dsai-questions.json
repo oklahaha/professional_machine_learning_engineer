@@ -10065,6 +10065,666 @@
     "deck": "COM6002_Lecture_6"
   },
   {
+    "id": "78877156772a",
+    "question": "A social network stored in an edge table must find friends of friends of friends. Why does a graph database suit this better than an RDBMS?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It stores pointers between connected nodes directly, so traversal does not rely on joins.",
+        "explanation": "This is index-free adjacency, which gives constant traversal time instead of repeated joins."
+      },
+      {
+        "label": "B",
+        "text": "A graph cannot be represented in table form at all.",
+        "explanation": "A graph can be represented in a table, as the edge table with from, to and weight shows."
+      },
+      {
+        "label": "C",
+        "text": "It stores the edge table by columns to compress it.",
+        "explanation": "Column storage belongs to column-oriented databases and does not address the cost of joins."
+      },
+      {
+        "label": "D",
+        "text": "It keeps every node in a B-tree indexed by neighbour.",
+        "explanation": "Graph databases avoid relying on such an index for traversal, which is what index-free means."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about what makes each extra hop costly in a relational table.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "c2d92ec3c100",
+    "question": "In a fraud graph, nodes are accounts and edges join accounts sharing a feature. Many unrelated accounts connect through a public computer. Which adjustment addresses this directly?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Remove the time window on activities",
+        "explanation": "A tight time window reduces false positives, so removing it would make matters worse."
+      },
+      {
+        "label": "B",
+        "text": "Replace the graph with a column-oriented table",
+        "explanation": "This changes the storage model without removing the false connections."
+      },
+      {
+        "label": "C",
+        "text": "Give a shared IP address the highest edge weight",
+        "explanation": "A shared IP is treated as weak evidence with a low weight, unlike a shared credit card."
+      },
+      {
+        "label": "D",
+        "text": "Filter out the supernode",
+        "explanation": "A public computer is exactly the example of a supernode to filter, because it links accounts that are unrelated."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "One node is linking far too many accounts for an innocent reason.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "ddcdcfb9bd67",
+    "question": "A graph has 9 nodes. Nodes 1–4 are connected to each other through paths, nodes 5–8 likewise, and node 9 has no edges. How many weakly connected components are there?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1",
+        "explanation": "This would need a path joining all the nodes, but the groups are separate."
+      },
+      {
+        "label": "B",
+        "text": "3",
+        "explanation": "The two groups and the isolated node make three islands, and the number of components equals the number of islands."
+      },
+      {
+        "label": "C",
+        "text": "2",
+        "explanation": "This overlooks node 9, which forms an island by itself."
+      },
+      {
+        "label": "D",
+        "text": "9",
+        "explanation": "This counts every node separately, ignoring that the groups are connected."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Count the islands, including any lone node.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "bd8f087becd2",
+    "question": "A table has 6 rows and 3 columns. Each disk I/O reads 3 values. How many disk I/Os does summing the first column take in an RDBMS and in a column-oriented database?",
+    "options": [
+      {
+        "label": "A",
+        "text": "6 and 6",
+        "explanation": "The column store keeps the 6 values next to each other, so it needs fewer I/Os than one per value."
+      },
+      {
+        "label": "B",
+        "text": "2 and 6",
+        "explanation": "These figures are reversed: it is the row layout that scatters the column's values."
+      },
+      {
+        "label": "C",
+        "text": "6 and 2",
+        "explanation": "In row order each 3-value read holds one value of the column, so 6 reads; the column store reads 6 adjacent values in 2."
+      },
+      {
+        "label": "D",
+        "text": "2 and 2",
+        "explanation": "The row layout cannot fetch 6 scattered values in 2 reads of 3 values each."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Lay out the values on disk for each design, then group them in threes.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "1fefc4053b81",
+    "question": "A quant team stores hundreds of technical indicators per row but each study only computes the mean of a few of them. Which database type fits best, and why?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A column-oriented database, because it is read-optimized and reads only the needed columns",
+        "explanation": "Tasks touching a subset of many columns are its example of a good use, since other columns need not be read."
+      },
+      {
+        "label": "B",
+        "text": "An RDBMS, because it is write-optimized",
+        "explanation": "Being write-optimized does not help a read-heavy workload on a few columns."
+      },
+      {
+        "label": "C",
+        "text": "A graph database, because indicators are linked",
+        "explanation": "Nothing in this workload traverses relationships between nodes."
+      },
+      {
+        "label": "D",
+        "text": "An in-memory key-value store, because it supports secondary indexes",
+        "explanation": "Redis indexes on the key only and has limited querying power."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare how much data each storage layout must read for one attribute.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "9738d7984669",
+    "question": "In a Bigtable holding (1, Name, 1 Jan 2020) → Diana and (1, Name, 1 Jan 2023) → Amy, why can both values coexist?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Row 1 is stored in two separate tables",
+        "explanation": "All data sits in one big table; the values differ only by timestamp."
+      },
+      {
+        "label": "B",
+        "text": "Name is declared as a multi-valued column",
+        "explanation": "The structure is a map to a single string, so there is no multi-valued column."
+      },
+      {
+        "label": "C",
+        "text": "The timestamp is part of the key, so each version has its own entry",
+        "explanation": "The map is keyed by row, column and time, which allows different versions to be retrieved."
+      },
+      {
+        "label": "D",
+        "text": "A self-join merges the two names on read",
+        "explanation": "A self-join would rebuild a record from its entries; it does not explain how versions are stored."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Look at what the map `(row, column, time) -> string` uses as its key.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "2cc97dfa90f4",
+    "question": "Why does a wide-column database generally have higher read latency than an RDBMS, despite its fast writes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It must lock every row before reading",
+        "explanation": "Its append-only mode is in fact praised for avoiding locking."
+      },
+      {
+        "label": "B",
+        "text": "Null values have to be scanned",
+        "explanation": "Wide-column stores have no null overhead, since absent values are simply not stored."
+      },
+      {
+        "label": "C",
+        "text": "It only stores data on magnetic disks",
+        "explanation": "The storage medium is not the reason given; the cost lies in the data structure."
+      },
+      {
+        "label": "D",
+        "text": "Finding the latest data in LSM trees takes more effort",
+        "explanation": "Versions are spread across immutable sorted records, so locating the newest one costs extra work."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Consider what append-only writes leave behind for a reader to sort out.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "0ab000d7a4e2",
+    "question": "In an LSM tree, what happens to outdated or deleted records?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They are overwritten in place at update time",
+        "explanation": "An append-only design inserts a new version rather than updating in place."
+      },
+      {
+        "label": "B",
+        "text": "They are cleaned up as data is merged and compacted in the background",
+        "explanation": "The continuous background merge and compaction removes deleted or outdated records."
+      },
+      {
+        "label": "C",
+        "text": "They stay on disk permanently, because records are immutable",
+        "explanation": "Records are immutable once flushed, but compaction still replaces them with cleaned ones."
+      },
+      {
+        "label": "D",
+        "text": "They are removed from the memory buffer before any flush",
+        "explanation": "Older versions may already be on disk, so the buffer cannot be the only place cleaned."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Think about the step that continues after records have been flushed to disk.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "8cfb45dfe642",
+    "question": "Enrollment records in Cassandra store only student ID and module code. A user asks for the names of the modules taken by Amy. What difficulty does this expose?",
+    "options": [
+      {
+        "label": "A",
+        "text": "CQL has no JOIN operator, so combining the data is poorly supported",
+        "explanation": "Finding the names requires joins, and poor support for those is a stated problem of wide-column databases."
+      },
+      {
+        "label": "B",
+        "text": "Cassandra cannot store text values",
+        "explanation": "Values in the data model are strings, so text is not the issue."
+      },
+      {
+        "label": "C",
+        "text": "Writes would block until the query completes",
+        "explanation": "Fast, append-only writes are an advantage and are not the problem here."
+      },
+      {
+        "label": "D",
+        "text": "Horizontal scaling forbids any lookup by student ID",
+        "explanation": "Scaling out does not prevent key lookups; the missing piece is combining records."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Count how many separate kinds of record the answer draws on.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "4e9563717371",
+    "question": "Redis stores sessions under keys such as `session:auth:98342`. Why is finding all sessions with `status` equal to `authenticated` a poor fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "RAM is too slow for scanning values",
+        "explanation": "RAM is the fastest of the benchmarked media, so speed of the medium is not the issue."
+      },
+      {
+        "label": "B",
+        "text": "JSON values cannot be stored in Redis",
+        "explanation": "The sample data shows such a structured value stored against a key."
+      },
+      {
+        "label": "C",
+        "text": "Redis has an index on the key only, with no secondary index on other fields",
+        "explanation": "A query on `status` is not on the key, and this limited querying power is a stated trade-off."
+      },
+      {
+        "label": "D",
+        "text": "Hashed sharding deletes non-key fields",
+        "explanation": "Sharding spreads data across nodes and does not remove any fields."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Which field does the Redis index cover?",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "626a55cff4b6",
+    "question": "A Redis server restarts after a power failure and rebuilds its data by re-executing every logged write. Which persistence option is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Snapshot",
+        "explanation": "A snapshot restores a point-in-time copy of the dataset rather than replaying each operation."
+      },
+      {
+        "label": "B",
+        "text": "NVRAM",
+        "explanation": "NVRAM is a type of memory, and the current Redis does not use it as primary memory."
+      },
+      {
+        "label": "C",
+        "text": "Hashed sharding",
+        "explanation": "Sharding distributes data across nodes and is not a persistence method."
+      },
+      {
+        "label": "D",
+        "text": "AOF (Append Only File)",
+        "explanation": "AOF logs every write operation received, and replays them at startup to reconstruct the dataset."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The mechanism records operations rather than the state of the data.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "5714427d939d",
+    "question": "The text `<b>The Apple ran</b>` passes through the character filter, tokenizer, normalization, stopword filter and stemming filter. What are the final terms?",
+    "options": [
+      {
+        "label": "A",
+        "text": "[the, apple, ran]",
+        "explanation": "This skips the stopword and stemming filters, which remove the and map ran to its root."
+      },
+      {
+        "label": "B",
+        "text": "[Apple, ran]",
+        "explanation": "This skips normalization and stemming, which would change the case and the verb form."
+      },
+      {
+        "label": "C",
+        "text": "[apple, run]",
+        "explanation": "Tags are removed, the text is split and lower-cased, the stopword is removed, and ran is stemmed to run."
+      },
+      {
+        "label": "D",
+        "text": "[<b>the, apple, ran</b>]",
+        "explanation": "The character filter removes HTML tags before tokenizing."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Apply the stages in order and write the tokens after each one.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "d9da2b16ae5e",
+    "question": "A term appears in all 3 documents of a corpus. What are its textbook IDF and its scikit-learn IDF?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Textbook 1, scikit-learn 0",
+        "explanation": "These are swapped: the added $+1$ belongs to the scikit-learn version."
+      },
+      {
+        "label": "B",
+        "text": "Both 0",
+        "explanation": "Scikit-learn adds 1 after the logarithm, so its value cannot be 0 here."
+      },
+      {
+        "label": "C",
+        "text": "Both 1",
+        "explanation": "The textbook value is $\\log_{10}(3/3)=0$, not 1."
+      },
+      {
+        "label": "D",
+        "text": "Textbook 0, scikit-learn 1",
+        "explanation": "$\\log_{10}(3/3)=0$, while $\\ln\\left(\\frac{3+1}{3+1}\\right)+1=1$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Substitute $N=3$ and $\\text{df}(t)=3$ into each formula.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "e645e088ef3b",
+    "question": "A document's TF-IDF vector before normalization is $(3, 4)$. What is it after L2 normalization?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$(0.6, 0.8)$",
+        "explanation": "The L2 norm is $\\sqrt{3^2+4^2}=5$, and each entry is divided by it."
+      },
+      {
+        "label": "B",
+        "text": "$(3/7, 4/7)$",
+        "explanation": "This divides by the sum of the entries instead of the L2 norm."
+      },
+      {
+        "label": "C",
+        "text": "$(0.75, 1)$",
+        "explanation": "This divides by the largest entry instead of the L2 norm."
+      },
+      {
+        "label": "D",
+        "text": "$(9, 16)$",
+        "explanation": "This squares the entries but never divides by the norm."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compute the square root of the sum of squares first.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "4cef58174e5c",
+    "question": "A term appears 50 times in one document and 10 times in another. Which description matches how BM25 improves on TF-IDF here?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It makes the weight exactly 5 times larger, in proportion to the count",
+        "explanation": "Linear growth is the TF-IDF problem that BM25 is designed to fix."
+      },
+      {
+        "label": "B",
+        "text": "It caps the rate at which term frequency increases the score",
+        "explanation": "This is term frequency saturation, reflecting that relevance does not increase linearly."
+      },
+      {
+        "label": "C",
+        "text": "It ignores term frequency and uses only document length",
+        "explanation": "BM25 still uses term frequency, through a modified function."
+      },
+      {
+        "label": "D",
+        "text": "It removes all tuneable parameters",
+        "explanation": "BM25 adds tuneable parameters, whereas lack of tuning is a problem of TF-IDF."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Relevance does not grow in proportion to the count.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "69b09686f781",
+    "question": "Vectors $x=(3,4)$ and $y=(4,3)$ are compared. What is their cosine distance?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$0.96$",
+        "explanation": "This is the cosine similarity; the distance is 1 minus this value."
+      },
+      {
+        "label": "B",
+        "text": "$0.04$",
+        "explanation": "Similarity is $\\frac{12+12}{5\\times5}=0.96$, so the distance is $1-0.96$."
+      },
+      {
+        "label": "C",
+        "text": "$24$",
+        "explanation": "This is only the dot product, without dividing by the magnitudes."
+      },
+      {
+        "label": "D",
+        "text": "$25$",
+        "explanation": "This is only the product of the magnitudes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Find the cosine similarity first.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "c0807da6cdc8",
+    "question": "A search application needs exact k nearest neighbour results and accepts slower queries. Which method meets the requirement?",
+    "options": [
+      {
+        "label": "A",
+        "text": "IVF, because it searches only candidate clusters",
+        "explanation": "Narrowing to candidate clusters gives approximate results only."
+      },
+      {
+        "label": "B",
+        "text": "HNSW, because it refines results at the ground layer",
+        "explanation": "Despite the refinement, HNSW also gives approximate results only."
+      },
+      {
+        "label": "C",
+        "text": "Keyword search, because it matches exact words",
+        "explanation": "Matching keywords does not measure vector closeness, and is no kNN search."
+      },
+      {
+        "label": "D",
+        "text": "Brute-force calculation, at $O(n)$",
+        "explanation": "Comparing the query with every vector is the only listed method not described as approximate."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Two of the methods carry the warning that they are approximate.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "79253a273300",
+    "question": "A team must choose a vector index. Their data changes often and fast search matters more than RAM. Which choice and reason fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "IVF, because it uses less memory",
+        "explanation": "Saving RAM is IVF's advantage, but it is the lesser priority for this team."
+      },
+      {
+        "label": "B",
+        "text": "IVF, because it searches in $O(\\lg n)$",
+        "explanation": "Average IVF search is $O(\\sqrt{n})$; the logarithmic figure belongs to HNSW."
+      },
+      {
+        "label": "C",
+        "text": "HNSW, because it is faster and needs no re-training",
+        "explanation": "It searches in $O(\\lg n)$ on average and does not rely on K-means clustering."
+      },
+      {
+        "label": "D",
+        "text": "HNSW, because it gives exact results",
+        "explanation": "HNSW gives approximate results only."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Match each stated priority to an advantage in the comparison.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "267c6d6517e7",
+    "question": "During an HNSW search, why does the process move down through the layers?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Lower layers are denser, so there are more potential closer neighbours to discover",
+        "explanation": "Higher layers are sparser subsets, and only the ground layer contains every vector."
+      },
+      {
+        "label": "B",
+        "text": "Lower layers hold the K-means cluster centres",
+        "explanation": "K-means clustering belongs to IVF, not HNSW."
+      },
+      {
+        "label": "C",
+        "text": "Upper layers contain only outdated vectors",
+        "explanation": "Upper layers are sparser subsets of the data, not stale copies."
+      },
+      {
+        "label": "D",
+        "text": "Each lower layer holds a different dataset",
+        "explanation": "Each higher layer is a subset of the lower layer, so the data is shared."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare the number of points in each layer.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "5835c3e8a7c7",
+    "question": "Why might a semantic search return a chunk about \"automobile repairs\" for the query \"fixing my car\" when a keyword search would not?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The chunk is matched by edit distance",
+        "explanation": "Edit distance suits typos, and \"automobile\" is not a misspelling of \"car\"."
+      },
+      {
+        "label": "B",
+        "text": "Semantically similar texts have close embedding vectors",
+        "explanation": "kNN on the query vector finds close chunks even without a shared keyword."
+      },
+      {
+        "label": "C",
+        "text": "The inverted index maps every term to all documents",
+        "explanation": "An inverted index maps a word only to documents containing that word."
+      },
+      {
+        "label": "D",
+        "text": "BM25 ranks long documents highest",
+        "explanation": "BM25 is a keyword relevance score, and it does not create matches on unshared words."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Consider what closeness between vectors represents.",
+    "course": "COM6002",
+    "unit": "Lecture_7",
+    "deck": "COM6002_Lecture_7"
+  },
+  {
     "id": "6cc82ee6420a",
     "question": "Data mining is an interdisciplinary field drawing from multiple domains. Which of the following is NOT explicitly identified in the source text as one of its foundational disciplines?",
     "options": [
@@ -20854,5 +21514,665 @@
     "course": "COM6005",
     "unit": "Module_4B",
     "deck": "COM6005_Module_4B"
+  },
+  {
+    "id": "6211feeb643d",
+    "question": "Which target variable fits logistic regression as taught in this lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A patient's systolic blood pressure in mm Hg",
+        "explanation": "Blood pressure is a continuous number, so it is not a binary outcome."
+      },
+      {
+        "label": "B",
+        "text": "Whether a debt is Good debt or Bad debt",
+        "explanation": "Correct: this $Y$ has only two possible values, so it is binomial."
+      },
+      {
+        "label": "C",
+        "text": "A person's body mass index",
+        "explanation": "BMI is numeric and continuous; here it appears as a predictor, not a binary target."
+      },
+      {
+        "label": "D",
+        "text": "Cumulative tobacco use in kg",
+        "explanation": "An amount in kg is a continuous measurement, not one of two outcomes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Identify the kind of $Y$ first.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "1a3bcc519c99",
+    "question": "You need to predict a colour from {Red, Blue, Green}. Following the slides, how many logistic regression models do you fit?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1",
+        "explanation": "One logistic regression considers only two outcomes, so it cannot separate three colours."
+      },
+      {
+        "label": "B",
+        "text": "2",
+        "explanation": "The slides' scheme gives every colour its own model, so two models would leave one colour without one."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "explanation": "This counts ordered pairs of colours; the slides fit one colour-versus-rest model per colour."
+      },
+      {
+        "label": "D",
+        "text": "3",
+        "explanation": "Correct: one model each for {Red, not Red}, {Blue, not Blue} and {Green, not Green}."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Each model is restricted to two outcomes.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "f28ccaf43339",
+    "question": "Why is $P(Y=\\text{Rain}) = X\\beta + \\text{error}$ not a usable model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$X\\beta$ can take any value in $[-\\infty, \\infty]$, but a probability must lie in $[0,1]$",
+        "explanation": "Correct: the two sides do not match, so a transform is needed."
+      },
+      {
+        "label": "B",
+        "text": "A probability is categorical, so it cannot appear in an equation",
+        "explanation": "The probability of getting 1 is numeric; it is the data $Y$ that is categorical."
+      },
+      {
+        "label": "C",
+        "text": "$X\\beta$ can only be positive, but a probability can be negative",
+        "explanation": "Both claims are backwards: $X\\beta$ is arbitrary in sign, and a probability is never negative."
+      },
+      {
+        "label": "D",
+        "text": "Rain data has too few predictors to estimate $\\beta$",
+        "explanation": "The problem is the range of each side, not the number of predictors."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Compare the range of the left-hand side with that of the right-hand side.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "e736fceb8d74",
+    "question": "A fitted model has $\\beta_0 = -4$ and $\\beta_1 = 0.5$. For a new $x = 6$, what is $P(Y=1)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\approx 0.731$",
+        "explanation": "This is $e^{1}/(1+e^{1})$, which comes from dropping the minus sign on $\\eta_{\\text{new}}$."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 0.368$",
+        "explanation": "This is $e^{-1}$ alone; the denominator $1 + e^{\\eta_{\\text{new}}}$ was left out."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.269$",
+        "explanation": "Correct: $\\eta_{\\text{new}} = -4 + 0.5 \\times 6 = -1$, and $e^{-1}/(1+e^{-1}) \\approx 0.269$."
+      },
+      {
+        "label": "D",
+        "text": "$0.5$",
+        "explanation": "A probability of 0.5 needs $\\eta_{\\text{new}} = 0$, but here $\\eta_{\\text{new}} = -1$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Compute $\\eta_{\\text{new}}$ first, then apply the logistic function.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "bda855787409",
+    "question": "A model has $\\beta_0 = 1$, $\\beta_1 = 0.5$ and $\\beta_2 = -2$. A new observation has $X_1 = 4$ and $X_2 = 1$. What is the result under the default threshold?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\eta = 1$, $P \\approx 0.731$, classify $y = 1$",
+        "explanation": "Correct: $\\eta = 1 + 2 - 2 = 1$, and $e^1/(1+e^1) \\approx 0.731 > 0.5$."
+      },
+      {
+        "label": "B",
+        "text": "$\\eta = 1$, $P \\approx 0.269$, classify $y = 0$",
+        "explanation": "The value 0.269 is $e^{-1}/(1+e^{-1})$; here $\\eta$ is $+1$."
+      },
+      {
+        "label": "C",
+        "text": "$\\eta = 5$, $P \\approx 0.993$, classify $y = 1$",
+        "explanation": "This ignores the negative sign of $\\beta_2$, whose term should subtract 2."
+      },
+      {
+        "label": "D",
+        "text": "$\\eta = 1$, $P = 1$, classify $y = 1$",
+        "explanation": "$\\eta$ is not itself a probability; it must pass through the logistic function."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Watch the sign of each coefficient.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "2c5d255e1f71",
+    "question": "Without using a calculator, how is an observation with $\\eta_{\\text{new}} = -0.7$ classified under the default rule?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$y_{\\text{new}} = 1$, because $|\\eta_{\\text{new}}| > 0.5$",
+        "explanation": "The rule compares the probability with 0.5, not the size of $\\eta_{\\text{new}}$."
+      },
+      {
+        "label": "B",
+        "text": "It cannot be classified, because $\\eta_{\\text{new}}$ must lie in $[0,1]$",
+        "explanation": "$\\eta_{\\text{new}}$ may be any real number; only the probability is limited to $[0,1]$."
+      },
+      {
+        "label": "C",
+        "text": "$y_{\\text{new}} = 0$, because $P(y_{\\text{new}} = 1) = -0.7$",
+        "explanation": "The class is right but the reason is not: a probability cannot be negative."
+      },
+      {
+        "label": "D",
+        "text": "$y_{\\text{new}} = 0$, because $\\eta_{\\text{new}} < 0$ means $P(y_{\\text{new}} = 1) < 0.5$",
+        "explanation": "Correct: the 0.5 threshold on the probability is the same as a threshold of 0 on $\\eta_{\\text{new}}$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "What value of $\\eta_{\\text{new}}$ corresponds to a probability of 0.5?",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "8df95c038b21",
+    "question": "What is $\\text{logit}(0.8)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$4$",
+        "explanation": "This is $\\frac{P}{1-P}$ before the logarithm is taken."
+      },
+      {
+        "label": "B",
+        "text": "$\\ln 4 \\approx 1.386$",
+        "explanation": "Correct: $\\ln\\left(\\frac{0.8}{1-0.8}\\right) = \\ln 4 \\approx 1.386$."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx -0.223$",
+        "explanation": "This is $\\ln(0.8)$; the ratio $\\frac{P}{1-P}$ is missing."
+      },
+      {
+        "label": "D",
+        "text": "$\\approx 0.690$",
+        "explanation": "This puts 0.8 through the logistic function, which is the opposite direction from the logit."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The logit takes a logarithm of a ratio.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "d5a1cf4c7194",
+    "question": "Which statement correctly describes the logistic function?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Its input is a probability in $[0,1]$ and its output is in $[-\\infty, \\infty]$",
+        "explanation": "These are the ranges of the logit function, not the logistic function."
+      },
+      {
+        "label": "B",
+        "text": "Both its input and its output are limited to $[0,1]$",
+        "explanation": "Its input is $\\text{logit}(P)$, which is unrestricted."
+      },
+      {
+        "label": "C",
+        "text": "Its input is any value in $[-\\infty, \\infty]$ and its output is a probability in $[0,1]$",
+        "explanation": "Correct: this is what lets the linear expression be turned into a probability."
+      },
+      {
+        "label": "D",
+        "text": "Both its input and its output are in $[-\\infty, \\infty]$",
+        "explanation": "Its output is a probability, so it cannot leave $[0,1]$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "The linear expression goes in and something usable as a probability comes out.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "6474a4cc06d9",
+    "question": "Why does logistic regression replace the sum of squared errors with the likelihood?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Squared errors are always zero when $Y$ is binary",
+        "explanation": "The issue is not their size; the residual itself is not defined for categories."
+      },
+      {
+        "label": "B",
+        "text": "Likelihood needs fewer observations than least squares",
+        "explanation": "The slides give no such sample-size argument; the reason lies in the type of $Y$."
+      },
+      {
+        "label": "C",
+        "text": "Least squares can only be used with one predictor",
+        "explanation": "Least squares fits multiple linear regression too, so the number of predictors is not the reason."
+      },
+      {
+        "label": "D",
+        "text": "For a categorical $Y$, an error cannot be defined by subtraction",
+        "explanation": "Correct: a difference like Engineering $-$ Humanity has no meaning, so squared errors cannot be formed."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Try computing a residual for Y = Cloudy and a prediction of Sunny.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "9a15b53ba189",
+    "question": "Which expression is the likelihood maximized when fitting a logistic regression?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\prod_{t=1}^{n} P(Y_t = y_t \\mid X_t)$",
+        "explanation": "Correct: it is a product over the actual observations."
+      },
+      {
+        "label": "B",
+        "text": "$\\sum_{t=1}^{n} (y_t - \\hat{y}_t)^2$",
+        "explanation": "This is the sum of squared errors, which OLS minimizes in linear regression."
+      },
+      {
+        "label": "C",
+        "text": "$\\sum_{t=1}^{n} P(Y_t = y_t \\mid X_t)$",
+        "explanation": "The slide's likelihood multiplies these probabilities rather than adding them."
+      },
+      {
+        "label": "D",
+        "text": "$\\prod_{t=1}^{n} (\\beta_0 + \\beta_1 X_{t1})$",
+        "explanation": "This multiplies linear expressions, which are not probabilities since they are not limited to $[0,1]$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about the probability of seeing all the observed data.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "30dfbe646308",
+    "question": "Two sets of parameter values give likelihoods $L_1 > L_2$ on the same data. What does this imply?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The second set is preferred, because likelihood is minimized like squared error",
+        "explanation": "Likelihood is maximized; it is the sum of squared errors that is minimized."
+      },
+      {
+        "label": "B",
+        "text": "The first set has a lower misclassification rate on unseen test data",
+        "explanation": "The likelihood uses the observed data; test error must be measured separately."
+      },
+      {
+        "label": "C",
+        "text": "The observed data is more probable under the first set, so it is preferred",
+        "explanation": "Correct: likelihood is directly proportional to the probability of observing what you observed, and statisticians maximize it."
+      },
+      {
+        "label": "D",
+        "text": "Nothing, because likelihood values cannot be compared",
+        "explanation": "The slides state directly that $L_1 > L_2$ implies $P_1 > P_2$."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Recall what likelihood is proportional to.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "2b430c9eb75e",
+    "question": "With $\\beta_0 = 3$, $\\beta_1 = 2$ and $x = 5$, what is the predicted $P(Y=1)$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$13$",
+        "explanation": "13 is $\\eta_{\\text{new}}$, and a probability cannot exceed 1."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 1$",
+        "explanation": "Correct: $\\eta_{\\text{new}} = 13$, and $e^{13}/(1+e^{13})$ is almost exactly 1."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.929$",
+        "explanation": "This is $13/14$, which uses $\\eta_{\\text{new}}$ in place of $e^{\\eta_{\\text{new}}}$."
+      },
+      {
+        "label": "D",
+        "text": "$0.5$",
+        "explanation": "That would need $\\eta_{\\text{new}} = 0$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "How large is $e^{13}$ compared with 1?",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "6f3e3c56d340",
+    "question": "What does numerical analysis contribute, according to the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It finds a max/min or solves an equation approximately using repetitive steps",
+        "explanation": "Correct: computers can then handle problems with no explicit solution, such as $x \\sin x = 1$."
+      },
+      {
+        "label": "B",
+        "text": "It gives an exact closed-form solution to every equation",
+        "explanation": "The methods are approximate and are aimed at problems without explicit solutions."
+      },
+      {
+        "label": "C",
+        "text": "It removes the need to choose a target variable",
+        "explanation": "Identifying the kind of $Y$ remains a separate first step."
+      },
+      {
+        "label": "D",
+        "text": "It converts categorical predictors into probabilities",
+        "explanation": "That is not what the slides describe; numerical analysis is about solving and optimizing."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about problems that have no explicit solution.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "a7dc8ee234a0",
+    "question": "In `smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart)`, which column is the response?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`famhist`",
+        "explanation": "`famhist` is right of the `~`, so it is a predictor."
+      },
+      {
+        "label": "B",
+        "text": "`age`",
+        "explanation": "`age` is one of the predictors on the right of the `~`."
+      },
+      {
+        "label": "C",
+        "text": "`chd`",
+        "explanation": "Correct: it is left of the `~`, and it is the coronary heart disease diagnosis."
+      },
+      {
+        "label": "D",
+        "text": "`heart`",
+        "explanation": "`heart` is the DataFrame passed as `data`, not a column."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Look at which side of the tilde each name sits on.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "4bd155a9f18d",
+    "question": "Why does the lecture run `heart['chd'] = heart['chd'].astype('category').cat.codes` before fitting?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To split the data into training and test sets",
+        "explanation": "The split is done later with `iloc`."
+      },
+      {
+        "label": "B",
+        "text": "To turn the predicted probabilities into classes",
+        "explanation": "That is done after fitting, with `idxmax`."
+      },
+      {
+        "label": "C",
+        "text": "To remove `famhist` from the predictors",
+        "explanation": "`famhist` stays in the formula, and this line only touches `chd`."
+      },
+      {
+        "label": "D",
+        "text": "To convert the target class variable into integer codes",
+        "explanation": "Correct: that is exactly what the slide's code comment says."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Notice which column the line assigns to.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "9cfde825c1bc",
+    "question": "`pred_probs` has one row, with column `0` equal to 0.35 and column `1` equal to 0.65. What does `pred_probs.idxmax(axis=1)` return for that row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`0.65`",
+        "explanation": "0.65 is the maximum value; `idxmax` returns where it is, not what it is."
+      },
+      {
+        "label": "B",
+        "text": "`1`",
+        "explanation": "Correct: `axis=1` returns the column index of the maximum, and the larger value is in column `1`."
+      },
+      {
+        "label": "C",
+        "text": "`0`",
+        "explanation": "`0` holds the smaller probability, so it is not the position of the maximum."
+      },
+      {
+        "label": "D",
+        "text": "`0.35`",
+        "explanation": "0.35 is the smaller value, and `idxmax` does not return values."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The function name says index, not value.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "85a52fa79526",
+    "question": "Predicted High risk: 50 actually High, 6 actually Low. Predicted Low risk: 8 actually High, 35 actually Low. What is the misclassification rate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$85/99 \\approx 0.859$",
+        "explanation": "This is the share of correct predictions, not the misclassification rate."
+      },
+      {
+        "label": "B",
+        "text": "$14/85 \\approx 0.165$",
+        "explanation": "The denominator must be all 99 cases, not only the correct ones."
+      },
+      {
+        "label": "C",
+        "text": "$14/99 \\approx 0.141$",
+        "explanation": "Correct: the wrong predictions are $6 + 8 = 14$, out of $50 + 6 + 8 + 35 = 99$."
+      },
+      {
+        "label": "D",
+        "text": "$6/56 \\approx 0.107$",
+        "explanation": "This uses only the row predicted High risk and misses the 8 errors in the other row."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Add up the off-diagonal cells first.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "fe1fc0a40fcc",
+    "question": "A confusion matrix `m` is `[[70, 10], [15, 44]]`. What does `1 - np.trace(m) / np.sum(m)` give?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$\\approx 0.180$",
+        "explanation": "Correct: the trace is $70 + 44 = 114$, the total is 139, and $1 - 114/139 \\approx 0.180$."
+      },
+      {
+        "label": "B",
+        "text": "$\\approx 0.820$",
+        "explanation": "This is $114/139$, the correct share, with the subtraction from 1 left out."
+      },
+      {
+        "label": "C",
+        "text": "$\\approx 0.219$",
+        "explanation": "This is $25/114$, which divides by the correct count rather than by the total."
+      },
+      {
+        "label": "D",
+        "text": "$\\approx 0.072$",
+        "explanation": "This is $10/139$, which counts only one of the two off-diagonal cells."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The trace is the sum of the diagonal.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "b6c41d5b2129",
+    "question": "`heart` has 462 rows. The code sets `heart_train = heart.iloc[0:323]` and `heart_test = heart.iloc[323:]`. How large is the test set?",
+    "options": [
+      {
+        "label": "A",
+        "text": "140 rows, about 30%",
+        "explanation": "140 would need the training set to stop one row earlier, but `iloc[0:323]` holds exactly 323 rows."
+      },
+      {
+        "label": "B",
+        "text": "139 rows, about 30%",
+        "explanation": "Correct: the training rows are positions 0 to 322, so $462 - 323 = 139$ remain, about 30% of the data."
+      },
+      {
+        "label": "C",
+        "text": "323 rows, about 70%",
+        "explanation": "323 is the size of the training set."
+      },
+      {
+        "label": "D",
+        "text": "462 rows, the full data",
+        "explanation": "The test set holds only the rows from position 323 onwards."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Subtract the training rows from the total.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "b0e7d655782e",
+    "question": "Which procedure gives an out-of-sample estimate of the misclassification rate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fit on the full data, then apply `predict()` to the same full data",
+        "explanation": "These rows were used in fitting, so this is in-sample prediction."
+      },
+      {
+        "label": "B",
+        "text": "Fit on the full data, then apply `predict()` to 30% of it",
+        "explanation": "That 30% was seen during fitting, so it is not unseen test data."
+      },
+      {
+        "label": "C",
+        "text": "Fit on the training data, then apply `predict()` to the same training data",
+        "explanation": "This predicts rows the model has already seen, so it is in-sample."
+      },
+      {
+        "label": "D",
+        "text": "Fit on the training data, then apply `predict()` to the test data and compare with its actual $Y$",
+        "explanation": "Correct: the test data is unseen during fitting, with its $Y$ treated as unknown until the comparison."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The evaluation rows must be unseen when the model is fitted.",
+    "course": "COM6005",
+    "unit": "Module_5",
+    "deck": "COM6005_Module_5"
   }
 ]

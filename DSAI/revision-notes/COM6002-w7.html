@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 7 NoSQL</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w7">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 7</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 7 · Source: 7-NoSQL.pptx (62 slides)</p>
+<h1>NoSQL Databases: Graph, Column, Wide-column, In-memory, Search &amp; Vector</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>NoSQL 嘅定義同點解流行（flexible schema、agile development）；document store（MongoDB）留待下一章。</li>
+    <li><b>Graph database</b>：Index-Free Adjacency、graph analytics 同 fraud detection、Knowledge Graph、RDF。</li>
+    <li><b>Column-oriented database</b>：row vs column storage、disk I/O 計算、compression、read-optimized vs write-optimized。</li>
+    <li><b>Wide-column database</b>：Bigtable data model、append-only logs、LSM tree、優缺點。</li>
+    <li><b>In-memory key-value database</b>：Redis、persistence options、indexing、use cases。</li>
+    <li><b>Search engine</b>：inverted index、analysis pipeline、TF-IDF 計算、BM25 嘅改良、fuzzy search。</li>
+    <li><b>Vector database</b>：embedding、semantic search、cosine similarity、brute force vs IVF vs HNSW。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>Row vs column storage 嘅 disk I/O：sum 一個 column（3 vs 1）、insert 一個 record（2 vs 4）；RDBMS write-optimized、column-oriented read-optimized。</li>
+    <li>Bigtable：<code>(row, column, time) → value</code>；LSM tree 三步；wide-column 嘅優點（scalability、fast write、no null overhead）同缺點（join、read latency、eventual consistency）。</li>
+    <li>TF-IDF 手計：textbook vs scikit-learn 版本、slides 47–49 例題、L2 normalization。</li>
+    <li>Analysis pipeline 次序同 inverted index；TF-IDF 三個問題同 BM25 點樣改良（BM25 formula 本身 slide 列明唔使考）。</li>
+    <li>Cosine similarity / distance；kNN 三種方法：Brute force \( O(n) \)、IVF \( O(\sqrt{n}) \)、HNSW \( O(\lg n) \)，同 IVF vs HNSW 嘅優點。</li>
+  </ol>
+</div>
+
+<h2>1. NoSQL 概覽（slides 2–3）</h2>
+<p><mark class="k">NoSQL</mark> stands for <b>Not Only SQL</b>，係 a broad class of non-relational DBMS。Slide 特別 note：有啲 NoSQL database 都係用 table structure，所以唔好將 NoSQL 等同「冇 table」。</p>
+<p><span class="tag exam">Exam</span>NoSQL 通常支援 <b>flexible schema</b>，過去十年喺新 applications / companies 好流行，原因係 <b>agile development</b>：requirements change rapidly，而 database schema 一改，就要 migrate 現有 data 去新結構。</p>
+<div class="box exam"><span class="label">⭐ NoSQL 種類一覽（slides 3、54）</span>
+<table>
+<tr><th>類型</th><th>例子</th><th>專長</th></tr>
+<tr><td>Graph database</td><td>Neo4j</td><td>搵 nodes 之間嘅關係</td></tr>
+<tr><td>Column-oriented database</td><td>KDB</td><td>Column-based process，例如計一個 attribute 嘅 mean / mode</td></tr>
+<tr><td>Wide column store</td><td>Cassandra</td><td>Distributed environment，處理 extremely large amount of data</td></tr>
+<tr><td>In-memory database</td><td>Redis</td><td>速度</td></tr>
+<tr><td>Search engine</td><td>Elasticsearch</td><td>全文搜尋</td></tr>
+<tr><td>Vector database</td><td>Pinecone、Qdrant、Chroma、FAISS</td><td>Semantic search</td></tr>
+<tr><td>Document store</td><td>MongoDB</td><td>下一章（Next chapter）</td></tr>
+</table></div>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p><a href="COM6002-w1.html">Week 1</a> 已經介紹過 NoSQL，而且提醒 RDBMS 仍然最多人用。呢一講就係逐種 NoSQL 深入講佢解決 RDBMS 嘅咩問題、又犧牲咗啲咩。</p></div>
+
+<h2>2. Graph database（slides 4–5）</h2>
+<p>Graph 其實可以用 table 表示（slide 4 嘅 edge table，共 4 個 nodes）：</p>
+<table>
+<tr><th>From</th><th>To</th><th>Weight</th></tr>
+<tr><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>2</td><td>3</td><td>4</td></tr>
+<tr><td>3</td><td>1</td><td>5</td></tr>
+<tr><td>3</td><td>4</td><td>5</td></tr>
+</table>
+<p>既然 table 都存到，點解仲要 graph database？</p>
+<div class="box exam"><span class="label">⭐ RDBMS 嘅問題 vs Graph database 嘅解決方法（slide 5）</span>
+<table>
+<tr><th>Problems with RDBMS</th><th>Graph database solution</th></tr>
+<tr><td><b>Joins are expensive</b>：要搵 nodes 之間嘅關係，需要大量 joins</td><td>Native support for graph operations；<b>Index-Free Adjacency</b>：直接儲存相連 nodes 之間嘅 pointers，達到 <b>constant traversal time</b></td></tr>
+</table>
+<p>Graph query language：Neo4j 用 <b>Cypher</b>。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>喺 edge table 搵「朋友嘅朋友嘅朋友」，每行多一層就多一個 self-join。Graph database 就好似每個 node 手上已經有齊鄰居地址，順住 pointer 行就得，每一步都唔使再查 index。</p></div>
+
+<h2>3. Graph analytics（slides 6–10）</h2>
+<div class="box exam"><span class="label">⭐ Graph analytics 同 application 配對</span>
+<table>
+<tr><th>Method</th><th>做咩</th><th>Example application</th></tr>
+<tr><td>Breadth-first search</td><td>先探索 depth 1 嘅所有 direct neighbours，再去 depth 2，如此類推</td><td>判斷 social network 上一個 user 同另一個 user 係咪喺某個距離內</td></tr>
+<tr><td>PageRank</td><td>量度 nodes 嘅相對 importance / influence；最初由 Google 開發</td><td>搵 influential users / key opinion leaders</td></tr>
+<tr><td>Weakly connected components</td><td>搵 subgraphs，入面每對 nodes 互相 reachable；數目 = Number of Islands</td><td>Fraud Detection &amp; Identity Resolution</td></tr>
+<tr><td>Community detection（label propagation）</td><td>每個 node 由 unique label 開始，反覆更新做鄰居入面嘅 majority label，直至 convergence</td><td>Marketing Segmentation、Content Targeting</td></tr>
+<tr><td>Local clustering coefficient</td><td>量度一個 node 嘅 immediate neighbours 幾接近形成 complete graph</td><td>Spam and fake account detection</td></tr>
+<tr><td>Single source shortest paths</td><td>由一個 source 計去其他 nodes 嘅最短路徑（Dijkstra 1959）</td><td>Route optimization</td></tr>
+</table></div>
+<div class="box warn"><span class="label">⚠️ 留意 slides 嘅寫法</span>
+<ul>
+<li><b>Slide 7</b>：「weakly」嘅意思係 reachable 時<b>唔理 edge 方向</b>。Directed graph 入面要順住方向都 reachable，一般叫 strongly connected。Slide 7 嘅圖有 3 個獨立 groups（Alex/Bob/Justin、Chase/Damon/Eddie、George/Fiona/Howard/Ivy），所以係 3 個 components。</li>
+<li><b>Slide 9</b>：文字話每個 node 由 unique label 開始，但圖只係部分 nodes 有 label（兩種顏色），Pass 1、Pass 2 逐步擴散。圖同文字係唔同嘅起始設定，答題時跟文字嘅定義就得。</li>
+</ul></div>
+
+<h3>Fraud detection 例子（slide 8）</h3>
+<p><span class="tag exam">Exam</span><b>Target scenario</b>：有人操作幾百個 fake accounts。<b>Observation</b>：佢哋無可避免會共用 subtle resources，例如同一個 IP address、credit card、Wi-Fi network 或 delivery address。</p>
+<p><b>Graph construction</b>：Node = Account；兩個 accounts 有一個或以上 features 相同就連 edge。Fake accounts 就會形成一個<b>大嘅 weakly connected component</b>。</p>
+<table>
+<tr><th>Handling false positives</th><th>做法</th></tr>
+<tr><td>Filtering supernodes</td><td>排除例如 public computers，因為好多無關嘅人都會共用</td></tr>
+<tr><td>Weights and thresholds</td><td>同 IP = low weight；同 credit card = high weight；common features 越多 weight 越高；再設 strict connectivity threshold，例如要有一條 high-weight path，或多條 medium-weight paths</td></tr>
+<tr><td>Temporal relationship</td><td>只考慮 tight time window（例如 30 mins）內嘅 activities</td></tr>
+</table>
+
+<h2>4. Knowledge Graph 同 RDF（slides 11–12）</h2>
+<p><b>Knowledge Graph</b> 曾經係 AI 嘅 leading techniques 之一：IBM Watson 喺 2011 年嘅問答節目 Jeopardy 贏咗兩位 human experts。Slide 11 嘅圖用 nodes 同 edges 表達知識，例如 Da Vinci <i>painted</i> Mona Lisa、Mona Lisa <i>is in</i> Louvre。</p>
+<p><span class="tag exam">Exam</span><b>RDF (Resource Description Framework)</b> 技術上係一個 graph，每個 RDF record 有 3 個 components：<b>Subject、Predicate、Object</b>。命名用 URI-based vocabularies（同 linked data 一樣），query language 係 <b>SPARQL</b>（the query language of the Semantic Web）。</p>
+<table>
+<tr><th>Subject</th><th>Predicate</th><th>Object</th></tr>
+<tr><td>Da Vinci</td><td>painted</td><td>Mona Lisa</td></tr>
+</table>
+
+<h2>5. Column-oriented database（slides 13–19）</h2>
+<p><span class="tag exam">Exam</span>核心分別：<b>Standard RDBMS stores data by rows；column-oriented database stores data by columns</b>（C-Store，Stonebraker et al., VLDB 2005）。例子 <b>KDB</b> 喺 financial industry 幾流行，支援 time-series data，query language 係 <b>Q</b>，不過 difficult to learn。Slide 13 附咗一張香港 Citibank KDB Engineer 招聘截圖，顯示業界需求。</p>
+<p>Sample data（slide 14）：</p>
+<table>
+<tr><td>x1</td><td>x2</td><td>x3</td><td>x4</td></tr>
+<tr><td>x5</td><td>x6</td><td>x7</td><td>x8</td></tr>
+<tr><td>x9</td><td>x10</td><td>x11</td><td>x12</td></tr>
+</table>
+<table>
+<tr><th>Storage</th><th>Data on disk</th></tr>
+<tr><td>RDBMS（by rows）</td><td>x1, x2, x3, x4, …, x11, x12</td></tr>
+<tr><td>Column-oriented（by columns）</td><td>x1, x5, x9 | x2, x6, x10 | x3, x7, x11 | x4, x8, x12</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Disk I/O 計算（slides 15–16，假設每次 disk I/O 讀 3 個 values）</span>
+<table>
+<tr><th>Task</th><th>RDBMS</th><th>Column-oriented</th><th>原因</th></tr>
+<tr><td>Sum 第一個 column（x1, x5, x9）</td><td><b>3</b> disk I/O</td><td><b>1</b> disk I/O</td><td>Row storage 入面 x1、x5、x9 分散喺三個 blocks：(x1–x3)、(x4–x6)、(x7–x9)；column storage 就連續擺埋一齊</td></tr>
+<tr><td>Adding a new record（4 values）</td><td>may need <b>2</b> disk I/O</td><td><b>4</b> disk I/O</td><td>Row storage 將 4 個 values 連續寫，最多跨 2 個 blocks；column storage 要每個 column 寫一次</td></tr>
+</table>
+<p>結論（slide 18，出自 C-Store paper abstract 第一句）：<b>RDBMS is write-optimized，column-oriented database is read-optimized</b>。</p></div>
+
+<h3>Compression（slide 17）</h3>
+<p><span class="tag exam">Exam</span>Column-based compression 可以有較高 compression rate，因為 <b>data within the same column are of very similar nature</b>，帶來 lower storage cost 同 faster processing speed。</p>
+<div class="box exam"><span class="label">⭐ 兩種 encoding</span>
+<table>
+<tr><th>方法</th><th>例子 column</th><th>Data</th><th>Compressed</th></tr>
+<tr><td><b>Run-Length Encoding</b></td><td>sex / gender</td><td>F, F, F, M, M, F, F</td><td>F3M2F2</td></tr>
+<tr><td><b>Dictionary Encoding</b></td><td>district</td><td>Sha Tin, Central, Sha Tin, Tai Po</td><td>1, 2, 1, 3（Dictionary：Sha Tin → 1，Central → 2，Tai Po → 3）</td></tr>
+</table></div>
+
+<h3>Sample use case（slide 19）</h3>
+<p>好適合 <b>data analytics in finance</b>：有好多 columns（MACD、RSI、Bollinger Bands 等 technical analysis），但 quantitative analysis 通常只用少數 columns，例如計一個 feature 嘅 mean、standard deviation、confidence intervals，或者兩個 features 嘅 correlation。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 嘅 <code>df['col'].mean()</code>、<code>df[['a','b']].corr()</code>，同 COM6005 嘅 Confidence Interval，都係呢類「只掂少數 columns」嘅運算。</p></div>
+
+<h2>6. Wide-column database（slides 20–29）</h2>
+<p><span class="tag exam">Exam</span><b>Purpose</b>：make the database highly scalable by <b>horizontal scaling</b>。例子：Cassandra、HBase。源頭係 <b>Google Bigtable</b>（OSDI 2006）。</p>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p><b>Column-oriented</b>（KDB）同 <b>wide-column</b>（Cassandra）名似但目的唔同：前者將同一 column 擺埋一齊，提升 analytics 讀取；後者重點係 horizontal scaling 同高 write throughput。</p></div>
+
+<h3>6.1 由 RDBMS 到 Bigtable（slides 21–22）</h3>
+<p>將多個 tables join 成一張 single big table，呢張 table 有咩特性？<b>Big</b> 同 <b>Sparse</b>，好多格都係空嘅。</p>
+<div class="box exam"><span class="label">⭐ Bigtable data model（slide 22）</span>
+<p>Bigtable 係一個 map：</p>
+<p><code>(row:string, column:string, time:int64) → string</code></p>
+<p>提供 row ID、column ID 同 timestamp，就得到 data contents。有 timestamp，所以可以取得唔同時間嘅 versions（recall MVCC）。呢個諗法最初嚟自儲存 Internet data：Row 係 website，column 係 property 嘅名。</p></div>
+<p>Sample data（slide 23）：</p>
+<table>
+<tr><th>ID</th><th>Name</th><th>Association</th><th>Hobby</th></tr>
+<tr><td>1</td><td>Amy</td><td>Red Cross</td><td></td></tr>
+<tr><td>2</td><td>Bob</td><td></td><td>Badminton</td></tr>
+</table>
+<p>對應嘅 Bigtable data：</p>
+<table>
+<tr><th>Row ID</th><th>Column</th><th>Time</th><th>Value</th></tr>
+<tr><td>1</td><td>Name</td><td>1 Jan 2020</td><td>Diana</td></tr>
+<tr><td>1</td><td>Name</td><td>1 Jan 2023</td><td>Amy</td></tr>
+<tr><td>1</td><td>Association</td><td>1 Jan 2020</td><td>Red Cross</td></tr>
+<tr><td>2</td><td>Name</td><td>1 Jan 2020</td><td>Bob</td></tr>
+<tr><td>2</td><td>Hobby</td><td>1 Jan 2020</td><td>Badminton</td></tr>
+</table>
+<p>留意三件事：Row 1 嘅 Name 有兩個 versions，最新係 Amy；空格（Amy 冇 Hobby）根本唔使儲，就係 <b>no null overhead</b>；要還原返關係型嗰張 table，就要 <b>self-join</b>（slide 24）。</p>
+<div class="box note"><span class="label">📎 Slide 小錯</span><p>Slides 23–24 嘅 Bigtable table 將 column 寫成 “Hobbit”，對照上面應該係 Hobby。上表已更正。</p></div>
+
+<h3>6.2 Query（slide 25）</h3>
+<p>Wide-column database 一般唔用 SQL。Cassandra 用類似 SQL 嘅 <b>Cassandra Query Language (CQL)</b>，但 <b>CQL 冇 JOIN operator</b>。</p>
+
+<h3>6.3 Append-only logs 同 LSM tree（slide 26）</h3>
+<p>有新 update 時，只係 insert 一個新 version，updates are processed sequentially。</p>
+<div class="box exam"><span class="label">⭐ Log-Structured Merge-tree（LSM tree）</span>
+<p>專為 append-only write operations 優化嘅 data structure：</p>
+<ol>
+<li><b>Buffer</b> incoming writes in memory。</li>
+<li>間中 <b>flush</b> 去 disk，變成 immutable, sorted records。</li>
+<li>喺背景持續 <b>merge and compact</b>，清走 deleted / outdated records。</li>
+</ol></div>
+
+<h3>6.4 優缺點（slides 27–28）</h3>
+<div class="box exam"><span class="label">⭐ Wide-column database 優缺點</span>
+<table>
+<tr><th>Advantages</th><th>Problems</th></tr>
+<tr><td><b>Massive (horizontal) scalability</b>：大家用同一個 underlying schema，專為 distributed environment 設計</td><td><b>Poor support of complex queries that require “join”</b>：例如 enrollment 只記 student ID 同 module code，要搵 Amy 讀咩 module 嘅名就要 join</td></tr>
+<tr><td><b>Fast write throughput</b>：append-only 令 write 容易處理（例如 no locking）</td><td><b>Higher read latency</b>（相對 RDBMS）：要花多啲功夫喺 LSM trees 搵最新 data</td></tr>
+<tr><td><b>No Null overhead</b></td><td><b>Only provide eventual consistency</b>：喺原本 Google search engine 嘅應用唔係大問題，用戶未攞到網站最新內容都可以接受</td></tr>
+</table></div>
+<p><b>Example applications</b>（slide 29）：IoT &amp; sensor data logging（大量 devices 持續發 data）；Discord 用 ScyllaDB，因為 chat applications 有 heavy write volume，而且可以按 channels 自然 partition。</p>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p><a href="COM6002-w6.html">Week 6</a> 嘅 horizontal fragmentation、MVCC、CAP 同 BASE 喺度全部用得著：eventual consistency 就係 BASE 嘅 “E”，代表為咗 availability 同 scalability 而放寬 consistency。</p></div>
+
+<h2>7. In-memory key-value database：Redis（slides 30–37）</h2>
+<h3>7.1 點解 in-memory？（slides 30、33）</h3>
+<table>
+<tr><th>Storage</th><th>Benchmark read/write speed</th></tr>
+<tr><td>Magnetic harddisk</td><td>80 MB/s – 160 MB/s</td></tr>
+<tr><td>SSD harddisk</td><td>200 MB/s – 550 MB/s</td></tr>
+<tr><td>RAM (Memory)</td><td>2 GB/s – 20 GB/s</td></tr>
+</table>
+<p><span class="tag exam">Exam</span>RAM 最快，但 <b>volatile</b>：一斷電 data 就冇晒。Redis 嘅做法係 data 主要放 RAM，permanent storage（例如 harddisk）作 backup。</p>
+<p>另一個問題：<b>RAM is expensive and limited</b>，所以 <b>compression is critical</b>。Slide 33 嘅價錢截圖：8TB HDD 賣 $2699，16GB RAM 賣 $1499，以每 GB 計 RAM 貴接近 280 倍。Trade-off：compression / decompression 有 computational cost，最終 performance 視乎 data 嘅性質。</p>
+
+<h3>7.2 Redis 特性（slide 31）</h3>
+<ul>
+<li><b>Key-value store</b>，例如 key <code>"session:auth:98342"</code> 對應 <code>{"user_id": "usr_01H7X", "status": "authenticated"}</code>。</li>
+<li><b>Index on key only</b>，唔支援其他 fields 嘅 secondary index，所以 querying power 有限。</li>
+<li>Simple sharding：hashed sharding，without strong consistency check。</li>
+<li><b>Optimized for speed but sacrifice consistency</b>。</li>
+</ul>
+
+<h3>7.3 Persistence options（slide 32）</h3>
+<div class="box exam"><span class="label">⭐ Redis persistence</span>
+<table>
+<tr><th>Option</th><th>做法</th></tr>
+<tr><td><b>Snapshot</b></td><td>按指定 intervals 做 point-in-time snapshots</td></tr>
+<tr><td><b>AOF (Append Only File)</b></td><td>Log 每個 write operation，server 啟動時 replay 去重建 dataset；用同 Redis protocol 一樣嘅格式</td></tr>
+<tr><td><b>No persistence</b></td><td>斷電 data 就冇</td></tr>
+<tr><td><b>Snapshot + AOF</b></td><td>兩者一齊用</td></tr>
+</table></div>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p>AOF 同 <a href="COM6002-w3.html">Week 3</a> 嘅 log-based recovery 諗法相近；Snapshot 就有啲似 checkpoint。兩者都係靠額外記錄，喺故障後還原 data。</p></div>
+
+<h3>7.4 Indexing（slide 34）</h3>
+<p><span class="tag exam">Exam</span>傳統 indexing（例如 <b>B-tree</b>）唔適合 in-memory database：佢哋係為 <b>I/O optimal</b> 而設計，放喺 memory 就 suboptimal。Preferred 方法係 <b>Hash table</b>：\( O(1) \) time access，但 <b>no range queries</b>。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>B-tree 每個 node 擺好多 keys，目的係減少讀 disk 嘅次數；喺 RAM 冇 disk I/O 成本，呢個設計就失去優勢。Hash table 打散 keys，所以搵單一 key 快，但做唔到「搵 A 至 B 之間」。</p></div>
+
+<h3>7.5 NVRAM（slide 35）</h3>
+<p><b>Non-volatile RAM</b>：比 volatile RAM 慢，但 power off 都保留 data。現時 Redis 冇用 NVRAM 做 primary memory，不過可以作較快嘅 backup and recovery layer。</p>
+
+<h3>7.6 Use cases 同其他系統（slides 36–37）</h3>
+<table>
+<tr><th>Use case</th><th>原因</th></tr>
+<tr><td>User session management</td><td>暫存 visit 期間嘅 user data（例如 shopping cart），冇 activity 一段時間就 expire</td></tr>
+<tr><td>Leaderboards in gaming</td><td>大量 players 要 fast update</td></tr>
+<tr><td>High-Frequency Trading</td><td>需要 low latency</td></tr>
+</table>
+<table>
+<tr><th>Other in-memory databases</th><th>特點</th></tr>
+<tr><td>VoltDB</td><td>For relational data；NewSQL</td></tr>
+<tr><td>SAP HANA</td><td>Column-oriented storage</td></tr>
+<tr><td>Memcached</td><td>Key-value store，even simpler than Redis</td></tr>
+</table>
+
+<h2>8. Search engine：Elasticsearch（slides 38–41）</h2>
+<p>Data 係 JSON 格式嘅 documents，<span class="tag exam">Exam</span>核心係 <mark class="k">inverted index</mark>：<b>mapping words to document IDs</b>。</p>
+<table>
+<tr><th>ID</th><th>Term</th><th>Document</th></tr>
+<tr><td>1</td><td>butterfly</td><td>1</td></tr>
+<tr><td>2</td><td>blue</td><td>1, 2</td></tr>
+<tr><td>3</td><td>bright</td><td>1, 2</td></tr>
+</table>
+<div class="box note"><span class="label">🖼️ Slide 38 嘅圖</span><p>上表節錄自 slide 38 嘅圖（Document 1 “The bright blue butterfly hangs on the breeze”；Document 2 “Under blue sky, in bright sunlight, one need no search around”）。圖入面仲有 retire、wind 指向 Document 2，但呢兩個字唔喺 Document 2 嘅句子，應該係圖本身嘅問題，所以冇抄入表。</p></div>
+<div class="box tip"><span class="label">💡 點解叫 “inverted”</span><p>正常係「document → 入面有咩字」；inverted 就倒轉，變成「字 → 喺邊啲 documents」，搜尋時就唔使逐份 document 掃。</p></div>
+<p><b>Elastic Stack (ELK)</b>（slide 39）：</p>
+<table>
+<tr><th>Component</th><th>角色</th></tr>
+<tr><td><b>L</b>ogstash</td><td>Data pipeline tool，由多個 sources ingest data</td></tr>
+<tr><td><b>E</b>lasticsearch</td><td>The core engine</td></tr>
+<tr><td><b>K</b>ibana</td><td>Frontend interface</td></tr>
+</table>
+
+<h3>Analysis pipeline：由 text 到 terms（slides 40–41）</h3>
+<div class="box exam"><span class="label">⭐ Pipeline 次序同 slide 40 例子</span>
+<table>
+<tr><th>Step</th><th>做咩</th><th>結果</th></tr>
+<tr><td>原文</td><td></td><td><code>&lt;p&gt; The quick brown Fox's Tail, is nice.&lt;/p&gt;</code></td></tr>
+<tr><td>1. Character filter</td><td>抽取 text contents，例如移除 HTML tags</td><td>The quick brown Fox's Tail, is nice.</td></tr>
+<tr><td>2. Tokenizer</td><td>將字元流拆成 tokens</td><td>[The, quick, brown, Fox's, Tail, is, nice]</td></tr>
+<tr><td>3. Normalization</td><td>統一同一個字嘅 tokens，例如 Apple → apple</td><td>[the, quick, brown, fox's, tail, is, nice]</td></tr>
+<tr><td>4. Stopword filter</td><td>移除 high-frequency non meaningful words（the、a、is）</td><td>[quick, brown, fox's, tail, nice]</td></tr>
+<tr><td>5. Stemming filter</td><td>轉成 root form，例如 ran → run</td><td>[quick, brown, fox, tail, nice]</td></tr>
+</table>
+<p>Slide 41 另外列出 <b>Synonym filter</b>：按 defined list 取代或者加 tokens，例如 automobile → car。Slide 40 嘅例子冇用到呢一步。</p></div>
+
+<h2>9. Relevance score 同 TF-IDF（slides 42–49）</h2>
+<p>點解要 rank？簡單 term matching 通常返回大量 documents，但唔知邊份較 relevant。<b>Relevance score</b> 就係代表 document 同 search query 相關程度嘅數值。流行演算法係 <b>BM25</b>（Best Matching），由 TF-IDF 改良而成。</p>
+
+<h3>9.1 Formula（slides 43–45）</h3>
+<div class="formula">$$ \text{TF-IDF}(t,d)=\text{TF}(t,d)\times\text{IDF}(t) $$</div>
+<p>\( \text{TF}(t,d) \) 係 term \( t \) 喺 document \( d \) 嘅 term frequency；\( \text{IDF}(t) \) 係 inverse document frequency，對所有 documents 都一樣。</p>
+<div class="box exam"><span class="label">⭐ 兩個版本要分清（slides 44–45）</span>
+<table>
+<tr><th></th><th>Textbook version</th><th>Scikit-learn version</th></tr>
+<tr><td>\( \text{TF}(t,d) \)</td><td>\( \dfrac{\text{count of } t \text{ in } d}{\text{total number of terms in } d} \)</td><td>count of \( t \) in \( d \)</td></tr>
+<tr><td>\( \text{IDF}(t) \)</td><td>\( \log_{10}\!\left(\dfrac{N}{\text{df}(t)}\right) \)</td><td>\( \ln\!\left(\dfrac{N+1}{\text{df}(t)+1}\right)+1 \)</td></tr>
+</table>
+<p>\( N \)：total number of documents；\( \text{df}(t) \)：number of documents containing \( t \)。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>TF：呢份 document 提得越多，越可能同呢個字有關。IDF：越多 documents 都有嘅字越冇鑑別力。“cat” 三份都有，IDF 最低；“chased” 只得一份有，IDF 較高。</p></div>
+
+<h3>9.2 例題（slides 43、46–49）</h3>
+<p>Corpus：</p>
+<ul>
+<li>\( d_1 \)：The cat sat on the mat.</li>
+<li>\( d_2 \)：The cat chased the cat.</li>
+<li>\( d_3 \)：The mouse ran from the cat.</li>
+</ul>
+<p>移除 stop words（the、on、from）後，Vocabulary = [cat, chased, mat, mouse, ran, sat]。</p>
+<p><b>Step 1：TF（scikit-learn 版本，即 count）</b></p>
+<table>
+<tr><th></th><th>cat</th><th>chased</th><th>mat</th><th>mouse</th><th>ran</th><th>sat</th></tr>
+<tr><th>\( d_1 \)</th><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><th>\( d_2 \)</th><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>\( d_3 \)</th><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+</table>
+<p><b>Step 2：IDF</b>（\( N=3 \)）</p>
+<div class="formula">$$ \text{IDF}(\text{cat})=\ln\frac{1+3}{1+3}+1=1,\qquad \text{IDF}(\text{chased})=\ln\frac{1+3}{1+1}+1=\ln2+1\approx1.6931 $$</div>
+<p>mat、mouse、ran、sat 都只喺一份 document 出現，所以 IDF 同 chased 一樣，都係 \( \ln2+1 \)。</p>
+<p><b>Step 3：TF × IDF（normalization 之前）</b>，例如 \( \text{TF-IDF}(\text{cat},d_1)=1\times1=1 \)：</p>
+<table>
+<tr><th></th><th>cat</th><th>chased</th><th>mat</th><th>mouse</th><th>ran</th><th>sat</th></tr>
+<tr><th>\( d_1 \)</th><td>1</td><td>0</td><td>\( \ln2+1 \)</td><td>0</td><td>0</td><td>\( \ln2+1 \)</td></tr>
+<tr><th>\( d_2 \)</th><td>2</td><td>\( \ln2+1 \)</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>\( d_3 \)</th><td>1</td><td>0</td><td>0</td><td>\( \ln2+1 \)</td><td>\( \ln2+1 \)</td><td>0</td></tr>
+</table>
+<p><b>Step 4：L2 norms</b></p>
+<div class="formula">$$ n_1=n_3=\sqrt{1^2+(\ln2+1)^2+(\ln2+1)^2}\approx2.5949,\qquad n_2=\sqrt{2^2+(\ln2+1)^2}\approx2.6204 $$</div>
+<p><b>Step 5：每行除以該行嘅 norm（final result，slide 49）</b></p>
+<div class="box exam"><span class="label">⭐ 最終結果（slide 49）</span>
+<table>
+<tr><th></th><th>cat</th><th>chased</th><th>mat</th><th>mouse</th><th>ran</th><th>sat</th></tr>
+<tr><th>\( d_1 \)</th><td>0.3854</td><td>0</td><td>0.6525</td><td>0</td><td>0</td><td>0.6525</td></tr>
+<tr><th>\( d_2 \)</th><td>0.7632</td><td>0.6461</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>\( d_3 \)</th><td>0.3854</td><td>0</td><td>0</td><td>0.6525</td><td>0.6525</td><td>0</td></tr>
+</table>
+<p>手計方法：\( 1/2.5949=0.3854 \)；\( 1.6931/2.5949=0.6525 \)；\( 2/2.6204=0.7632 \)；\( 1.6931/2.6204=0.6461 \)。</p></div>
+<pre><code>from sklearn.feature_extraction.text import TfidfVectorizer
+
+corpus = ["The cat sat on the mat.",
+          "The cat chased the cat.",
+          "The mouse ran from the cat."]
+
+vectorizer = TfidfVectorizer(stop_words=['the', 'on', 'from'])
+X = vectorizer.fit_transform(corpus).toarray()
+print(vectorizer.get_feature_names_out())  # ['cat' 'chased' 'mat' 'mouse' 'ran' 'sat']
+print(vectorizer.idf_)                     # [1. 1.6931 1.6931 1.6931 1.6931 1.6931]
+print(X.round(4))                          # 同 slide 49 一樣</code></pre>
+<p><b>Textbook version 比較（自編，唔係 slide 內容）</b>：\( \text{IDF}(\text{cat})=\log_{10}(3/3)=0 \)，所以 cat 嘅 TF-IDF 喺每份 document 都係 0。假設 total terms 以移除 stop words 後計（\( d_2 \) 有 3 個），\( \text{TF-IDF}(\text{chased},d_2)=\frac13\times\log_{10}3\approx0.159 \)。</p>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span>
+<ul>
+<li>Textbook 用 \( \log_{10} \)，scikit-learn 用 \( \ln \)；scikit-learn 嘅 “+1” 有兩個位置（分數上下各一，加上 log 之外再加一）。</li>
+<li>Scikit-learn 版本嘅 IDF 最少係 1，唔會變 0；textbook 版本出現喺所有 documents 嘅字 IDF 就係 0。</li>
+<li>Normalization 係每份 document（每個 row）獨立除以自己嘅 norm，唔係全表一個 norm。</li>
+</ul></div>
+
+<h2>10. TF-IDF 嘅問題同 BM25（slides 50–51）</h2>
+<div class="box exam"><span class="label">⭐ TF-IDF 三大問題 → BM25 點改良</span>
+<table>
+<tr><th>TF-IDF 嘅問題</th><th>解釋</th><th>BM25 嘅做法</th></tr>
+<tr><td><b>Linear TF Increase</b>（Saturation Issue）</td><td>出現 50 次得到 10 次嘅 5 倍 weight，但 relevance 唔係線性上升</td><td><b>Term Frequency Saturation</b>：modified TF function，限制 term frequency 令 score 上升嘅速度</td></tr>
+<tr><td><b>Bias to Long Documents</b>（Normalization Issue）</td><td>雖然有 normalization，但唔足夠，較長 documents 仍然著數</td><td><b>Improved Length Normalization</b>：用 tuneable parameters 控制 document length 嘅影響</td></tr>
+<tr><td><b>Lack of Tuning</b></td><td>No hyperparameter tuning</td><td>有 tuneable parameters</td></tr>
+</table></div>
+<div class="box note"><span class="label">📎 BM25 formula（slide 51 列明 Not required in the exam）</span>
+<div class="formula">$$ \text{score}(D,Q)=\sum_{i=1}^{n}\text{IDF}(q_i)\cdot\frac{f(q_i,D)\cdot(k_1+1)}{f(q_i,D)+k_1\cdot\left(1-b+b\cdot\frac{|D|}{\text{avgdl}}\right)} $$</div>
+<p>只作理解用：\( k_1 \) 控制 saturation，\( b \) 控制 length normalization 嘅強度。</p></div>
+
+<h2>11. Elasticsearch 嘅其他功能同應用（slides 52–53）</h2>
+<p><b>Fuzzy search</b>：連相似嘅字都會返回，similarity 用 <b>edit distance</b> 量度。Use case：user 打錯字，想搵 “fox” 但打咗 “box”；兩個字只差一個字母，edit distance 係 1。</p>
+<table>
+<tr><th>Application</th><th>做咩</th></tr>
+<tr><td>Website search</td><td>搵個 phrase 喺網站邊度出現</td></tr>
+<tr><td>Enterprise search</td><td>搵企業入面邊份 document 有呢個 phrase</td></tr>
+<tr><td>Data analytics</td><td>統計唔同 search phrases 嘅出現次數再分析，例如喺 treemap 顯示 incident documents 最常見嘅原因</td></tr>
+</table>
+
+<h2>12. Vector database（slides 54–58）</h2>
+<p>Vector data 例子：User-Product ratings（YouTube、Netflix）、item features（例如 TF-IDF 產生嘅 feature vector）、text / image / 任何 data type 嘅 <b>embedding</b>（Generative AI / LLM，呢度嘅重點）。</p>
+<p>Pure vector databases：Pinecone、Qdrant、Chroma、FAISS。隨住 vector database 流行，PostgreSQL、MongoDB、Oracle 等都開始實作 vector functions。</p>
+<p><span class="tag exam">Exam</span><mark class="k">Embedding model</mark>（slide 55）：neural network model，將 data 映射成 dense vector。<b>兩個 inputs semantically similar，佢哋嘅 vectors 就會 close to each other</b>。例子：nomic-embed-text-v2-moe（text，multilingual）、CLIP（image）、Gemini Embedding 2（multimodal）。</p>
+<div class="box exam"><span class="label">⭐ Semantic search 步驟（slide 56）</span>
+<ol>
+<li>將 text data <b>chunk</b> 成小塊。</li>
+<li>每個 text chunk embed 成 vector。</li>
+<li>將 query text 轉成 query vector。</li>
+<li>用 query vector 搵最接近嘅 data vectors（<b>k Nearest Neighbor search</b>）。</li>
+<li>結果 text chunks 就會同 query semantically similar。</li>
+</ol>
+<p><b>Why not a keyword search?</b> 有 keyword 唔代表 relevant；冇 keyword 亦唔代表唔 relevant。</p></div>
+<div class="box exam"><span class="label">⭐ Cosine similarity（slides 57–58）</span>
+<div class="formula">$$ \text{Cosine similarity}=\frac{x\cdot y}{|x||y|}=\cos\theta,\qquad \text{Cosine distance}=1-\text{Cosine similarity} $$</div>
+<p>\( |x| \) 係 vector \( x \) 嘅 magnitude，\( \theta \) 係 \( x \) 同 \( y \) 之間嘅角度。Embedding model 通常 output <b>unit vector</b>（magnitude = 1），所以 cosine similarity 就等於 <b>dot product</b>。</p></div>
+<p>自編例子：\( x=(1,2,2) \)，\( y=(2,0,1) \)。\( x\cdot y=2+0+2=4 \)，\( |x|=3 \)，\( |y|=\sqrt5 \)，similarity \( =\frac{4}{3\sqrt5}\approx0.596 \)，distance \( \approx0.404 \)。</p>
+<p>Slide 58 列出 MongoDB 嘅 options：<code>$similarityCosine</code>、<code>$similarityDotProduct</code>、<code>$similarityEuclidean</code>。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Cosine similarity 同 <a href="COM6004-ch2.html">COM6004 Chapter 2</a> 係同一條式；kNN 嘅諗法同 <a href="COM6004-ch4a.html">Chapter 4A</a> 嘅 KNN classifier 一樣都係搵最近鄰居。</p></div>
+
+<h2>13. kNN 計算：Brute force、IVF、HNSW（slides 59–62）</h2>
+<div class="box exam"><span class="label">⭐ 三種方法比較（slides 59、62）</span>
+<table>
+<tr><th></th><th>Brute force</th><th>IVF（Inverted File Index）</th><th>HNSW（Hierarchical Navigable Small World）</th></tr>
+<tr><td>Idea</td><td>同每個 vector 比較</td><td>先用 <b>K-means</b> 將 data 分 cluster，只搜尋 candidate clusters</td><td>多層 graph，由 sparse 層逐步落到 dense 層</td></tr>
+<tr><td>Complexity (average)</td><td>\( O(n) \)</td><td>\( O(\sqrt{n}) \)</td><td>\( O(\lg n) \)</td></tr>
+<tr><td>Worst case</td><td>\( O(n) \)</td><td>\( O(n) \)</td><td>\( O(n) \)</td></tr>
+<tr><td>Results</td><td>Exact</td><td><b>Approximate only</b></td><td><b>Approximate only</b></td></tr>
+<tr><td>Used by</td><td></td><td>FAISS</td><td>Pinecone、Qdrant、Chroma、PostgreSQL（more popular）</td></tr>
+<tr><td>Advantages</td><td></td><td><b>Use less memory (RAM)</b></td><td><b>Faster search time</b>；<b>No re-training</b>（IVF 需要 K-means clustering）</td></tr>
+</table></div>
+<p><b>HNSW 結構</b>（slide 60）：</p>
+<ul>
+<li>A higher layer is a <b>sparser subset</b> of the lower layer。</li>
+<li>最底嘅 ground layer 包含所有 vectors。</li>
+<li>每一層，每個 node 都記住 neighbours 嘅 edges。</li>
+</ul>
+<div class="box exam"><span class="label">⭐ HNSW search（slide 61）</span>
+<ol>
+<li>由 top layer 開始。</li>
+<li>Loop：greedily hop 去最近嘅 neighbours，然後落去較 dense 嘅一層，發掘更近嘅 neighbours。</li>
+<li>到 ground layer，refine closest neighbours 嘅 list，返回 top K。</li>
+</ol></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>好似搭交通工具：先搭飛機（top layer，站少跳得遠）飛到附近城市，再轉火車，最後行路（ground layer）去到目的地。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>IVF 用嘅 K-means 就係 <a href="COM6004-ch5.html">COM6004 Chapter 5</a> 嘅 K-means。Data 變動時 clusters 可能要重新計，所以 slide 62 話 HNSW 嘅優點係 no re-training。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. NoSQL 代表咩？點解 agile development 會令 NoSQL 流行？</summary><p>Not Only SQL。Requirements 轉得快，而 RDBMS schema 一改就要 migrate 現有 data；NoSQL 通常支援 flexible schema，唔使咁麻煩。</p></details>
+<details class="q"><summary>Q2. 點解 graph database 比 RDBMS 更適合搵關係？</summary><p>RDBMS 要大量 expensive joins。Graph database 用 Index-Free Adjacency，直接儲存相連 nodes 嘅 pointers，traversal time 係 constant。</p></details>
+<details class="q"><summary>Q3. 12 rows × 4 columns 嘅 table，每次 disk I/O 讀 3 個 values。Sum 一個 column，row storage 同 column storage 各要幾多次 I/O？</summary><p>Column storage：12 個 values 連續擺放，12/3 = 4 次。Row storage（以第一個 column 為例）：佢哋喺第 1、5、9、…、45 個位置，每個都落喺唔同 block，所以 12 次。</p></details>
+<details class="q"><summary>Q4. 將 A, A, B, B, B, A 用 Run-Length Encoding 壓縮；將 Red, Blue, Red, Green 用 Dictionary Encoding 壓縮。</summary><p>A2B3A1。1, 2, 1, 3，Dictionary：Red → 1，Blue → 2，Green → 3。</p></details>
+<details class="q"><summary>Q5. Bigtable 嘅 data model 係咩？Timestamp 有咩用？</summary><p><code>(row:string, column:string, time:int64) → string</code>。Timestamp 令系統可以保存同取得同一格喺唔同時間嘅 versions。</p></details>
+<details class="q"><summary>Q6. 解釋 LSM tree；點解 wide-column database write 快但 read 慢？</summary><p>Writes 先 buffer 喺 memory，間中 flush 成 immutable sorted records，背景 merge and compact。Update 只係 append 新 version，所以 write 快（例如 no locking）；read 就要喺 LSM trees 花功夫搵最新 data，所以 latency 較高。</p></details>
+<details class="q"><summary>Q7. 點解 B-tree 唔適合 in-memory database？Hash table 嘅代價係咩？</summary><p>B-tree 為 I/O optimal 而設計，喺 memory 入面 suboptimal。Hash table 有 \( O(1) \) access，但做唔到 range queries。</p></details>
+<details class="q"><summary>Q8. 寫出 Redis 嘅 persistence options。AOF 點樣還原 data？</summary><p>Snapshot、AOF、No persistence、Snapshot + AOF。AOF 記錄每個 write operation，server 啟動時 replay 去重建 dataset。</p></details>
+<details class="q"><summary>Q9. 排列 analysis pipeline，並處理 “&lt;b&gt;The Apples ran&lt;/b&gt;”。</summary><p>Character filter → Tokenizer → Normalization → Stopword filter → Stemming filter。結果：The Apples ran → [The, Apples, ran] → [the, apples, ran] → [apples, ran] → [apple, run]。</p></details>
+<details class="q"><summary>Q10. 用 scikit-learn 版本：\( N=4 \)，term \( t \) 喺 1 份 document 出現，喺 \( d \) 出現 3 次。求 TF-IDF（未 normalize）。</summary><p>\( \text{IDF}=\ln\frac{4+1}{1+1}+1=\ln2.5+1\approx1.9163 \)，TF = 3，所以 TF-IDF \( \approx5.749 \)。</p></details>
+<details class="q"><summary>Q11. 同上，改用 textbook 版本，假設 \( d \) 共有 10 個 terms。</summary><p>TF = 3/10 = 0.3；\( \text{IDF}=\log_{10}(4/1)\approx0.6021 \)；TF-IDF \( \approx0.1806 \)。</p></details>
+<details class="q"><summary>Q12. BM25 解決咗 TF-IDF 嘅咩問題？</summary><p>Term frequency saturation（TF 唔再線性上升）、improved length normalization（減少偏向長 documents），而且有 tuneable parameters。</p></details>
+<details class="q"><summary>Q13. 比較 IVF 同 HNSW。如果 RAM 好緊張，揀邊個？</summary><p>IVF：\( O(\sqrt{n}) \)、用較少 RAM、需要 K-means。HNSW：\( O(\lg n) \)、較快、唔使 re-training、較流行。兩者都只係 approximate。RAM 緊張就揀 IVF。</p></details>
+<details class="q"><summary>Q14. 以下情況用邊種 database？(a) 記錄大量 IoT sensor readings；(b) 搵 fake account 集團；(c) 遊戲 leaderboard；(d) 計幾百個 columns 入面某一個 column 嘅 mean；(e) 用意思而唔係關鍵字搜尋文件。</summary><p>(a) Wide-column；(b) Graph；(c) In-memory（Redis）；(d) Column-oriented；(e) Vector database。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>NoSQL</b> = Not Only SQL；flexible schema；agile development。MongoDB 留待下一章。</li>
+<li><b>Graph</b>：Joins expensive → Index-Free Adjacency（pointers，constant traversal）；Cypher。BFS、PageRank、Weakly connected components（fraud）、label propagation（segmentation）、local clustering coefficient（spam）、shortest paths（route）。RDF = Subject + Predicate + Object；SPARQL。</li>
+<li><b>Column-oriented</b>：讀 3 → 1 I/O；insert 2 → 4 I/O；read-optimized vs RDBMS write-optimized。RLE：F3M2F2；Dictionary：1,2,1,3。KDB + Q，finance。</li>
+<li><b>Wide-column</b>：<code>(row, column, time) → value</code>；Big + Sparse；CQL 冇 JOIN。LSM：buffer → flush → merge &amp; compact。優：scalability、fast write、no null overhead。缺：join、read latency、eventual consistency。</li>
+<li><b>Redis</b>：RAM 快但 volatile；key-only index；Snapshot / AOF / None / Snapshot + AOF；hash table \( O(1) \)、no range queries，B-tree 唔適合。Session、leaderboard、HFT。</li>
+<li><b>Elasticsearch</b>：inverted index（word → document IDs）；ELK；Character → Tokenizer → Normalization → Stopword → Stemming（另有 Synonym）。Fuzzy search = edit distance。</li>
+<li><b>TF-IDF</b>：textbook TF = count/total，IDF = \( \log_{10}(N/\text{df}) \)；sklearn TF = count，IDF = \( \ln\frac{N+1}{\text{df}+1}+1 \)，再 L2 normalize 每個 document。</li>
+<li><b>BM25</b>：saturation、length normalization、tuneable；formula 唔使考。</li>
+<li><b>Vector</b>：chunk → embed → query vector → kNN。Cosine = \( \frac{x\cdot y}{|x||y|} \)，distance = 1 − similarity；unit vector 時 = dot product。</li>
+<li><b>kNN</b>：Brute \( O(n) \)；IVF \( O(\sqrt{n}) \)（K-means、省 RAM、FAISS）；HNSW \( O(\lg n) \)（多層、no re-training、更流行）。後兩者 worst case \( O(n) \)，只係 approximate。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w6.html">← Week 6 Distributed Database Systems</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

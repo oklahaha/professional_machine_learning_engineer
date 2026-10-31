@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 5 Logistic Regression</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m5">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 5</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 5 · Source: Lecture_5_Logistic_Regression_L02.pdf (19 slides)</p>
+<h1>Logistic Regression</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>明白 <b>Generalized linear model</b> 嘅角度：先認清 Y 係咩類型；binary Y 用 <b>Logistic regression</b>。</li>
+    <li>解釋點解 linear regression 唔適合 binary Y：左邊 probability 喺 \( [0,1] \)，右邊 \( X\beta \) 喺 \( [-\infty,\infty] \)，所以要 transform。</li>
+    <li>識用 <b>logit / logistic function</b>，由 \( \eta_{new} \) 計 \( P(y_{new}=1) \)，再用 threshold 0.5 做 classification。</li>
+    <li>比較 <b>OLS</b>（linear regression）同 <b>MLE</b>（logistic regression），明白 likelihood 嘅意思。</li>
+    <li>識睇同寫 Python：<code>smf.mnlogit</code>、<code>predict()</code>、<code>idxmax(axis=1)</code>、<code>confusion_matrix</code>。</li>
+    <li>識計 <b>Misclassification rate</b>，分清 in-sample 同 out-of-sample prediction。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>點解要 transform：\( P\in[0,1] \) 但 \( \beta_0+\beta_1X_1+\cdots+\beta_pX_p\in[-\infty,\infty] \)，兩邊 range 唔夾。</li>
+    <li>預測三步：\( \eta_{new} \) → \( P=\dfrac{e^{\eta_{new}}}{1+e^{\eta_{new}}} \) → \( P&gt;0.5 \) 即 \( \eta_{new}&gt;0 \) 就 classify 做 1（slide 10：\( \eta=13 \)，\( P\approx1 \)）。</li>
+    <li>OLS minimize sum of squared errors；categorical Y 嘅 error 唔可以用減數定義，所以 logistic regression 改為 <b>maximize likelihood（MLE）</b>。</li>
+    <li>3 個 categories → 3 個「one vs not」logistic models（Red / Blue / Green）。</li>
+    <li>Misclassification rate = 分錯數目 / 總數 = \( 1- \) 分啱比例；slide 18：\( 14/99\approx0.141 \)。評估 model 要用 <b>out-of-sample</b>（test data）。</li>
+  </ol>
+</div>
+
+<h2>1. 點解需要 Logistic regression？（slides 1–4）</h2>
+<p>Module 4 嘅 model 係：</p>
+<div class="formula">$$ Y=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p+\text{error} $$</div>
+<p>Slide 2 講明：<b>linear regression fails if Y is not continuous</b>。<mark class="k">Generalized linear regression</mark> 可以處理唔同類型嘅 Y，而本講集中講 <b>Binomial</b>，即 Logistic regression。Slide 2 嘅提醒：<b>要 predict / classify，第一步係認清 Y 屬於邊種類型</b>。</p>
+<p><b>Binomial</b>：Y 只有兩個可能值，例如 0/1、Yes/No、Healthy/Cancer、Good debt/Bad debt、Hungry/Not hungry、Rain/Not Rain。</p>
+
+<p><span class="tag exam">Exam</span>Logistic regression 嘅 target 唔係直接 predict 類別，而係 <b>model 類別嘅 probability</b>，例如 \( P(\text{Hungry}) \)。Slide 1 嘅例子：</p>
+<div class="box exam"><span class="label">⭐ 由 Probability 到 Prediction（slide 1）</span>
+<table>
+<tr><th>\( P(\text{Hungry}) \)</th><th>Prediction</th></tr>
+<tr><td>1</td><td>Hungry</td></tr>
+<tr><td>0</td><td>Not hungry</td></tr>
+<tr><td>0.2</td><td>Not hungry</td></tr>
+</table></div>
+
+<h3>1.1 Range 唔夾（slides 3–4）</h3>
+<p>Binomial data 本身係 categorical，唔可以直接寫成 \( \beta_0+\beta_1X_1+\cdots \)。改為 model「getting 1 嘅 probability」就有數字，但係 range 仍然有問題：</p>
+<div class="box exam"><span class="label">⭐ 點解 Transform is needed（slide 4）</span>
+<table>
+<tr><th>Data</th><th>Parameter</th><th>L.H.S. range</th><th>\( X\beta \)（R.H.S.）range</th></tr>
+<tr><td>Rain / No</td><td>\( P(Y=\text{Rain}) \)</td><td>\( [0,1] \)</td><td>\( [-\infty,\infty] \)</td></tr>
+</table>
+<p>如果硬寫 \( P(Y=\text{Rain})=\beta_0+\beta_1X_1+\cdots+\beta_pX_p+\text{error} \)，右邊可以計到 1.7 或者 −0.3，但 probability 一定喺 \( [0,1] \)。<b>\( X\beta \) is arbitrary, probability is restricted to \( [0,1] \)，所以要 transform。</b></p></div>
+
+<h3>1.2 多過兩個類別點算？（slide 3）</h3>
+<p><span class="tag exam">Exam</span>Binomial 只考慮 2 個 outcomes。如果要 predict \( \{\text{Red},\text{Blue},\text{Green}\} \)，slide 嘅做法係每個類別 fit 一個 model：</p>
+<table>
+<tr><th>Model</th><th>Y 嘅兩個 outcomes</th></tr>
+<tr><td>Logistic regression model 1</td><td>Red vs not Red</td></tr>
+<tr><td>Logistic regression model 2</td><td>Blue vs not Blue</td></tr>
+<tr><td>Logistic regression model 3</td><td>Green vs not Green</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>將多類別問題拆做幾條 Yes/No 問題：「係咪 Red？」「係咪 Blue？」「係咪 Green？」。k 個 categories 就要 k 個 models。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Module 4b 嘅 <b>dummy variables</b> 係處理 categorical <b>X</b>，k 個 categories 用 \( k-1 \) 個 dummies；呢度講嘅係 categorical <b>Y</b>，slide 3 嘅 3 個 categories 用 3 個 models。</p></div>
+
+<h2>2. Logit 同 Logistic function（slides 3、5、6）</h2>
+<p>Slide 3 指出 \( X\beta \) 係透過 <mark class="k">logistic function</mark> 連去 probability。Slide 6 有兩幅圖，係同一個關係嘅正反兩面：</p>
+<table>
+<tr><th></th><th>Logit function</th><th>Logistic function</th></tr>
+<tr><td>Input</td><td>\( P\in[0,1] \)</td><td>\( \text{logit}(P)\in[-\infty,\infty] \)</td></tr>
+<tr><td>Output</td><td>\( [-\infty,\infty] \)</td><td>Probability \( \in[0,1] \)</td></tr>
+<tr><td>Formula</td><td>\( \text{logit}(P)=\ln\!\left(\dfrac{P}{1-P}\right) \)</td><td>\( P=\dfrac{e^{\text{logit}(P)}}{1+e^{\text{logit}(P)}} \)</td></tr>
+<tr><td>圖形（slide 6）</td><td>P = 0.5 時穿過 0，接近 0 同 1 時急速趨向 \( \mp\infty \)</td><td>S 形曲線，由 0 慢慢升到 1，中間最斜</td></tr>
+</table>
+<p>將 \( \eta=\text{logit}(P) \) 寫出嚟，就可以反解 P：</p>
+<div class="formula">$$ \eta=\ln\frac{P}{1-P}\;\Rightarrow\; e^{\eta}=\frac{P}{1-P}\;\Rightarrow\; e^{\eta}-Pe^{\eta}=P\;\Rightarrow\; P=\frac{e^{\eta}}{1+e^{\eta}} $$</div>
+<p>幾個數值幫你感受 logit 點樣將 \( [0,1] \) 拉開：</p>
+<table>
+<tr><th>P</th><td>0.01</td><td>0.1</td><td>0.2</td><td>0.5</td><td>0.7</td><td>0.9</td><td>0.99</td></tr>
+<tr><th>\( \text{logit}(P) \)</th><td>−4.595</td><td>−2.197</td><td>−1.386</td><td>0</td><td>0.847</td><td>2.197</td><td>4.595</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>\( X\beta \) 可以係任何數字。Logistic function 就好似一個「壓縮器」，將任何數字壓入 \( (0,1) \)，所以計出嚟嘅一定係合法 probability。Slide 3 亦提到，呢個 function 喺其他 machine learning methods 都會用到。</p></div>
+
+<h2>3. 預測同分類（slides 5、10）</h2>
+<p>Logistic regression 係 <b>statistical method of obtaining \( \hat{\boldsymbol\beta} \)</b>。計到 \( \hat{\boldsymbol\beta} \) 之後，對新 data 就跟以下步驟做 classification：</p>
+<div class="box exam"><span class="label">⭐ 預測三步曲（slide 5）</span>
+<p><b>Step 1</b>：對 \( x_{new} \) 計 \( \eta_{new} \)：</p>
+<div class="formula">$$ \eta_{new}=\beta_0+\beta_1X_1^{new}+\beta_2X_2^{new}+\cdots+\beta_pX_p^{new} $$</div>
+<p><b>Step 2</b>：計 probability：</p>
+<div class="formula">$$ P(y_{new}=1)=\frac{e^{\eta_{new}}}{1+e^{\eta_{new}}} $$</div>
+<p><b>Step 3（decision rule，default threshold = 0.5）</b>：如果 \( P(y_{new}=1)&gt;0.5 \)，即 \( \eta_{new}&gt;0 \)，就 classify \( y_{new}=1 \)。</p>
+<p>例：\( P(\text{Rain}=\text{True})=0.4 \)，未過 0.5，所以 claim 聽日唔會落雨。</p></div>
+
+<p>點解 \( P&gt;0.5 \) 同 \( \eta&gt;0 \) 係同一件事？</p>
+<div class="formula">$$ \frac{e^{\eta}}{1+e^{\eta}}&gt;\frac12 \iff 2e^{\eta}&gt;1+e^{\eta} \iff e^{\eta}&gt;1 \iff \eta&gt;0 $$</div>
+
+<p><span class="tag exam">Exam</span><b>Slide 10 例題</b>：\( p=1,\ \beta_0=3,\ \beta_1=2 \)，新 data \( x=5 \)，求 \( P(Y=1) \)。</p>
+<div class="formula">$$ \eta_{new}=\beta_0+\beta_1X_1^{new}=3+2\times5=13,\qquad P(Y=1)=\frac{e^{13}}{1+e^{13}}\approx1 $$</div>
+<p>因為 \( \eta_{new}=13&gt;0 \)，所以 classify 做 \( Y=1 \)。準確啲計，\( P\approx0.999998 \)。</p>
+
+<p><b>多一題（自編，唔係 slide 內容）</b>：\( \beta_0=-2,\ \beta_1=0.5 \)。</p>
+<table>
+<tr><th>x</th><th>\( \eta \)</th><th>\( P(Y=1) \)</th><th>Classification</th></tr>
+<tr><td>2</td><td>−1</td><td>0.2689</td><td>0</td></tr>
+<tr><td>4</td><td>0</td><td>0.5000</td><td>剛好喺 threshold；slide 嘅 rule 要 \( &gt;0.5 \)，所以唔算 1</td></tr>
+<tr><td>6</td><td>1</td><td>0.7311</td><td>1</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>\( \eta \) 唔係 probability。\( \eta=13 \) 或者 \( \eta=-1 \) 都係正常數值，一定要過埋 logistic function 先得到 P。</p></div>
+
+<div class="box note"><span class="label">📎 補充（slides 冇教，唔標做考試重點）</span><p>由 \( \ln\frac{P}{1-P}=\eta \) 可知，\( X_1 \) 加 1 會令 log-odds 加 \( \beta_1 \)，即 odds 乘以 \( e^{\beta_1} \)，但 P 本身唔係加固定數值。Slide 只講到用 \( \eta \) 計 P 同做分類。</p></div>
+
+<h2>4. 點樣 fit model：OLS vs MLE（slides 7–9）</h2>
+<div class="box exam"><span class="label">⭐ Fitting 比較（slide 7）</span>
+<table>
+<tr><th></th><th>Linear regression</th><th>Logistic regression</th></tr>
+<tr><td>Method</td><td><b>Ordinary Least Squares (OLS)</b></td><td><b>Maximum Likelihood Estimation (MLE)</b></td></tr>
+<tr><td>Objective</td><td>Minimize the sum of squared errors</td><td>Maximize the likelihood</td></tr>
+<tr><td>Slide 7 圖</td><td>Size vs Weight：一條直線穿過散開嘅數據點</td><td>Is Obese / Is Not Obese vs Weight：數據點只喺兩條水平線，model 係 S 形曲線；圖中亦有幾條灰色虛線 S-curve</td></tr>
+</table></div>
+
+<h3>4.1 點解唔用 squared error？（slide 8）</h3>
+<p>Categorical Y 嘅 error 或 residual <b>唔可以用減數定義</b>：Engineering − Humanity = ???；Cloudy − Sunny = ???。所以 sum of squared errors 要換成另一樣嘢，就係 likelihood。</p>
+
+<h3>4.2 Likelihood（slide 8）</h3>
+<p>Roughly speaking，<mark class="k">likelihood</mark> 就係「觀察到你實際觀察到嘅結果」嘅 probability。Likelihood 同 probability 成正比，所以 \( L_1&gt;L_2 \) 代表 \( P_1&gt;P_2 \)。</p>
+<div class="box exam"><span class="label">⭐ Likelihood 定義（slide 8）</span>
+<div class="formula">$$ L=\prod_{t=1}^{n}P(Y_t=y_t\mid X_t) $$</div>
+<p>注意係 <b>based on actual observations</b>，將每一個 observation 嘅 probability 乘埋一齊。其中 \( \eta_t=\beta_0+\beta_1X_{t1}+\beta_2X_{t2}+\cdots+\beta_pX_{tp} \)。Statistician 就係 <b>maximize the likelihood</b> 去搵 unknown parameters。</p></div>
+<div class="box warn"><span class="label">⚠️ Slide 8 寫法要留意</span><p>Slide 寫 \( P(Y_t=y_t\mid X_t)=\dfrac{e^{\eta_t}}{1+e^{\eta_t}} \)，嚴格嚟講呢條只適用於 \( y_t=1 \)。當 \( y_t=0 \)，個 probability 應該係 \( 1-\dfrac{e^{\eta_t}}{1+e^{\eta_t}}=\dfrac{1}{1+e^{\eta_t}} \)。下面例題就係咁計。</p></div>
+
+<p><b>自編例題</b>：三個 observations \( (x,y)=(1,1),\ (-1,0),\ (2,0) \)，\( \beta_0=0 \)。邊個 \( \beta_1 \) 嘅 likelihood 較高？</p>
+<table>
+<tr><th>Observation</th><th>\( \beta_1=1 \)：\( P(Y_t=y_t) \)</th><th>\( \beta_1=0 \)：\( P(Y_t=y_t) \)</th></tr>
+<tr><td>\( x=1,\ y=1 \)</td><td>\( \eta=1 \)，\( P(Y=1)=0.7311 \)</td><td>0.5</td></tr>
+<tr><td>\( x=-1,\ y=0 \)</td><td>\( \eta=-1 \)，\( P(Y=0)=1-0.2689=0.7311 \)</td><td>0.5</td></tr>
+<tr><td>\( x=2,\ y=0 \)</td><td>\( \eta=2 \)，\( P(Y=0)=1-0.8808=0.1192 \)</td><td>0.5</td></tr>
+<tr><th>Likelihood</th><th>\( 0.7311\times0.7311\times0.1192\approx0.0637 \)</th><th>\( 0.5^3=0.125 \)</th></tr>
+</table>
+<p>喺呢兩個選擇之間，\( \beta_1=0 \) 嘅 likelihood 較高，即係佢令實際數據更加「有可能出現」，所以 MLE 會較鍾意佢。真正嘅 MLE 就係喺所有可能嘅 \( \boldsymbol\beta \) 入面搵最高嗰個。</p>
+<div class="box tip"><span class="label">💡 連繫 slide 7 嘅圖</span><p>可以將幾條灰色 S-curve 想像成候選 \( \boldsymbol\beta \)，每條都計到一個 likelihood，揀最高嗰條。</p></div>
+
+<h3>4.3 Numerical analysis（slide 9）</h3>
+<p><mark class="k">Numerical analysis</mark> 係一類方法，用重複步驟 <b>approximately</b> 搵 max / min 同解方程。Computer 加 numerical analysis 可以解好多 <b>without explicit solutions</b> 嘅難題，例如解 \( x\sin x=1 \)。Slide 列明詳細方法係 <b>Out-of-syllabus</b>，知道概念就夠。</p>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p>Module 4 嘅 OLS 有 closed form：\( \hat\beta=(X'X)^{-1}X'Y \)。Slide 9 喺 MLE 之後講 numerical analysis，就係因為 maximize 呢個 likelihood 要靠電腦反覆計算（<code>.fit()</code> 幫你做晒）。</p></div>
+
+<h2>5. South African Heart Disease data（slides 11–12）</h2>
+<p>例子嚟自 Rousseauw et al, 1983, <i>South African Medical Journal</i>。Slide 11 寫 Training data：\( n=462,\ p=10 \)。</p>
+<table>
+<tr><th>Column</th><th>意思</th></tr>
+<tr><td><code>sbp</code></td><td>Systolic 收縮壓 blood pressure（mm Hg）</td></tr>
+<tr><td><code>tobacco</code></td><td>Cumulative tobacco use（kg）</td></tr>
+<tr><td><code>ldl</code></td><td>Low-density lipoprotein cholesterol 低密度脂蛋白膽固醇</td></tr>
+<tr><td><code>adiposity</code></td><td>Adiposity 肥胖 / obesity measure</td></tr>
+<tr><td><code>famhist</code></td><td>Family history of ischemic 缺血性的 heart disease（Absent / Present，或 coded 0 / 1）</td></tr>
+<tr><td><code>typea</code></td><td>Type-A behavior score（12–84）；例如 highly competitive、stressed、impatient、perfectionist、time-pressured</td></tr>
+<tr><td><code>obesity</code></td><td>Body mass index (BMI) measure</td></tr>
+<tr><td><code>alcohol</code></td><td>Current alcohol consumption</td></tr>
+<tr><td><code>age</code></td><td>Age at onset / age in years</td></tr>
+<tr><td><code>chd</code></td><td>Coronary heart disease diagnosis：<b>response variable</b>（0 / negative 或 1 / positive）</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ \( p=10 \) 要留意</span><p>Slide 12 列出嘅 10 個 columns 已經包括 response <code>chd</code>，而 slide 13 嘅 formula 用 9 個 predictors。所以 predictors 數目係 9，slide 嘅「\( p=10 \)」應該係指 columns 總數。</p></div>
+
+<h2>6. Python：Fit model（slides 13–14）</h2>
+<p><span class="tag exam">Exam</span>Slides 用 <code>statsmodels</code> 入面嘅 <code>mnlogit</code>，formula 寫法同 Module 4 嘅 <code>smf.ols</code> 一樣，<code>Y ~ X1 + X2 + ...</code>。</p>
+<pre><code>import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+from sklearn.metrics import confusion_matrix
+
+heart = pd.read_csv("SAheart.txt", sep=' ')
+# 將 target class variable 轉做 integer codes（0, 1）
+heart['chd'] = heart['chd'].astype('category').cat.codes
+
+model = smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart).fit()
+print(model.summary())</code></pre>
+<div class="box warn"><span class="label">⚠️ Slides 嘅細節</span>
+<ul>
+<li>Slide 13 寫 package 係 “statsmodels.formulas.api”，正確名稱係 slide 14 code 用嘅 <code>statsmodels.formula.api</code>，冇 “s”。Function 要全細階寫 <code>smf.mnlogit</code>，唔係 mnLogit。</li>
+<li>Slide 14 嘅 <code>sep=' ‘</code> 收尾係彎引號，直接 copy 會 SyntaxError，上面已改做 <code>sep=' '</code>。</li>
+<li>Slides 只有 code，冇 show <code>summary()</code> 嘅 output，所以呢度冇列 SAheart 嘅結果數字。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨單元連繫</span><p><code>famhist</code> 係 categorical X。Formula 會自動轉 dummy（Module 4b 嘅 \( k-1 \) 規則），所以 output 會見到 <code>famhist[T.Present]</code>，baseline 係 Absent。<code>astype('category')</code> 就係 COM6001 pandas 同 Module 4b 用過嗰個。</p></div>
+
+<h2>7. Python：Predict（slides 15–16）</h2>
+<pre><code># predict on new data
+newdata = pd.DataFrame({
+    'const': [1],
+    'sbp': [114],
+    'tobacco': [4.08],
+    'ldl': [4.59],
+    'adiposity': [14.6],
+    'typea': [62],
+    'obesity': [23.11],
+    'alcohol': [6.72],
+    'age': [58],
+    'famhist': ['Present']
+})
+pred_probs = model.predict(newdata)      # 每個 class 一個 column
+print(pred_probs)
+pred_classes = pred_probs.idxmax(axis=1) # index of first occurrence of max
+# axis=0, return row index; axis=1, return column index
+print(pred_classes)</code></pre>
+<div class="box exam"><span class="label">⭐ 兩句 predict 要識（slide 15）</span>
+<ul>
+<li><code>model.predict(newdata)</code>：output <b>probabilities</b>，一個 row 一個 observation，一個 column 一個 class。</li>
+<li><code>pred_probs.idxmax(axis=1)</code>：每個 row 揀 probability 最大嗰個 column，output <b>predicted class</b>。兩個 classes 時，就等於 threshold 0.5。</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ 易錯位</span>
+<ul>
+<li>Slide 15 用 <code>result.predict</code>，slide 16 用 <code>model.predict</code>。兩者一樣，只係變數名唔同；跟 slide 14 就係 <code>model</code>。</li>
+<li>Formula API 會自己加 Intercept，<code>'const'</code> 呢個 column 其實用唔著，不過放咗亦唔會出錯。</li>
+<li>Binary Y 亦可以用 <code>smf.logit</code>，coefficients 同 <code>mnlogit</code> 一樣，但 <code>predict()</code> 回傳 Series，只得 \( P(Y=1) \)，<code>idxmax(axis=1)</code> 會 ValueError。Slides 用 <code>mnlogit</code>，跟住佢就得。</li>
+</ul></div>
+
+<h2>8. Misclassification rate（slides 17–19）</h2>
+<p><span class="tag exam">Exam</span>評估 classification model 嘅步驟（slide 17）：</p>
+<ol>
+<li>將 full data 分做 training data 同 testing data（unseen），例如 70% vs 30%。</li>
+<li>將 <code>mnlogit</code> apply 落 training data。</li>
+<li>扮唔知 test data 嘅 Y，apply <code>predict()</code>。</li>
+<li>將 predicted class 同 actual class 比較。</li>
+</ol>
+<p>Slide 17 特別提醒要小心 <b>in-sample prediction</b> 同 <b>out-sample prediction</b> 嘅分別：前者用嚟 fit model 嘅 data，後者係 model 未見過嘅 data。</p>
+
+<div class="box exam"><span class="label">⭐ Misclassification rate（slide 18）</span>
+<table>
+<tr><th rowspan="2">Predicted class</th><th colspan="2">Actual class</th></tr>
+<tr><th>High risk</th><th>Low risk</th></tr>
+<tr><td>High risk</td><td><b>50</b></td><td>6</td></tr>
+<tr><td>Low risk</td><td>8</td><td><b>35</b></td></tr>
+</table>
+<div class="formula">$$ \text{Misclassification}=\frac{6+8}{50+6+8+35}=\frac{14}{99}\approx0.141 $$</div>
+<div class="formula">$$ \text{Misclassification}=1-\frac{50+35}{50+6+8+35}=1-\frac{85}{99}\approx0.141 $$</div>
+<p>對角線係分啱，對角線以外係分錯。兩條 formula 結果一樣。</p></div>
+
+<pre><code># Check the out-sample misclassification rate
+heart_train = heart.iloc[0:323]
+heart_test = heart.iloc[323:]
+
+model = smf.mnlogit('chd ~ sbp+tobacco+ldl+adiposity+typea+obesity+alcohol+age+famhist', data=heart_train).fit()
+print(model.summary())
+
+predicted_class = model.predict(heart_test).idxmax(axis=1)
+actual_class = heart_test['chd']
+
+misclassification = confusion_matrix(actual_class, predicted_class)
+error_rate = 1 - np.trace(misclassification) / np.sum(misclassification)
+
+print('Out-of-sample performance:')
+print(misclassification)
+print(f'Error Rate: {error_rate}')</code></pre>
+<p>逐句拆解 slide 19：</p>
+<table>
+<tr><th>Code</th><th>意思</th></tr>
+<tr><td><code>iloc[0:323]</code> / <code>iloc[323:]</code></td><td>頭 323 個 rows 做 training，其餘 139 個 rows 做 testing，約 70% vs 30%（323/462 ≈ 69.9%）</td></tr>
+<tr><td><code>np.trace(...)</code></td><td>對角線總和，即分啱嘅數目</td></tr>
+<tr><td><code>np.sum(...)</code></td><td>所有格總和，即 test data 總數</td></tr>
+<tr><td><code>1 - trace/sum</code></td><td>就係 slide 18 第二條 formula</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ Table 方向唔同</span><p>Slide 18 嘅 table：<b>row = Predicted，column = Actual</b>。<code>sklearn</code> 嘅 <code>confusion_matrix(actual, predicted)</code>：<b>row = Actual，column = Predicted</b>。Misclassification rate 唔受影響，因為對角線一樣，但讀「邊格係邊種錯」時要小心。</p></div>
+<div class="box warn"><span class="label">⚠️ Split 方式</span><p>Slide 19 用 <code>iloc</code> 直接切頭同尾，唔係 random split。如果 data 本身有排序，train 同 test 嘅分佈就會唔同。實際做 project 時要留意呢點。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 4 用 out-of-sample <b>RMSE</b> 評估 numeric prediction；呢度 Y 係類別，所以改用 <b>misclassification rate</b>，但 train / test 嘅諗法一樣。COM6004 Classification 同樣係 predict 類別，可以將 Logistic regression 同 Decision Tree 放埋一齊比較。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 點解唔可以直接寫 \( P(Y=1)=\beta_0+\beta_1X_1+\cdots+\beta_pX_p \)？</summary><p>因為 probability 一定喺 \( [0,1] \)，但 \( X\beta \) 可以係 \( [-\infty,\infty] \) 入面任何數。所以要用 logit / logistic function transform，將兩邊 range 夾返。</p></details>
+<details class="q"><summary>Q2. \( \beta_0=-2,\ \beta_1=0.5,\ x=2 \)。求 \( \eta \)、\( P(Y=1) \) 同 predicted class。</summary><p>\( \eta=-2+0.5\times2=-1 \)；\( P=\dfrac{e^{-1}}{1+e^{-1}}\approx0.2689 \)；\( P&lt;0.5 \)（亦即 \( \eta&lt;0 \)），所以 predict \( Y=0 \)。</p></details>
+<details class="q"><summary>Q3. 同一個 model，x 要大過幾多先會 classify 做 1？</summary><p>要 \( \eta&gt;0 \)：\( -2+0.5x&gt;0 \)，即 \( x&gt;4 \)。</p></details>
+<details class="q"><summary>Q4. 證明 \( P&gt;0.5 \iff \eta&gt;0 \)。</summary><p>\( \dfrac{e^\eta}{1+e^\eta}&gt;\dfrac12\iff2e^\eta&gt;1+e^\eta\iff e^\eta&gt;1\iff\eta&gt;0 \)。</p></details>
+<details class="q"><summary>Q5. \( P=0.4 \) 嘅 \( \text{logit}(P) \) 係幾多？</summary><p>\( \ln(0.4/0.6)=\ln(0.6667)\approx-0.405 \)。係負數，同 \( P&lt;0.5 \) 一致。</p></details>
+<details class="q"><summary>Q6. Y 有 4 種顏色，跟 slide 3 嘅方法要 fit 幾多個 logistic regression models？</summary><p>4 個：每種顏色一個「該顏色 vs not 該顏色」model。</p></details>
+<details class="q"><summary>Q7. 比較 OLS 同 MLE；點解 logistic regression 唔用 OLS？</summary><p>OLS minimize sum of squared errors；MLE maximize likelihood \( \prod_{t=1}^{n}P(Y_t=y_t\mid X_t) \)。Categorical Y 嘅 error 唔可以用減數定義（Cloudy − Sunny = ???），所以 squared error 要由 likelihood 取代。</p></details>
+<details class="q"><summary>Q8. Predicted High：actual High 40、actual Low 10；Predicted Low：actual High 5、actual Low 45。求 misclassification rate。</summary><p>分錯 = 10 + 5 = 15，總數 = 100，rate = 15/100 = 0.15。亦可以用 \( 1-(40+45)/100=0.15 \)。</p></details>
+<details class="q"><summary>Q9. <code>pred_probs.idxmax(axis=1)</code> 做咩？如果係 <code>axis=0</code> 呢？</summary><p><code>axis=1</code>：每個 row 搵最大值所屬嘅 column index，即每個 observation 嘅 predicted class。<code>axis=0</code>：每個 column 搵最大值所屬嘅 row index。</p></details>
+<details class="q"><summary>Q10. Training data 嘅 error rate 好低，test data 嘅 error rate 好高，代表咩？</summary><p>Model 喺 in-sample 表現好，但 out-of-sample 差，即對 unseen data 預測能力弱，可能係 overfitting。評估應該睇 out-of-sample 嗰個數字。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Binary Y → Logistic regression，model 嘅係 probability。\( P\in[0,1] \)、\( X\beta\in[-\infty,\infty] \) → 要 transform。</li>
+<li>3 個 categories → 3 個 models：Red / not Red、Blue / not Blue、Green / not Green。</li>
+<li>\( \text{logit}(P)=\ln\frac{P}{1-P} \)（\( [0,1]\to[-\infty,\infty] \)）；\( P=\frac{e^{\eta}}{1+e^{\eta}} \)（\( [-\infty,\infty]\to[0,1] \)）。</li>
+<li>預測：\( \eta_{new}=\beta_0+\sum\beta_jX_j^{new} \) → P → \( P&gt;0.5\iff\eta_{new}&gt;0 \) → class 1。例：\( 3+2\times5=13 \)，\( P\approx1 \)。</li>
+<li>OLS：min sum of squared errors。MLE：max \( \prod_{t=1}^{n}P(Y_t=y_t\mid X_t) \)；由 numerical analysis 計（詳細方法 out-of-syllabus）。</li>
+<li>Code：<code>smf.mnlogit('y ~ x1+x2', data=df).fit()</code> → <code>.summary()</code> → <code>.predict(new)</code> → <code>.idxmax(axis=1)</code>。</li>
+<li>Misclassification = 分錯 / 總數 = \( 1-\text{trace}/\text{sum} \)；slide 18：14/99 ≈ 0.141。</li>
+<li>70 / 30 split；評估睇 out-of-sample。<code>confusion_matrix(actual, predicted)</code>：row = actual、column = predicted。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m4b.html">← Module 4b Model Building</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

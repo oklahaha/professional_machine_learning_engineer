@@ -1,0 +1,622 @@
+[
+  {
+    "question": "What does `my_data.groupby(by='type')` return when evaluated on its own?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A `DataFrameGroupBy` object holding (grouper value, sub-DataFrame) pairs",
+        "Explanation": "Correct. Nothing is computed yet; the object only holds the groups until a function is applied."
+      },
+      {
+        "label": "B",
+        "text": "A DataFrame with one row per value of `type`",
+        "Explanation": "One row per group appears only after a function such as `mean()` or `first()` is applied."
+      },
+      {
+        "label": "C",
+        "text": "A Series of group sizes",
+        "Explanation": "That is what `groupby().size()` returns, not the bare groupby call."
+      },
+      {
+        "label": "D",
+        "text": "A list of the distinct values of `type`",
+        "Explanation": "The keys are available through `.groups.keys()`, but the groupby call itself returns a groupby object."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask whether any function has been applied to the groups yet.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "`my_data` has columns `type`, `value` and `size`. Which columns does `my_data.groupby(by='type').get_group('a')` contain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Only `value` and `size`, indexed by `type`",
+        "Explanation": "That is the shape of aggregated output such as `mean()`; `get_group()` returns the raw rows."
+      },
+      {
+        "label": "B",
+        "text": "Only `type`",
+        "Explanation": "The sub-DataFrame keeps every feature, not just the grouper."
+      },
+      {
+        "label": "C",
+        "text": "`type`, `value` and `size`, for the rows where `type` is `'a'`",
+        "Explanation": "Correct. `get_group()` outputs the sub-DataFrame with all columns, including the grouper, like the mask `my_data[my_data['type']=='a']`."
+      },
+      {
+        "label": "D",
+        "text": "A single row: the first record where `type` is `'a'`",
+        "Explanation": "That describes `first()`; `get_group()` returns every matching row."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare it with filtering the DataFrame by a boolean mask.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Group `a` has three rows, and one of its `value` entries is NaN. What do `groupby('type').count()` and `groupby('type').size()` report for group `a`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`count()`: 3 for `value`; `size()`: 2",
+        "Explanation": "This has the two methods reversed: `count()` is the one that skips NaN."
+      },
+      {
+        "label": "B",
+        "text": "`count()`: 2 for `value`; `size()`: 3",
+        "Explanation": "Correct. `count()` counts non-null values column by column, while `size()` counts all rows in the group."
+      },
+      {
+        "label": "C",
+        "text": "Both report 2",
+        "Explanation": "`size()` ignores missing values entirely and counts the rows."
+      },
+      {
+        "label": "D",
+        "text": "Both report 3",
+        "Explanation": "`count()` excludes the NaN, so its `value` column shows 2."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One of the methods only counts non-missing values.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Which result type does each method return on a groupby object?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`count()` returns a Series; `size()` returns a DataFrame",
+        "Explanation": "This is reversed."
+      },
+      {
+        "label": "B",
+        "text": "Both return a Series",
+        "Explanation": "`count()` reports a count for every non-grouper column, so it needs a DataFrame."
+      },
+      {
+        "label": "C",
+        "text": "Both return a DataFrame",
+        "Explanation": "`size()` gives a single number per group, so it is a Series."
+      },
+      {
+        "label": "D",
+        "text": "`count()` returns a DataFrame; `size()` returns a Series",
+        "Explanation": "Correct. `count()` is per column, giving a DataFrame; `size()` gives one overall size per group, a Series."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about whether the method reports one number per group or one per column per group.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Running `air_quality[['date_time','year']].groupby(by='year').first()` shows `2014-01-01 01:00:00` for 2014. What does this suggest?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The midnight reading of 1 January 2014 is missing",
+        "Explanation": "Correct. Hourly data should start at `00:00`, so the first record of the group exposes a missing entry."
+      },
+      {
+        "label": "B",
+        "text": "The dataset is sorted in descending order",
+        "Explanation": "Every other year starts at `00:00` on 1 January, so the order is ascending."
+      },
+      {
+        "label": "C",
+        "text": "`first()` skips the first row of each group",
+        "Explanation": "`first()` returns the first record of each group; it does not skip anything."
+      },
+      {
+        "label": "D",
+        "text": "2014 is the last year in the dataset",
+        "Explanation": "The year grouper also shows 2015–2017, and `last()` would be the method for the end of a group."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "What should the first hourly timestamp of a year be?",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Why does `air_quality[['PM2.5']].groupby(by='month').mean()` fail?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`mean()` cannot be applied after `groupby()`",
+        "Explanation": "`groupby().mean()` is one of the most common patterns in the lecture."
+      },
+      {
+        "label": "B",
+        "text": "`PM2.5` contains a dot, which `groupby()` does not accept",
+        "Explanation": "Column names with dots work fine; the lecture groups `PM2.5` many times."
+      },
+      {
+        "label": "C",
+        "text": "The caller DataFrame does not contain the grouper column `month`",
+        "Explanation": "Correct. The grouper must be in the caller DataFrame, plus at least one other column to apply the function to."
+      },
+      {
+        "label": "D",
+        "text": "`by=` must be given a list, not a string",
+        "Explanation": "A single column name as a string is valid for `by=`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Check what columns the selected DataFrame actually holds.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "You want the mean `TEMP` per `quarter`. Which statement does the lecture show to be both fast and short?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`air_quality.groupby(by='quarter').mean(numeric_only=True)['TEMP']`",
+        "Explanation": "This groups, averages every column, then selects `TEMP`. It was the slowest, about 6 ms."
+      },
+      {
+        "label": "B",
+        "text": "`air_quality[['TEMP','quarter']].groupby(by='quarter').mean()`",
+        "Explanation": "Selecting first was quicker (about 1.6 ms) but needs longer code."
+      },
+      {
+        "label": "C",
+        "text": "`air_quality['TEMP'].mean()`",
+        "Explanation": "This gives one overall mean with no grouping by quarter."
+      },
+      {
+        "label": "D",
+        "text": "`air_quality.groupby(by='quarter')['TEMP'].mean()`",
+        "Explanation": "Correct. Group → select → function averaged only `TEMP` and ran in under 1 ms."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Avoid computing the mean of columns you will throw away.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Why is `df.groupby('quarter').mean(numeric_only=True)['TEMP']` slower than `df.groupby('quarter')['TEMP'].mean()`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Indexing with `['TEMP']` copies the whole DataFrame",
+        "Explanation": "The cost is in the aggregation, not in selecting one column from a small result."
+      },
+      {
+        "label": "B",
+        "text": "It computes the mean of every numeric column for every group before keeping only `TEMP`",
+        "Explanation": "Correct. The function runs on the full table and most of the work is discarded by the final selection."
+      },
+      {
+        "label": "C",
+        "text": "`numeric_only=True` converts every column to float first",
+        "Explanation": "The flag skips non-numeric columns; it is not what makes this order slow."
+      },
+      {
+        "label": "D",
+        "text": "Groupby objects must be sorted before `mean()` is called",
+        "Explanation": "Both statements group the same way; only the order of selection and function differs."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Count how many columns get averaged in each version.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "With `def max_min(col): return col.max() - col.min()`, which statement gives the span of `PM2.5` and `PM10` within each quarter?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`air_quality[['PM2.5','PM10','quarter']].groupby(by='quarter').agg(max_min)`",
+        "Explanation": "Correct. `agg()` applies the custom function to each non-grouper column within each group."
+      },
+      {
+        "label": "B",
+        "text": "`air_quality[['PM2.5','PM10']].agg(max_min)`",
+        "Explanation": "This gives the span over the whole dataset, with no grouping by quarter."
+      },
+      {
+        "label": "C",
+        "text": "`air_quality.groupby(by='quarter').max_min()`",
+        "Explanation": "A function you define is not a method of the groupby object; it has to be passed to `agg()`."
+      },
+      {
+        "label": "D",
+        "text": "`air_quality[['PM2.5','PM10','quarter']].groupby(by='quarter').agg('max_min')`",
+        "Explanation": "Quoted names are looked up as built-in functions; your own function is passed bare."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Custom functions are handed to a method rather than called on the groupby object.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Which call applies `mean` and `max` to `TEMP` but only `mean` to `PM2.5` after grouping by `quarter`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.groupby('quarter').agg(['mean', 'max'])`",
+        "Explanation": "A list applies the same functions to every non-grouper column, so `PM2.5` would also get `max`."
+      },
+      {
+        "label": "B",
+        "text": "`df.groupby('quarter').mean().max()`",
+        "Explanation": "This chains two whole-table operations; it does not map functions to particular columns."
+      },
+      {
+        "label": "C",
+        "text": "`df.groupby('quarter').agg({'TEMP': ['mean', 'max'], 'PM2.5': 'mean'})`",
+        "Explanation": "Correct. A dictionary maps each column to its own function or list of functions."
+      },
+      {
+        "label": "D",
+        "text": "`df.groupby(['quarter','TEMP','PM2.5']).agg('mean')`",
+        "Explanation": "This makes `TEMP` and `PM2.5` groupers instead of aggregating them."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "You need a different set of functions per column.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "In `df.groupby(by=['quarter','TEMP_category']).mean()`, how are the groups arranged?",
+    "options": [
+      {
+        "label": "A",
+        "text": "By `TEMP_category` first, then by `quarter` within each category",
+        "Explanation": "This is the order you get if you swap the two names in the list."
+      },
+      {
+        "label": "B",
+        "text": "By `quarter` first, then by `TEMP_category` within each quarter",
+        "Explanation": "Correct. The order of the groupers in `by=` defines the grouping hierarchy."
+      },
+      {
+        "label": "C",
+        "text": "As a pivot table with `TEMP_category` in the columns",
+        "Explanation": "Groupby always shows the groups in the index; spreading groups into columns needs `pivot_table()`."
+      },
+      {
+        "label": "D",
+        "text": "Independently: one table per grouper",
+        "Explanation": "Multi-level groupby forms groups from combinations of both groupers, not separate tables."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The list order matters.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Which statement produces mean `PM2.5` and total `RAIN` for every `quarter` and `TEMP_category` combination?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`df.groupby(by=['quarter','TEMP_category'])[['PM2.5','RAIN']].agg(['mean','sum'])`",
+        "Explanation": "A list gives both `mean` and `sum` to both columns, rather than one function each."
+      },
+      {
+        "label": "B",
+        "text": "`df.groupby(by='quarter').agg({'PM2.5':'mean','RAIN':'sum','TEMP_category':'first'})`",
+        "Explanation": "This groups by quarter only and treats `TEMP_category` as a value to aggregate."
+      },
+      {
+        "label": "C",
+        "text": "`df.pivot_table(values=['PM2.5','RAIN'], index='quarter', columns='TEMP_category')`",
+        "Explanation": "This spreads the categories across columns and uses the default `mean` for `RAIN`, not the sum."
+      },
+      {
+        "label": "D",
+        "text": "`df.groupby(by=['quarter','TEMP_category'])[['PM2.5','RAIN']].agg({'PM2.5':'mean','RAIN':'sum'})`",
+        "Explanation": "Correct. Two groupers build the hierarchy, and the dictionary gives each column its own function."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "You need two groupers and a different function per column.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "What is the main thing `pivot_table()` lets you do that a groupby result does not?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Show some groupers along the columns as well as the index",
+        "Explanation": "Correct. Groupby always shows the groups in the index only; a pivot table aggregates over keys on both axes."
+      },
+      {
+        "label": "B",
+        "text": "Apply functions other than the mean",
+        "Explanation": "Both tools accept other functions, through `agg()` or `aggfunc`."
+      },
+      {
+        "label": "C",
+        "text": "Group by more than one column",
+        "Explanation": "Multi-level groupby already does that by passing a list to `by=`."
+      },
+      {
+        "label": "D",
+        "text": "Change the original DataFrame in place",
+        "Explanation": "Neither tool modifies the original data; both return a new table."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about where the groups appear in a groupby result.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Which call shows the mean `score` with `sex` as rows and `internet` as columns?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pd.pivot_table(student, values='sex', index='score', columns='internet')`",
+        "Explanation": "This swaps the roles: `sex` would be averaged and `score` would become the row labels."
+      },
+      {
+        "label": "B",
+        "text": "`pd.pivot_table(student, values='score', index='sex', columns='internet')`",
+        "Explanation": "Correct. `values` is aggregated, `index` sets the rows, `columns` sets the columns, and `mean` is the default."
+      },
+      {
+        "label": "C",
+        "text": "`student.groupby(by='sex')['internet'].mean()`",
+        "Explanation": "This tries to average the `internet` column and puts no group in the columns."
+      },
+      {
+        "label": "D",
+        "text": "`pd.pivot_table(student, values='score', index='internet', columns='sex', aggfunc='sum')`",
+        "Explanation": "The axes are swapped and the function is a sum, not the mean."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Match each column to the parameter that controls its role.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "A pivot table of `score` by `sex` and `internet` shows 10.141176 for (F, yes). Which expression reproduces this single cell?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`student[student['sex']=='F']['score'].mean()`",
+        "Explanation": "This averages all female students, ignoring the `internet` condition."
+      },
+      {
+        "label": "B",
+        "text": "`student[(student['sex']=='F') | (student['internet']=='yes')]['score'].mean()`",
+        "Explanation": "`|` keeps rows matching either condition, which is far more students than the cell covers."
+      },
+      {
+        "label": "C",
+        "text": "`student[(student['sex']=='F') & (student['internet']=='yes')]['score'].mean()`",
+        "Explanation": "Correct. A cell is the `aggfunc` applied to the rows that match both the row and the column group."
+      },
+      {
+        "label": "D",
+        "text": "`student['score'].mean()`",
+        "Explanation": "This is the overall mean, the bottom-right value of a table with `margins=True`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "A cell belongs to one row group and one column group at the same time.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "A multi-level pivot table of `score` shows NaN in some cells. What does that mean, and which parameter replaces it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The `score` column contains missing values; use `dropna=True`",
+        "Explanation": "The NaN appears because a combination has no rows at all, not because of missing scores."
+      },
+      {
+        "label": "B",
+        "text": "The aggregation failed; switch `aggfunc` to `'sum'`",
+        "Explanation": "Nothing failed: there is simply nothing to aggregate for that combination."
+      },
+      {
+        "label": "C",
+        "text": "The table is too wide to show; use `margins=True`",
+        "Explanation": "`margins=True` adds overall totals; it does not fill empty cells."
+      },
+      {
+        "label": "D",
+        "text": "Some group combinations have no samples; use `fill_value`, e.g. `fill_value=-999`",
+        "Explanation": "Correct. Empty combinations show NaN, and `fill_value` sets what appears instead."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider which combinations of four study times and two family sizes may have no students.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "What does `margins=True` add to `pd.pivot_table(student, index='familysize', columns='sex', values='score')`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A row and a column named `All` holding the overall mean for each row and column",
+        "Explanation": "Correct. Margins add overall statistics at the edges; `margins_name` renames `All`."
+      },
+      {
+        "label": "B",
+        "text": "Blank padding between the cells",
+        "Explanation": "The parameter has nothing to do with spacing."
+      },
+      {
+        "label": "C",
+        "text": "A column counting the rows in each group",
+        "Explanation": "The margins use the same `aggfunc` as the table, which is the mean here, not a count."
+      },
+      {
+        "label": "D",
+        "text": "A second level of grouping by `margins`",
+        "Explanation": "It adds no grouper; it summarises the existing ones."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The name of the default margin label is a clue.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "You need a pivot table with `age` min and max and the `score` span per `studytime` and `sex`. Which `aggfunc` value does it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`aggfunc=['min', 'max', lambda s: s.max() - s.min()]`",
+        "Explanation": "A list applies all three functions to both `age` and `score`."
+      },
+      {
+        "label": "B",
+        "text": "`aggfunc='min'` together with `margins=True`",
+        "Explanation": "This gives only the minimum, plus overall totals."
+      },
+      {
+        "label": "C",
+        "text": "`aggfunc={'age': ['min', 'max'], 'score': lambda s: s.max() - s.min()}`",
+        "Explanation": "Correct. A dictionary maps each value column to its own function(s); the lambda column is labelled `<lambda>`."
+      },
+      {
+        "label": "D",
+        "text": "`aggfunc=max_min(['age','score'])`",
+        "Explanation": "This calls the function immediately on a list of names instead of passing a function to apply."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Different columns need different functions.",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Why does `df.groupby(['station','quarter'])[['PM2.5','wd']].agg({'PM2.5':'mean','wd':'mode'})` fail?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`wd` holds text, and text cannot be grouped",
+        "Explanation": "Grouping is by `station` and `quarter`; `wd` is a value column, and text values can be aggregated by suitable functions."
+      },
+      {
+        "label": "B",
+        "text": "`mode` returns a Series, possibly with several values, not a single aggregated value",
+        "Explanation": "Correct. Aggregation needs one value per group; `pd.Series.mode` or `lambda s: s.mode()[0]` provides that."
+      },
+      {
+        "label": "C",
+        "text": "A dictionary in `agg()` may contain only one key",
+        "Explanation": "The lecture uses dictionaries with several keys throughout."
+      },
+      {
+        "label": "D",
+        "text": "`mean` and `mode` cannot be used in the same call",
+        "Explanation": "Mixing functions per column is exactly what the dictionary form is for; the issue is the shape `mode` returns."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "What does `s.mode()` return when two values are equally common?",
+    "course": "COM6001",
+    "week": "10"
+  },
+  {
+    "question": "Which description best fits semi-structured data such as JSON or XML?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A rigid, predefined schema with consistent rows and columns",
+        "Explanation": "That describes structured data such as SQL tables and CSV files."
+      },
+      {
+        "label": "B",
+        "text": "No organised schema at all, like images or audio",
+        "Explanation": "That describes unstructured data."
+      },
+      {
+        "label": "C",
+        "text": "Binary data that can be read only with a database engine",
+        "Explanation": "JSON and XML are plain text, readable by people and by ordinary parsers."
+      },
+      {
+        "label": "D",
+        "text": "A flexible, self-describing schema embedded in the data, often hierarchical",
+        "Explanation": "Correct. Tags or keys describe the values, and records may differ in structure."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Where does the schema live in a JSON file?",
+    "course": "COM6001",
+    "week": "10"
+  }
+]

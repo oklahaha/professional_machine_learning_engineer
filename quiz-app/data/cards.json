@@ -3540,6 +3540,566 @@
     "deck": "COM6001_Lecture_9"
   },
   {
+    "id": "cf9f8cb7c138",
+    "front": "What are the three steps of a groupby operation?",
+    "back": "Split the data into groups by some criteria (a categorical grouper), apply a function to each group independently, then combine the results into one data structure.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "243cf4985e56",
+    "front": "Which EDA techniques does Lecture 10 add to summary statistics, sampling and correlations?",
+    "back": "Groupby and pivot tables; visualisation follows in later lessons.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "11cc665448ba",
+    "front": "What kind of column makes a good grouper for `groupby()`?",
+    "back": "A categorical one, such as `type`, `quarter` or `station`, whose values define the groups.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "516acfd94790",
+    "front": "What does `df.groupby(by='type')` return on its own?",
+    "back": "A `DataFrameGroupBy` object, not a table: a collection of tuples of (grouper value, sub-DataFrame).",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "7bbdadaa54d1",
+    "front": "What does `list(my_data.groupby(by='type'))[0]` give you?",
+    "back": "The first (grouper value, DataFrame) tuple, e.g. `('a', <the rows where type is 'a'>)`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "543db5164433",
+    "front": "What does `df.groupby(by='type').get_group('a')` return?",
+    "back": "The sub-DataFrame of rows where `type` is `'a'`, with all columns, including the grouper column.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "66916be9b968",
+    "front": "Write a boolean-mask equivalent of `my_data.groupby(by='type').get_group('a')`.",
+    "back": "`my_data[my_data['type']=='a']`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "df62cbe3468a",
+    "front": "How do you list the group keys of a groupby object?",
+    "back": "`df.groupby(by='type').groups.keys()`, which returns e.g. `dict_keys(['a', 'b'])`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "f39e9b84f54c",
+    "front": "What do `groupby().first()` and `groupby().last()` return?",
+    "back": "The first or last record of each group, one row per group, with the grouper as the index.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "edeb6498a88d",
+    "front": "Why group air-quality data by `year` and call `first()` on `date_time`?",
+    "back": "To spot missing or inconsistent data: 2014's first entry was `2014-01-01 01:00:00`, so the midnight reading was missing.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "4e47cc52189f",
+    "front": "What did `groupby(by='year').last()` reveal about 2017 in the air-quality data?",
+    "back": "The data ends at `2017-02-28 23:00:00`, so 2017 is only a partial year.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "e3ac0593fd6b",
+    "front": "What is the difference between `groupby().count()` and `groupby().size()`?",
+    "back": "`count()` counts non-null values per column (a DataFrame); `size()` counts all rows per group regardless of NaN (a Series).",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "8894054d5e86",
+    "front": "Group `a` has 3 rows and one `value` is NaN. What do `count()` and `size()` report for it?",
+    "back": "`count()` gives 2 in the `value` column (3 in `size`); `size()` gives 3.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "fd1ec5636e70",
+    "front": "When you call `df.groupby(by='type').mean()`, what happens to the `type` column?",
+    "back": "It is excluded from the computed columns and becomes the index; the function is applied to every non-grouper column.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "daabef3eab17",
+    "front": "Why add `numeric_only=True` to `air_quality.groupby(by='month').mean()`?",
+    "back": "So that the mean is computed only over numeric columns and non-numeric ones such as `wd` or `station` are skipped.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "482c2422b1e7",
+    "front": "Why does `air_quality[['PM2.5']].groupby(by='month').mean()` fail?",
+    "back": "The caller DataFrame must include the grouper column (`month`), plus at least one other column to apply the function to.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "dd318edd4e1f",
+    "front": "What are the three steps of a typical groupby query, and do they have a fixed order?",
+    "back": "Group, function and selection; they can be ordered differently to reach the same result, but the order affects speed.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "c7072f5502a6",
+    "front": "Rank these by speed: `df.groupby('quarter').mean()['TEMP']`, `df[['TEMP','quarter']].groupby('quarter').mean()`, `df.groupby('quarter')['TEMP'].mean()`.",
+    "back": "Fastest: group → select → function (~1 ms). Then select → group → function (~1.6 ms). Slowest: group → function → select (~6 ms).",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "843df9d8a0a9",
+    "front": "Why is `df.groupby('quarter').mean(numeric_only=True)['TEMP']` the slowest order?",
+    "back": "It computes the mean of every column for every group and only then throws all but `TEMP` away.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "8ee0871d37ed",
+    "front": "Which groupby order does the lecture call both fast and short?",
+    "back": "Group → selection → function: `air_quality.groupby(by='quarter')['TEMP'].mean()`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "df93f923e736",
+    "front": "How do you apply a custom function to each group?",
+    "back": "Pass it to `agg()`: `df.groupby(by='quarter').agg(max_min)`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "76a33100aa04",
+    "front": "Define the lecture's `max_min` function.",
+    "back": "`def max_min(col): return col.max() - col.min()`, the span (range) of a column.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "eb50f6c65355",
+    "front": "Write a lambda version of `max_min` for `groupby().agg()`.",
+    "back": "`df.groupby(by='quarter').agg(lambda col: col.max() - col.min())`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "20ecafef37da",
+    "front": "How do you apply the same list of functions to every non-grouper column?",
+    "back": "Pass a list to `agg()`: `df.groupby('quarter').agg(['describe', max_min])`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "7c88187cb370",
+    "front": "How do you apply different functions to different columns after a groupby?",
+    "back": "Pass a dictionary to `agg()`: `df.groupby('quarter').agg({'TEMP': ['mean', 'max'], 'PM2.5': 'mean'})`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "0a7d21504114",
+    "front": "How do you rename the columns produced by `groupby().agg()`?",
+    "back": "Chain `.rename(columns={'TEMP': 'Temp mean max', 'PM2.5': 'PM2.5 Mean'})`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "8835387561d7",
+    "front": "What does a trailing backslash `\\` do in a long pandas chain?",
+    "back": "It continues the statement on the next line, so a chain of `groupby`, `agg` and `rename` can be laid out one step per line.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "26e3f8f9349f",
+    "front": "How do you group by more than one criterion?",
+    "back": "Pass a list to `by=`: `df.groupby(by=['quarter','TEMP_category'])`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "2e4340a63f18",
+    "front": "What does the order of groupers in `by=['quarter','TEMP_category']` decide?",
+    "back": "The grouping hierarchy: data is grouped by `quarter` first, then by `TEMP_category` within each quarter. Swapping them swaps the hierarchy.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "5d0c4d3cc19d",
+    "front": "Group by `quarter` and `TEMP_category`, showing mean `PM2.5` and total `RAIN`.",
+    "back": "`df.groupby(by=['quarter','TEMP_category'])[['PM2.5','RAIN']].agg({'PM2.5':'mean','RAIN':'sum'})`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "443374969970",
+    "front": "What can a pivot table do that a groupby result cannot?",
+    "back": "Show groups along the columns as well as the index; groupby always puts the groups in the index only.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "87990951d967",
+    "front": "What are the four key parameters of `pivot_table()`?",
+    "back": "`values` (columns to aggregate), `index` (groupers shown as rows), `columns` (groupers shown as columns) and `aggfunc` (the function).",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "adc1188c39ab",
+    "front": "What is the default `aggfunc` of `pivot_table()`?",
+    "back": "`'mean'`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "0637ef5dac48",
+    "front": "What are the two ways to call a pivot table in pandas?",
+    "back": "`pd.pivot_table(df, values=…, index=…, columns=…)` or the method `df.pivot_table(values=…, index=…, columns=…)`; they give the same result.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "6914cb6bd349",
+    "front": "Write a pivot table of mean `score` with `sex` as rows and `internet` as columns.",
+    "back": "`pd.pivot_table(student, values='score', index='sex', columns='internet')`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "35cfaac07bf2",
+    "front": "Write a boolean-mask expression that checks one cell of the `sex` × `internet` score pivot table (F, yes).",
+    "back": "`student[(student['sex']=='F') & (student['internet']=='yes')]['score'].mean()`",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "0eecff158ef3",
+    "front": "How do you build a multi-level pivot table?",
+    "back": "Pass lists to `index` and/or `columns`, e.g. `index=['sex','internet']`, `columns=['studytime','familysize']`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "f02b675a63ce",
+    "front": "Why can a multi-level pivot table contain NaN, and how do you replace it?",
+    "back": "Some combinations of groups have no samples. Use `fill_value=`, e.g. `fill_value=-999`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "897fc7b633c6",
+    "front": "What does `margins=True` add to a pivot table?",
+    "back": "An extra row and column (named `All` by default) holding the overall statistic for each row and column.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "114968886440",
+    "front": "How do you rename the `All` margin of a pivot table?",
+    "back": "Set `margins_name`, e.g. `margins_name='Overall'`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "1a440d31678e",
+    "front": "How do you apply different functions to different value columns in `pivot_table()`?",
+    "back": "Pass a dictionary to `aggfunc`, e.g. `aggfunc={'age': ['min','max'], 'score': lambda s: s.max() - s.min()}`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "9d51f3f94d71",
+    "front": "What column label does a lambda get in a `pivot_table()` or `agg()` result?",
+    "back": "`<lambda>`, since the function has no name.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "f68242dd9e77",
+    "front": "Why does `agg({'PM2.5': 'mean', 'wd': 'mode'})` fail after a groupby?",
+    "back": "`mode` returns a Series, possibly with several values, not a single value, so it is not compatible with aggregation.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "c76b057c9941",
+    "front": "How do you get the most frequent value of a column inside `groupby().agg()`?",
+    "back": "Use `pd.Series.mode`, or a lambda that returns the first mode: `lambda s: s.mode()[0]`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "02dca66a8fc1",
+    "front": "How did the lecture reduce `wd` to a primary wind direction?",
+    "back": "`air_quality['wd'].map(lambda wd: wd[0])` keeps only the first letter, e.g. `NNE` → `N`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "144dce256914",
+    "front": "Why visualise data after building groupby and pivot tables?",
+    "back": "Patterns and relationships are hard to see in raw tables; a heatmap or bar chart makes trends, outliers and relationships stand out.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "be5a762b2215",
+    "front": "How does semi-structured data differ from structured and unstructured data?",
+    "back": "Structured has a rigid, predefined schema (SQL, CSV, Excel); unstructured has no organised schema (text, images, audio, video); semi-structured sits between them.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "92eeca9bfb8a",
+    "front": "Why are XML and JSON called semi-structured?",
+    "back": "Their tags or keys describe the data, and different records may have different structures, e.g. one student with `grades` and another with `attendance`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "edb189f330df",
+    "front": "When would you choose XML over JSON or CSV?",
+    "back": "When you need strong schema validation (`.xsd` files), document-oriented data, standardised enterprise data exchange, or rich metadata and namespaces.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "ee364c21a913",
+    "front": "What is an `.xsd` file for?",
+    "back": "An XML Schema Definition: it checks that an XML file conforms, and shows all the tags and the tree structure.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "92a200d7348a",
+    "front": "When would you choose JSON?",
+    "back": "Web APIs and web services, application configuration files, mobile apps and real-time data exchange.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "4aeed1855c99",
+    "front": "When would you choose CSV?",
+    "back": "Simple tabular or spreadsheet data, quick analysis and prototyping, migrating data between systems, and data non-technical users must view or edit.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "3a992a08965b",
+    "front": "Which Python module parses XML in the lecture, and how do you get the root?",
+    "back": "`xml.etree.ElementTree as ET`; `tree = ET.parse(file)` then `root = tree.getroot()`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "213fb2793660",
+    "front": "In ElementTree, how do you find child elements and read their attributes and text?",
+    "back": "`root.findall('country')` finds children; `country.get('name')` reads an attribute; `country.find('gdppc').text` reads a child's text.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "e5a24a3d7c6a",
+    "front": "How did the lecture call a JSON web API and parse the response?",
+    "back": "`requests.get(url, params=params, headers=headers)`, then `response.raise_for_status()` and `response.json()`.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
+    "id": "9b6be60620f5",
+    "front": "Why does the Nominatim request send a `User-Agent` header?",
+    "back": "Nominatim's usage policy requires one, identifying the application.",
+    "course": "COM6001",
+    "unit": "Lecture_10",
+    "topic": "",
+    "tag": "COM6001::Lecture_10",
+    "deck": "COM6001_Lecture_10"
+  },
+  {
     "id": "7e4e6b9457df",
     "front": "What is the primary write inefficiency associated with file-based data management?",
     "back": "The entire file must be re-written even when making a tiny update.",

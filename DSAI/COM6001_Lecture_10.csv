@@ -1,0 +1,56 @@
+What are the three steps of a groupby operation?,"Split the data into groups by some criteria (a categorical grouper), apply a function to each group independently, then combine the results into one data structure."
+"Which EDA techniques does Lecture 10 add to summary statistics, sampling and correlations?",Groupby and pivot tables; visualisation follows in later lessons.
+What kind of column makes a good grouper for `groupby()`?,"A categorical one, such as `type`, `quarter` or `station`, whose values define the groups."
+What does `df.groupby(by='type')` return on its own?,"A `DataFrameGroupBy` object, not a table: a collection of tuples of (grouper value, sub-DataFrame)."
+What does `list(my_data.groupby(by='type'))[0]` give you?,"The first (grouper value, DataFrame) tuple, e.g. `('a', <the rows where type is 'a'>)`."
+What does `df.groupby(by='type').get_group('a')` return?,"The sub-DataFrame of rows where `type` is `'a'`, with all columns, including the grouper column."
+Write a boolean-mask equivalent of `my_data.groupby(by='type').get_group('a')`.,`my_data[my_data['type']=='a']`
+How do you list the group keys of a groupby object?,"`df.groupby(by='type').groups.keys()`, which returns e.g. `dict_keys(['a', 'b'])`."
+What do `groupby().first()` and `groupby().last()` return?,"The first or last record of each group, one row per group, with the grouper as the index."
+Why group air-quality data by `year` and call `first()` on `date_time`?,"To spot missing or inconsistent data: 2014's first entry was `2014-01-01 01:00:00`, so the midnight reading was missing."
+What did `groupby(by='year').last()` reveal about 2017 in the air-quality data?,"The data ends at `2017-02-28 23:00:00`, so 2017 is only a partial year."
+What is the difference between `groupby().count()` and `groupby().size()`?,`count()` counts non-null values per column (a DataFrame); `size()` counts all rows per group regardless of NaN (a Series).
+Group `a` has 3 rows and one `value` is NaN. What do `count()` and `size()` report for it?,`count()` gives 2 in the `value` column (3 in `size`); `size()` gives 3.
+"When you call `df.groupby(by='type').mean()`, what happens to the `type` column?",It is excluded from the computed columns and becomes the index; the function is applied to every non-grouper column.
+Why add `numeric_only=True` to `air_quality.groupby(by='month').mean()`?,So that the mean is computed only over numeric columns and non-numeric ones such as `wd` or `station` are skipped.
+Why does `air_quality[['PM2.5']].groupby(by='month').mean()` fail?,"The caller DataFrame must include the grouper column (`month`), plus at least one other column to apply the function to."
+"What are the three steps of a typical groupby query, and do they have a fixed order?","Group, function and selection; they can be ordered differently to reach the same result, but the order affects speed."
+"Rank these by speed: `df.groupby('quarter').mean()['TEMP']`, `df[['TEMP','quarter']].groupby('quarter').mean()`, `df.groupby('quarter')['TEMP'].mean()`.",Fastest: group → select → function (~1 ms). Then select → group → function (~1.6 ms). Slowest: group → function → select (~6 ms).
+Why is `df.groupby('quarter').mean(numeric_only=True)['TEMP']` the slowest order?,It computes the mean of every column for every group and only then throws all but `TEMP` away.
+Which groupby order does the lecture call both fast and short?,Group → selection → function: `air_quality.groupby(by='quarter')['TEMP'].mean()`.
+How do you apply a custom function to each group?,Pass it to `agg()`: `df.groupby(by='quarter').agg(max_min)`.
+Define the lecture's `max_min` function.,"`def max_min(col): return col.max() - col.min()`, the span (range) of a column."
+Write a lambda version of `max_min` for `groupby().agg()`.,`df.groupby(by='quarter').agg(lambda col: col.max() - col.min())`
+How do you apply the same list of functions to every non-grouper column?,"Pass a list to `agg()`: `df.groupby('quarter').agg(['describe', max_min])`."
+How do you apply different functions to different columns after a groupby?,"Pass a dictionary to `agg()`: `df.groupby('quarter').agg({'TEMP': ['mean', 'max'], 'PM2.5': 'mean'})`."
+How do you rename the columns produced by `groupby().agg()`?,"Chain `.rename(columns={'TEMP': 'Temp mean max', 'PM2.5': 'PM2.5 Mean'})`."
+What does a trailing backslash `\` do in a long pandas chain?,"It continues the statement on the next line, so a chain of `groupby`, `agg` and `rename` can be laid out one step per line."
+How do you group by more than one criterion?,"Pass a list to `by=`: `df.groupby(by=['quarter','TEMP_category'])`."
+"What does the order of groupers in `by=['quarter','TEMP_category']` decide?","The grouping hierarchy: data is grouped by `quarter` first, then by `TEMP_category` within each quarter. Swapping them swaps the hierarchy."
+"Group by `quarter` and `TEMP_category`, showing mean `PM2.5` and total `RAIN`.","`df.groupby(by=['quarter','TEMP_category'])[['PM2.5','RAIN']].agg({'PM2.5':'mean','RAIN':'sum'})`"
+What can a pivot table do that a groupby result cannot?,Show groups along the columns as well as the index; groupby always puts the groups in the index only.
+What are the four key parameters of `pivot_table()`?,"`values` (columns to aggregate), `index` (groupers shown as rows), `columns` (groupers shown as columns) and `aggfunc` (the function)."
+What is the default `aggfunc` of `pivot_table()`?,`'mean'`
+What are the two ways to call a pivot table in pandas?,"`pd.pivot_table(df, values=…, index=…, columns=…)` or the method `df.pivot_table(values=…, index=…, columns=…)`; they give the same result."
+Write a pivot table of mean `score` with `sex` as rows and `internet` as columns.,"`pd.pivot_table(student, values='score', index='sex', columns='internet')`"
+"Write a boolean-mask expression that checks one cell of the `sex` × `internet` score pivot table (F, yes).",`student[(student['sex']=='F') & (student['internet']=='yes')]['score'].mean()`
+How do you build a multi-level pivot table?,"Pass lists to `index` and/or `columns`, e.g. `index=['sex','internet']`, `columns=['studytime','familysize']`."
+"Why can a multi-level pivot table contain NaN, and how do you replace it?","Some combinations of groups have no samples. Use `fill_value=`, e.g. `fill_value=-999`."
+What does `margins=True` add to a pivot table?,An extra row and column (named `All` by default) holding the overall statistic for each row and column.
+How do you rename the `All` margin of a pivot table?,"Set `margins_name`, e.g. `margins_name='Overall'`."
+How do you apply different functions to different value columns in `pivot_table()`?,"Pass a dictionary to `aggfunc`, e.g. `aggfunc={'age': ['min','max'], 'score': lambda s: s.max() - s.min()}`."
+What column label does a lambda get in a `pivot_table()` or `agg()` result?,"`<lambda>`, since the function has no name."
+"Why does `agg({'PM2.5': 'mean', 'wd': 'mode'})` fail after a groupby?","`mode` returns a Series, possibly with several values, not a single value, so it is not compatible with aggregation."
+How do you get the most frequent value of a column inside `groupby().agg()`?,"Use `pd.Series.mode`, or a lambda that returns the first mode: `lambda s: s.mode()[0]`."
+How did the lecture reduce `wd` to a primary wind direction?,"`air_quality['wd'].map(lambda wd: wd[0])` keeps only the first letter, e.g. `NNE` → `N`."
+Why visualise data after building groupby and pivot tables?,"Patterns and relationships are hard to see in raw tables; a heatmap or bar chart makes trends, outliers and relationships stand out."
+How does semi-structured data differ from structured and unstructured data?,"Structured has a rigid, predefined schema (SQL, CSV, Excel); unstructured has no organised schema (text, images, audio, video); semi-structured sits between them."
+Why are XML and JSON called semi-structured?,"Their tags or keys describe the data, and different records may have different structures, e.g. one student with `grades` and another with `attendance`."
+When would you choose XML over JSON or CSV?,"When you need strong schema validation (`.xsd` files), document-oriented data, standardised enterprise data exchange, or rich metadata and namespaces."
+What is an `.xsd` file for?,"An XML Schema Definition: it checks that an XML file conforms, and shows all the tags and the tree structure."
+When would you choose JSON?,"Web APIs and web services, application configuration files, mobile apps and real-time data exchange."
+When would you choose CSV?,"Simple tabular or spreadsheet data, quick analysis and prototyping, migrating data between systems, and data non-technical users must view or edit."
+"Which Python module parses XML in the lecture, and how do you get the root?",`xml.etree.ElementTree as ET`; `tree = ET.parse(file)` then `root = tree.getroot()`.
+"In ElementTree, how do you find child elements and read their attributes and text?",`root.findall('country')` finds children; `country.get('name')` reads an attribute; `country.find('gdppc').text` reads a child's text.
+How did the lecture call a JSON web API and parse the response?,"`requests.get(url, params=params, headers=headers)`, then `response.raise_for_status()` and `response.json()`."
+Why does the Nominatim request send a `User-Agent` header?,"Nominatim's usage policy requires one, identifying the application."

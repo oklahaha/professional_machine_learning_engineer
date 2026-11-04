@@ -279,7 +279,7 @@ and the `ModeSwitch` pill.
 - **Data.** `DSAI/revision-notes/*.html` are static pages written to one template (copied from
   `/home/ubuntu/DSAI/revision-notes/pages/`, where they were authored — re-copy and rebuild after
   editing them there). `scripts/build-notes.mjs` (zero-dep) keeps only each page's `<main>` content
-  and writes `data/notes.json` — **36 pages**, 4 courses. Course code, course title and unit label come
+  and writes `data/notes.json` — **37 pages**, 4 courses. Course code, course title and unit label come
   from the page's `.crumb`; order is the file names sorted naturally (`m3` < `m3a` < `m3b`). It drops
   the pages' topbar, pager and scripts, numbers the `<h2>`s `s1…`, rewrites a sibling link
   (`COM6001-w3.html`) to `/dsai/notes/COM6001-w3`, and **hard-fails without writing** on a script,

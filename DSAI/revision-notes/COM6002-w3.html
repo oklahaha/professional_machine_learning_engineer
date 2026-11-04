@@ -85,7 +85,7 @@
 <p>Note：<b>lg</b> is binary log (base 2)；<b>log</b> is base 10。</p>
 </div>
 <p>Worked example（Example 3）：\( n = 16 \) players → round 1: 8 games, round 2: 4, round 3: 2, round 4: 1 → 4 rounds = \( \lg 16 \)；games = \( 8+4+2+1 = 15 = n-1 \)。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 有一張 tournament 圖，文字擷取不到。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 9 圖片</span><p>一個 knock-out tournament bracket：最左邊 8 個 players 兩兩對賽，向右每一層人數減半（8 → 4 → 2 → 1），一共 3 個 rounds（\( \lg 8 = 3 \)）、7 場比賽（\( 8 - 1 \)）。</p></div>
 
 <h3>2.2 Big O rules</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：Big O rules</span>
@@ -193,7 +193,7 @@
 <tr><td>He</td><td>D1</td></tr><tr><td>Win</td><td>D1, D2</td></tr><tr><td>She</td><td>D2</td></tr><tr><td>I</td><td>D3</td></tr><tr><td>Lose</td><td>D3</td></tr>
 </table>
 <p>搜尋 "win" → 直接得 D1, D2，唔使逐份文件睇。（留意 wins → Win：做咗 stemming / normalization。）</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 30 R-tree 有一張空間示意圖，文字擷取不到。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 30 圖片</span><p>上面係一個 2D 平面，用好多長方形（R1–R19）互相包住：大長方形 R1、R2 入面有中型嘅 R3–R7，再入面有細嘅 R8–R19（每個 bounding box 包住啲 spatial objects）。下面係對應嘅 tree：root 係 [R1, R2]；R1 → [R3, R4, R5]、R2 → [R6, R7]；leaf level 係 [R8, R9, R10]、[R11, R12]、[R13, R14]、[R15, R16]、[R17, R18, R19]。搜尋時只需要行入同 query 範圍重疊嘅長方形。</p></div>
 
 <h2>7. Database transaction</h2>
 <p><b>Transaction</b> = the basic unit in RDBMS，each transaction may contain several commands。例子：轉帳——(1) Deduct $5,000 from your account；(2) Add $5,000 to your friend's account。<b>Both actions 1 and 2 are done or none is — All or nothing</b>。試想部電腦喺 step 1 後、step 2 前 hang 機：錢就憑空消失。</p>
@@ -273,7 +273,7 @@ A（lecturer notes）：<b>No.</b> Another transaction may be done between Write
 <li><b>Cascading rollback</b>：其他 transactions 可能已經讀咗呢個 transaction 更新的值，佢哋都要 rollback。例：T1 將 X 1000 → 1010，T2 讀 1010 再減 100 → 910；If T1 rollbacks, T2 must rollback too</li>
 </ul>
 </div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 60 precedence graph 的箭咀方向係圖形，只擷取到 node 名（T1–T5）；上面答案引用 lecturer notes。請對照原 slide 第 60 頁睇完整的圖。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 60 precedence graph</span><p>上面示範 T1 → T2（T1 等緊 T2 嘅 lock）。下面練習嘅 7 條 edges：<b>T1 → T3</b>、<b>T1 → T5</b>、<b>T5 → T2</b>、<b>T5 → T4</b>、<b>T3 → T4</b>、<b>T4 → T2</b>、<b>T2 → T3</b>。</p><p>由 T3 出發：T3 → T4 → T2 → T3，返到起點，所以有 cycle，<b>有 deadlock</b>，同 lecturer notes 答案一致。T1、T5 只有向外嘅 edges，冇 transaction 等佢哋，所以佢哋唔喺 cycle 入面。要解除 deadlock，就要 rollback T2、T3、T4 其中一個。</p></div>
 
 <h2>9. Database recovery</h2>
 <p>點解要 recovery？<b>Cancelled transaction</b>（user 撳 cancel）、<b>System failure</b>（disk failure, system crash, system errors）。</p>
@@ -345,9 +345,9 @@ T1 commit
 T3
 T4
 T2, X, 15
+            ← Checkpoint 102 (running: T2, T3, T4)
 T3, Y, 5
 T4, Z, 70
-            ← Checkpoint 102 (running: T2, T3, T4)
 T3 commit
 T5
 T2, A, 10
@@ -360,7 +360,7 @@ T2, B, 30
 T2 commit
 T5, X, 10
 --- crash ---</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">原 slide 的 checkpoints 係畫喺時間線上的標記，上面 checkpoint 插入的位置係按每個 checkpoint 記錄的 running transactions 推斷（例如 102 有 T4 冇 T5、103 冇 T4），某條 log 確實落喺 checkpoint 前定後（例如 T5, Z, 30）請對照原 slide 第 78–79 頁的紅 / 綠標示。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 78–79 時間線</span><p>上面 checkpoint 位置按 slide 78 嘅時間線：Checkpoint 101 喺 "T2" 同 "T1 commit" 之間；<b>Checkpoint 102 喺 "T2, X, 15" 同 "T3, Y, 5" 之間</b>；Checkpoint 103 喺 "T5, Z, 30" 之後；跟住係 T6、T6, Z, 50、T2, B, 30、T2 commit、T5, X, 10、crash。</p><p>Slide 79 嘅顏色標示：<b>紅色（undo）</b>：T5, Z, 30；T6, Z, 50；T5, X, 10。<b>綠色（redo）</b>：T2, B, 30。"T2, A, 10" 旁邊註明「We should "redo" this action as T2 is completed. However, as this action is before the checkpoint, the update is always on the harddisk and we do not need to really perform the "redo"」。"We stop here" 箭咀指住 T5 嘅開始位置。</p></div>
 <p>分析：</p>
 <ul>
 <li>T1、T3、T4 喺 checkpoint 103 前 commit → 已在 checkpoint image，唔使理</li>

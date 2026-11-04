@@ -93,7 +93,7 @@ wdi_imp = pd.read_pickle(path + 'wdi_imp.pkl')</code></pre>
 <tr><th>Statistical methods</th><th>Data visualization methods</th></tr>
 <tr><td>Min, max, mean, percentiles<br>Interquartile range (IQR) method</td><td>Histogram<br>Boxplot</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 3–4 頁 <code>outlier.png</code> 同 <code>five number.png</code>（five-number summary 圖解）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ outlier.png 同 five number.png（PDF 第 4 頁）</span><p><b>outlier.png</b>：weight (kg) vs height (cm) scatter plot，大部分點沿住「越高越重」嘅趨勢分佈，紅圈圈住兩個 outliers：一個約 145 cm、80 kg（矮但好重），一個約 175 cm、40 kg（高但好輕）。留意兩個點單獨睇 height 或者 weight 都唔算極端，要兩個一齊睇先見到異常。</p><p><b>five number.png</b>：<code>wdi_imp.describe().T</code> 嘅輸出（每行一個 numerical column，count 全部 446），用橙框框住 <b>min、25%、50%、75%、max</b> 五欄，標題 "The five-number summary"。例如 population 嘅 min 約 10,000、max 約 \(7.59 \times 10^9\)（即全世界人口，因為 dataset 有 "World" 呢類 row）。</p></div>
 
 <h3>1.1 用 <code>describe()</code> 偵測</h3>
 <p><code>DataFrame.describe()</code> 顯示 count、mean、std、min、25%、50%、75%、max（categorical columns 自動被排除）。判斷原則：</p>
@@ -150,7 +150,7 @@ df.describe().T
 </ul>
 <pre><code>wdi_imp.hist(figsize=(20, 20));          # 分號：唔顯示返回嘅 Axes object 文字
 wdi_imp['population'].hist(bins=50)</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 7、8、10 頁嘅 histograms（全部 columns、population、wdi_country_only population）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ Histograms（PDF 第 7、8、10 頁）</span><p><b>第 7 頁</b>：<code>wdi_imp.hist()</code> 每個 numerical column 一幅。access_to_electricity_pct 大部分擠喺 100%（left-skewed）；atms_per_100000、gdp_per_capita_usd / ppp、population_density、population、unemployment_rate 都係嚴重 right-skewed（大部分值喺左邊，條尾拖好長）；life_expectancy 系列偏右（left-skewed）；year 只有 2017 同 2018 兩條 bar；is_region 只有 0（約 350）同 1（約 100）。</p><p><b>第 8 頁</b>：<code>wdi_imp['population'].hist(bins=50)</code>，x 軸去到約 \(7.5 \times 10^9\)：約 345 個值擠喺最左邊第一條 bar，右邊零星有幾條細 bar（World、各 regions 呢類 aggregated rows）。</p><p><b>第 10 頁</b>：<code>wdi_country_only</code>（刪咗 regions）嘅 population histogram：x 軸只去到約 \(1.4 \times 10^9\)，約 330 個國家喺第一條 bar，最右邊 1.3–\(1.4 \times 10^9\) 有一條細 bar，就係 China 同 India（下面 method 1 嘅輸出：index 36、253 係 China，91、308 係 India）。</p></div>
 
 <h3>1.5 Q1：Outlier detection（含答案）</h3>
 <pre><code># Q1.1 人口最多嘅「國家」
@@ -186,7 +186,7 @@ wdi_imp.boxplot(column='atms_per_100000', figsize=(3, 5))
 
 Q1 = wdi_imp['atms_per_100000'].quantile(0.25)   # 11.894731154404873
 Q3 = wdi_imp['atms_per_100000'].quantile(0.75)   # 64.21371556643965</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 12 頁 boxplot 同第 13 頁 <code>IQR detection.png</code> 圖解係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ Boxplot 同 IQR detection.png（PDF 第 12–13 頁）</span><p><b>第 12 頁</b>：<code>atms_per_100000</code> 嘅 boxplot：box 大約 12–64，median 約 38，上 whisker 去到約 140，上面有一串圓圈（outliers）約 145–270；下面冇 outliers。</p><p><b>IQR detection.png</b>：同一幅 boxplot 加標注：box 由下至上係 <b>Q1</b>、<b>Q2 = median</b>、<b>Q3</b>；Q3 之上嘅 whisker 長度標示為 <b>1.5*IQR</b>；最底標示 <b>Min of the value</b>；紅字 <b>Range of the data</b> 指住兩條 whiskers 之間；上面一個框圈住所有圓圈，寫住 "considered outliers — How many are there?"。下面 Q3 嘅答案：upper_bound = 142.69、lower_bound = −66.58，large outliers 有 <b>15</b> 個。（驗算：\(IQR = 64.21 - 11.89 = 52.32\)，\(1.5 \times IQR = 78.48\)，\(64.21 + 78.48 = 142.69\)，\(11.89 - 78.48 = -66.58\)。）</p></div>
 
 <h3>2.1 Q3：計 bounds 同數 outliers</h3>
 <pre><code>IQR = Q3 - Q1                       # 52.3190
@@ -226,7 +226,7 @@ p99 = wdi_imp['gdp_per_capita_usd'].quantile(0.99)       # np.float64(79627.0495
 (wdi_imp['gdp_per_capita_usd'] &gt; p99).sum()              # np.int64(5)
 wdi_imp.loc[wdi_imp['gdp_per_capita_usd'] &gt; p99, 'gdp_per_capita_usd'] = p99   # capping
 (wdi_imp['gdp_per_capita_usd'] &gt; p99).sum()              # np.int64(0)</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 15 頁 gdp_per_capita_usd 嘅 boxplot 係圖片，文字擷取不到。</p></div>
+<div class="box note"><span class="label">🖼️ gdp_per_capita_usd boxplot（PDF 第 15 頁）</span><p>Box 好扁，大約 2,000–15,000，median 約 5,700；上 whisker 去到約 35,000；之上有一大串密集嘅 outliers 由約 36,000 去到約 83,000，再上仲有兩個特別高嘅約 108,000 同 117,000。即係 right-skewed 好嚴重，用 1.5 IQR 規則會將好多高收入國家標為 outliers，所以 Q4 改用 0.99 percentile 做 capping。</p></div>
 
 <h3>3.2 Advices for dealing with the outliers</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：處理任何 column 嘅 guideline（slide 原文要點）</span>
@@ -377,7 +377,7 @@ pd.get_dummies(df)   # default：所有 non-numeric columns 都 encode；numeric
 pd.get_dummies(df, prefix=['col1', 'col2'])   # 用 prefix 取代原 column 名
 # quantity, col1_a, col1_b, col1_c, col2_green, col2_red, col2_yellow</code></pre>
 <p>新 column 名 = <code>原名 + prefix_sep('_') + category</code>；新 pandas 版本輸出 bool（True/False），可以 <code>dtype=int</code> 改成 0/1。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 26 頁 <code>one hot.png</code> 圖解 one-hot encoding，文字擷取不到；上面 code 輸出已示範同一概念。</p></div>
+<div class="box note"><span class="label">🖼️ one hot.png（PDF 第 26 頁）</span><p>左表：id 1–4，color = red、blue、green、blue；經 "One Hot Encoding" 箭咀變成右表：color_red、color_blue、color_green 三欄 0/1——id 1 (1, 0, 0)、id 2 (0, 1, 0)、id 3 (0, 0, 1)、id 4 (0, 1, 0)。每行只有一個 1。</p></div>
 
 <h3>5.2 Ordinal encoding：sklearn <code>OrdinalEncoder</code></h3>
 <p>將 categorical features encode 成 integer array。兩個關鍵步驟：</p>
@@ -494,7 +494,7 @@ print(salary_qcut.value_counts().sort_index())
 <li>High (383000, 500000]：500000 → <b>1</b></li>
 </ul>
 <p>qcut 就按人數切：20 人 ÷ 4 = 每組 5 人。結論：skewed data 用 cut 會令大部分人擠喺同一組；想要每組人數平均就用 qcut。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 32 頁 salary histogram 係圖片，文字擷取不到。</p></div>
+<div class="box note"><span class="label">🖼️ salary histogram（PDF 第 32 頁）</span><p><code>salary.hist(bins=20)</code>：最左邊一條 bar 約 11（32,000–55,000 一帶），跟住 3、2，之後一段空白，約 200,000–220,000 有兩個，350,000 一個，500,000 一個。典型 right-skewed，所以 <code>pd.cut</code>（equal-width）會令大部分人擠喺 "Low"，<code>pd.qcut</code>（equal-frequency）先分得平均。</p></div>
 <div class="box warn"><span class="label">⚠️ Notebook 標題小錯</span><p>Notebook 有個小標題寫「cut: divides data into equal-sized groups」，但下面內文同結果都清楚顯示：<b>cut 係 equal-width（等寬值域）</b>，<b>qcut 先係 equal-sized（等人數）</b>。考試以後者為準。</p></div>
 
 <h3>6.2 <code>pandas.cut()</code> 參數</h3>
@@ -534,7 +534,17 @@ pd.cut(air_quality['PM2.5'], bins=[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4])[8670
 pd.cut(air_quality['PM2.5'],
        bins=[0, 12, 35.4, 55.4, 150.4, 250.4, air_quality['PM2.5'].max()]).value_counts(dropna=False)
 # ... (250.4, 821.0] 4721   ← 4474 + 247 = 4721 ✔，冇 NaN</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 37 頁 <code>PM2.5_category.png</code>（官方 PM2.5 等級表）係圖片；上面 edges 同 labels 係由 code 得知。</p></div>
+<div class="box note"><span class="label">🖼️ PM2.5_category.png（PDF 第 37 頁）</span>
+<table>
+<tr><th>PM2.5</th><th>Air Quality Index</th></tr>
+<tr><td>0 to 12.0</td><td>Good（0 to 50）</td></tr>
+<tr><td>12.1 to 35.4</td><td>Moderate（51 to 100）</td></tr>
+<tr><td>35.5 to 55.4</td><td>Unhealthy for Sensitive Groups（101 to 150）</td></tr>
+<tr><td>55.5 to 150.4</td><td>Unhealthy（151 to 200）</td></tr>
+<tr><td>150.5 to 250.4</td><td>Very Unhealthy（201 to 300）</td></tr>
+<tr><td>250.5 to 500.4</td><td>Hazardous（301 to 500）</td></tr>
+</table>
+<p>同上面 code 嘅 bins <code>[0, 12, 35.4, 55.4, 150.4, 250.4, 500.4]</code> 一致（6 個 unequal ranges，顏色由綠、黃、橙、紅、紫到深紅）。</p></div>
 
 <h3>6.4 <code>cut()</code> with customized bin labels</h3>
 <p>Default labels 只係數字區間（例如 <code>(0.0, 12.0]</code>）。用 <code>labels=[...]</code> 自訂，令 column 變成有意義嘅 categorical column。<b>Labels 數目 = edges 數目 − 1</b>（slide：「6 commas in bins → 6 labels」，7 個 edges 有 6 個逗號）。</p>

@@ -422,7 +422,8 @@ CREATE TABLE Result2 (
 
 <h2>13. In-class exercises &amp; SQL beyond coding</h2>
 <p>LeetCode basic：Combine Two Tables、Employees Earning More Than Their Managers、Duplicate Emails、Game Play Analysis I、Classes With at Least 5 Students（2 marks，screenshot 提交 Moodle）。More challenging：Delete Duplicate Emails（hint: DELETE query）、Percentage of Users Attended a Contest（hint: ROUND）、Average Time of Process per Machine、The Number of Employees Which Report to Each Employee。</p>
-<p>Slide 70：SQL beyond coding——例如喺 Power BI load data from RDBMS、Databricks 的 SQL Editor（截圖，內容擷取不到）。</p>
+<p>Slide 70：SQL beyond coding——例如喺 Power BI load data from RDBMS、Databricks 的 SQL Editor。</p>
+<div class="box note"><span class="label">🖼️ Slide 70 截圖</span><p>上面係 Power Query Editor 嘅 <b>Advanced Editor</b>（Query1）：<code>Source = Odbc.Query("...", "SELECT ... FROM dbo....")</code>，即係 Power BI 直接用一句 SQL 經 ODBC 由 RDBMS 攞 data，Applied Steps 只有一步 "Source"。下面係 Databricks 嘅 <b>SQL Editor</b>：一句 <code>SELECT SUM(amount) AS total_amount, u.name, u.title FROM ... JOIN ... ON o.ownerid = u.id WHERE o.closedate BETWEEN :start_date AND :end_date GROUP BY u.name, u.title;</code>，下面有 start_date / end_date 兩個 parameter 輸入格同結果 table。即係 Week 4 嘅 JOIN、GROUP BY 喺實際工具入面一樣用得着。</p></div>
 <p>以下係幾題 basic 題的典型寫法（用題目的 table 名）：</p>
 <pre><code>-- Combine Two Tables：每個人都要出，冇地址都要 → LEFT JOIN
 SELECT p.firstName, p.lastName, a.city, a.state

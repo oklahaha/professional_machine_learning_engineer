@@ -75,7 +75,6 @@
 <div class="formula">$$ \text{mean}(x) = \bar{x} = \frac{1}{m}\sum_{i=1}^{m} x_i $$</div>
 <div class="formula">$$ \text{median}(x) = \begin{cases} x_{(r+1)} &amp; \text{if } m = 2r+1 \text{ (odd)} \\ \tfrac{1}{2}\left(x_{(r)} + x_{(r+1)}\right) &amp; \text{if } m = 2r \text{ (even)} \end{cases} $$</div>
 <p>其中 \(x_{(i)}\) 係排序後第 \( i \) 個值。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 9 嘅 mean / median 公式係圖片；上面係教科書標準公式，請對照原 slide 第 9 頁。</p></div>
 <p><span class="tag exam">Exam</span><b>The mean is very sensitive to outliers.</b> 所以亦常用 <b>median</b> 或 <b>trimmed mean</b>（先去掉頭尾各 \( p/2\,\% \) 嘅極端值再計 mean）。</p>
 <div class="box tip"><span class="label">💡 Worked example</span>
 <p>Data（月薪，千元）：12, 14, 15, 15, 16, 18, 20, 22, 25, 200（\( m = 10 \)）</p>
@@ -93,9 +92,8 @@
 <li><b>Variance</b> \(s_x^2\) 或 <b>standard deviation</b> \(s_x\) 係最常用嘅 spread 量度：</li>
 </ul>
 <div class="formula">$$ \text{variance}(x) = s_x^2 = \frac{1}{m-1}\sum_{i=1}^{m}(x_i - \bar{x})^2 $$</div>
-<p>不過 variance 都<b>對 outliers 敏感</b>，所以常用其他量度（教科書列出）：</p>
+<p>不過 variance 都<b>對 outliers 敏感</b>，所以常用其他量度（slide 10 列出 AAD、MAD、interquartile range 三個）：</p>
 <div class="formula">$$ \text{AAD}(x) = \frac{1}{m}\sum_{i=1}^{m}|x_i-\bar{x}|, \quad \text{MAD}(x) = \text{median}\big(\{|x_1-\bar{x}|,\dots,|x_m-\bar{x}|\}\big), \quad \text{IQR}(x) = x_{75\%} - x_{25\%} $$</div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10 嘅 variance 公式同「other measures」公式係圖片 / 嵌入物件；上面 AAD (absolute average deviation)、MAD (median absolute deviation)、IQR (interquartile range) 係教科書標準內容，請對照原 slide 第 10 頁確認 slide 實際列出邊幾個。</p></div>
 <div class="box tip"><span class="label">💡 Worked example（延續）</span>
 <p>Data：2, 4, 4, 5, 7, 8（\( m = 6 \)）。\( \text{Mean} = 30/6 = 5 \)。</p>
 <p>Deviations：−3, −1, −1, 0, 2, 3 → squares 9, 1, 1, 0, 4, 9 → sum = 24。</p>
@@ -151,7 +149,7 @@ x.describe()                         # count/mean/std/min/25%/50%/75%/max</code>
 <li>每條 bar 嘅高度 = 該 bin 嘅 objects 數目。</li>
 <li><span class="tag exam">Exam</span><b>Shape of histogram depends on the number of bins.</b></li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 有兩幅 Iris petal width 嘅 histograms（例如 10 bins vs 20 bins），係圖片；請對照原 slide 第 16 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 16 圖片</span><p>兩幅都係 Iris <b>petal width</b> 嘅 histogram：左幅 bins 較少（約 10 個），右幅 bins 較多（約 20 個）。兩幅都見到 0–0.5 有一個高峰（約 34–41 個 objects，即 Setosa），但右幅中間部分變得高低不平，同左幅形狀明顯唔同，正好示範「shape depends on the number of bins」。</p></div>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>Bins 太少：所有細節被抹平（例如 Iris petal length 嘅兩個峰合成一個）；bins 太多：好多鋸齒，noise 被放大。所以試幾個 bin 數再判斷 distribution 形狀。</p></div>
 <pre><code>import seaborn as sns, matplotlib.pyplot as plt
 iris = sns.load_dataset("iris")
@@ -160,16 +158,17 @@ iris["petal_width"].plot.hist(bins=20); plt.show()   # 形狀會唔同
 # R: hist(iris$Petal.Width, breaks = 10)</code></pre>
 
 <h2>5. Box Plots</h2>
-<p>Slide 17：另一種顯示 data distribution 嘅方法。Box plot 嘅基本組成（教科書標準）：</p>
+<p>Slide 17：另一種顯示 data distribution 嘅方法。Slide 圖示嘅 box plot 基本組成：</p>
 <table>
 <tr><th>部分</th><th>代表</th></tr>
 <tr><td>Box 底線</td><td>25th percentile (Q1)</td></tr>
 <tr><td>Box 入面條線</td><td>50th percentile (median)</td></tr>
 <tr><td>Box 頂線</td><td>75th percentile (Q3)；box 高度 = IQR</td></tr>
-<tr><td>Whiskers</td><td>延伸到 10th / 90th percentile（教科書版本），或常見軟件版本：\( Q_1 - 1.5 \cdot IQR \) 至 \( Q_3 + 1.5 \cdot IQR \) 範圍內嘅最遠值</td></tr>
-<tr><td>獨立點</td><td>Outliers（whiskers 以外嘅值）</td></tr>
+<tr><td>Whiskers</td><td><b>Slide 17：延伸到 10th / 90th percentile</b>（常見軟件版本則係 \( Q_1 - 1.5 \cdot IQR \) 至 \( Q_3 + 1.5 \cdot IQR \) 範圍內嘅最遠值）</td></tr>
+<tr><td>獨立點（slide 用紅色 + 號）</td><td>Outliers（whiskers 以外嘅值，即 slide 定義下 &lt; 10th 或 &gt; 90th percentile）</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 17 嘅 box plot 結構圖同 slide 18 嘅 Iris box plots 係圖片；上表係教科書標準結構，whisker 定義請以 slide 第 17 頁圖為準。</p></div>
+<div class="box warn"><span class="label">⚠️ Whisker 定義有兩個版本</span><p>Slide 17 嘅圖由下至上標示：10th percentile（下 whisker）→ 25th → 50th（紅線）→ 75th → 90th percentile（上 whisker），whisker 以外嘅點標為 outlier。考試如果問 slide 嘅 box plot 結構，答 <b>10th / 90th percentile</b>；下面計算題用嘅係軟件常用嘅 \( 1.5 \cdot IQR \) 規則，題目會講明用邊個。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 18 圖片</span><p>Iris 四個 attributes 並排嘅 box plots（單位 cm）：sepal length 約 4.3–7.9，median 約 5.8；sepal width 個 box 最窄（約 2.8–3.3），而且係唯一有 outliers 嘅（上面約 4.0–4.4 有幾個，下面約 2.0 有一個）；petal length 個 box 最闊（約 1.6–5.1），median 約 4.35；petal width 約 0.1–2.5，median 約 1.3。</p></div>
 <p>Slide 18：<b>Box plots can be used to compare attributes</b>——將 Iris 四個 attributes 並排畫，即刻見到邊個 attribute 範圍大、中位數高、有冇 outliers。</p>
 <div class="box exam"><span class="label">⭐ 考試重點：Box plot 計算題型</span>
 <p>Data：1, 3, 4, 5, 6, 7, 8, 9, 30。\( \text{Median} = 6 \)；\( Q_1 = 4 \)、\( Q_3 = 8 \)（用 pandas 預設 linear interpolation；如用「上下半數 data 嘅 median」方法會得 3.5 / 8.5，結論一樣）；\( IQR = 4 \)。</p>
@@ -187,7 +186,7 @@ iris.boxplot(column="petal_length", by="species")   # 按 class 比較
 <li><b>Arrays of scatter plots</b>（scatter plot matrix）可以精簡地總結<b>幾對 attributes 之間嘅關係</b>。</li>
 </ul>
 <p>Slide 20：Iris 嘅 scatter plot array——4 個 attributes 形成 4 × 4 格，每格係一對 attributes，以顏色分 class。從中可見 Setosa 喺 petal length / width 上同其他兩類明顯分開。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 20 嘅 scatter plot array 係圖片，請對照原 slide 第 20 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 20 圖片</span><p>4 × 4 格，Setosa 用藍色 ×、Versicolour 用綠色 +、Virginica 用紅色 ○。對角線格留空。凡係涉及 petal length 或 petal width 嘅格，Setosa 都獨立聚喺左下角；Versicolour 同 Virginica 有少少重疊，但大致分得開。Petal length vs petal width 嗰格幾乎係一條直線，即兩者高度正相關。</p></div>
 <pre><code>sns.pairplot(iris, hue="species")      # scatter plot array，顏色 = class
 # R: pairs(iris[, 1:4], col = iris$Species)</code></pre>
 
@@ -200,13 +199,15 @@ iris.boxplot(column="petal_length", by="species")   # 按 class 比較
 <li><b>Similarity 或 distance matrices</b> 嘅 plot 亦有用，可視覺化 objects 之間嘅關係。</li>
 <li>典型例子：<b>data matrix plots</b> 同 <b>correlation matrix plots</b>。</li>
 </ul>
-<p>Slide 22：Iris Data Matrix（顏色 bar 以 "standard deviation" 為單位，即 standardized 後嘅值）。Slide 23：Iris Correlation Matrix（4 × 4 attributes 之間嘅 correlation）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–23 嘅 matrix plots 係圖片，請對照原 slide。</p></div>
+<p>Slide 22：Iris Data Matrix（顏色 bar 以 "standard deviation" 為單位，即 standardized 後嘅值）。Slide 23：Iris Correlation Matrix——<b>注意係 150 × 150 個 objects（flowers）之間</b>嘅 correlation，唔係 4 個 attributes 之間。</p>
+<div class="box note"><span class="label">🖼️ Slides 22–23 圖片</span><p><b>Slide 22</b>：150 行（objects，按 class 排序：1–50 Setosa、51–100 Versicolour、101–150 Virginica）× 4 列（attributes），顏色由深藍（約 −2 SD）到深紅（約 +3 SD）。Setosa 嗰段 petal length / width 全部係深藍（遠低於平均），sepal width 就偏高（黃/紅）；Virginica 嗰段 petal 兩欄係黃/橙（高於平均）。按 class 排好序，三個 class 就變成三條明顯嘅橫帶。</p>
+<p><b>Slide 23</b>：150 × 150 嘅 object–object correlation matrix，同樣按 class 排序。對角線上三個方塊（同 class 之內）幾乎全部係深紅（correlation 約 1）；Setosa 同 Virginica 之間係藍/青（約 0.4–0.6，最低）；Versicolour 同 Virginica 之間係紅（好高），反映呢兩個 class 比較相似。</p></div>
 <div class="box link"><span class="label">🔗 Chapter 內連繫</span><p>Chapter 5 Cluster Validity 會再用「按 cluster labels 排序嘅 similarity matrix」去視覺檢查 clustering 好唔好（slide 74–76）——同呢度「按 class 排序嘅 matrix plot」係同一個 idea。</p></div>
 <pre><code>from sklearn.preprocessing import StandardScaler
 X = StandardScaler().fit_transform(iris.iloc[:, :4])        # 先 standardize
 plt.imshow(X, aspect="auto", cmap="coolwarm"); plt.colorbar(); plt.show()   # data matrix plot
-sns.heatmap(iris.iloc[:, :4].corr(), annot=True)            # correlation matrix plot</code></pre>
+plt.imshow(np.corrcoef(iris.iloc[:, :4].values), cmap="jet"); plt.colorbar(); plt.show()   # slide 23：150 × 150 object correlation matrix
+sns.heatmap(iris.iloc[:, :4].corr(), annot=True)            # 對比：4 × 4 attribute correlation</code></pre>
 
 <h2>8. Parallel Coordinates Plots</h2>
 <p>Slide 24：</p>
@@ -218,7 +219,7 @@ sns.heatmap(iris.iloc[:, :4].corr(), annot=True)            # correlation matrix
 <li><span class="tag exam">Exam</span><b>Ordering of attributes is important in seeing such groupings.</b></li>
 </ul>
 <p>Slide 25：Iris 嘅 parallel coordinates plot——可見 Setosa 嘅線喺 petal length / width 軸上集中喺低位，同另外兩類分開。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 25 有兩幅 parallel coordinates plots（可能係唔同 attribute 次序），係圖片；請對照原 slide 第 25 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 25 圖片</span><p>兩幅都係同一份 Iris data，只係 <b>attribute 次序唔同</b>：左幅係 sepal length → sepal width → petal length → petal width；右幅係 sepal width → sepal length → petal length → petal width。兩幅都見到藍色（Setosa）喺 petal 兩條軸跌到好低；紅色（Virginica）同綠色（Versicolor）就喺 petal length 分開，Virginica 較高。正好示範「ordering of attributes is important」：換咗次序之後，線嘅交叉同聚集位置都唔同。</p></div>
 <pre><code>from pandas.plotting import parallel_coordinates
 parallel_coordinates(iris, "species"); plt.show()
 # R: library(MASS); parcoord(iris[, 1:4], col = as.numeric(iris$Species))</code></pre>
@@ -264,7 +265,7 @@ parallel_coordinates(iris, "species"); plt.show()
 <li><b>Selection</b>：減 attributes（dim. reduction 到 2–3 維或逐對）同 objects（sample 但保留 sparse 區）。</li>
 <li><b>Iris</b>：3 classes（Setosa、Versicolour、Virginica），4 attributes（sepal / petal × length / width）。</li>
 <li><b>Histogram</b>：單一 variable；shape depends on #bins。</li>
-<li><b>Box plot</b>：median、quartiles、whiskers、outliers；比較 attributes。</li>
+<li><b>Box plot</b>：median、quartiles、whiskers（slide：10th / 90th percentile）、outliers；比較 attributes。</li>
 <li><b>Scatter plot</b>：position = attribute values；size / shape / color 加 attributes；scatter plot array 總結多對關係。</li>
 <li><b>Matrix plot</b>：按 class 排序有用；先 standardize（mean 0、sd 1）；data matrix / correlation matrix。</li>
 <li><b>Parallel coordinates</b>：平行軸，每 object 一條線；同 class 線聚埋；attribute ordering 好重要。</li>

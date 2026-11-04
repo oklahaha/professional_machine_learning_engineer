@@ -59,7 +59,7 @@
 <li>\( (1-p)^{n-k} \)：其餘 \( n - k \) 次失敗嘅 probability。</li>
 </ul>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>想像 10 次擲硬幣，「HHTHT…」任何一個特定序列（有 k 個 H）嘅機率都係 \( p^k(1-p)^{n-k} \)；而有 k 個 H 嘅序列有 \( \binom{n}{k} \) 個，所以相乘。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 3、5、7 係 Wikipedia 上 Binomial / Geometric / Poisson distribution 嘅公式截圖（infobox），文字擷取不到；公式本身已喺 slide 9 列出，本頁已收錄。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 3、5、7 圖片（Wikipedia 截圖）</span><p><b>Slide 3 Binomial</b>：\( X \sim B(n, p) \)，\( n \in \mathbb{N} \)、\( p \in [0, 1] \)；\( f(k, n, p) = \Pr(X = k) = \binom{n}{k} p^k (1-p)^{n-k} \)，for \( k = 0, 1, \dots, n \)，其中 \( \binom{n}{k} = \frac{n!}{k!(n-k)!} \)。<b>Slide 5 Geometric</b>：the probability that the \(k\)-th trial is the first success：\( \Pr(X = k) = (1-p)^{k-1}p \)，for \( k = 1, 2, 3, \dots \)（留意 \(k\) 由 1 開始）。<b>Slide 7 Poisson</b>：\( \Pr(X = k) = \frac{\lambda^k e^{-\lambda}}{k!} \)，\( k = 0, 1, 2, \dots \)、\( e = 2.71828\dots \)；<b>\( \lambda = E(X) = Var(X) \)</b>；適用於 "large number of possible events, each of which is rare"。</p></div>
 
 <h2>2. Geometric Distribution</h2>
 <div class="box exam"><span class="label">⭐ 定義（slide 4）</span>
@@ -112,7 +112,7 @@
 <li>題目有「<b>直到第一次</b>」、「第 k 次<b>先</b>成功」→ Geometric。</li>
 <li>題目有「<b>平均每（小時／分鐘／平方米）</b>\(\lambda\) 次」，冇 n → Poisson。</li>
 </ul>
-<p>補充（slides 冇列，但常用）：Binomial \( \text{mean} = np \)、\( \text{variance} = np(1-p) \)；Geometric \( \text{mean} = 1/p \)；Poisson \( \text{mean} = \text{variance} = \lambda \)。Module 2c 嘅 approximation 會用到 \( np \) 同 \( np(1-p) \)。</p></div>
+<p>補充：Binomial \( \text{mean} = np \)、\( \text{variance} = np(1-p) \)；Geometric \( \text{mean} = 1/p \)（呢兩個 slides 冇列）；Poisson \( \text{mean} = \text{variance} = \lambda \)（slide 7 有寫）。Module 2c 嘅 approximation 會用到 \( np \) 同 \( np(1-p) \)。</p></div>
 
 <h2>5. Worked examples（slides 10–15）</h2>
 <p>Slide 10 三個 scenario：</p>

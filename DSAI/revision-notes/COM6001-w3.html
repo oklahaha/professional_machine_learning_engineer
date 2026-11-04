@@ -68,7 +68,26 @@ my_list.pop.__doc__        # 直接攞 docstring 字串</code></pre>
 <h2>2. Control statements: indentation &amp; if</h2>
 <h3>2.0 Groups of statements — indentation matters!</h3>
 <p>Python 用 <b>colon (冒號) <code>:</code></b> 開始一組 statements，組內所有 statements 要用<b>相同 indentation (縮進距離)</b>。Python 冇規定一定要幾多個 spaces，但建議 <b>4 spaces</b> (PEP 8)。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">indentation.png 同 if_syntax.png (notebook 第 2 頁) 係圖片，文字擷取不到；請對照原 PDF 第 2 頁。</p></div>
+<div class="box note"><span class="label">🖼️ indentation.png 同 if_syntax.png（PDF 第 3–4 頁）</span>
+<p><b>indentation.png</b>：</p>
+<pre><code>x = 34 - 23            # A comment.
+y = "Hello"            # Another one.
+z = 3.45
+if z == 3.45 or y == "Hello":
+    x = x + 1
+    y = y + " World"   # String concat.
+print (x)
+print (y)</code></pre>
+<p>縮咗入去嘅兩行屬於 if；兩個 <code>print</code> 冇縮入，所以唔屬於 if，一定會執行（結果印 12 同 Hello World）。</p>
+<p><b>if_syntax.png</b>：兩個語法框，用紅框標示每個 <code>if &lt;condition&gt;</code>、<code>elif &lt;condition&gt;</code>、<code>else</code> 後面嘅<b>冒號 :</b>，同埋每個 <code>statement(s)</code> 前面嘅 <b>Indentation</b>：</p>
+<pre><code>if &lt;condition1&gt;:          if &lt;condition 1&gt;:
+    statement(s)              statement(s)
+else:                     elif &lt;condition 2&gt;:
+    statement(s)              statement(s)
+                          elif &lt;condition 3&gt;:
+                              statement(s)
+                          else:
+                              statement(s)</code></pre></div>
 
 <h3>2.1 if statement</h3>
 <ul>
@@ -262,7 +281,18 @@ len(1)           # TypeError: object of type 'int' has no len()</code></pre>
   <li>Function body 用相同 indentation</li>
   <li>可以有或冇 return value</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Customized_Function.png (function 結構標注圖，notebook 第 10 頁) 係圖片，文字擷取不到；請對照原 PDF 該頁。</p></div>
+<div class="box note"><span class="label">🖼️ Customized_Function.png（PDF 第 14 頁）</span>
+<pre><code>def calculate_area(width, height = 3, *vars):        # Keyword / Function Name / Arguments (Inputs) -- optional
+    """Calculate rectangle area from width and height."""   # Docstring -- optional
+
+    # ---- Function Body ----
+    area = width * height                              # ┐
+    if(len(vars)&gt;0):                                   # │ Code Logic
+        for each in vars:                              # │
+            print(each)                                # ┘
+
+    return area                                        # Return Value (output) -- optional</code></pre>
+<p>圖上標注：<code>def</code> 係 <b>Keyword</b>、<code>calculate_area</code> 係 <b>Function Name</b>、括號入面係 <b>Arguments (Inputs) -- optional</b>（<code>height = 3</code> 係 default value，<code>*vars</code> 收任意數量嘅額外 arguments），行尾冒號用紅框標示，下面用 <b>Indent</b> 標示縮排。例如 <code>calculate_area(4)</code> 返 12；<code>calculate_area(4, 5, 'a', 'b')</code> 會先印 a、b，再返 20。</p></div>
 <pre><code>def calculate_area(width, height=3, *vars):
     """Calculate rectangle area from width and height."""   # docstring
     area = width * height
@@ -421,7 +451,7 @@ logging.basicConfig(level=logging.DEBUG)
   <tr><td><b>Step into</b></td><td>如果當前行有 function call，<b>入去</b>該 function 第一行暫停</td></tr>
   <tr><td><b>Step out</b></td><td>行完當前 function，返去 caller，喺 call 之後嗰行暫停</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Debugger.png (IDE debugger UI 截圖) 係圖片，文字擷取不到；請對照原 PDF debugging 一節。</p></div>
+<div class="box note"><span class="label">🖼️ Debugger.png（PDF 第 21 頁）</span><p>VS Code debugger 嘅工具列，箭咀標示四個掣：<b>Continue</b>（▷，行到下一個 breakpoint）、<b>Step over</b>（↷，執行當前一行，唔入 function 入面）、<b>Step into</b>（↓，入去 function 第一行）、<b>Step out</b>（↑，行完當前 function 返去 caller）。工具列尾仲有 Restart（↻）同 Disconnect / Stop 兩個掣。</p></div>
 
 <div class="box exam"><span class="label">⭐ 考試重點：Bug 解釋</span>
 <p>由 print 可見最後一次 call 時 <code>left == right == 4</code>，<code>nums[4]</code> 正正係 5，但 condition <code>left &gt;= right</code> 令 function 提早 return -1。修正：改為 <b><code>if left &gt; right:</code></b> (只有 left 嚴格大過 right，即搜尋範圍為空，先 return -1)。修正後 <code>binary_search(my_list, target=5)</code> → <code>4</code>。</p>

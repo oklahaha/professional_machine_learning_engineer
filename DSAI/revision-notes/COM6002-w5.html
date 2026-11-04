@@ -49,7 +49,7 @@
 <p><b>Dashboard</b>：At-a-glance view of key performance indicators (<b>KPIs</b>)。</p>
 <p><b>Power BI</b>：Product of Microsoft；easy to build dashboard for BI；cloud-based service and offline version。Key features：<b>Dashboard</b>、<b>Reporting</b>、<b>Online analytical processing (OLAP)</b>。Other similar products：<b>Tableau</b>。</p>
 <p><b>Business Intelligence (BI)</b>：Technology-driven process 去 analyse data 同 presenting <b>actionable information</b>（Moodle 有 interactive dashboard 例子）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3、4、7 的 dashboard / Excel 截圖係圖片，文字擷取不到。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 3、4、7 圖片</span><p><b>Slide 3</b>：一個 Power BI sales dashboard 例子：上面一排 KPI 卡（Opportunity Count 487、Revenue $2bn），下面有 stacked bar、horizontal bar、pie chart，仲有 Current Revenue $461M。<b>Slide 4</b>：三個 Reddit r/PowerBI 帖子標題：「How is PowerBI better than Excel」、「Is Excel more powerful than PowerBI at any tasks?」、「Power BI or Excel」，即係好多人覺得 "Power BI is just an advanced Excel"。<b>Slide 7</b>：本課 exam results 嘅 interactive dashboard：Number of records by Major / StudentID / ModuleCode / Grade 幾個 bar charts、一張寫住 31 嘅 "Number of records" 卡、Grade 同 StudName 嘅 slicers（Amy、Bob、Cathy…）、同一個按 ModuleCode 同 Major 分嘅 donut chart。即係 slide 50 最後砌出嚟嘅成品。</p></div>
 
 <h2>2. Excel vs Power BI</h2>
 <p>好多人覺得「Power BI is just an advanced Excel」。佢哋確實有好多共通點：</p>
@@ -120,7 +120,7 @@ A Rate  = DIVIDE([Num A], COUNTROWS(Results))</code></pre>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>OLTP 需要的 ACID、concurrency control、recovery 就係 Week 3 的內容；OLAP 的 aggregate queries 就係 Week 4 的 GROUP BY。OLAP 數據來自 Week 1 的 data warehouse / lake。</p></div>
 
 <h2>5. Star Schema vs Snowflake Schema</h2>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 14 的 star / snowflake 結構圖係圖片，文字擷取不到；slide 文字結論係 "We prefer star schema for OLAP"。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 14 圖片</span><p><b>Star Schema</b>：中間一個大方塊（fact table），直接連出 5 個 dimension tables，只有一層。<b>Snowflake Schema</b>：中間 fact table 連出 5 個 dimension tables，每個 dimension 再分支出兩個更細嘅 sub-dimension tables（即係 dimension 再 normalize），好似雪花咁。Slide 結論："We prefer star schema for OLAP"，因為 query 時 join 少啲、快啲。</p></div>
 <p><b>Star Schema</b>：中央係 <mark class="k">Fact table</mark>，周圍係 <mark class="k">Dimension tables</mark>（provide additional context to the facts）。Design principles：</p>
 <ul>
 <li><b>Fact table — What happened?</b> Example：Enrollment</li>
@@ -242,7 +242,7 @@ SELECT StudentID, Name, Major, Grade FROM Enrol WHERE Major = 'DSAI' AND Grade =
 <tr><td>M</td><td>2355</td><td>711</td><td>211</td><td>595</td></tr>
 <tr><td>F</td><td>8712</td><td>15</td><td>103</td><td>16</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 28、30–32 的 cube 係立體圖形，文字擷取出來的數字次序已打亂；上表及下表的 cell 位置係按 slide 30–31 drill-down 結果（A-DSAI 10、A-CS 7、F-DSAI 3、F-CS 6）及 slide 22 的數字反推，請對照原 slide 確認。</p></div>
+<p>（已對照 slide 28：Grade A 表 M 2355 / 711、F 8712 / 15；Grade F 表 M 211 / 595、F 103 / 16，同上表一樣。）</p>
 <h3>8.2 Analysis of data cubes</h3>
 <ul>
 <li>Size of data cube is much smaller than the database：例子中 cube 只有 8 cells，但 database 可以有 10,000+ records（上表 8 個數加埋 = 12,718）</li>
@@ -257,6 +257,7 @@ SELECT StudentID, Name, Major, Grade FROM Enrol WHERE Major = 'DSAI' AND Grade =
 <tr><td>M</td><td>2</td><td>7</td><td>2</td><td>5</td></tr>
 <tr><td>F</td><td>8</td><td>0</td><td>1</td><td>1</td></tr>
 </table>
+<p>（已對照 slides 30–32：Grade A 表 M 2 / 7、F 8 / 0；Grade F 表 M 2 / 5、F 1 / 1，同上表一樣。Slide 32 嘅 GROUP BY 結果頭四行係 (A, DSAI, M, 2)、(A, DSAI, F, 8)、(F, DSAI, M, 2)、(F, DSAI, F, 1)。）</p>
 <p><b>Summarizing the data along some dimension(s)</b>（加總 Sex）→ (A, DSAI, 10)、(A, CS, 7)、(F, DSAI, 3)、(F, CS, 6)；再加總 Major → (A, 17)、(F, 9)。反方向 <b>break down the cube</b> 就係 drill-down：Grade → Grade × Major。全部只需要加 8 個 cells，完全唔使掂原始 database。</p>
 <h3>8.4 Generating the data cube：It is just a GROUP BY query</h3>
 <pre><code>SELECT Grade, Major, Sex, COUNT(*) AS Count
@@ -281,7 +282,7 @@ SELECT Grade, SUM(Count) FROM Cube GROUP BY Grade;   -- A 17, F 9</code></pre>
 </div>
 
 <h2>9. Power BI practical walkthrough</h2>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 35–50 主要係 Power BI 介面截圖（新 file 介面、Get data 選單、Power Query Editor、Merge Queries 對話框、Group by 對話框、結果、visuals 面板），圖片內容擷取不到；以下根據 slide 文字整理步驟，操作細節請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 35–50 截圖重點</span><ul><li><b>Slide 38 Module.csv 預覽</b>：欄名顯示做 Column1、Column2，而 "ModuleCode"、"ModuleName" 變咗第一行 data，即係 headers not recognized；右下角箭咀指住 <b>Transform Data</b>（入 Power Query 修正），唔好直接撳 Load。</li><li><b>Slide 42 Merge 對話框</b>：上面揀 Module table，下面揀 Results table（StudentID、ModuleCode、Grade），Join Kind 下拉有 6 個選項：Left Outer (all from first, matching from second)、Right Outer (all from second, matching from first)、Full Outer (all rows from both)、<b>Inner (only matching rows)</b>、Left Anti (rows only in first)、Right Anti (rows only in second)。</li><li><b>Slide 45</b>：Merge 完之後 Results 多咗 Module 同 Student 兩欄，入面係 "Table"（要 expand 先見到內容），formula bar 係 <code>Table.NestedJoin(... {"StudentID"}, Student, {"StudentID"}, "Student", JoinKind.Inner)</code>，一共 31 rows。</li><li><b>Slide 47 Group By 對話框（Advanced）</b>：grouping 欄 StudentID、ModuleCode、Grade；New column name = <b>Count</b>，Operation = <b>Count Rows</b>。</li><li><b>Slide 48</b>：結果 4 columns、31 rows，Count 欄全部係 1；Applied Steps 最後一步係 "Grouped Rows"（<code>Table.Group(...)</code>）。</li><li><b>Slide 50</b>：完成嘅 dashboard（同 slide 7 一樣），右邊係 Visualizations 同 Data 面板（Module、Results、Student 三個 tables）。</li></ul></div>
 <ol>
 <li><b>Getting data</b>：Home &gt; Get data。Data sources：Databases（Microsoft SQL (MSSQL)、other databases）、Files（CSV、Excel）</li>
 <li>In-class example：Moodle 上 3 個 CSV files（exam results database）：<b>Student</b>、<b>Module</b>、<b>Results</b></li>
@@ -304,6 +305,7 @@ SELECT Grade, SUM(Count) FROM Cube GROUP BY Grade;   -- A 17, F 9</code></pre>
 <tr><td>A Full Outer Join B</td><td>上面兩行 + (Null, Null, 234567, COM6003)</td></tr>
 <tr><td>A <b>Left Anti Join</b> B</td><td>(COM6002, Database, Null, Null) — 只要 <b>records in A but not B</b></td></tr>
 </table>
+<p>（Power BI 嘅 Join Kind 仲有 Right Outer 同 Right Anti，即係 left 嘅鏡像：以 B 為主。）</p>
 <pre><code>-- Left Anti Join 用 SQL 表達：
 SELECT m.* FROM Module m LEFT JOIN Result r ON m.ModuleCode = r.Module
 WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>

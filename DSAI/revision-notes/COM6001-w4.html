@@ -74,7 +74,7 @@ import pandas as pd                   # Install 一次 / 每個 session 都要 i
   <tr><td>關係</td><td colspan="2"><b>DataFrame 嘅每一個 column 都係一個 Series</b></td></tr>
 </table>
 <p><b>Class</b> 係建立 objects 嘅 blueprint，定義 objects 會有嘅 attributes 同 methods。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">SeriesandDataFrame.png (Series 與 DataFrame 結構示意圖，PDF 第 6 頁) 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ SeriesandDataFrame.png（PDF 第 7 頁）</span><p><b>pandas Series</b>：兩個例子，值都係 2、3.6、Monday、5、100（可以混合唔同 type）。左邊個 index 係 apple、bear、cat、dog、ear（自訂 labels），右邊係 0–4（default integer index）；箭咀標示左邊嗰欄係 <b>Index</b>。<b>pandas DataFrame</b>：一個 5 行（index 0–4）× 4 列（column1–column4）嘅格仔；下面每個箭咀指住一個 column（每個 column 就係一個 Series），右邊每個箭咀指住一個 row。</p></div>
 
 <h3>2.1 Series</h3>
 <p>1D labeled array，可以裝任何 data type (integers, strings, floats, Python objects)。由 <b>index</b> (axis labels 嘅集合) 同 <b>data</b> 組成。</p>
@@ -273,7 +273,18 @@ hero_marvel.index     # RangeIndex(start=0, stop=388, step=1)</code></pre>
   <tr><td><code>datetime64[ns]</code></td><td>date and time</td><td>Numerical (dates)</td></tr>
   <tr><td><code>category</code></td><td>categorical data</td><td>Categorical (nominal / ordinal)</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">dtypes.png (dtype 對照表圖片，PDF 第 18 頁) 文字擷取不到；請對照原 PDF。上表係根據 notebook 文字列表整理。</p></div>
+<div class="box note"><span class="label">🖼️ dtypes.png（PDF 第 22 頁）</span>
+<table>
+<tr><th>dtype</th><th>Description</th></tr>
+<tr><td><code>int8, int16, int32, int64</code></td><td>integers with different ranges, e.g., int8 in (−128 to 127), int16 in (−32768 to 32767)；the larger the number (bitsize/memory), the larger the range；default: int64；nullable types: Int8, Int16, Int32, Int64</td></tr>
+<tr><td><code>float32, float64</code></td><td>floating points；default: float64</td></tr>
+<tr><td><code>object</code></td><td>can hold any Python object, e.g., strings, numeric, mixed</td></tr>
+<tr><td><code>bool</code></td><td>True/False</td></tr>
+<tr><td><code>datetime64</code></td><td>Date and time</td></tr>
+<tr><td><code>string</code></td><td>strings dedicated dtype；still in experimental stage, but is recommended to store text data</td></tr>
+<tr><td><code>category</code></td><td>categorical data, which takes on a limited, usually fixed, number of possible values</td></tr>
+</table>
+<p>比上面個表多咗兩點：(1) 細啲嘅 int / float（例如 int8）慳 memory 但 range 細；大寫開頭嘅 <code>Int64</code> 係 <b>nullable</b>，可以裝 missing value（普通 <code>int64</code> 唔得，有 NaN 就會變 float64）；(2) 有專門嘅 <code>string</code> dtype。</p></div>
 
 <h3>3.5 指定 dtype 讀入</h3>
 <pre><code>hero_dtype = {'name': 'string', 'Gender': 'category', 'Eye color': 'string',
@@ -318,7 +329,7 @@ print(pd.read_csv(dir_path + 'myTitanic.csv').dtypes)                  # Step 6�
 
 <h2>4. Combining DataFrames: concat vs merge</h2>
 <p>兩種方法，視乎 DataFrames 係咪有<b>完全或部分相同嘅 columns / indices</b>。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Combining.png 同 Concat.png (PDF 第 21–22 頁，concat / merge 示意圖) 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ Combining.png 同 Concat.png（PDF 第 25–26 頁）</span><p><b>Combining.png</b>：(1) <b>Concatenation</b>：put together two tables on the same set of columns or indices：兩個都有 A–E columns（"Same columns"）嘅 table 上下疊埋，變成一個更長嘅 table。(2) <b>Merge</b>：merge tables based on one column：左表 A–E、右表 F、C、G、H、I，紅色標示佢哋共同嘅 column <b>C</b>（"One column in common (they have the same meaning)"），合併後變成 A–I 一個更闊嘅 table。</p><p><b>Concat.png</b>：用顏色拆解 function signature <code>pandas.concat(objs, axis=0, join='outer', ignore_index=False, keys=None, ...)</code>：<code>pandas</code> = Caller's class，<code>concat</code> = Function name；parameters 分三種：<code>var</code>（necessary param，例如 objs）、<code>var = abc</code>（param with default value，例如 axis=0）、<code>var = None</code>（optional without default value）。下面解釋 axis：0 / 'index' = 沿 vertical 方向（疊 rows），1 / 'columns' = 沿 horizontal 方向（並排 columns）。</p></div>
 
 <h3>4.1 <code>pd.concat()</code></h3>
 <pre><code>pandas.concat(objs, axis=0, join='outer', ignore_index=False, keys=None,

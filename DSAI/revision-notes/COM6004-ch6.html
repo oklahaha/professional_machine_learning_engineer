@@ -174,7 +174,13 @@
   <li><b>Brute-force method</b>（slide 24）：由 items 組合所有可能 k-itemsets，再 prune——candidates 太多。</li>
   <li><b>Merge \( F_{k-1} \) and \( F_1 \) itemsets</b>（slide 25）：每個 frequent \( (k-1) \)-itemset 加一個 frequent item。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24、25、28 嘅例子係圖片，文字擷取不到；請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 24、25、28 圖片</span><p>三張都用同一個超市例子（TID 1 {Bread, Milk}；2 {Beer, Bread, Diaper, Eggs}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Bread, Coke, Diaper, Milk}），目標係產生 candidate 3-itemsets：</p>
+<ul>
+<li><b>Slide 24 Brute-force</b>：6 個 items（Beer, Bread, Cola, Diapers, Eggs, Milk）全部組合，得出 \(\binom{6}{3} = 20\) 個 candidates（{Beer, Bread, Cola} … {Diapers, Eggs, Milk}）。Candidate pruning 之後只剩 <b>{Bread, Diapers, Milk}</b>。</li>
+<li><b>Slide 25 \(F_{k-1} \times F_1\)</b>：frequent 2-itemsets {Beer, Diapers}、{Bread, Diapers}、{Bread, Milk}、{Diapers, Milk} 各加一個 frequent item（Beer, Bread, Diapers, Milk），得出 4 個 candidates：{Beer, Bread, Diapers}、{Beer, Diapers, Milk}、{Bread, Diapers, Milk}、{Beer, Bread, Milk}。Pruning 之後同樣只剩 {Bread, Diapers, Milk}。Figure 5.7 註明：some of the candidates are unnecessary because their subsets are infrequent。</li>
+<li><b>Slide 28 \(F_{k-1} \times F_{k-1}\)</b>：兩份同樣嘅 frequent 2-itemsets 互相 merge，只有 {Bread, Diapers} + {Bread, Milk}（第一個 item 相同）可以 merge，<b>一開始就只產生 1 個 candidate</b> {Bread, Diapers, Milk}，pruning 之後仍然保留。</li>
+</ul>
+<p>比較：20 個 → 4 個 → 1 個 candidates，方法越聰明，要 prune 同 count 嘅 candidates 越少。</p></div>
 
 <div class="box exam"><span class="label">⭐ 考試重點：\( F_{k-1} \times F_{k-1} \) Method</span>
 <p>Merge two frequent \( (k-1) \)-itemsets if their <b>first \( (k-2) \) items are identical</b>（items 要按 lexicographic order 排好）。</p>
@@ -224,7 +230,23 @@
 </ul>
 <p>Transaction 嘅 3-subsets（\( \binom{5}{3} = 10 \) 個）：123, 125, 126, 135, 136, 156, 235, 236, 256, 356。逐層 enumerate：<code>1 + 2 3 5 6</code>、<code>2 + 3 5 6</code>、<code>3 + 5 6</code>，再分 <code>1 2 + 3 5 6</code>、<code>1 3 + 5 6</code>、<code>1 5 + 6</code> 等，只去對應嘅 leaf。</p>
 <p>結果：Match transaction against <b>11 out of 15 candidates</b>（唔使比較全部 15 個）；當中真正被 support 嘅係 {1 2 5}、{1 3 6}、{3 5 6} = <b>3 個</b>。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 34–41 嘅 hash tree 結構（每個 leaf 放邊幾個 itemsets）係由 shapes 砌成；「3 個」係我按 candidate list 自己計，slides 冇直接寫出答案。請對照原 slide 睇 tree 嘅 traversal。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 34–41 hash tree 結構</span>
+<p>Slide 34 列出 15 個 candidates：{1 4 5}, {1 2 4}, {4 5 7}, {1 2 5}, {4 5 8}, {1 5 9}, {1 3 6}, {2 3 4}, {5 6 7}, {3 4 5}, {3 5 6}, {3 5 7}, {6 8 9}, {3 6 7}, {3 6 8}，問 transaction (1, 2, 3, 5, 6) support 幾多個。下面畫出 Level 1–3 嘅 enumeration，最底一行係全部 10 個 3-subsets。</p>
+<p>Slide 41 棵 hash tree（左 = 1,4,7；中 = 2,5,8；右 = 3,6,9）：</p>
+<pre><code>Root（hash 第 1 個 item）
+├─ 1,4,7 → node（hash 第 2 個 item）
+│          ├─ 1,4,7 → leaf {1 4 5}
+│          ├─ 2,5,8 → node（hash 第 3 個 item）
+│          │          ├─ 1,4,7 → leaf {1 2 4, 4 5 7}
+│          │          ├─ 2,5,8 → leaf {1 2 5, 4 5 8}   ✔ 到訪
+│          │          └─ 3,6,9 → leaf {1 5 9}          ✔ 到訪
+│          └─ 3,6,9 → leaf {1 3 6}                     ✔ 到訪
+├─ 2,5,8 → leaf {2 3 4, 5 6 7}                         ✔ 到訪
+└─ 3,6,9 → node（hash 第 2 個 item）
+           ├─ 1,4,7 → leaf {3 4 5}
+           ├─ 2,5,8 → leaf {3 5 6, 3 5 7, 6 8 9}       ✔ 到訪
+           └─ 3,6,9 → leaf {3 6 7, 3 6 8}              ✔ 到訪</code></pre>
+<p>到訪嘅 6 個 leaves（slide 用紅框標示）共有 1 + 2 + 1 + 2 + 3 + 2 = <b>11 個 candidates</b>，即 "Match transaction against 11 out of 15 candidates"。佢哋之中真正係 transaction subset 嘅只有 {1 2 5}、{1 3 6}、{3 5 6}，所以答案係 <b>3 個</b>（slide 冇直接寫出呢個數，係由 slide 34 底行嘅 10 個 subsets 對返 candidate list 得出）。</p></div>
 
 <h2>8. Rule Generation</h2>
 <div class="box exam"><span class="label">⭐ 考試重點</span>
@@ -241,7 +263,7 @@
 <p><span class="tag exam">Exam</span> Confidence is anti-monotone w.r.t. number of items on the <b>RHS</b> of the rule。</p>
 <div class="box tip"><span class="label">💡 點解？</span><p>三條 rule 分子都係 \( \sigma(ABCD) \)；分母分別係 \( \sigma(ABC) \leq \sigma(AB) \leq \sigma(A) \)（support anti-monotone）。分母越大，confidence 越細。所以將 items 由 LHS 搬去 RHS，confidence 只會跌或者唔變。</p></div>
 <p><b>Lattice of rules</b>（slide 44）：頂層係 ABCD⇒{ }，下一層 BCD⇒A、ACD⇒B、ABD⇒C、ABC⇒D，再落係 RHS 有 2 個 items、3 個 items 嘅 rules。如果某條 rule（例如 BCD⇒A）低 confidence，佢下面所有 RHS 包含 A 嘅 rules（CD⇒AB、BD⇒AC、BC⇒AD、D⇒ABC、C⇒ABD、B⇒ACD）都可以 prune。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 44 嘅圖用顏色標示「Pruned Rules」，邊幾條被標示擷取不到；上面 BCD⇒A 例子係按 anti-monotone property 推導嘅示範，請對照原 slide。</p></div>
+<p>（Slide 44 嘅圖正正係呢個例子：BCD⇒A 灰色（low confidence），紅色虛線圈住嘅 "Pruned Rules" 就係 CD⇒AB、BD⇒AC、BC⇒AD、D⇒ABC、C⇒ABD、B⇒ACD。）</p>
 
 <h2>9. Factors Affecting Complexity of Apriori</h2>
 <div class="box exam"><span class="label">⭐ 考試重點</span>
@@ -490,7 +512,9 @@
 <tr><td>\( s \)</td><td>Support</td><td>No</td><td>No</td><td>No</td></tr>
 </table>
 <p>（Yes = 喺該 operation 下 invariant。）</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 83、86 嘅 inversion / null addition 示意圖係圖片，擷取不到；上面解釋根據 slide 文字同 textbook 定義。另外 slide 86 文字將 All-confidence 列為 null-addition invariant，但 slide 87 表寫 No——兩頁有出入，請以 lecturer 講法為準。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 83、86 圖片</span><p><b>Slide 83 Inversion</b>：(a) 兩個 binary columns A、B，每行係一個 transaction（Transaction 1 至 N），大部分係 0，A 只有頭尾兩個 1，B 只有一個 1；(b) 係 \(\bar{A}\)、\(\bar{B}\)：每個 0 變 1、1 變 0。Inversion 即係「冇買」同「有買」對調。</p>
+<p><b>Slide 86 Null addition</b>：左表 \(A,B = 700\)、\(A,\bar{B} = 100\)、\(\bar{A},B = 100\)、\(\bar{A},\bar{B} = 100\)，N = 1000；右表將 \(\bar{A},\bar{B}\) 加到 1100（即係加 1000 個 A、B 都冇嘅 transactions），N = 2000。（右表 \(\bar{A},B\) 格印咗 "10"，但 column total 仍然係 800，應該係 100 嘅 typo。）Slide 86 寫 invariant measures：cosine、Jaccard、All-confidence、confidence；non-invariant：correlation、Interest/Lift、odds ratio。</p>
+<p>⚠️ Slide 86 將 All-confidence 列為 null-addition invariant，但 slide 87 個表寫 No，兩頁有出入，請以 lecturer 講法為準。（按定義 \( h = s(A,B) / \max(s(A), s(B)) \)，分子分母都唔受 \(\bar{A}\bar{B}\) 影響，所以應該係 invariant。）</p></div>
 
 <h2>16. Simpson's Paradox</h2>
 <p>HDTV / Exercise Machine 例子（slide 88–89）：</p>

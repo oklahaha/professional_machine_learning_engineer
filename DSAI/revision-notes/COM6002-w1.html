@@ -94,7 +94,7 @@
 
 <h2>3. What is Big Data?</h2>
 <p>Definition (Wikipedia)：<i>Big data primarily refers to data sets that are too large or complex to be dealt with by traditional data-processing application software.</i></p>
-<p>Slide 6 亦提醒：有啲人講 Big Data，其實只係指「佢手上嗰份 data」，而份 data 根本唔大（slide 6 附有 MIMIC-III critical care database 的引用及一張圖片，圖片內容擷取不到）。重點係「traditional software 處理唔到」，唔單止係「大」。</p>
+<p>Slide 6 亦提醒：有啲人講 Big Data，其實只係指「佢手上嗰份 data」，而份 data 根本唔大（slide 6 附有 MIMIC-III critical care database 嘅引用同截圖：「MIMIC-III contains data associated with 53,423 distinct hospital admissions for adult patients (aged 16 years or above) admitted to critical care units between 2001 and 2012」，即係一個好有名嘅「big data」其實只係五萬幾個入院紀錄）。重點係「traditional software 處理唔到」，唔單止係「大」。</p>
 
 <h2>4. Characteristics of Big Data：4 V's</h2>
 <div class="box exam"><span class="label">⭐ 考試重點：4 V's of Big Data</span>
@@ -134,7 +134,7 @@
 <div class="box warn"><span class="label">⚠️ 易混淆</span><p>JSON / XML 唔係 unstructured！佢哋有 tags / key-value 結構，只係 schema 唔固定 → <b>semi-structured</b>。PDF 雖然有格式，但內容冇 internal schema → slide 歸類為 <b>unstructured</b>。</p></div>
 
 <h3>4.4 Veracity：data quality</h3>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 12 用兩張圖片（標註 "Mechanism?" 同 "Terrorist?"）說明資料可能唔正確，圖片內容文字擷取不到；請對照原 slide 第 12 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 12 圖片</span><p>兩個 tweet 截圖，都係串錯字嘅例子：(1)「Sometimes i snap at ppl on twitter bcuz im insecure. Its a defense <b>magnesium</b>」，本意係 <b>mechanism</b>；(2)「ANOTHER <b>TERRACE</b> ATTACK!!! When will It STOP???!!!! The Devil stay busy」，本意係 <b>terrorist</b> attack。如果做 sentiment / keyword 分析時照字面處理，就會數錯，呢個就係 Veracity 問題。</p></div>
 <p><span class="tag exam">Exam</span><b>GIGO — Garbage in, garbage out</b>：Data quality is very important! 輸入資料錯，無論 model 幾勁，輸出都係垃圾。Types of data quality concerns：</p>
 <ul>
   <li><b>Missing data</b> — 例如某日股價冇記錄</li>
@@ -148,7 +148,9 @@
 <h3>4.5 Velocity：speed of data</h3>
 <p>Real-time data：data is generated continuously；而且 <b>the data source does not always keep all the data for you to download later</b>——錯過咗就冇。</p>
 <p>例子 1：記錄 Binance BTCUSDT futures 的資料。要儲乜？每次 update 的 trade queue 都儲？資料量會極大。<br>
-例子 2：Home security camera app — Will you keep the video data? 一部 CCTV 一日可產生幾 GB 至幾十 GB 影片（slide 15 引用 Quora 數據，圖片部分擷取不到）。</p>
+例子 2：Home security camera app — Will you keep the video data? 一部 CCTV 一日可以產生幾十 GB 影片。Slide 15 引用 Quora 嘅估算：影響 data size 嘅因素有 resolution（720p / 1080p / 4K）、frame rate（15 / 30 / 60 fps）、compression（H.264、H.265 較省）同 duration（連續錄影定 motion-activated）。以 1080p、30 fps、H.264、bitrate 約 4 Mbps 計：</p>
+<ul><li>每秒：4 Mbps = 0.5 MB/s（1 byte = 8 bits）</li><li>每分鐘：0.5 MB/s × 60 = 30 MB/min</li><li>每小時：30 × 60 = 1800 MB ≈ 1.8 GB/hour</li><li>每日：1.8 GB × 24 = <b>43.2 GB/day</b></li></ul>
+<p>即係一部 camera 一年大約 15.8 TB，所以一定要諗清楚 keep 幾耐。</p>
 <h3>4.6 Streaming algorithms</h3>
 <p>What if the data generation speed far exceeds our storage capability? → <b>Streaming algorithms</b>：資料流過時只睇一次、只保留摘要。Key design issues：</p>
 <ul>
@@ -187,7 +189,7 @@
 <p>Big Data is almost understood as <b>Big Data Analytics</b>。Data analytics 其實歷史好長：</p>
 <p><b>“Beer and Diapers” (early 1990s)</b>：超市做 <b>market basket analysis</b>，分析顧客一齊買咩。預期結果：bread and butter；意外發現：beer and diapers 經常一齊被買。而家幾乎任何 data analytics task 都被叫做 Big Data Analytics——Is this a good sign?（暗示「Big Data」一詞被濫用。）</p>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Market basket analysis 就係 COM6004 Data Mining 的 Association Rule Mining（support / confidence）的經典例子。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 21 只有一張圖片（Big Data Analytics），文字擷取不到；請對照原 slide 第 21 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 21 圖片</span><p>三個方塊由左至右：<b>BIG DATA</b>（散亂嘅細方塊）→ <b>ANALYTICS</b>（開始排整齊）→ <b>DECISIONS</b>（砌成一個完整立方體）。意思係 data 要經過 analytics 整理，先可以變成決策。</p></div>
 
 <h3>Big Data Analytics tools</h3>
 <ul>
@@ -198,7 +200,7 @@
 </ul>
 
 <h2>8. Data Pipeline</h2>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24 "Example Data Pipeline" 係一張架構圖，文字擷取不到；請對照原 slide 第 24 頁。以下根據 slide 25 文字解釋。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 24 圖片：Big Data Analytics Pipeline</span><ol><li><b>Data collection</b>：Web scrawler、3rd party API、Data streaming</li><li>→ <b>Big Data warehouse</b>：AWS、Hadoop、Azure、Google BigQuery、Presto、Hive</li><li>→ <b>Analytics warehouse</b>：Vertica、PostgreSQL、Amazon Redshift、Cassandra 等</li><li>→ <b>Reporting dashboard</b>：Tableau、Power BI、Qlik</li></ol><p>旁邊仲有 <b>Monitoring</b>：Grafana、Kibana、Datadog，監察成條 pipeline。（Power BI 就係 Week 5 會教嘅工具。）</p></div>
 <div class="box exam"><span class="label">⭐ 考試重點：Common data pipeline components</span>
 <table>
 <tr><th>Layer</th><th>功能</th><th>例子工具</th></tr>
@@ -226,11 +228,11 @@
 <tr><td>一句總結</td><td>整齊的倉庫</td><td>乜都有的湖</td><td>Unifies Data Lake scalability with Data Warehouse features e.g., consistency</td></tr>
 </table>
 </div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 26、27 各有一張示意圖，文字擷取不到；請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 26–27 圖片</span><p><b>Slide 26</b>：幾個 Operational Systems 同 Flat files → <b>ETL</b>（Extraction, Transformation, Loading）→ <b>Data Warehouse</b>（Metadata, Summary data, Raw data）→ OLAP analysis / Data mining / Reporting。</p><p><b>Slide 27</b>：三欄比較。<b>Data Warehouse</b>：External / Operational Data → ETL → Data Marts → BI、Reports。<b>Data Lake</b>：structured、semi-structured 同 unstructured data（圖片、影片、聲音、文件）全部倒入 data lake，再分別做 Data Prep / ETL，俾 Data Science、ML、Real-time Database、Reports 用。<b>Lakehouse</b>：同樣嘅各類 data 入 data lake，上面加一層 metadata / transaction layer，直接支援 BI、Streaming Analytics、Data Science 同 ML，唔使再 copy 去 data marts。</p></div>
 
 <h2>10. Working with Data：Where does the time go?</h2>
 <p><span class="tag exam">Exam</span><b>Data scientists spend 80% of their time cleaning data</b>——幾十年來唔同行業的調查結果都差唔多。所以 Veracity / data cleaning 係 big data 工作的大部分。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 28、29 的圖表（時間分佈調查）係圖片，文字擷取不到；請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 28–29 圖片</span><p><b>Slide 28</b>：一份調查（n = 1099）嘅 data scientists 時間分佈：Data loading 19%、<b>Data cleansing 26%</b>、Data visualization 21%、Model selection 11%、Model training and scoring 12%、Deploying models 11%。旁邊係一篇文章標題「Data Scientists Spend 80% of Their Time on Data Cleaning. Here's Why That's Actually the Job.」（留意：呢個 chart 入面 cleansing 只佔 26%，但 loading + cleansing + visualization 加埋都有 66%，即係大部分時間都用喺 model 之前嘅準備工作。）</p><p><b>Slide 29</b>：一張相，有人睇緊書，枱上疊住幾本書，放大圈出其中一本：<b>"How to Lie with Statistics"</b>，提醒大家處理 data 時要小心數字可以點樣誤導人。</p></div>
 <h3>Big Data is not always successful：Google Flu Trends</h3>
 <p>Google 最初的 paper 聲稱 Google Flu Trends（用搜尋關鍵字預測流感）同 CDC 數據比較有 97% accurate；但 2012/2013 季節，佢預測的求診人數係 CDC 最終記錄的<b>兩倍</b>。教訓：資料量大唔代表準確；data quality、模型假設、搜尋行為改變（concept drift）都會令結果出錯。</p>
 

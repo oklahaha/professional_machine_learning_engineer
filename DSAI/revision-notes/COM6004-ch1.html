@@ -63,8 +63,8 @@
 </ul>
 
 <h3>1.3 機會 (Slides 7–8)</h3>
-<p>Slide 7「Great opportunities to improve productivity in all walks of life」主要係圖片。Slide 8 列出可以解決嘅社會大問題：改善 health care 同減低成本、尋找 alternative / green energy、預測 climate change 影響、透過提高農業產量減少飢餓同貧窮。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 7 只有圖片（各行各業應用嘅插圖），文字擷取不到；請對照原 slide 第 7 頁。</p></div>
+<p>Slide 7「Great opportunities to improve productivity in all walks of life」主要係一張 McKinsey infographic（見下面圖片說明）。Slide 8 列出可以解決嘅社會大問題：改善 health care 同減低成本、尋找 alternative / green energy、預測 climate change 影響、透過提高農業產量減少飢餓同貧窮。</p>
+<div class="box note"><span class="label">🖼️ Slide 7 圖片</span><p>McKinsey Global Institute 報告 "Big data: The next frontier for innovation, competition, and productivity" 嘅 infographic。<b>Big data — a growing torrent</b>：US$600 就買到可以存晒全世界音樂嘅硬碟；2010 年有 5 billion 部手機；Facebook 每月 share 30 billion pieces of content；全球 data 每年增長 40%，但 IT spending 只增長 5%；US Library of Congress 喺 2011 年 4 月收集咗 235 TB data；17 個美國行業之中有 15 個，平均每間公司存嘅 data 多過 Library of Congress。<b>Big data — capturing its value</b>：對 US health care 每年值 US$300 billion；對歐洲公營部門行政值 €250 billion；personal location data 帶嚟 US$600 billion consumer surplus；零售商 operating margin 可以提升 60%；美國仲欠 140,000–190,000 個 deep analytical 人才同 1.5 million 個 data-savvy managers。</p></div>
 
 <h2>2. 咩係 Data Mining？(Definition &amp; Origins)</h2>
 <p><span class="tag exam">Exam</span>Slide 9 列出兩個定義（"Many Definitions"），建議原文背：</p>
@@ -99,8 +99,8 @@
 <tr><td>有冇 target / label</td><td>有（例如 class attribute）— supervised</td><td>通常冇 — unsupervised</td></tr>
 <tr><td>例子 tasks</td><td>Classification、Regression、（Anomaly Detection 常被歸入）</td><td>Clustering、Association Rules、（Anomaly Detection）</td></tr>
 </table>
-<p>Slide 12 用一幅圖展示四大 tasks 圍繞住 Data：<b>Predictive Modeling</b>、<b>Clustering</b>、<b>Association Rules</b>、<b>Anomaly Detection</b>（圖中有 "Milk" 呢個 association 例子）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 12 嘅四大 tasks 示意圖（包括一個數據表同各 task 對應位置）係圖片，文字擷取不到；請對照原 slide 第 12 頁。</p></div>
+<p>Slide 12 用一幅圖展示四大 tasks 圍繞住 Data：<b>Predictive Modeling</b>、<b>Clustering</b>、<b>Association Rules</b>、<b>Anomaly Detection</b>。</p>
+<div class="box note"><span class="label">🖼️ Slide 12 圖片</span><p>中間係 "Data"，即 15 行嘅 Tid / Refund / Marital Status / Taxable Income / Cheat 表（同 Chapter 2 slide 14 嘅 record data 同一款）。四條線由中間射出去：<b>Clustering</b>（左上，三團唔同顏色嘅點）、<b>Predictive Modeling</b>（右上，一棵以 income range 做 root 嘅 decision tree）、<b>Anomaly Detection</b>（右下，幾團密集嘅點，外面有幾粒圈住嘅離群點）、<b>Association Rules</b>（左下，牛奶 → 尿片 Pampers，即「買 milk 嘅人都會買 diaper」）。</p></div>
 
 <div class="box exam"><span class="label">⭐ 考試重點：四大 tasks 一覽</span>
 <table>
@@ -115,7 +115,23 @@
 <h2>4. Predictive Modeling: Classification</h2>
 <p>Slide 13 定義：<b>Find a model for class attribute as a function of the values of other attributes.</b> 例子係一個預測 credit worthiness（信貸可信度）嘅 model。</p>
 <p>Slide 14 展示 Classification 嘅流程：一個 <b>Training Set</b>（有 categorical、categorical、quantitative attributes 同一個 <b>class</b> 欄）→ <b>Learn Classifier</b> → 得到 <b>Model</b> → 將 Model 應用落 <b>Test Set</b>（class 未知）去預測。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 13–14 嘅數據表（credit worthiness 例子、training / test set 表格）係嵌入物件 / 圖片，擷取不到具體數值；請對照原 slide 第 13–14 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 13–14 圖片</span>
+<p><b>Training set</b>（class = Credit Worthy；slide 14 標明 Employed、Level of Education 係 categorical，# years at present address 係 quantitative）：</p>
+<table>
+<tr><th>Tid</th><th>Employed</th><th>Level of Education</th><th># years at present address</th><th>Credit Worthy</th></tr>
+<tr><td>1</td><td>Yes</td><td>Graduate</td><td>5</td><td>Yes</td></tr>
+<tr><td>2</td><td>Yes</td><td>High School</td><td>2</td><td>No</td></tr>
+<tr><td>3</td><td>No</td><td>Undergrad</td><td>1</td><td>No</td></tr>
+<tr><td>4</td><td>Yes</td><td>High School</td><td>10</td><td>Yes</td></tr>
+</table>
+<p><b>Slide 13 嘅 model</b>（decision tree）：</p>
+<pre><code>Employed?
+├─ No  → No
+└─ Yes → Education?
+         ├─ Graduate               → Number of years: &gt; 3 yr → Yes ; &lt; 3 yr → No
+         └─ {High school, Undergrad} → Number of years: &gt; 7 yrs → Yes ; &lt; 7 yrs → No</code></pre>
+<p><b>Slide 14 嘅 test set</b>（Credit Worthy = ?）：(1) Yes, Undergrad, 7；(2) No, Graduate, 3；(3) Yes, High School, 2。</p>
+<p>用上面棵 tree 預測：(2) Employed = No → <b>No</b>；(3) Yes → High School → 2 &lt; 7 → <b>No</b>；(1) 啱啱等於 7 年，slide 棵 tree 冇講明 = 7 行邊邊，所以呢個係 boundary case。4 行 training data 放入棵 tree 全部預測正確。</p></div>
 
 <div class="box tip"><span class="label">💡 直覺理解：Training vs Test</span>
 <p>想像你溫書：Training set 就係有答案嘅 past paper，你由佢學識規律（model）；Test set 就係真考試，你冇答案，要靠學到嘅規律作答。如果你只係「背晒 past paper 答案」（overfitting），去到真考試就會失手——呢個概念會喺 Chapter 4B 詳細講。</p></div>
@@ -206,7 +222,8 @@
 <p>例如 transaction data（每行係一張單買咗咩），發現嘅 rules：</p>
 <pre><code>{Milk} --&gt; {Coke}
 {Diaper, Milk} --&gt; {Beer}</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 23 嘅 transaction 表（TID 同 Items）係嵌入表格 / 圖片，未能擷取；請對照原 slide 第 23 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 23 表格</span><p>TID 1 {Bread, Coke, Milk}；2 {Beer, Bread}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Coke, Diaper, Milk}（Chapter 2 slide 17 同 Chapter 6 都用同一個表）。</p>
+<p>可以驗證兩條 rules：有 Milk 嘅 transactions 係 {1, 3, 4, 5}，其中有 Coke 嘅係 {1, 3, 5}，所以 {Milk} → {Coke} 嘅 confidence = 3/4；有 {Diaper, Milk} 嘅係 {3, 4, 5}，其中有 Beer 嘅係 {3, 4}，所以 {Diaper, Milk} → {Beer} 嘅 confidence = 2/3（Chapter 6 會正式教 support 同 confidence）。</p></div>
 
 <h3>7.1 Applications (Slide 24)</h3>
 <ul>
@@ -243,7 +260,7 @@
 <tr><td>Healthcare (Slide 30)</td><td>IBM 預測 2020 年前 patient mortality 減少 20%；醫生可考慮所有資源再作決定；分析過往 trials、trends、病人 lifestyle、history、genetics。</td><td>Evidence-based personalized treatment、genome sequencing、forecast demand for medication</td></tr>
 <tr><td>Safety (Slide 31)</td><td>Smart city 涵蓋水、能源、通訊、房屋、交通；big data 協助 safety、crime prediction、disaster management。</td><td>2010 年 Haiti earthquake：企業、緊急服務、政府同市民協作；<b>data quality 對分配有限救援資源至關重要</b>。</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 32 "Social Impact" 只有一張圖片，文字擷取不到；請對照原 slide 第 32 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 32 圖片</span><p>四幅相，各配一句說明，同 slide 8 嘅四大社會問題一樣：Improving health care and reducing costs（聽診器放喺美金上面）、Predicting the impact of climate change（全球氣溫變化地圖）、Finding alternative / green energy sources（太陽能板同風車）、Reducing hunger and poverty by increasing agriculture production（試管入面嘅植物幼苗）。</p></div>
 
 <h2>10. Challenges of Data Mining</h2>
 <p><span class="tag exam">Exam</span>Slide 33 列出六個技術挑戰，屬典型「列舉 + 解釋」題：</p>

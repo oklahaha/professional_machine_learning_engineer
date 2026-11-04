@@ -70,7 +70,7 @@ air_quality.info()
   <li><b>Combine</b>：將各 group 嘅 function 結果合併成一個 data structure。</li>
 </ol>
 <p>用途例子：計每個 category group 嘅 statistics（例如每個月嘅平均 PM2.5）。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 3 頁 <code>groupby.png</code>（split-apply-combine 圖解）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ groupby.png（PDF 第 3 頁）</span><p>左邊 <code>my_data</code>：type / value = (a, 5)、(a, 3)、(b, 7)、(a, 8)、(b, 2)。<b>Split based on type</b> 分成兩個細 table：a 組 (5, 3, 8) 同 b 組 (7, 2)。每組各自 <b>apply</b> <code>mean()</code>：a → 5.33、b → 4.5。最後 <b>Combine</b> 成一個結果 table：type a 5.33、b 4.5。即係 <code>my_data.groupby('type')['value'].mean()</code>。</p></div>
 
 <h3>1.1 Syntax</h3>
 <pre><code>DataFrame.groupby(by=None, axis=0, level=None,
@@ -432,7 +432,7 @@ air_quality[['PM2.5','RAIN','TEMP_category','quarter']]\
   <li>可以用一個精簡嘅 table 追蹤同分析幾十萬個 data points，從唔同角度睇 data。</li>
   <li>支援喺 <b>indices 同 columns 兩邊</b>按 keys 做 aggregation（2D grouping）。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 16 頁 <code>pivot.png</code>（pivot table 圖解）係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ pivot.png（PDF 第 17 頁）</span><p>Excel PivotTable 截圖：表頭 "Sum of SALES"，rows 係 MONTH（January、February、April…December），每個月下面再分 CUSTOMER（Foo Bars、123 Warehousing、Acme, inc.、Demo Company、Smith and Co.、ABC Telecom、Fake Brothers、Widget Corp），columns 係 YEAR（2014、2015），格入面係 SALES 總和（例如 February / 123 Warehousing：2014 年 2,000,000、2015 年 0）。右邊 PivotTable Fields 面板：兩條箭咀顯示 <b>ROWS</b> 放咗 MONTH 同 CUSTOMER，<b>COLUMNS</b> 放 YEAR，<b>VALUES</b> 放 Sum of SALES。對應 pandas：<code>pd.pivot_table(df, index=['MONTH','CUSTOMER'], columns='YEAR', values='SALES', aggfunc='sum')</code>。</p></div>
 <div class="box link"><span class="label">🔗 連繫</span><p>就係 Excel 嘅 PivotTable，亦同 <a href="COM6002-w5.html">COM6002 Week 5 Power BI</a> 嘅 Matrix visual 一樣（Rows、Columns、Values 三個位）。同 <a href="COM6005-m3b.html">COM6005 Module 3B</a> 嘅 contingency table 都好似：<code>aggfunc='count'</code> 嘅 pivot table 就係兩個 categorical variables 嘅 contingency table，可以拎去做 Chi-squared test。</p></div>
 
 <h3>8.1 Student dataset</h3>
@@ -574,7 +574,7 @@ pd.pivot_table(student, index=['familysize'], columns=['sex'],
 <p>分析：sex、internet 兩個 groupers 都喺 index；頂部只有 <code>score</code>（values）；冇 function 名 → mean。</p>
 <pre><code># answer（參考）
 pd.pivot_table(student, index=['sex', 'internet'], values='score')</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Q4–Q6 嘅目標 output 喺 notebook 係圖片（<code>Q5.png</code>、<code>Q6.png</code>、<code>Q7.png</code>，檔名比題號大 1），PDF 冇文字；呢度用嘅係每題 <code>Out[ ]</code> 嘅文字 output。參考答案係根據 output 推斷，唔係講義提供。</p></div>
+<div class="box note"><span class="label">🖼️ Q5.png、Q6.png、Q7.png（PDF 第 21–23 頁）</span><p>已對照：三張目標圖嘅數字同各題 <code>Out[ ]</code> 完全一樣（Q4：F/no 9.184211 … M/yes 11.125786；Q5：max / min / mean / max_min 四組 score；Q6：age 嘅 max、min 同 score 嘅 median，按 studytime × sex 排），所以下面由 output 推斷嘅答案適用。參考答案仍然係推斷出嚟，講義冇直接提供。PDF 第 23 頁嘅 In [63] 係另一個示範：<code>aggfunc={'age': ['min', 'max'], 'score': lambda s: s.max() - s.min()}</code>，即係可以用 dict 俾每個 column 指定唔同 function，header 會出現 <code>&lt;lambda&gt;</code>。</p></div>
 
 <h3>Q5</h3>
 <pre><code>#                  max    min       mean  max_min
@@ -687,8 +687,8 @@ sns.catplot(x="quarter", hue="wd", y="PM2.5", kind="bar", data=air_quality)
 plt.show()
 
 # Correlation heatmap（連 Week 9 df.corr()）
-sns.heatmap(air_quality[['PM2.5','TEMP','WSPM','RAIN','quarter']].corr(), cmap=...)</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 30 頁 catplot 同 heatmap 嘅圖係圖片，文字擷取不到；heatmap 嘅 <code>cmap</code> 參數喺 PDF 截斷咗（只見 <code>cmap='c…</code>）。請對照原 PDF。</p></div>
+sns.heatmap(air_quality[['PM2.5','TEMP','WSPM','RAIN','quarter']].corr(), cmap='coolwarm', annot=True)   # cmap 係按圖推斷</code></pre>
+<div class="box note"><span class="label">🖼️ catplot 同 heatmap（PDF 第 30–31 頁）</span><p><b>catplot</b>：x 軸 quarter 1–4，每個 quarter 四條 bar（wd = N 藍、W 橙、E 綠、S 紅），bar 頂有 error bar。四個 quarter 都係 <b>E 最高</b>（Q1 約 128、Q4 約 138），S 第二（約 107、113），N 同 W 較低；Q2、Q3 整體最低（約 54–81）。即係 Q1、Q4（冬季）加上東風，PM2.5 最嚴重。</p><p><b>heatmap</b>：PM2.5、TEMP、WSPM、RAIN、quarter 五個 variables 嘅 correlation matrix，格入面有數字（即係用咗 <code>annot=True</code>），顏色由藍（負）經白到紅（正）。對角線全部係 1；最強嘅係 <b>PM2.5 vs WSPM = −0.28</b>（風速越大，PM2.5 越低）；其次 WSPM vs quarter −0.16、TEMP vs quarter 0.15、PM2.5 vs TEMP −0.14；其他差唔多係 0。由藍白紅嘅配色推斷，cmap 應該係 <code>'coolwarm'</code>（PDF 只見到 <code>cmap='c…</code>，所以呢點係推斷）。</p></div>
 <div class="box link"><span class="label">🔗 連繫</span><p>Visualization 嘅原則同圖表種類可以預習 <a href="COM6004-ch3.html">COM6004 Chapter 3 Data Exploration &amp; Visualization</a>。<code>catplot(kind="bar")</code> 其實就係將 groupby mean 畫出嚟：<code>air_quality.groupby(['quarter','wd'])['PM2.5'].mean()</code>。</p></div>
 
 <h2>14. Semi-Structured Data（programming 唔考）</h2>

@@ -264,7 +264,7 @@ stats.chi2.ppf(0.95, 5)                       # 11.071
 <tr><td>Slide 例子</td><td>Origin × Subject：\(\chi^2 = 55.56\)，\( df = 2 \)，crit 5.991 → reject</td><td>朱古力顏色：\(\chi^2 = 8.36\)，\( df = 5 \)，crit 11.071 → not reject</td></tr>
 </table></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification 做 feature selection 時，可以用 chi-square test 揀同 class label 最有關（dependent）嘅 categorical attributes（例如 scikit-learn <code>SelectKBest(chi2)</code>）；COM6004 Chapter 2 嘅 correlation analysis for nominal data 亦係用 \(\chi^2\)。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 10 係「本地生 vs 外地生」嘅示意圖頁，冇額外文字；slides 2、19 係分節標題頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 10 圖片</span><p>標題 "Chi-squared test for independence"，問題係 "Do local and foreign students differ in their preferences?"：一個公仔企喺分叉路口（好多個箭咀方向），右邊圈住一排唔同科目嘅書（Public Administration、Mathematics、Physics、Literature、Geography、Chemistry、Biology、History、Psychology…），即係「學生類別」同「揀邊科」兩個 categorical variables 係咪 independent。Slides 2、19 係分節標題頁。</p></div>
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 2×2 table：男 吸煙 30、不吸煙 70；女 吸煙 20、不吸煙 80。求所有 expected counts。</summary><p>Row totals：男 100、女 100；column totals：吸煙 50、不吸煙 150；\( N = 200 \)。E(男, 吸煙) = 100 × 50/200 = 25；E(男, 不吸煙) = 75；E(女, 吸煙) = 25；E(女, 不吸煙) = 75。</p></details>

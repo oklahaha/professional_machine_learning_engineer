@@ -145,7 +145,7 @@ print(d.dtypes)</code></pre>
 <li>\( P(X=5) = \frac{243}{120}e^{-3} \approx 0.1008 \)</li>
 </ul>
 <p>Python：<code>stats.poisson.pmf([0, 3, 5], 3)</code></p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 14 “Types of distributions” 係一張各種 distribution 形狀嘅 cheat-sheet 圖片（來源 DsciCheatsheet Facebook），文字擷取不到；請對照原 slide 第 14 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 14 圖片</span><p>Rasmus Bååth (2012) 整嘅 cheat-sheet，每格一個 distribution 形狀同佢嘅 parameters。Continuous：normal (\(\mu, \sigma\))、t distrib.、uniform (L, H)、beta、gamma、inv-gamma、exponential (\(\lambda\))、shifted exp.、chi-square (k)、noncentral chi-square、F dist. (df1, df2)、gen. gamma、double exp.、logistic、log-normal、Pareto、Weibull、Cauchy、folded t、half-t、half-Cauchy、half-normal、r-cens. / l-cens. normal。Discrete（用 bar 畫）：Bernoulli (\(\theta\))、binomial (p, n)、beta-binomial、neg. binomial、Poisson (\(\lambda\))、categorical、noncentral hypergeom.。本科只需要識 normal、uniform、binomial、Bernoulli、Poisson、exponential、t、chi-square 呢幾個。</p></div>
 
 <h2>4. Concepts of probability distribution：由 histogram 到 density</h2>
 <h3>4.1 Categorical data（slide 15）</h3>
@@ -173,7 +173,7 @@ print(d.dtypes)</code></pre>
 <div class="formula">$$ \text{norm.pdf}(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-(x-\mu)^2/2\sigma^2} $$</div>
 <div class="formula">$$ \text{norm.cdf}(x,\mu,\sigma) = \int_{-\infty}^{x} \text{norm.pdf}(s,\mu,\sigma)\, ds $$</div>
 <p>Histogram 可以有其他形狀，數學家就引入其他 distribution 去描述（細節略）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 17、20 係 histogram／cumulative histogram 同 probability density / cumulative density 嘅圖，文字擷取不到；請對照原 slide 第 17、20 頁。概念：PDF 係鐘形曲線；CDF 係由 0 升到 1 嘅 S 形曲線。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 17、20 圖片</span><p>兩頁都用同一份 data y（約 62.8–64.6，總共約 59 個值）。<b>Slide 17</b>：左幅係普通 histogram（y 軸 Frequency，63.4–63.6 最高約 16）；右幅係 cumulative histogram（y 軸 Cumulative frequency，由約 1 逐級升到 59）。<b>Slide 20</b>：同樣兩幅，但 y 軸改為 probability density function (pdf)（最高約 1.35）同 cumulative density function (cdf)（0 至 1.0），再疊上一條虛線：左邊係中心約 63.6 嘅鐘形 normal pdf，右邊係由 0 平滑升到 1 嘅 S 形 cdf。即係 histogram normalize 之後就係 pdf 嘅估計。</p></div>
 
 <h2>5. PMF、CMF、PDF、CDF</h2>
 <h3>5.1 Discrete variable（slide 21）</h3>

@@ -67,7 +67,8 @@
 <tr><td>表示 (slides 8–9)</td><td>平面上一組分開嘅 groups</td><td><b>Dendrogram</b>（traditional：binary tree；non-traditional：一個 node 可有多個 children）</td></tr>
 <tr><td>例子演算法</td><td>K-means、DBSCAN</td><td>Agglomerative（MIN、MAX、Group Average）、Divisive</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 8–9 嘅 partitional clustering 圖同 traditional / non-traditional hierarchical clustering 及 dendrograms 係圖片，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 8–9 圖片</span><p><b>Slide 8</b>：左邊係 original points（上面一堆、下面一堆），右邊用橢圓圈住，分成 3 個互不重疊嘅 clusters（上面兩個、下面一個）。</p>
+<p><b>Slide 9</b>：四個點 p1–p4。<b>Traditional</b>：nested 圈 {p3, p2} ⊂ {p2, p3, p4} ⊂ {p1, p2, p3, p4}；dendrogram 係 binary tree，每次只 merge 兩個。<b>Non-traditional</b>：{p1, p2} 同 {p3, p4} 兩個圈，再一齊包入大圈；dendrogram 嘅 root 可以有多過兩個 children。</p></div>
 
 <h3>2.1 Other Distinctions Between Sets of Clusters (Slide 10)</h3>
 <table>
@@ -112,7 +113,8 @@
 3:     Form K clusters by assigning all points to the closest centroid.
 4:     Recompute the centroid of each cluster.
 5: until The centroids don't change</code></pre></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 19 嘅 algorithm 框同 slides 20–21 嘅 K-means iteration 動畫圖係圖片；上面 algorithm 係教科書標準版本，請對照原 slide。</p></div>
+<p>（上面 algorithm 同 slide 19 嘅 "Algorithm 1 Basic K-means Algorithm" 一字不差。）</p>
+<div class="box note"><span class="label">🖼️ Slides 20–21 圖片</span><p>2D data 有三團：上面一大團（約 \(y\) 1.5–3）、左下一細團（約 (−1, 0)）、右下一細團（約 (1, 0)）。Iteration 1 時三個 centroids（+ 號）全部擠喺上面嗰團；之後每個 iteration 有兩個 centroids 慢慢向下移；到 iteration 6，三個 centroids 分別企喺三團嘅中心，每團一種顏色。</p></div>
 
 <h3>4.1 K-means Details (Slide 22)</h3>
 <ul>
@@ -175,7 +177,8 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <li>Slides 28–29：Starting with <b>two initial centroids in one cluster of each pair</b> of clusters → 每對 clusters 有兩個 centroids，結果可以正確分開。</li>
 <li>Slides 30–31：Starting with some pairs of clusters having <b>three</b> initial centroids, while others have only <b>one</b> → 有一個 centroid 嘅嗰對 clusters 會被合併成一個，有三個 centroids 嘅會將一個 cluster 錯誤切開。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 20–21、24–31 嘅 K-means iteration 圖、optimal / sub-optimal clustering 同 10-cluster 例子全部係圖片，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 24–31 圖片</span><p><b>Slide 24</b>：同一份三團 data（上面一大團、下面兩細團）。<b>Optimal clustering</b> 每團一種顏色；<b>sub-optimal clustering</b> 就將上面嗰大團切成左右兩半，而下面兩細團合併成一個 cluster。<b>Slides 25–26</b>：25 係初始 centroids 揀得好嘅情況，iterations 收斂到 optimal；26 係揀得差嘅情況，兩個 centroids 都喺上面嗰團，到 iteration 5 都仲係將佢切開，下面兩團共用一個 centroid（停喺兩團中間約 (0, 0)）。</p>
+<p><b>Slides 28–31</b>：10 個 clusters 排成上下兩行、5 對（x 約 2、6、10、14、18）。28–29：每對各有兩個 initial centroids，到 iteration 4，10 個 clusters 全部分得啱。30–31：x ≈ 6 嗰對得一個 centroid，所以上下兩個 clusters 被合併；x ≈ 18 嗰對有三個 centroids，其中一個 cluster 被切成兩半。</p></div>
 
 <h3>4.5 Solutions to Initial Centroids Problem (Slide 32)</h3>
 <ul>
@@ -264,9 +267,25 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <tr><td><b>Group Average</b></td><td>兩 clusters 之間所有 pairwise proximity 嘅<b>平均</b></td><td>\( d(C_i, C_j) = \dfrac{\sum_{p \in C_i}\sum_{q \in C_j} d(p, q)}{|C_i| \times |C_j|} \)</td></tr>
 <tr><td><b>Distance Between Centroids</b></td><td>兩個 centroids 之間嘅距離</td><td>\( d(C_i, C_j) = d(m_i, m_j) \)</td></tr>
 </table></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 56–65 嘅六點例子（點坐標、distance matrix、nested clusters 圖同 dendrograms for MIN / MAX / Group Average）係圖片，擷取不到具體數值；以下 worked example 用自擬 distance matrix。</p></div>
+<div class="box exam"><span class="label">⭐ Slides 56–65 原本例子：六點 distance matrix</span>
+<p>六點大約坐標：p1 (0.40, 0.53)、p2 (0.22, 0.38)、p3 (0.35, 0.32)、p4 (0.26, 0.19)、p5 (0.08, 0.41)、p6 (0.45, 0.30)。Slides 56、60、64 用同一個 distance matrix：</p>
+<table>
+<tr><th></th><th>p1</th><th>p2</th><th>p3</th><th>p4</th><th>p5</th><th>p6</th></tr>
+<tr><th>p1</th><td>0.00</td><td>0.24</td><td>0.22</td><td>0.37</td><td>0.34</td><td>0.23</td></tr>
+<tr><th>p2</th><td>0.24</td><td>0.00</td><td>0.15</td><td>0.20</td><td>0.14</td><td>0.25</td></tr>
+<tr><th>p3</th><td>0.22</td><td>0.15</td><td>0.00</td><td>0.15</td><td>0.28</td><td>0.11</td></tr>
+<tr><th>p4</th><td>0.37</td><td>0.20</td><td>0.15</td><td>0.00</td><td>0.29</td><td>0.22</td></tr>
+<tr><th>p5</th><td>0.34</td><td>0.14</td><td>0.28</td><td>0.29</td><td>0.00</td><td>0.39</td></tr>
+<tr><th>p6</th><td>0.23</td><td>0.25</td><td>0.11</td><td>0.22</td><td>0.39</td><td>0.00</td></tr>
+</table>
+<p>三種方法頭兩步都一樣：(1) {3, 6} at <b>0.11</b>；(2) {2, 5} at <b>0.14</b>。</p>
+<p><b>MIN（slide 57）</b>：(3) {3,6} + {2,5}：\( \min = d(2,3) = 0.15 \)；(4) + p4：\( d(3,4) = 0.15 \)；(5) + p1：\( d(1,3) = 0.22 \)。Dendrogram 葉次序 3, 6, 2, 5, 4, 1。</p>
+<p><b>MAX（slide 61）</b>：(3) {3,6} + p4：\( \max(0.15, 0.22) = 0.22 \)（比 {3,6}–p1 嘅 0.23、{2,5}–p4 嘅 0.29 細）；(4) {2,5} + p1：\( \max(0.24, 0.34) = 0.34 \)（比 {3,6,4}–p1 嘅 0.37 細）；(5) {3,6,4} + {2,5,1} at <b>0.39</b>。Dendrogram 葉次序 3, 6, 4, 1, 2, 5，高度 0.11、0.14、0.22、0.34、0.39。</p>
+<p><b>Group Average</b>：(3) {3,6} + p4：\( (0.15 + 0.22)/2 = 0.185 \)（細過 {3,6}–p1 嘅 0.225）；(4) 比較 \( d(\{3,6,4\}, \{2,5\}) = (0.15 + 0.28 + 0.25 + 0.39 + 0.20 + 0.29)/6 = 0.26 \)、\( d(\{3,6,4\}, p1) = (0.22 + 0.23 + 0.37)/3 = 0.273 \)、\( d(\{2,5\}, p1) = (0.24 + 0.34)/2 = 0.29 \)，最細係 0.26，所以 <b>{3,6,4} + {2,5}</b>；(5) 最後加 p1。</p></div>
+<div class="box warn"><span class="label">⚠️ Slide 65 張圖同 distance matrix 對唔上</span><p>Slide 65 嘅 nested clusters 同 dendrogram 畫成第 4 步係 {3,6,4} + p1，第 5 步先同 {2,5} 合併；dendrogram 高度（約 0.08、0.10、0.15、0.23、0.26）亦同上面 matrix 唔一致。用 slide 64 嘅 matrix 計，第 4 步應該係 {3,6,4} + {2,5}（0.26 &lt; 0.273），同教科書文字嘅結論一樣。考試如果俾 matrix 你計，就跟計算結果答。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 58–59、62–63 圖片</span><p><b>Slide 58</b>：一組彎曲、交纏嘅形狀（好似字母），MIN 分出 six clusters，每個彎曲形狀完整保留。<b>Slide 59</b>：三團點（左細右大），中間有少量 noise 點；MIN 分 two clusters 時，左邊細團同中間嗰團被 noise 連埋，分三個先分得開。<b>Slide 62</b>：同一份 data，MAX 分 two clusters 得出左細團同右邊兩團合一，冇被 noise 牽連。<b>Slide 63</b>：一個細圓同一個大圓，MAX 分 two clusters 時將細圓連同大圓嘅左半邊歸做一個 cluster，大圓被一分為二，即 "tends to break large clusters"。</p></div>
+<h3>5.4 Worked example：MIN / MAX / Group Average（自擬，用嚟練習）</h3>
 
-<h3>5.4 Worked example：MIN / MAX / Group Average（自擬）</h3>
 <p>五點 a–e 嘅 distance matrix：</p>
 <table>
 <tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th></tr>
@@ -379,11 +398,12 @@ dendrogram(linkage(squareform(D), "single"), labels=list("abcde"))</code></pre>
 <li><b>Ideal Similarity Matrix</b>：每個 data point 一行一列；entry = <b>1</b> if the pair belongs to the <b>same cluster</b>，<b>0</b> if different clusters。</li>
 </ul>
 <p>計兩個 matrices 嘅 <b>correlation</b>。因為 matrices 係 symmetric，只需要計 <b>\( n(n-1)/2 \)</b> 個 entries。<b>High correlation</b> 表示同一 cluster 嘅點互相接近。<b>Not a good measure for some density or contiguity-based clusters.</b></p>
-<div class="box warn"><span class="label">⚠️ 留意符號</span><p>如果用 <b>distance</b> matrix（而唔係 similarity），好 clustering 嘅 correlation 會係<b>負數</b>（同 cluster → ideal = 1 而 distance 細）。教科書例子（slide 73）兩個 data sets 嘅 correlation 分別約 −0.92（清晰 clusters）同 −0.58（random data）——數字以 slide 圖為準。</p></div>
+<div class="box warn"><span class="label">⚠️ 留意符號</span><p>如果用 <b>distance</b> matrix（而唔係 similarity），好 clustering 嘅 correlation 會係<b>負數</b>（同 cluster → ideal = 1 而 distance 細）。Slide 73 例子：K-means 喺兩個 data sets 上嘅 correlation 分別係 <b>−0.9235</b>（三團清晰 clusters）同 <b>−0.5810</b>（random data）。</p></div>
 
 <h3>6.3 Using Similarity Matrix for Cluster Validation (Slides 74–76)</h3>
 <p><b>Order the similarity matrix with respect to cluster labels and inspect visually.</b> 好嘅 clustering 會見到對角線上有清晰嘅高相似度方塊。<b>Clusters in random data are not so crisp</b>（slides 75–76：DBSCAN、K-means、Complete Link 喺 random data 上嘅方塊都模糊）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 73–78、80–81、83 嘅 similarity matrix 圖、SSE curves、histogram 同 cohesion / separation 圖係圖片，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 74–78 圖片</span><p><b>Slide 74</b>：三團清晰 clusters 嘅 100 × 100 similarity matrix，按 cluster labels 排序後，對角線上有三個深紅色方塊（similarity 接近 1），方塊之外係藍色（低 similarity）。<b>Slides 75–76</b>：random data 用 K-means 同 Complete Link 分出嘅 clusters，對角線方塊淡好多，外面亦有好多黃色、橙色，邊界模糊。</p>
+<p><b>Slide 77</b>：10 個 clusters（上下兩行、每行 5 個）嘅 SSE vs K 曲線：K = 2 時約 10，K = 5 時急跌到約 2，K = 10 時跌到接近 0，之後變平。所以 <b>K = 10</b>（同 K = 5）位置有明顯 elbow。<b>Slide 78</b>：一份形狀複雜嘅 data，SSE curve 由約 11,500 平滑咁跌落去，冇明顯 elbow。</p></div>
 
 <h3>6.4 Internal Measures: SSE (Slides 77–78)</h3>
 <p><b>Internal Index</b>：used to measure the goodness of a clustering structure <b>without respect to external information</b>，例如 SSE。</p>
@@ -404,6 +424,7 @@ plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 el
 </ul>
 <p><b>Statistical Framework for SSE (slide 80)</b>：例子：compare SSE of <b>0.005</b> against three clusters in random data。Histogram 顯示 500 組 random data（每組 100 點，x、y 分佈於 0.2–0.8）分成 3 clusters 嘅 SSE——random data 嘅 SSE 遠大於 0.005，所以 \( SSE = 0.005 \) 嘅 clustering 好 "atypical" → 代表真實結構。</p>
 <p><b>Statistical Framework for Correlation (slide 81)</b>：同樣將 ideal similarity / proximity matrix 嘅 correlation 同 random data 比較。</p>
+<div class="box note"><span class="label">🖼️ Slides 80–81 圖片</span><p><b>Slide 80</b>：500 組 random data 嘅 SSE histogram 大約分佈喺 0.016–0.034，高峰約 0.022；三團清晰 clusters 嘅 SSE 只有 0.005，比成個 histogram 都細好多。<b>Slide 81</b>：random data 嘅 correlation histogram 大約分佈喺 −0.68 至 −0.37，高峰約 −0.58。清晰 data 嘅 −0.9235 遠遠超出呢個範圍，所以係 valid structure；而 random data 嘅 −0.5810 就啱啱喺 histogram 中間，即係「同 random 冇分別」。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個「同 random data 比較，睇結果有幾 unlikely」嘅思路就係 COM6005 hypothesis testing 嘅 p-value 概念：null hypothesis = data 冇 cluster 結構；如果觀察到嘅 SSE 喺 null distribution 下極罕見，就 reject null。</p></div>
 
 <h3>6.6 Internal Measures: Cohesion and Separation (Slides 82–84)</h3>
@@ -423,7 +444,7 @@ plt.plot(range(1, 11), sse, "o-"); plt.xlabel("K"); plt.ylabel("SSE")   # 搵 el
 <li><b>\( K = 2 \)</b>：clusters {1, 2}（\(m_1 = 1.5\)）同 {4, 5}（\(m_2 = 4.5\)）：\( SSE = 0.25+0.25+0.25+0.25 = \) <b>1</b>；\( SSB = 2(3-1.5)^2 + 2(4.5-3)^2 = 4.5 + 4.5 = \) <b>9</b>；Total = 10 ✓</li>
 </ul>
 <p>好嘅 clustering：SSE 細（cohesion 高）、SSB 大（separation 高）。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 82 嘅 SSE / SSB 公式同 slide 83 嘅數值例子係圖片；上面公式同例子係教科書標準內容（slide 文字 "Where |Ci| is the size of cluster i" 與之吻合），請對照原 slide。</p></div>
+<p>（Slide 82 嘅公式同 slide 83 嘅例子同上面一樣：slide 用 \(m_1\)、\(m_2\)、\(m\) 標示 1.5、4.5、3 嘅位置，寫明 BSS + WSS = constant。）</p>
 <p><b>Proximity graph based approach (slide 84)</b>：Cluster cohesion is the <b>sum of the weight of all links within a cluster</b>；cluster separation is the <b>sum of the weights between nodes in the cluster and nodes outside the cluster</b>。</p>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>\( SSE + SSB = TSS \) 同 COM6005 ANOVA / regression 嘅 \( SST = SSW + SSB \)（或 \( SSE + SSR \)）係同一個分解。</p></div>
 

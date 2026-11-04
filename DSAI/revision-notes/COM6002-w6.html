@@ -58,7 +58,7 @@
 <tr><td><b>Economic Benefits</b></td><td>Connect smaller, cheaper machines vs a single, monolithic mainframe</td><td>好多部平機加埋，往往比一部超級 mainframe 更抵</td></tr>
 </table>
 </div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3「Example cost difference」係 Dell PowerEdge server 價錢的截圖，文字擷取不到；重點係高階 server 價錢唔係按性能線性上升，請對照原 slide 第 3 頁睇實際數字。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 3 圖片</span><p>Dell HK 網站兩部 1U rack server（Premium Customization）嘅價錢：<b>PowerEdge R450</b>（3rd generation Intel Xeon Scalable processors）<b>HK$232,835.61</b>；<b>PowerEdge R670</b>（two-socket，high-performance computing）<b>HK$362,304.46</b>。一部 server 已經要二三十萬港幣，高階型號再貴五成幾，所以 scale up 好快就會好貴。</p></div>
 
 <h2>2. Distributed database system 與 Location transparency</h2>
 <p><mark class="k">Distributed database system</mark>：Host the database on multiple machines (<b>nodes</b>)。Goal：<b>As if it were a single, centralized database</b>，即係 user 用起上嚟要好似只得一個 database，唔使理 data 實際放喺邊部機。</p>
@@ -178,7 +178,7 @@ SELECT * FROM T_A JOIN T_B ON T_A.EmployeeID = T_B.EmployeeID;</code></pre>
 <li><b>Local Execution</b>：Site 2 執行，得到 (107, George Costanza, Marketing, $70,000, 2022-04-12, True)</li>
 <li><b>Result Reconstruction</b>：<b>Not necessary</b> as there is only one local result</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 有一幅 global view → Site 1 / Site 2 的示意圖（圖片），文字只擷取到兩個 site 的條件；請對照原 slide 第 16 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 16 圖片</span><p>Global view 分成兩個方塊：<b>Site 1：EmployeeID &lt;= 105</b>、<b>Site 2：EmployeeID &gt; 105</b>。右下角係上一頁嘅 "Horizontal Fragmentation Example" 縮圖：Site 1 有 101–105（Alice Johnson … Ethan Hunt），Site 2 有 106–110（Fiona Gleanne、George Costanza、Hannah Baker、Ian Malcolm、Jessica Day）。</p></div>
 
 <h3>5.3 Example 2：Sales 的 full-time 員工（slide 18）</h3>
 <pre><code>SELECT Name, Salary FROM T
@@ -206,7 +206,7 @@ WHERE Department = 'Sales' AND IsFullTime = True</code></pre>
 </table>
 </div>
 <p>以下三個例子都用同一個 setting：transaction <b>T1 = Read(x), Write(y)</b>；<b>x 放喺 Node 1, 3, 7</b>；<b>y 放喺 Node 2, 5, 8</b>。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 21、23、25 的箭嘴圖係由 shapes 畫成，文字擷取到 node 名同步驟編號，但箭嘴方向擷取唔到。以下步驟根據擷取到的文字同 slide 的 analysis 整理，請對照原 slide 確認每條箭嘴。</p></div>
+<p>（已對照 slides 21、23、25 嘅箭咀圖，下面步驟同圖一致。<b>Slide 21</b>：1 Readlock(x) 同 3 Writelock(y) 都指向 Centralized node；2 Read(x) 指向 Node 1；4 Write(y) 指向 Node 2、Node 5、Node 8。<b>Slide 23</b>：1 Readlock(x) 同 2 Read(x) 都指向 Node 3；3 Writelock(y) 指向 Node 8；4 Write(y) 指向 Node 8、Node 2、Node 5。<b>Slide 25</b>：1 Readlock(x) 指向 Node 3 同 Node 1；2 Read(x) 指向 Node 1；3 Writelock(y) 指向 Node 2 同 Node 5；4 Write(y) 指向 Node 8、Node 2、Node 5。）</p>
 
 <h3>7.1 Centralized 2PL（slides 21–22）</h3>
 <p>假設 Node 1 同 Node 2 最近 user，另有一個 Centralized node 做 lock manager：</p>

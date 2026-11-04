@@ -327,7 +327,7 @@ print(f"median is {wdi['alcohol_consumption_per_capita'].median()}")   # 5.96956
 print(f"mean is {wdi['alcohol_consumption_per_capita'].mean()}")       # 5.969568370579797</code></pre>
 <p>Slide 結論：「The filled data becomes more symmetric, where its mean = its median」。</p>
 <div class="box tip"><span class="label">💡 點解 median 會變成等於 mean？</span><p>alcohol 有 226 / 446 ≈ 50.7% 係 missing，全部用 mean（5.9696）填之後，<b>超過一半</b>嘅值都等於 5.9696，所以排序後中間位置一定落喺呢堆值入面 → median = mean。Mean 本身冇變（填 mean 唔改 mean）。但要知道：咁做會令 distribution 喺 mean 位置出現一條極高嘅柱，std 被人為縮細——missing 比例高時，mean imputation 會扭曲 distribution。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 25 頁（填之前）同第 26 頁（填之後）嘅 <code>wdi['alcohol_consumption_per_capita'].hist()</code> histogram 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ 兩幅 histogram（PDF 第 25–26 頁）</span><p><b>填之前</b>：值分佈喺 0–15 之間，比較平均，最高嘅 bar 係 0–1.5（約 34），4.5–7 約 31–32，8–9 有個凹位（約 17），12 以上好少（約 8、2）。<b>用 mean 填之後</b>：4.5–6 嗰條 bar 由大約 30 暴升到大約 <b>258</b>（即原本約 30 + 226 個填入嘅 mean），其他 bars 不變。成個分佈中間多咗一條好高嘅柱，呢個就係 mean imputation 嘅副作用：variance 被人為壓低，distribution 嘅形狀亦被扭曲。</p></div>
 
 <h3>7.2 Filling the most frequent value for categorical columns</h3>
 <p>兩個 function 可以攞 categorical column 嘅 most frequent value：</p>
@@ -356,7 +356,7 @@ wdi[cat_cols].describe()
 <h3>7.3 Q6：點樣由 <code>describe()</code> 同 <code>mode()</code> 抽出 most frequent values？</h3>
 <pre><code>wdi[cat_cols].mode().loc[0]           # 第 0 行 → country_name Belarus, country_category DEVELOPING
 wdi[cat_cols].describe().loc['top']   # 'top' 行 → (notebook 該次執行) Belarus, DEVELOPING</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 28 頁 <code>mode and top.png</code> 圖示 mode() 同 describe() 結果嘅位置，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ mode and top.png（PDF 第 28 頁）</span><p>上面係 <code>wdi[cat_cols].describe()</code>（top = Euro area / DEVELOPING，freq = 3 / 231），下面係 <code>wdi[cat_cols].mode()</code>（12 行：Belarus、Comoros、Euro area … United Arab Emirates；country_category 只有第 0 行係 DEVELOPING，其餘係 NaN）。兩個箭咀分別由 describe 嘅 <b>top</b> 行同 mode 嘅 <b>第 0 行</b>指去右邊嘅 Series（country_name Euro area、country_category DEVELOPING，Name: top），旁邊寫住 "We need to retrieve part of the data that include both the index and the most-frequent values"，即係要用 <code>.loc['top']</code> 或者 <code>.loc[0]</code> 攞出呢一行。</p></div>
 <div class="box warn"><span class="label">⚠️ 留意</span><p>同一個 notebook 入面 <code>describe()</code> 嘅 top 一次係 Euro area、一次係 Belarus——正正示範「arbitrarily chosen」。如果需要穩定結果，用 <code>mode().loc[0]</code>（mode 輸出係排好序嘅）。</p></div>
 
 <h3>7.4 Impute categorical columns with most frequent values</h3>

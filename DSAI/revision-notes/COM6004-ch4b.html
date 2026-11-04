@@ -62,7 +62,13 @@
 <li><b>10% 用作 training，90% 用作 testing。</b></li>
 </ul>
 <p>Slides 6–9 比較 nodes 數目唔同嘅 decision trees：<b>4 nodes</b> 嘅 tree boundary 好簡單；<b>50 nodes</b> 嘅 tree 喺 training data 上畫出好多細碎 boundaries（連 noise 都 fit 埋）。Slide 9 問："Which tree is better?"</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 5–9 嘅散點圖、trees 同 decision boundaries，以及 slides 10–12 嘅 error curves 全部係圖片；請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 5–12 圖片</span>
+<p><b>Slide 5</b>：\(x_1\)、\(x_2\) 都係 0–20。藍色 + 密集咁聚喺 (10, 10) 附近，紅色 o 均勻散佈喺成個正方形。</p>
+<p><b>Slide 6</b>：Train error vs Number of Nodes（0–150）：error 由約 0.48 急跌，大約 5 個 nodes 已經跌到約 0.1；之後慢慢跌，到約 150 nodes 時跌到 0。</p>
+<p><b>Slide 7（4 nodes）</b>：tree 係 \(x_1 \lt 6.46\) → \(x_1 \lt 13.11\) → \(x_2 \lt 7.04\) → \(x_2 \lt 14.31\)，即係喺中間圍出一個長方形（約 \(x_1\) 6.5–13、\(x_2\) 7–14.3）判為 +，其餘判為 o。Boundary 簡單，抓到 Gaussian 嘅主體。</p>
+<p><b>Slide 8（50 nodes）</b>：tree 好深好闊，boundary 喺中間區域切出好多細小嘅格仔，追住個別 noise 點，即係 overfitting。</p>
+<p><b>Slide 10</b>：左幅（0–9 nodes）train 同 test error 一齊由約 0.5 跌到約 0.1，兩條線幾乎重疊；右幅（0–150 nodes）train error 繼續跌到 0，但 <b>test error 由約 0.1 慢慢升到約 0.17</b>，即係 overfitting。</p>
+<p><b>Slides 11–12</b>：左幅係原本 data size（test error 隨 nodes 增加而升到約 0.17）；右幅用 <b>twice the number of data instances</b>，train 同 test error 兩條線一直貼近，喺約 0.1 左右企穩。Slide 12 再加埋兩棵 50-node tree 嘅 boundary：data 多咗之後，boundary 變得簡潔，好似 4-node 嗰棵咁圍住中間。</p></div>
 
 <h2>2. Underfitting &amp; Overfitting</h2>
 <p>Slide 10：<b>As the model becomes more and more complex, test errors can start increasing even though training error may be decreasing.</b></p>
@@ -161,8 +167,12 @@ X_tr, X_val, y_tr, y_val = train_test_split(X_tmp, y_tmp, test_size=0.25, random
 </table>
 <p>\( \text{Accuracy} = (250 + 200)/500 = \) <b>90%</b>；\( \text{Cost} = 250(-1) + 45(100) + 5(1) + 200(0) = -250 + 4500 + 5 = \) <b>4255</b></p>
 <p><b>結論</b>：M2 accuracy 較高，但 cost 較高（因為 FN 多咗，而 FN 好貴）→ 以 cost 計 <b>M1 較好</b>。Accuracy 同 cost 可以得出相反結論。</p></div>
-<p>Slide 24 "Cost vs Accuracy"：教科書指出如果 cost matrix 係對稱（\( C(\text{Yes} \mid \text{No}) = C(\text{No} \mid \text{Yes}) = q \)，\( C(\text{Yes} \mid \text{Yes}) = C(\text{No} \mid \text{No}) = p \)），咁 cost 同 accuracy 成線性關係，兩者排名一致；只有 cost 唔對稱時兩者先會分歧。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–24 係圖片（cost matrix、computing cost、cost vs accuracy 推導）；slide 24 嘅內容係根據教科書補充，請對照原 slide。Slide 53 嘅表格有文字，已完整收錄。</p></div>
+<p>（上面 M1、M2 嘅 cost matrix 同 confusion matrices 同 slide 23 一樣，slide 23 亦寫明 Accuracy = 80% / 90%、Cost = 3910 / 4255。）</p>
+<div class="box exam"><span class="label">⭐ Slide 24：Cost vs Accuracy 推導</span>
+<p>Confusion matrix 用 \(a\)（Yes→Yes）、\(b\)（Yes→No）、\(c\)（No→Yes）、\(d\)（No→No），\(N = a + b + c + d\)，\(\text{Accuracy} = (a + d)/N\)。</p>
+<p><b>Accuracy is proportional to cost if</b>：(1) \( C(\text{Yes} \mid \text{No}) = C(\text{No} \mid \text{Yes}) = q \)；(2) \( C(\text{Yes} \mid \text{Yes}) = C(\text{No} \mid \text{No}) = p \)。咁：</p>
+<div class="formula">$$ \begin{aligned} \text{Cost} &amp;= p(a + d) + q(b + c) \\ &amp;= p(a + d) + q(N - a - d) \\ &amp;= qN - (q - p)(a + d) \\ &amp;= N\,[\,q - (q - p) \times \text{Accuracy}\,] \end{aligned} $$</div>
+<p>即係 cost 係 accuracy 嘅 linear function（當 \(q \gt p\)，accuracy 越高 cost 越低），所以兩者排名一致；只有 cost matrix 唔符合呢兩個條件時（例如 slide 23），兩者先會得出相反結論。</p></div>
 
 <h2>7. Precision, Recall, F-measure &amp; 其他 Measures</h2>
 <div class="box exam"><span class="label">⭐ 考試重點：Alternative Measures (Slides 25, 45, 48)</span>
@@ -224,8 +234,8 @@ print(classification_report(y_true, y_pred))</code></pre>
 <tr><td><b>Repeated cross-validation</b></td><td>做幾次 cross-validation</td><td>Gives an estimate of the <b>variance</b> of the generalization error</td></tr>
 <tr><td><b>Stratified cross-validation</b></td><td>Guarantee the <b>same percentage of class labels</b> in training and test</td><td>Important when <b>classes are imbalanced and the sample is small</b></td></tr>
 </table></div>
-<div class="box tip"><span class="label">💡 3-fold CV 例子 (Slide 29)</span><p>Data 分 3 份 \( D_1 \)、\( D_2 \)、\( D_3 \)：Run 1 train \( D_2 + D_3 \)、test \( D_1 \)；Run 2 train \( D_1 + D_3 \)、test \( D_2 \)；Run 3 train \( D_1 + D_2 \)、test \( D_3 \)。最終 error = 三次 test errors 嘅平均（或者將三次 confusion matrices 加埋再計）。例如三次 errors 係 0.10、0.15、0.11 → CV error = 0.12。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 27 嘅 learning curve 同 slide 29 嘅 3-fold CV 示意圖係圖片，請對照原 slide。</p></div>
+<div class="box tip"><span class="label">💡 3-fold CV 例子 (Slide 29)</span><p>Data 分 3 份 \( D_1 \)、\( D_2 \)、\( D_3 \)：（slide 用 \(S_1, S_2, S_3\) 表示；黑色格 = Test Set，白色格 = Training Set）Run 1 train \( D_2 + D_3 \)、test \( D_1 \)；Run 2 train \( D_1 + D_3 \)、test \( D_2 \)；Run 3 train \( D_1 + D_2 \)、test \( D_3 \)。最終 error = 三次 test errors 嘅平均（或者將三次 confusion matrices 加埋再計）。例如三次 errors 係 0.10、0.15、0.11 → CV error = 0.12。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 27 圖片</span><p>Learning curve：x 軸係 Sample Size（log scale，\(10^0\) 至 \(10^4\)），y 軸係 Accuracy。Sample 好細時 accuracy 只有約 61%，而且 error bar 好長（大約 48–75%）；sample 增大，accuracy 升到約 90%，error bar 亦縮到好短，逐漸貼近上面一條約 91% 嘅虛線。即係 data 越多，估計越準亦越穩定。</p></div>
 <pre><code>from sklearn.model_selection import cross_val_score, StratifiedKFold, LeaveOneOut, RepeatedStratifiedKFold
 cross_val_score(clf, X, y, cv=StratifiedKFold(n_splits=10, shuffle=True, random_state=0))
 cross_val_score(clf, X, y, cv=LeaveOneOut())
@@ -253,7 +263,7 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <h3>9.1 Continuous-valued outputs (Slides 34–36)</h3>
 <p>要畫 ROC curve，classifier 必須產生 <b>continuous-valued output</b>（score），用嚟將 test records 由「最可能係 positive」排到「最唔可能」。好多 classifiers 只產生 discrete output（predicted class），但可以攞到 continuous outputs：Decision trees（leaf 入面 positive 比例）、rule-based classifiers、neural networks、Bayesian classifiers（posterior probability）、k-nearest neighbors（neighbors 中 positive 比例）、SVM（距離 hyperplane \(\mathbf{w}\cdot\mathbf{x}+b\)）。</p>
 <p>Slide 35：Decision tree 嘅 continuous-valued outputs（每個 leaf 嘅 class 比例）。Slide 36：一維 data 有兩個 classes，<b>\( x &gt; t \) 就分類為 positive</b>；喺某個 threshold \( t \)：<b>\( TPR = 0.5 \)、\( FNR = 0.5 \)、\( FPR = 0.12 \)、\( TNR = 0.88 \)</b>。\( t \) 向左移 → TPR 同 FPR 一齊上升。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 33、35–37、39 嘅 ROC 圖、decision tree 圖同 slide 39 嘅 score 表係圖片；以下 worked example 為自擬數字。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 33、35–37 圖片</span><p><b>Slide 33</b>：一條紅色 ROC curve 由 (0,0) 向左上拱起去到 (1,1)，下面係藍色對角線（random guessing）。<b>Slide 35</b>：左邊係一棵 decision tree（root \(x_2 \lt 12.63\)，leaves 標 + / o）；右邊係同一棵 tree，但每個 leaf 改為 continuous-valued output（positive 比例），例如 0.059、0.220、0.107、0.071、0.164、0.727、0.143、0.669、0.271、0.654、0。<b>Slide 36</b>：兩條鐘形曲線，negative class 中心約 −4，positive class 中心約 +3，threshold \(t\) 約喺 3；右邊 ROC 圖用箭咀指住呢個 threshold 對應嘅點 (FPR 0.12, TPR 0.5)。<b>Slide 37</b>：M1（紅實線）喺左邊（FPR 約 &lt; 0.35）較高，M2（藍虛線）喺右邊較高，兩條線喺 FPR 約 0.35 附近交叉。</p></div>
 
 <h3>9.2 How to Construct an ROC Curve (Slides 38–39)</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：構建步驟</span>
@@ -264,7 +274,21 @@ cross_val_score(clf, X, y, cv=RepeatedStratifiedKFold(n_splits=5, n_repeats=10))
 <li>Count the number of TP, FP, TN, FN at each threshold。</li>
 <li>\( TPR = TP/(TP + FN) \)；\( FPR = FP/(FP + TN) \)；將每對 \( (FPR, TPR) \) 畫出並連線。</li>
 </ol></div>
-<p><b>Worked example（自擬）</b>：10 個 instances（5 個 +、5 個 −）：</p>
+<div class="box exam"><span class="label">⭐ Slide 39 原本例子</span>
+<p>10 個 instances（5 個 +、5 個 −），threshold \(\ge\) 每個 score：</p>
+<table>
+<tr><th>Class</th><td>+</td><td>−</td><td>+</td><td>−</td><td>−</td><td>−</td><td>+</td><td>−</td><td>+</td><td>+</td><td></td></tr>
+<tr><th>Threshold \(\ge\)</th><td>0.25</td><td>0.43</td><td>0.53</td><td>0.76</td><td>0.85</td><td>0.85</td><td>0.85</td><td>0.87</td><td>0.93</td><td>0.95</td><td>1.00</td></tr>
+<tr><th>TP</th><td>5</td><td>4</td><td>4</td><td>3</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>0</td></tr>
+<tr><th>FP</th><td>5</td><td>5</td><td>4</td><td>4</td><td>3</td><td>2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><th>TN</th><td>0</td><td>0</td><td>1</td><td>1</td><td>2</td><td>3</td><td>4</td><td>4</td><td>5</td><td>5</td><td>5</td></tr>
+<tr><th>FN</th><td>0</td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><th>TPR</th><td>1</td><td>0.8</td><td>0.8</td><td>0.6</td><td>0.6</td><td>0.6</td><td>0.6</td><td>0.4</td><td>0.4</td><td>0.2</td><td>0</td></tr>
+<tr><th>FPR</th><td>1</td><td>1</td><td>0.8</td><td>0.8</td><td>0.6</td><td>0.4</td><td>0.2</td><td>0.2</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+<p>由右至左讀（threshold 由高至低）：1.00 時全部預測 −，即 (FPR, TPR) = (0, 0)；0.95 嗰個係 +，所以 TP 加 1；0.87 嗰個係 −，所以 FP 加 1；如此類推。Slide 張 ROC 圖將呢 11 個點用梯級連起：(0,0)→(0,0.2)→(0,0.4)→(0.2,0.4)→(0.2,0.6)→(0.4,0.6)→(0.6,0.6)→(0.8,0.6)→(0.8,0.8)→(1,0.8)→(1,1)。</p>
+<p>按呢條梯級計 AUC \(= 0.2 \times 0.4 + 0.6 \times 0.6 + 0.2 \times 0.8 = 0.08 + 0.36 + 0.16 = \) <b>0.60</b>，只係比 random（0.5）好少少，條 curve 有一段貼住對角線。注意 0.85 有三個 ties（−、−、+）；slide 逐個分開數，所以呢段畫成梯級（嚴格嚟講 ties 應該連成斜線）。</p></div>
+<p><b>Worked example（自擬，用嚟練習）</b>：另外 10 個 instances（5 個 +、5 個 −）：</p>
 <table>
 <tr><th>Score</th><th>Class</th><th>Threshold \( \ge \)</th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>TPR</th><th>FPR</th></tr>
 <tr><td>0.95</td><td>+</td><td>0.95</td><td>1</td><td>0</td><td>4</td><td>5</td><td>0.2</td><td>0</td></tr>
@@ -318,7 +342,7 @@ roc_auc_score(y, s)   # 0.72</code></pre>
 <p>Decision rule：classify \( x \) as + if \( \text{Cost}(+) &lt; \text{Cost}(-) \)。如果 \( C(+,+) = C(-,-) = 0 \)：</p>
 <div class="formula">$$ \text{classify as + if } \; p(+|x) \gt \frac{C(-,+)}{C(-,+) + C(+,-)} $$</div>
 <p>（\( C(i, j) \) = 實際 class \( i \) 被預測為 \( j \) 嘅 cost。）</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 54–55 嘅 argmax / argmin 公式同最後 threshold 公式係圖片；上面係按 slide 文字 \( \text{Cost}(+) \)、\( \text{Cost}(-) \) 推導出嘅標準結果，請對照原 slide。</p></div>
+
 <div class="box exam"><span class="label">⭐ 考試重點：Slide 56 Sick / Healthy 例子</span>
 <p>Given：\( p(\text{sick} \mid x) = 0.3 \)，\( p(\text{healthy} \mid x) = 0.7 \)；\( C(\text{predict healthy} \mid \text{actually sick}) = 100{,}000 \)（missed diagnosis）；\( C(\text{predict sick} \mid \text{actually healthy}) = 1{,}000 \)（false alarm）。</p>
 <p><b>Standard Bayes decision</b>：0.3 &lt; 0.7 ⟹ Predict "healthy"。</p>

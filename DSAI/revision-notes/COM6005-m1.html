@@ -62,7 +62,7 @@
 </table>
 <div class="box tip"><span class="label">💡 直覺理解</span>
 <p>如果你話「我問咗 200 個 HSUHK 畢業生，平均月薪係 $22,000」——呢句係 descriptive（純粹總結 sample）。如果你再講「所以我有 95% 信心全港大學畢業生平均月薪喺 $21,000–$23,000 之間」——呢句已經係 inferential，因為你由 sample 跳去 population，必然帶有不確定性（uncertainty），所以要用 Confidence Interval / Hypothesis testing 去量化。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 3 有一張 descriptive vs inferential 嘅示意圖（來源 numiqo.com），圖片內容文字擷取不到；請對照原 slide 第 3 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 3 圖片</span><p>標題 "Inferential statistics: Testing statements about the population on the basis of sample characteristics."：右邊一細群人（sample），一條紅色箭咀指向左邊一大群人（population），即係由 sample 推論 population。下面嘅例子：Sample data = Salaries of HSUHK graduates；Population = Salaries in Hong Kong labour market。</p></div>
 
 <h2>2. Descriptive Statistics：Location 同 Dispersion</h2>
 <p>Slide 4 將 descriptive statistics 分做四大類：</p>
@@ -155,7 +155,7 @@ print(y.describe())                            # 一次過出 count/mean/std/min
 <div class="box exam"><span class="label">⭐ Slide 10、12 嘅問題 “Type of this problem???”</span>
 <p><b>Digit recognition</b>：Y 係 0–9 嘅類別 → <b>classification</b>（雖然 Y 寫成數字，但「3」同「4」之間冇大小意義，只係 label）。<b>Microarray</b>：Y 係 Healthy/Cancer → <b>classification</b>，而且係 p (6000) 遠大過 n (50) 嘅 modern situation，要用 PCA / LASSO 類方法。</p></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>見到 Y 係數字就以為係 regression——digit 0–9 係 categorical label。同樣，X 入面有 categorical（Family history）都唔會令題目變成 classification；決定題型嘅只係 Y。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 10、12 右邊有 handwritten digit 同 microarray 嘅示意圖，文字擷取不到；請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 10、12 圖片</span><p><b>Slide 10</b>：9 張 28 × 28 pixel 嘅黑底白字手寫數字（5、0、4、1、9、2、1、3、1），即係 MNIST dataset。<b>Slide 12</b>：microarray 實驗流程圖：抽病人同對照組嘅 RNA sample → 加 fluorescent label → hybridize 落 microarray slide → scan 出紅綠熒光強度 → 得出每個 gene 嘅 expression level（"sample expression vector"，例如 Gene 1 4.3、Gene 2 −2.4…）。每個病人就變成一行好長嘅 numeric vector。</p></div>
 
 <h2>5. Prediction：Is it possible?（p = 1 簡單情況）</h2>
 <p>Slide 15 嘅數據：\( X = \text{Advertisement Expenditure} \)，\( Y = \text{Sales} \)。</p>
@@ -234,7 +234,7 @@ print(knn.predict([new]), knn.predict_proba([new]))</code></pre>
 <li>Slide 23 話 “You can learn better definitions if you study more statistics”——即係仲有 Manhattan、Mahalanobis 等其他 distance。</li>
 </ul></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Chapter 4 Classification 會詳細講 k-NN（nearest-neighbor classifier）同 distance/proximity measures（Chapter 2 Data 嘅 similarity &amp; dissimilarity），同埋 Normalization 對 distance 嘅影響。COM6001 data cleaning 入面嘅 scaling 亦係為咗呢類 distance-based 方法。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 14、18 只有標題頁／圖片（“Prediction: Is it possible?”、“Classification: Is it possible?”），冇額外文字。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 14、18 圖片</span><p><b>Slide 14</b>：分節標題頁，一隻手喺 "POSSIBLE ☑ / IMPOSSIBLE ☐" 剔咗 possible。<b>Slide 18</b>：兩張鳶尾花（iris）相，右邊一張標示 <b>Petal</b> 同 <b>Sepal</b>，即係 Iris dataset 用嚟分類嘅 attributes（COM6004 Chapter 3 嘅 Iris 例子都係用 sepal / petal length 同 width）。</p></div>
 
 <h2>7. 其他相關數學知識同 Python</h2>
 <p>Slide 24 列出之後會用到嘅數學：</p>

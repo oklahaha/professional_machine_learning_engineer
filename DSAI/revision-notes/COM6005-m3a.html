@@ -219,7 +219,7 @@ stats.ttest_1samp(y, 50, alternative='less')
 <div class="formula">$$ t = \frac{\bar W}{S/\sqrt n}, \qquad S = \text{sample s.d. of } W $$</div>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>Paired t-test 其實就係<b>對差值 W 做 one-sample t-test</b>（\(\mu_0 = 0\)）。配對抵消咗「人與人之間」嘅差異（例如孿生子天資相近），所以比 independent design 更準。</p></div>
 
-<div class="box exam"><span class="label">⭐ Worked example：Drug vs Placebo（slides 27–28，數值由本頁按公式計算）</span>
+<div class="box exam"><span class="label">⭐ Worked example：Drug vs Placebo（slides 26–28；slide 27 嘅 Python output 確認 \( t = 1.775 \)、\( p = 0.0753 \)）</span>
 <p>x (Drug) = 120, 132, 100, 115, 143；y (Placebo) = 115, 95, 106, 108, 97。同一病人 → paired。\(\alpha = 0.05\)。</p>
 <ol>
 <li>\(H_0\)：\( \mu_W \le 0 \)；\(H_1\)：\( \mu_W &gt; 0 \)（藥物較好）。</li>
@@ -234,7 +234,7 @@ y = np.array([115, 95, 106, 108, 97])     # Placebo
 stats.ttest_rel(x, y, alternative='greater')        # paired t-test：t ≈ 1.775, p ≈ 0.075
 stats.ttest_1samp(x - y, 0, alternative='greater')  # 完全一樣嘅結果
 stats.t.ppf(0.95, 4)                                 # critical value 2.132</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 27–28 只顯示數據同 t-table（圈住 \(\nu = 4\)、\( \alpha = .05 \) 嘅 2.132），冇顯示 Python output；上面嘅 \( t = 1.775 \)、\( p \approx 0.075 \) 係按 slide 26 公式自行計算。Slide 22 係教學法比較嘅示意圖，冇額外文字。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 22、27–28 圖片</span><p><b>Slide 27</b> 有 Python output：<code>stats.ttest_rel(x, y, alternative='greater')</code> → <code>TtestResult(statistic=1.7752133771225083, pvalue=0.07526088137330723, df=4)</code>，同上面手計嘅 1.775、0.075 一致。<b>Slide 28</b>：t-table（Percentage Points \(t_{\alpha,\nu}\) of the t Distribution），紅圈圈住 \(\nu = 4\)、\(\alpha = .05\) 嘅 <b>2.132</b>。<b>Slide 22</b>：「Compare two teaching methods: Twin subjects (related) Vs Unrelated subjects」，左邊四對雙胞胎相（related → paired t-test），右邊一排唔同嘅小朋友（unrelated → independent two-sample t-test）。</p></div>
 <p>孿生子數據（slide 25）同樣做法：\( \bar W = 16.8 \)，\( S = 22.05 \)，\( t = 16.8/(22.05/\sqrt{5}) = 1.704 &lt; 2.132 \) → do not reject。</p>
 
 <h2>11. Independent two-sample t-test（pooled variance）</h2>

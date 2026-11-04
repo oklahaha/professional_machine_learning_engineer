@@ -85,7 +85,7 @@
   <li><b>Anaconda</b> 不只係 IDE，而係 <b>environment manager</b>，提供一系列 IDEs (VS Code, PyCharm, Spyder, Jupyter…)。</li>
   <li><b>Python</b> = programming language (規則同藍圖)；<b>Python interpreter</b> = 明白呢種語言並執行 code 嘅引擎；<b>Python kernel</b> = 你嘅 code 同 interpreter 之間嘅 interface。三者 version number (幾乎) 一樣 — 揀 kernel version 即係揀 Python 同 interpreter 嘅 version。</li>
 </ul></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 6–8、10–14 主要係 Anaconda / VS Code / Colab 介面截圖同步驟圖，截圖內容擷取不到；請對照原 slides 第 6–14 頁。文字步驟已整理如下。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 6–8、10–14 截圖</span><p>已對照：截圖同下面文字步驟一致。Slide 6 係 Jupyter 嘅檔案瀏覽頁（localhost:8888/tree）；slide 11 係 Windows 搜尋 "Anaconda Prompt"，下面示範 <code>(base) C:\Users\...&gt;jupyter lab --notebook-dir=D:/</code>；slide 13 係 VS Code：搜尋開啟 VS Code、Extensions 入面裝 Microsoft 嘅 <b>Jupyter</b> extension（紅框）、Explorer 見到 <code>Lab_2_Aileen.ipynb</code> 同一格 <code>print("Hello World!")</code>。</p></div>
 
 <h3>Launch Jupyter Lab &amp; Hello World (slides 11–14)</h3>
 <ol>
@@ -107,7 +107,19 @@
   <tr><td><b>Raw cell</b> (Anaconda only)</td><td>Plain text</td><td>No input-output distinction；not rendered；not executed</td></tr>
 </table>
 <p>Heading 層級 (slide 16)：<code># abc</code> = level-1、<code>## abc</code> = level-2、<code>### abc</code> = level-3，如此類推。Lab Q1 就係新增 markdown cell 打 <code># Q2:Variables</code>。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 16 右邊嘅 keyboard shortcuts 表係圖片，文字擷取不到；請對照原 slide 第 16 頁。(常見 Jupyter shortcut：command mode 下 <code>M</code> 轉 markdown、<code>Y</code> 轉 code、<code>A</code>/<code>B</code> 喺上/下新增 cell — 此為一般知識，未必與 slide 相同。)</p></div>
+<div class="box note"><span class="label">🖼️ Slide 16：Keyboard shortcuts</span>
+<table>
+<tr><th>Action</th><th>Jupyter Notebook</th><th>Google Colab</th></tr>
+<tr><td>Add a cell above</td><td><code>A</code></td><td><code>Ctrl + M + A</code></td></tr>
+<tr><td>Add a cell below</td><td><code>B</code></td><td><code>Ctrl + M + B</code></td></tr>
+<tr><td>See all keyboard shortcuts</td><td><code>H</code></td><td><code>Ctrl + M + H</code></td></tr>
+<tr><td>Change cell to code</td><td><code>Y</code></td><td><code>Ctrl + M + Y</code></td></tr>
+<tr><td>Change cell to markdown</td><td><code>M</code></td><td><code>Ctrl + M + M</code></td></tr>
+<tr><td>Interrupt the kernel</td><td><code>II</code></td><td><code>Ctrl + M + I</code></td></tr>
+<tr><td>Delete a cell</td><td><code>DD</code></td><td><code>Ctrl + M + D</code></td></tr>
+<tr><td>Checkpoint notebook</td><td><code>Ctrl + S</code></td><td><code>Ctrl + M + S</code></td></tr>
+</table>
+<p>（Jupyter 嘅單字母 shortcuts 要喺 command mode 用，即係唔係喺 cell 入面打字嘅時候。）</p></div>
 
 <h2>4. Learning a programming language &amp; PEP 8</h2>
 <p>Slide 17 列出學一門語言要掌握：<b>Syntax</b>、<b>Main data types and data structures</b>、<b>The controlling logic</b>、<b>How to make functions</b>、<b>How to run</b>、<b>Code every day</b> — “Learn by Doing, Not Just Reading/Asking AI”。</p>
@@ -179,7 +191,30 @@ print(b is c)     # True
 print(a == 2)     # True  —— == 比較「值」，is 比較「係咪同一個 object」</code></pre>
 <div class="box tip"><span class="label">💡 直覺理解 (Lab Q3)</span>
 <p>想像 object 係一個盒，variable 名係貼喺盒上嘅標籤。<code>a = 2</code> 唔係「改盒入面嘅嘢」，而係把 <code>a</code> 呢張標籤撕走、貼去另一個盒 (2)。所以 <code>b</code>、<code>c</code> 完全唔受影響。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 22–24 嘅 code 示範 (包括 <code>whos</code> 輸出同 pointer 示意圖) 係截圖，文字擷取不到；請對照原 slides 第 22–24 頁。以上 code 為按 slide 文字重寫。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 22–24 原本嘅 code 截圖</span>
+<pre><code># Slide 22
+x = 1
+type(x)          # int
+x = float(1)
+type(x)          # float
+
+# Slide 23：print 變咗 variable
+print = 1
+print            # 1
+print('test')    # TypeError: 'int' object is not callable
+
+# Slide 24
+a = 1
+b = c = a
+whos             # Variable  Type  Data/Info
+                 # a         int   1
+                 # b         int   1
+                 # c         int   1
+a = b = c = 1
+a is c           # True   ← "Imagine they are just pointers pointing to the same object 1"
+c = 2
+a is c           # False  ← "c points to another object 2 now!"</code></pre>
+<p>Slide 23 列出要避免嘅 keywords：and, assert, break, class, continue, def, del, elif, else, except, exec, finally, for, from, global, if, import, in, is, lambda, not, or, pass, print, raise, return, try, while。（呢個係 Python 2 嘅 list；Python 3 入面 <code>print</code> 同 <code>exec</code> 已經變咗 function，唔再係 keyword，但仲係唔好攞嚟做 variable 名，原因就係 slide 23 個例子。）</p></div>
 
 <p>Lab Q2：建立 <code>my_int</code>、<code>my_float</code>、<code>my_string</code> 並加 comment：</p>
 <pre><code>my_int = 6001          # this is an int number
@@ -234,7 +269,32 @@ print(s[::2])     # 'Hlo ol!'    每隔一個
 print(s[-6:-1])   # 'World'      -1 唔包含
 print(s[5:2])     # ''           step 預設 +1，但 5 &gt; 2 → 空 (Why empty?)
 print(s[5:2:-1])  # ',ol'        反方向就得：index 5, 4, 3</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 27–29 嘅 code 示範係截圖，slide 29 「Why empty?」所指嘅具體例子文字擷取不到；請對照原 slide 第 29 頁。上面 <code>s[5:2]</code> 係用嚟解釋同一原理嘅例子。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 27–29 原本嘅 code 截圖</span>
+<pre><code># Slide 27
+question = 'What are you studying?'
+answer = 'Computing with Big Data'
+question + answer            # 'What are you studying?Computing with Big Data'
+question + ' ' + answer      # 'What are you studying? Computing with Big Data'
+question + '\n' + answer     # 'What are you studying?\nComputing with Big Data'
+print(question + '\n' + answer)
+# What are you studying?
+# Computing with Big Data
+
+# Slide 28：answer = 'data science'
+answer[0]     # 'd'
+answer[2]     # 't'
+answer[5]     # 's'
+answer[11]    # 'e'
+answer[-1]    # 'e'
+
+# Slide 29（index：d0 a1 t2 a3 _4 s5 c6 i7 e8 n9 c10 e11）
+answer[2:]       # 'ta science'
+answer[2:6]      # 'ta s'
+answer[:6]       # 'data s'
+answer[:6:2]     # 'dt '
+answer[::-1]     # 'ecneics atad'
+answer[-1:-3:-1] # 'ec'   # start = -1, stop = -3, step = -1 (backward step)</code></pre>
+<p>Slide 29 嘅「Why empty?」喺 PDF 有呢幾個字，但 render 出嚟俾 <code>answer[-1:-3:-1]</code> 嗰張截圖遮住，睇唔到佢指邊個例子。最可能係 <code>answer[-1:-3]</code>（冇寫 step = −1）：default step = +1，由 index −1 向前行永遠到唔到 −3，所以得 <code>''</code>。上面 <code>s[5:2]</code> 係同一個原理。</p></div>
 
 <h3>Lab Q5: Default values in slicing (slide 33)</h3>
 <pre><code>s = 'Hello, World!'
@@ -343,7 +403,52 @@ empty = set()       # 注意：{} 係空 dict，唔係空 set！</code></pre>
 print(fruit["name"])     # mango
 fruit["color"] = "yellow"   # insertion
 fruit["price"] = 15         # 同一 key 再 assign = update</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 35–39 嘅 code 示範係截圖，文字擷取不到；請對照原 slides 第 35–39 頁。以上 code 依 slide 文字重寫。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 36–39 原本嘅 code 截圖</span>
+<pre><code># Slide 36
+l1 = [1, 2, 3]
+l1.sort(reverse=True); print(l1)   # [3, 2, 1]
+l1.append(1); print(l1)            # [3, 2, 1, 1]
+l1.pop()                           # 1
+l1                                 # [3, 2, 1]
+l1.pop()                           # 1
+l1                                 # [3, 2]
+char_list = ['a', 'c', 'z', 'm', 'h']
+num_list = [5, 3, 8, 2, 9]
+char_list.sort(); num_list.sort()
+print(char_list)   # ['a', 'c', 'h', 'm', 'z']
+print(num_list)    # [2, 3, 5, 8, 9]
+len(char_list)     # 5
+max(num_list)      # 9
+min(char_list)     # 'a'
+
+# Slide 37
+t1, t2 = (1, 2)    # tuple unpacking
+t1 = 3             # 得！t1 只係一個 int variable，唔係 tuple
+type(t1)           # int
+t = (1, 2)
+t[0] = 3           # TypeError: 'tuple' object does not support item assignment
+type(t)            # tuple
+
+# Slide 38
+s1 = {1, 2, 3}
+s2 = set([1, 2, 3, 5])
+type(s2)           # set
+s1.add(2); s1      # {1, 2, 3}  已有 2，不變
+s1.add(4); s1      # {1, 2, 3, 4}
+s1 - s2            # {4}
+s2 - s1            # {5}
+s1 &amp; s2            # {1, 2, 3}
+s1 | s2            # {1, 2, 3, 4, 5}  union（slide 有示範，但 bullet 冇列出）
+
+# Slide 39
+d1 = {'k1': 'value1', 'k2': 'value2'}
+d1['k1']                      # 'value1'
+d2 = {'k1': 123, 'k2': [2, 3, 4], 'k3': {'insidekey': 100}}
+d2['k2']                      # [2, 3, 4]
+d2['k3']                      # {'insidekey': 100}
+d2["k3"]["insidekey"]         # 100   nested dict
+d2["new key"] = "new value"   # insertion</code></pre>
+<p>Slide 38 仲有一幅 Venn diagram（A、B 兩圓，中間重疊部分係 "A and B"）。Slide 35 係純文字，已收錄喺上面個表。</p></div>
 
 <h3>Lab Q6 參考答案 (slide 40)</h3>
 <pre><code>my_list = ['com', 6001, 'john', 70.2]

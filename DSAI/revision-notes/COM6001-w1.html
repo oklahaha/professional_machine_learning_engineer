@@ -161,7 +161,7 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
 
 <h2>4. What is Data Analytics?</h2>
 <p>Slide 17：<b>Data Analytics = Knowledge discovery from data!</b> Data 本身蘊含 value 同 knowledge，analytics 就係把佢挖出嚟。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 17 嘅 DIKW pyramid 係圖片，文字擷取不到；請對照原 slide 第 17 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 17：DIKW pyramid</span><p>由下至上四層，每上一層要加一樣嘢：</p><ul><li><b>Data</b>：individual facts, figures, signals, measurements</li><li>+ context → <b>Information</b>：organized, structured, categorized, useful, condensed, calculated</li><li>+ meaning → <b>Knowledge</b>：idea, learning, notion, concept, synthesized, compared, thought-out, discussed</li><li>+ insight → <b>Wisdom</b>：understanding, integration, applied, reflected upon, actionable, accumulated, principles, patterns, decision-making process</li></ul><p>右邊有一條由綠到紅嘅 "DECISION RISK" 色條。左邊係一本 Popular Science 雜誌封面 "DATA IS POWER"。</p></div>
 <p>一般嚟講 DIKW 指 <b>Data → Information → Knowledge → Wisdom</b> 由下而上嘅金字塔：raw data (例如一堆 sales 數字) 經整理變成 information (「上個月 A 店賣咗 500 件」)，再歸納成 knowledge (「下雨天 A 店銷量會跌」)，最後變成可以指導行動嘅 wisdom (「天氣預報落雨就減少 A 店入貨」)。</p>
 
 <p><span class="tag exam">Exam</span> Slide 18：Given lots of data，我哋想發現嘅 patterns / models 要符合四個條件：</p>
@@ -179,7 +179,7 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
 
 <h2>5. Where does data come from?</h2>
 <p>Slide 19：data 「coming from everywhere」：posts to social media sites、digital pictures and videos、software logs、cameras、microphones、sensing data、scans of government documents、GPS trails、purchase transaction records、cell phone GPS signals、traffic 等等。重點係：data 來源極多樣，有 text、image、video、sensor stream、交易紀錄 — 呢個就引出下一節嘅 Big Data 特徵 (尤其 Variety 同 Velocity)。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 19 有一張示意圖 (data sources)，文字擷取不到；請對照原 slide 第 19 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 19 圖片："Where is data coming from? Every minute…"</span><p>每分鐘：Facebook processes almost 350 GB of data；Twitter users send out 277,000 tweets；Google processes more than 2 million search queries；72 hours of new video are uploaded to YouTube；individuals and organizations launch 571 new websites；more than 100 million new emails are generated；Walmart processes almost 17,000 transactions；Sprint processes more than 250,000 phone calls。</p></div>
 
 <h2>6. Characteristics of Big Data: the 5 V's</h2>
 <p><span class="tag exam">Exam</span> Slide 20 列出 Big Data 嘅 <mark class="k">5 V's</mark>：</p>
@@ -191,7 +191,7 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
   <tr><td><b>Veracity</b></td><td>Accuracy</td><td>數據嘅<b>準確性 / 可信度</b>：有 noise、錯誤、missing values、假資料。</td></tr>
   <tr><td><b>Value</b></td><td>—</td><td>最終要由數據提煉出商業 / 社會<b>價值</b>，否則收集再多都冇用。</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 20 右邊嘅 5V 圖 (Big-Data-5V.gif) 係圖片，文字擷取不到；請對照原 slide 第 20 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 20 圖片：5 Vs of Big Data</span><p>五個圓圈圍住中間嘅五邊形：<b>Volume</b>（Terabytes, Records/Arch, Transactions, Tables, Files）、<b>Velocity</b>（Batch, Real/near-time, Processes, Streams）、<b>Value</b>（Statistical, Events, Correlations, Hypothetical）、<b>Veracity</b>（Trustworthiness, Authenticity, Origin, Reputation, Availability, Accountability）、<b>Variety</b>（Structured, Unstructured, Multi-factor, Probabilistic）。</p></div>
 
 <div class="box exam"><span class="label">⭐ 考試重點</span>
 <p>要背：Volume, Velocity, Variety, Veracity, Value。常見題型：「Give a scenario and identify which V is the main challenge」，例如：</p>
@@ -224,15 +224,15 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
 <p><b>Clustering = Group similar data together.</b> 十九世紀倫敦爆發霍亂 (Cholera)，醫生 John Snow 將每個病例畫喺城市地圖上，發現病例圍繞住某幾個路口<b>聚集 (cluster)</b> — 呢啲路口就係受污染嘅水井位置。住近污染水井嘅人病咗，住近乾淨水井嘅人冇事。「Without the ability to cluster the data, the cause of Cholera would not have been discovered.」</p>
 <div class="box tip"><span class="label">💡 直覺理解</span>
 <p>呢個例子顯示：clustering 唔一定要電腦，核心係「把相似 (位置接近) 嘅 data points 歸成一組，再睇每組有咩共同原因」。而且全程冇用到 label (冇人預先話你邊個井有問題) — 即係 unsupervised。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 22 嘅 John Snow 地圖係圖片，文字擷取不到；請對照原 slide 第 22 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 22 圖片</span><p>"Figure 1.1: Plotting cholera cases on a map of London"：一幅簡化街道圖，每個小圓圈係一個病例。圓圈明顯集中喺幾條街嘅交叉位附近（即水井位置），遠離交叉位嘅地方就好少。</p></div>
 
 <h3>7.2 Descriptive example: Gapminder (slide 23)</h3>
-<p>Slide 23 用 Gapminder tools 嘅 bubble chart 作為 descriptive analytics 例子 — 用視覺化方式描述各國數據 (例如收入、壽命、人口) 嘅關係。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 23 嘅 Gapminder 圖表係圖片，具體顯示咩變數文字擷取不到；請對照原 slide 第 23 頁。</p></div>
+<p>Slide 23 用 Gapminder tools 嘅 bubble chart 作為 descriptive analytics 例子 — 用視覺化方式描述各國數據之間嘅關係。</p>
+<div class="box note"><span class="label">🖼️ Slide 23 圖片</span><p>x 軸係 <b>Life expectancy</b>（約 50–85 歲），y 軸係 <b>Fertility rate</b>（每個女性生幾多個小朋友，約 1–7.5）。每個 bubble 係一個國家 / 地區，大小代表人口，顏色代表所屬地區。整體係一條由左上到右下嘅趨勢：壽命越長，生育率越低。圖中標示咗 <b>Hong Kong SAR, China</b>，喺右下角（壽命約 80 以上、生育率接近 1.5）。</p></div>
 
 <h3>7.3 Predictive example: Google Flu Trends (slide 24)</h3>
 <p>Google 用 search history database 入面 <b>flu-related keywords 嘅搜尋頻率</b>，去 <b>predict 有幾多人患流感</b>。即係用一個 variable (搜尋量) 去預測另一個未知 / 未來嘅 variable (流感人數) — 完全符合 predictive 嘅定義。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 24 嘅 Google Flu Trends (South Africa) 時間序列圖係圖片，文字擷取不到；請對照原 slide 第 24 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 24 圖片</span><p>Google Flu Trends 南非嘅 "Flu search activity (standard deviation from baseline)"，時間由 2006 到 2015。條線每年都有一個明顯高峰（大約年中，即南半球冬天），2009 年個峰特別高（約 4.5 SD，即 H1N1 流感大流行嗰年）。呢種有規律嘅季節性 pattern，正正係可以用嚟 predict 嘅基礎。</p></div>
 
 <h2>8. The CRISP-DM Process &amp; Data Science Processes</h2>
 <p><span class="tag exam">Exam</span> Slide 25：<b>CRISP-DM (CRoss Industry Standard Process for Data Mining)</b> 係一個 process model，作為 data science process 嘅基礎。六個步驟：</p>
@@ -246,7 +246,7 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
 </ol>
 <div class="box exam"><span class="label">⭐ 考試重點</span>
 <p>記住次序同名稱：<b>Business Understanding → Data Understanding → Prepare Data → Modeling → Evaluation → Deployment</b>。CRISP-DM 唔係一條直線：Business ↔ Data Understanding 之間會來回，Evaluation 唔滿意會返去 Business Understanding 重新開始 (iterative)。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 25 嘅 CRISP-DM 循環圖同 slide 26 嘅「Data Science Processes」流程圖 (來源 towardsdatascience) 都係圖片，文字擷取不到；請對照原 slide 第 25–26 頁。上面「iterative / 來回」係 CRISP-DM 嘅一般描述，並非由圖片擷取。</p></div>
+<div class="box note"><span class="label">🖼️ CRISP-DM 同 Data Science Processes 圖（PDF 第 25–26 頁，slide 上印住嘅頁碼係 26–27）</span><p><b>CRISP-DM 循環圖</b>：中間係 "Data"，外圈有一個大箭咀循環。Business Understanding ⇄ Data Understanding 之間有雙向箭咀，Data Preparation ⇄ Modeling 之間亦有雙向箭咀，跟住 Modeling → Evaluation；Evaluation 有一條箭咀返去 Business Understanding，另一條去 Deployment。所以上面講嘅「iterative / 來回」同圖一致。</p><p><b>Data Science Processes</b>（來源 towardsdatascience）：五個步驟 Collection → Cleaning → Exploratory Data Analysis → Model Building → Model Deployment，下面用橫條標示每個角色負責嘅範圍：<b>Data Engineers</b>（Collection、Cleaning）、<b>Data Analysts</b>（Cleaning 至 EDA）、<b>Machine Learning Engineers</b>（Model Building、Deployment）、<b>Data Scientists</b>（由頭到尾全部）。</p></div>
 
 <div class="box tip"><span class="label">💡 直覺理解</span>
 <p>對應本科內容：Week 4 data manipulation (載入、合併) + Week 5–7 data cleaning / feature engineering = <b>Prepare Data</b>；Week 8–9 EDA = <b>Data Understanding</b>；Week 10 visualization 用於 Understanding 同 presenting results。實際做 project 時大部分時間 (常說 60–80%) 都花喺 Data Preparation。</p></div>

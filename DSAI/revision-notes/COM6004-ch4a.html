@@ -60,12 +60,12 @@
 <tr><td>Cataloging galaxies</td><td>Features extracted from telescope images</td><td>Elliptical, spiral, or irregular-shaped galaxies</td></tr>
 </table>
 <p>Slide 6 "General Approach for Building Classification Model"：Training Set → <b>Learning algorithm</b>（Induction）→ <b>Learn Model</b> → <b>Apply Model</b> 到 Test Set（Deduction）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 6 嘅流程圖同 training / test 表係圖片，請對照原 slide 第 6 頁。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 6 圖片</span><p>左上係 <b>Training Set</b>（Tid 1–10，Attrib1 Yes/No、Attrib2 Small/Medium/Large、Attrib3 收入例如 125K，Class Yes/No），經 <b>Induction</b> 箭咀交俾 <b>Learning algorithm</b> → <b>Learn Model</b> → <b>Model</b>。左下係 <b>Test Set</b>（Tid 11–15，例如 11: No, Small, 55K；12: Yes, Medium, 80K；Class 全部係 "?"），經 <b>Apply Model</b> 再沿 <b>Deduction</b> 箭咀得出預測。Slides 10 同 17 係同一幅圖，分別用紅框突出 "Apply Model" 同 "Tree Induction algorithm"。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6005 嘅 Logistic Regression 都係 classification model（predict probability of class）；Chapter 1 已介紹 Classification 屬 Predictive task。COM6001 scikit-learn 嘅 <code>train_test_split</code> + <code>fit()</code>（induction）+ <code>predict()</code>（deduction）就係呢個流程。</p></div>
 
 <h2>2. Decision Trees: 結構同應用</h2>
 <p>Slide 8–9 展示 decision tree 例子。Tree 由 <b>root node</b>、<b>internal nodes</b>（每個係一個 attribute test condition，叫 <b>splitting attributes</b>）同 <b>leaf nodes</b>（class label）組成。Slide 9 "Another Example" 說明：<b>同一份 data 可以 fit 出多過一棵 tree</b>。</p>
-<p>本 chapter 一直用一個 10-record 稅務例子（attributes：Refund、Marital Status、Taxable Income；class：Evade / Cheat）。以下係教科書嘅數據同經典 tree（數字同 slide 58 文字 \( P(\text{No}) = 7/10 \)、\( P(\text{Married} \mid \text{No}) = 4/7 \)、\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \) 完全吻合）：</p>
+<p>本 chapter 一直用一個 10-record 例子。<b>Slides 8–23 用 2nd edition 嘅名稱：Home Owner、Marital Status、Annual Income、class = Defaulted Borrower</b>；slide 58 Naïve Bayes 部分就用返舊名 Refund、Taxable Income、Evade。兩套名對應同一份數據（下表用舊名，數字同 slide 8 一樣；亦同 slide 58 文字 \( P(\text{No}) = 7/10 \)、\( P(\text{Married} \mid \text{No}) = 4/7 \)、\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \) 完全吻合）：</p>
 <table>
 <tr><th>Tid</th><th>Refund</th><th>Marital Status</th><th>Taxable Income</th><th>Evade</th></tr>
 <tr><td>1</td><td>Yes</td><td>Single</td><td>125K</td><td>No</td></tr>
@@ -86,14 +86,21 @@
           └── Single, Divorced → TaxInc?
                                  ├── &lt; 80K → NO
                                  └── &gt; 80K → YES</code></pre>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 8–17 嘅 tree 圖同數據表全部係圖片。上面數據表同 tree 係教科書（Tan et al.）標準例子，同 slide 文字數字一致，但請對照原 slide 第 8–17 頁確認。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 8–9 圖片</span><p><b>Slide 8</b>：同上表一樣嘅 training data，欄位標明 categorical（Home Owner、Marital Status）、continuous（Annual Income）、class（Defaulted Borrower）。旁邊棵 tree 同上面一樣：Home Owner → MarSt → Income（&lt; 80K / &gt; 80K），而且用紅字標示 Home Owner、MarSt、Income 係 <b>Splitting Attributes</b>。</p>
+<p><b>Slide 9</b>（Another Example）：同一份 data，另一棵 tree 以 <b>MarSt 做 root</b>：</p>
+<pre><code>MarSt?
+├── Married → NO
+└── Single, Divorced → Home Owner?
+                       ├── Yes → NO
+                       └── No  → Income?  &lt; 80K → NO ; &gt; 80K → YES</code></pre>
+<p>兩棵 tree 對 10 個 training records 都分類正確，即 "There could be more than one tree that fits the same data!"</p></div>
 
 <h3>2.1 Apply Model to Test Data (Slides 10–17)</h3>
-<p>Slides 11–16 一步步示範：<b>由 root 開始</b>，按 test record 嘅 attribute 值沿住分支行，直到 leaf。例：test record (Refund = No, Marital Status = Married, Taxable Income = 80K, Evade = ?)：</p>
+<p>Slides 11–16 一步步示範：<b>由 root 開始</b>，按 test record 嘅 attribute 值沿住分支行，直到 leaf（每張 slide 用紅色箭咀多行一步）。例：test record (Home Owner = No, Marital Status = Married, Annual Income = 80K, Defaulted Borrower = ?)：</p>
 <ol>
-<li>Root：Refund = No → 行去 MarSt 節點</li>
+<li>Root：Home Owner = No → 行去 MarSt 節點</li>
 <li>MarSt = Married → 去到 leaf <b>NO</b></li>
-<li>結果：Assign Evade = <b>"No"</b></li>
+<li>結果：slide 16 "Assign Defaulted to <b>"No"</b>"</li>
 </ol>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>Decision tree 就好似一連串 "if-then" 問題（所以 outline 叫 "Rule-Based Classifiers - Decision Trees"）。每條由 root 到 leaf 嘅路徑就係一條 rule，例如「IF Refund = No AND MarSt ∈ {Single, Divorced} AND TaxInc &gt; 80K THEN Evade = Yes」。分類一個 record 只需要行一條路徑，所以極快。</p></div>
 
@@ -107,7 +114,14 @@
 </ul>
 <p>（教科書補充：如果 \(D_t\) 係空集，\(t\) 就係 leaf，label 用 parent 嘅 majority class。）</p></div>
 <p>Slides 20–23 用稅務 data 示範（圖片）：一開始成個 data 係一個 node（label = majority class "No"，7 No vs 3 Yes）→ 用 Refund split（Refund = Yes 全部 No → leaf）→ Refund = No 嗰邊再用 Marital Status split（Married 全部 No → leaf）→ Single / Divorced 嗰邊再用 Taxable Income &lt; 80K split → 全部 nodes 變 pure。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 20–23 嘅 Hunt's Algorithm 逐步 tree 圖係圖片；上面描述係根據教科書同前述數據重構，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 20–23 圖片</span><p>括號入面係 (No 數目, Yes 數目)：</p>
+<ul>
+<li><b>(a)</b> 只有一個 node：Defaulted = No <b>(7,3)</b></li>
+<li><b>(b)</b> 用 Home Owner split：Yes → Defaulted = No <b>(3,0)</b>（pure）；No → Defaulted = No <b>(4,3)</b></li>
+<li><b>(c)</b> Home Owner = No 嗰邊用 Marital Status split：Single, Divorced → <b>Defaulted = Yes (1,3)</b>（majority 係 Yes）；Married → Defaulted = No <b>(3,0)</b></li>
+<li><b>(d)</b> Single, Divorced 嗰邊再用 Annual Income split：&lt; 80K → Defaulted = No <b>(1,0)</b>；<b>&gt;= 80K</b> → Defaulted = Yes <b>(0,3)</b>。全部 leaf 都 pure。</li>
+</ul>
+<p>留意 (c) 嘅 Single / Divorced node 未 split 之前，label 係 majority class <b>Yes</b>（1 No、3 Yes），唔係 No。</p></div>
 
 <h2>4. Design Issues &amp; Test Conditions</h2>
 <p>Slide 24–25：Decision tree induction 有兩大設計問題：</p>
@@ -125,14 +139,16 @@
 <tr><th>Attribute type</th><th>Multi-way split</th><th>Binary split</th></tr>
 <tr><td><b>Nominal</b>（例：Marital Status）</td><td>Use as many partitions as distinct values：{Single}, {Married}, {Divorced}</td><td>Divides values into two subsets，例：{Married} vs {Single, Divorced}。\( k \) 個值有 \(2^{k-1}-1\) 種 binary splits。</td></tr>
 <tr><td><b>Ordinal</b>（例：Shirt Size S/M/L/XL）</td><td>As many partitions as distinct values</td><td>Two subsets，<b>但要 preserve order property</b>：{S, M} vs {L, XL} ✓；{S, L} vs {M, XL} ✗（破壞次序）</td></tr>
-<tr><td><b>Continuous</b>（例：Taxable Income）</td><td>Discretize 成多個 ranges（例如 &lt;10K, [10K,25K), [25K,50K), [50K,80K), ≥80K）</td><td>Binary decision：\((A \lt v)\) or \((A \ge v)\)</td></tr>
+<tr><td><b>Continuous</b>（例：Annual Income）</td><td>Discretize 成多個 ranges（slide 28：&lt; 10K, [10K,25K), [25K,50K), [50K,80K), &gt; 80K）</td><td>Binary decision：\((A \lt v)\) or \((A \ge v)\)，slide 28 例子係 "Annual Income &gt; 80K?" Yes / No</td></tr>
 </table>
 <p><b>Splitting based on continuous attributes (slide 29)</b>：</p>
 <ul>
 <li><b>Discretization</b> to form an ordinal categorical attribute：ranges 用 equal interval bucketing、equal frequency bucketing（percentiles）或 clustering 搵。<b>Static</b> = 開頭 discretize 一次；<b>Dynamic</b> = 每個 node 重做。</li>
 <li><b>Binary Decision</b> \((A \lt v)\) or \((A \ge v)\)：考慮所有可能嘅 splits 搵 best cut；計算量可以較大。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 26–28 嘅 split 示意圖（例如 Marital Status、Shirt Size、Taxable Income 嘅分支圖）係圖片；上表例子係教科書標準例子，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 26–28 圖片</span><p><b>Slide 26</b>：Marital Status 嘅 multi-way split 分成 Single / Divorced / Married 三枝；binary split 畫晒 3 種可能（\(2^{3-1}-1 = 3\)）：{Married} vs {Single, Divorced}、{Single} vs {Married, Divorced}、{Single, Married} vs {Divorced}。</p>
+<p><b>Slide 27</b>：Shirt Size 嘅 multi-way split 分成 Small / Medium / Large / Extra Large 四枝。合法嘅 binary split 有 {Small, Medium} vs {Large, Extra Large} 同 {Small} vs {Medium, Large, Extra Large}；{Small, Large} vs {Medium, Extra Large} 就標明 "This grouping violates order property"。</p>
+<p><b>Slide 28</b>：Annual Income 嘅 (i) binary split（&gt; 80K? Yes / No）同 (ii) multi-way split（5 個 ranges，見上表）。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Equal interval / equal frequency / clustering discretization 正正係 Chapter 2 §11.6 Discretization 講嘅方法。</p></div>
 
 <h2>5. Choosing the Best Split: Impurity Measures</h2>
@@ -148,7 +164,7 @@
 <tr><td>Entropy</td><td>0</td><td>\(\log_2 c\)</td><td>1</td></tr>
 <tr><td>Error</td><td>0</td><td>\(1 - 1/c\)</td><td>0.5</td></tr>
 </table></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 32 嘅三條公式係圖片；上面係教科書標準形式（slide 文字 "where \(p_i(t)\) is the frequency of class i at node t, and c is the total number of classes" 與之吻合）。</p></div>
+
 
 <h3>5.1 Worked example：計單一 node 嘅 impurity</h3>
 <table>
@@ -253,7 +269,15 @@ print(export_text(clf, feature_names=list(X_train.columns)))</code></pre>
 </ul></td></tr>
 </table></div>
 <p><b>Handling interactions (slide 37)</b> 同 <b>Limitations of single attribute-based decision boundaries (slide 38)</b>：因為每個 test 只用一個 attribute，decision boundaries 永遠<b>平行於坐標軸</b>（axis-parallel，好似樓梯級）。如果真正嘅 boundary 係斜線（例如 \(x + y \lt 1\)）或者 class 取決於兩個 attributes 嘅 interaction（例如 XOR 型），tree 就要好多層先近似到。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 37–38 嘅散點圖同 decision boundaries 係圖片，請對照原 slide 第 37–38 頁。</p></div>
+<div class="box exam"><span class="label">⭐ Slide 37：Handling interactions（XOR 例子）</span>
+<p>X–Y 平面上有四團點，排成 <b>XOR</b> 格局：左上同右下係 +（1000 instances，藍），左下同右上係 o（1000 instances，紅）。單獨睇 X 或者單獨睇 Y，兩個 class 都係一半一半，所以：</p>
+<ul>
+<li>Entropy(X) = 0.99、Entropy(Y) = 0.99（split 完差唔多冇改善）</li>
+<li>再加一個 <b>Z</b>：佢係由 uniform distribution 產生嘅 <b>noisy attribute</b>，同 class 完全無關，但 Entropy(Z) = 0.98</li>
+<li>結果 <b>"Attribute Z will be chosen for splitting!"</b>：greedy 嘅 tree 揀咗一個純 noise 嘅 attribute</li>
+</ul>
+<p>原因係 X 同 Y 要<b>一齊</b>睇先有用（interaction），但 greedy split 每次只評估一個 attribute，所以睇唔到。下面兩幅 Z–X、Z–Y 圖亦見到，紅藍點喺每條帶入面完全混埋。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 38 圖片</span><p>兩個 class 都由 skewed Gaussian 產生（+ 中心 (8,8)，o 中心 (12,12)），兩團點沿住一條斜線（大約 \( x + y = 20 \)）分開。Decision tree 畫出嚟嘅 boundary 係好多細小嘅長方形格仔，好似樓梯咁沿住斜線堆出嚟，要用好多個 split 先近似到一條簡單嘅斜線。</p></div>
 
 <h2>7. Nearest-Neighbor Classifiers (KNN)</h2>
 <p>Slide 40 Basic idea：<b>"If it walks like a duck, quacks like a duck, then it's probably a duck."</b></p>
@@ -352,7 +376,9 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
   <li><b>Probability density estimation</b>：假設 attribute 跟 <b>normal distribution</b>，用 data 估 parameters（mean、standard deviation），再用 distribution 估 conditional probability。</li></ul></li>
 </ul>
 <div class="formula">$$ P(X_i = x \mid Y_j) = \frac{1}{\sqrt{2\pi\sigma_{ij}^2}}\; e^{-\frac{(x-\mu_{ij})^2}{2\sigma_{ij}^2}} $$</div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 60 嘅 Gaussian 公式同計算例子、slides 61–63 嘅完整 Naïve Bayes 計算係圖片；下面 worked example 係根據教科書同上述數據計算，請對照原 slide。</p></div>
+<p>Slide 60 例子：For (Income, Class = No)：sample mean = 110、sample variance = 2975，所以 \( P(\text{Income} = 120 \mid \text{No}) = \frac{1}{\sqrt{2\pi}(54.54)} e^{-\frac{(120-110)^2}{2(2975)}} = 0.0072 \)。公式要 <b>one for each \((X_i, Y_j)\) pair</b>，即每個 attribute 同每個 class 嘅組合各有一套 \(\mu_{ij}\)、\(\sigma_{ij}^2\)。</p>
+<div class="box note"><span class="label">🖼️ Slides 61–63 圖片</span><p>Slide 61 列晒所有 conditional probabilities：\( P(\text{Refund}=\text{Yes} \mid \text{No}) = 3/7 \)、\( P(\text{Refund}=\text{No} \mid \text{No}) = 4/7 \)、\( P(\text{Refund}=\text{Yes} \mid \text{Yes}) = 0 \)、\( P(\text{Refund}=\text{No} \mid \text{Yes}) = 1 \)；Marital Status given No：Single 2/7、Divorced 1/7、Married 4/7；given Yes：Single 2/3、Divorced 1/3、Married 0；Income：No 嘅 mean 110、variance 2975，Yes 嘅 mean 90、variance 25。下面 8.4 嘅 worked example 同 slide 61 數字完全一樣。</p>
+<p>Slides 62–63 示範「逐步加入資料」：冇任何 attribute 資料時，只可以用 a priori 嘅 \( P(\text{Yes}) = 3/10 \)、\( P(\text{No}) = 7/10 \)；只知道 Divorced：\( P(\text{Yes} \mid \text{Divorced}) = 1/3 \times 3/10 / P(\text{Divorced}) \)、\( P(\text{No} \mid \text{Divorced}) = 1/7 \times 7/10 / P(\text{Divorced}) \)；再加 Refund = No：Yes 嗰邊乘多個 1、No 嗰邊乘多個 4/7；再加 Income = 120：Yes 嗰邊乘 \( 1.2 \times 10^{-9} \)、No 嗰邊乘 0.0072。分母相同，所以只需要比較分子。</p></div>
 
 <h3>8.4 Worked example：X = (Refund = No, Divorced, Income = 120K)</h3>
 <div class="box exam"><span class="label">⭐ 考試重點：完整 Naïve Bayes 計算</span>
@@ -384,10 +410,19 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 
 <h3>8.5 Issues with Naïve Bayes (Slides 64–66)</h3>
 <p>由 slide 58 可見 <b>\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \)</b>。如果 test record 係 Refund = Yes，咁 \( P(X \mid \text{Yes}) \) 成個乘積都會變 0——<b>無論其他 attributes 幾支持 Yes 都冇用</b>。如果某 record 對兩個 class 都有一個 conditional probability = 0，就完全分類唔到。</p>
-<p>教科書嘅解決方法係用其他 probability estimates：</p>
-<div class="formula">$$ \text{Original: } P(A_i \mid C) = \frac{N_{ic}}{N_c} \qquad \text{Laplace: } P(A_i \mid C) = \frac{N_{ic} + 1}{N_c + c} \qquad \text{m-estimate: } P(A_i \mid C) = \frac{N_{ic} + m\,p}{N_c + m} $$</div>
-<p>其中 \(c\) = attribute 可取值嘅數目，\(p\) = 初始估計 (prior) 概率，\(m\) = parameter。例：Laplace 下 \( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = (0 + 1)/(3 + 2) = \) <b>0.2</b>（唔再係 0）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 64–66 "Issues with Naïve Bayes Classifier" 全部係圖片，文字擷取不到；上面 zero-probability 問題同 Laplace / m-estimate 係根據教科書補充，請對照原 slide 確認 slide 實際涵蓋範圍。</p></div>
+<p>Slide 64：\( P(\text{Yes} \mid \text{Married}) = 0 \times 3/10 / P(\text{Married}) \)，因為 \( P(\text{Married} \mid \text{Yes}) = 0 \)；\( P(\text{No} \mid \text{Married}) = 4/7 \times 7/10 / P(\text{Married}) \)。</p>
+<div class="box exam"><span class="label">⭐ Slide 65：刪咗 Tid 7 之後</span>
+<p>Tid 7（Yes, Divorced, 220K, No）刪除後，class No 剩 6 個 records：\( P(\text{Refund}=\text{Yes} \mid \text{No}) = 2/6 \)、<b>\( P(\text{Divorced} \mid \text{No}) = 0 \)</b>（唯一一個 Divorced + No 就係 Tid 7），Income 嘅 mean 變 91、variance 685；class Yes 不變，\( P(\text{Refund}=\text{Yes} \mid \text{Yes}) = 0 \)。</p>
+<p>Given \( X = (\text{Refund} = \text{Yes}, \text{Divorced}, 120\text{K}) \)：</p>
+<ul>
+<li>\( P(X \mid \text{No}) = 2/6 \times 0 \times 0.0083 = 0 \)</li>
+<li>\( P(X \mid \text{Yes}) = 0 \times 1/3 \times 1.2 \times 10^{-9} = 0 \)</li>
+</ul>
+<p>兩邊都係 0 → <b>"Naïve Bayes will not be able to classify X as Yes or No!"</b></p></div>
+<p>Slide 66 嘅解決方法：Need to use other estimates of conditional probabilities than simple fractions：</p>
+<div class="formula">$$ \text{original: } P(X_i = c \mid y) = \frac{n_c}{n} \qquad \text{Laplace Estimate: } P(X_i = c \mid y) = \frac{n_c + 1}{n + v} \qquad \text{m-estimate: } P(X_i = c \mid y) = \frac{n_c + mp}{n + m} $$</div>
+<p>其中 \(n\) = number of training instances belonging to class \(y\)；\(n_c\) = number of instances with \(X_i = c\) and \(Y = y\)；\(v\) = total number of attribute values that \(X_i\) can take；\(p\) = initial estimate of \(P(X_i = c \mid y)\) known apriori；\(m\) = hyper-parameter for our confidence in \(p\)。例：Laplace 下 \( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = (0 + 1)/(3 + 2) = \) <b>0.2</b>（唔再係 0）。</p>
+
 
 <h3>8.6 Characteristics of Naïve Bayes (Slide 67)</h3>
 <ul>
@@ -410,7 +445,7 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <li>Slide 74：<span class="tag exam">Exam</span><b>Find hyperplane maximizes the margin → B1 is better than B2.</b></li>
 </ul>
 <p><b>Margin</b> = decision boundary 同兩邊最近 data points 之間嘅距離（兩條平行 hyperplanes \(b_{11}\)、\(b_{12}\) 之間嘅闊度）。Margin 越大，對新 data 嘅 generalization 越好（對 noise 有更大緩衝）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 69–75 嘅 hyperplane 同 margin 示意圖係圖片，請對照原 slide。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 69–75 圖片</span><p>每幅都係同一份 2D data：右上一堆紅色 ○，左下一堆綠色 ■，中間有空隙。Slides 70–72 畫出幾條都可以分開兩類嘅直線。<b>Slide 74</b> 比較兩條：<b>B1</b> 係斜向右下嘅實線，兩邊平行虛線 \(b_{11}\)、\(b_{12}\) 之間嘅 margin 好闊；<b>B2</b> 係近乎水平嘅虛線，佢嘅 \(b_{21}\)、\(b_{22}\) 幾乎貼住條線，margin 好窄。所以 B1 較好。<b>Slide 75</b> 喺 B1 上面標示：中間線係 \(\mathbf{w}\cdot\mathbf{x} + b = 0\)，兩條邊界係 \(\mathbf{w}\cdot\mathbf{x} + b = +1\)（○ 嗰邊，\(b_{11}\)）同 \(= -1\)（■ 嗰邊，\(b_{12}\)），\(\text{Margin} = 2/\|\mathbf{w}\|\)。</p></div>
 
 <h3>9.2 Linear SVM (Slides 76–79)</h3>
 <p><b>Linear model</b>：</p>
@@ -422,11 +457,23 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <p>Subject to the following constraints：</p>
 <div class="formula">$$ y_i = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \ge 1 \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \le -1 \end{cases} \quad \text{or} \quad y_i(\mathbf{w}\cdot\mathbf{x}_i + b) \ge 1,\ i = 1,\dots,N $$</div>
 <p>呢個係 <b>constrained optimization problem</b>，用 <b>Lagrange multiplier method</b> 解。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slides 76–79 嘅公式係圖片 / 嵌入物件；上面係教科書標準形式（slide 文字 "Objective is to maximize… equivalent to minimizing… subject to… or…" 與之對應）。Slide 78 嘅數值例子（data points 同 Lagrange multipliers 表）亦係圖片。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 78 表格</span><p>8 個 training points \((x_1, x_2, y)\) 同各自嘅 Lagrange multiplier \(\lambda\)：</p>
+<table>
+<tr><th>\(x_1\)</th><th>\(x_2\)</th><th>\(y\)</th><th>\(\lambda\)</th></tr>
+<tr><td>0.3858</td><td>0.4687</td><td>1</td><td><b>65.5261</b></td></tr>
+<tr><td>0.4871</td><td>0.611</td><td>−1</td><td><b>65.5261</b></td></tr>
+<tr><td>0.9218</td><td>0.4103</td><td>−1</td><td>0</td></tr>
+<tr><td>0.7382</td><td>0.8936</td><td>−1</td><td>0</td></tr>
+<tr><td>0.1763</td><td>0.0579</td><td>1</td><td>0</td></tr>
+<tr><td>0.4057</td><td>0.3529</td><td>1</td><td>0</td></tr>
+<tr><td>0.9355</td><td>0.8132</td><td>−1</td><td>0</td></tr>
+<tr><td>0.2146</td><td>0.0099</td><td>1</td><td>0</td></tr>
+</table>
+<p>只有頭兩點嘅 \(\lambda \gt 0\)，slide 用紅圈標示佢哋係 <b>support vectors</b>；其餘 6 點 \(\lambda = 0\)，對 decision boundary 冇影響。</p></div>
 <ul>
 <li>Slide 78：<b>Support vectors</b> 係 Lagrange multipliers \(\lambda_i \gt 0\) 嘅點（即剛好喺 margin 上嘅點；細節略過）。</li>
 <li>Slide 79：<b>Decision boundary depends only on support vectors</b>——如果另一個 data set 有相同 support vectors，decision boundary 唔會變（其他點移動或刪除都唔影響）。</li>
-<li>搵到 \(\mathbf{w}\)、\(b\) 之後點分類 test record \(\mathbf{x}\)？
+<li>搵到 \(\mathbf{w}\)、\(b\) 之後點分類 test record \(\mathbf{x}\)？（Slide 79 寫嘅係 \(f(\mathbf{x}_i) = 1\) if \(\mathbf{w}\cdot\mathbf{x}_i + b \ge 1\)、\(-1\) if \(\le -1\)，即係 training 時嘅 margin 條件；實際分類時，落喺 margin 入面嘅點就睇 \(\mathbf{w}\cdot\mathbf{x} + b\) 係正定負，即下式）
 <div class="formula">$$ f(\mathbf{x}) = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x} + b \ge 0 \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x} + b \lt 0 \end{cases} $$</div></li>
 </ul>
 <div class="box tip"><span class="label">💡 Worked example（自擬）</span>
@@ -440,10 +487,10 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 
 <h3>9.3 Non-linearly Separable: Slack Variables (Slides 80–81)</h3>
 <p>如果問題<b>唔係 linearly separable</b>？引入 <b>slack variables</b> \(\xi_i \ge 0\)，容許部分點越過 margin 甚至分錯：</p>
-<div class="formula">$$ \min\; L(\mathbf{w}) = \frac{\|\mathbf{w}\|^2}{2} + C\left(\sum_{i=1}^{N} \xi_i^{k}\right) $$</div>
+<div class="formula">$$ \min\; L(\mathbf{w}) = \frac{\|\mathbf{w}\|^2}{2} + C\left(\sum_{i=1}^{N} \xi_i\right)^{k} $$</div>
 <div class="formula">$$ \text{Subject to: } y_i = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \ge 1 - \xi_i \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \le -1 + \xi_i \end{cases} $$</div>
 <p>If \(k\) is 1 or 2, this leads to similar objective function as linear SVM but with different constraints。\(C\) 控制「大 margin」同「少錯誤」之間嘅 trade-off（\( C \) 大 → 少容忍錯誤）。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">Slide 81 嘅公式係圖片；上面係教科書標準 soft-margin 形式，請對照原 slide 第 81 頁。</p></div>
+<p>（上式同 slide 81 一樣：成個 \(\sum \xi_i\) 先至 \(k\) 次方。Slide 用藍圈突出 constraints 入面嘅 \(1 - \xi_i\) 同 \(-1 + \xi_i\)，即係同 linear SVM 唯一唔同嘅地方。）</p>
 
 <h3>9.4 Characteristics of SVM (Slides 82–83)</h3>
 <ul>

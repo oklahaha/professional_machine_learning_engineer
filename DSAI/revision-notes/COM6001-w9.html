@@ -287,7 +287,7 @@ air_quality.select_dtypes(exclude=['number','datetime']).mode()   # 1 row：
   <li><code>func</code>：built-in function 名用引號（<code>.agg('mean')</code>）；user-defined function 唔用引號（<code>.agg(my_func)</code>）。</li>
   <li><code>axis</code>：default 0。<code>axis=0</code> apply to columns；<code>axis=1</code> apply to rows。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 18 頁 <code>agg.png</code>（agg() 圖解）係圖片，文字擷取不到；請對照原 PDF / notebook。</p></div>
+<div class="box note"><span class="label">🖼️ agg.png（PDF 第 18 頁）</span><p><code>air_quality[['TEMP','PM2.5']].agg([my_sum,'min','max','mean'])</code> 嘅結果：一個 4 行 × 2 欄嘅表——my_sum：TEMP 1.313702e+06、PM2.5 7.987581e+06；min：−16.8、2.0；max：41.6、821.0；mean：13.72945、83.47788。即係一次過將自訂 function（<code>my_sum</code>，冇引號）同 built-in functions（有引號）套落每個 column，每個 function 變一行。</p></div>
 
 <h3>6.1 單一 function（同 <code>apply</code> 相似）</h3>
 <pre><code>air_quality[['TEMP','PM2.5']].agg('mean', axis=1)   # 每 row：4.25, 1.65, 0.80, ...
@@ -385,7 +385,7 @@ air_quality[['WSPM', 'wd']].agg({'WSPM': ['min', 'max', 'mean'],
 <tr><td><code>random_state</code></td><td>Random seed，固定之後每次抽到一樣嘅 sample（reproducible）</td></tr>
 <tr><td><code>ignore_index</code></td><td><code>True</code> 就將結果 index 重設為 0…n−1</td></tr>
 </table>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 22–24 頁嘅 <code>Sampling.png</code> 圖解，同 <code>air_quality['TEMP'].hist()</code> vs <code>air_quality.sample(200)["TEMP"].hist()</code> 兩幅 histogram 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ Sampling.png 同兩幅 histogram（PDF 第 23–24 頁）</span><p><b>Sampling.png</b>：上面係全部 data 嘅 <code>air_quality['TEMP'].hist()</code>，兩條箭咀指去下面兩幅唔同嘅 <code>sample(200)</code> histogram：兩幅大致形狀同上面似（−10 至 35、兩個峰），但每條 bar 高度都唔同，即係每次 sample 結果有少少差異。</p><p><b>全部 95,685 rows 嘅 TEMP histogram</b>：範圍約 −17 至 42；0–5 有一個峰（約 14,700），10 附近有凹位（約 12,300），20–25 係最高峰（約 17,800），35 以上同 −10 以下都好少。<b>sample(200)</b>：同樣係雙峰（約 5–10 同 20 左右），範圍只係約 −8 至 35，冇咗兩邊最極端嘅值，同下面 describe() 比較嘅結論一樣。</p></div>
 <pre><code>air_quality['TEMP'].hist()                # 全部 95,685 rows 嘅 histogram
 air_quality.sample(200)["TEMP"].hist()    # 只用 200 rows，形狀大致相似但較粗糙
 
@@ -412,7 +412,7 @@ air_quality.sample(2000, replace = True).duplicated().sum()   # 16（有重複 r
 
 <h2>8. Correlation</h2>
 <p>假設每個 record 有兩個 random features（兩個 columns），我哋想量度佢哋<b>點樣一齊變動</b>（move together）。例如身高 \(x\) 同體重 \(y\)：身高增加時，體重係咪都傾向增加？<mark class="k">Covariance</mark> 同 <mark class="k">Correlation</mark> 就係用嚟量度呢種 co-movement。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p class="missing">PDF 第 25 頁 <code>corr.png</code> 係圖片，文字擷取不到；請對照原 PDF。</p></div>
+<div class="box note"><span class="label">🖼️ corr.png（PDF 第 25 頁）</span><div class="formula">$$ \text{Covariance}(x, y) = \frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y}) \qquad \rho_{xy} = \text{Correlation}(x, y) = \frac{cov(x, y)}{\sqrt{var(x)}\sqrt{var(y)}} $$</div><p>旁邊註明 correlation 係 covariance "Normalized w.r.t. the std"：除以兩個 standard deviations 之後，數值就固定喺 −1 至 +1 之間，唔受單位影響。（留意呢度 covariance 用 \(1/n\)；pandas <code>cov()</code> 預設用 \(1/(n-1)\)，但係計 correlation 時分子分母會抵銷，所以 <code>corr()</code> 結果一樣。）</p></div>
 <div class="box exam"><span class="label">⭐ Correlation coefficient 解讀</span>
 <ul>
   <li>Correlation coefficient 喺 <b>−1 至 +1</b> 之間。</li>

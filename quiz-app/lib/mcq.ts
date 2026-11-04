@@ -1,5 +1,5 @@
 import raw from "@/data/dsai-questions.json";
-import { filterCards, unitKey, type DeckFilter } from "./deck";
+import { unitKey } from "./deck";
 import { deriveUnits, type Unit } from "./dsai";
 
 /**
@@ -50,7 +50,3 @@ export const MCQ_ORDER: string[] = (() => {
 })();
 
 export const MCQ_BY_ID: Map<string, Mcq> = new Map(mcqs.map((q) => [q.id, q]));
-
-export function mcqsForFilter(filter: DeckFilter): Mcq[] {
-  return filterCards(mcqs, filter);
-}

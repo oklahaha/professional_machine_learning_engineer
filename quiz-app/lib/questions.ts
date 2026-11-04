@@ -21,8 +21,3 @@ export type Question = {
 
 export const questions: Question[] = raw as Question[];
 
-export const totalQuestions = questions.length;
-
-export function getQuestion(index: number): Question | undefined {
-  return questions[index];
-}

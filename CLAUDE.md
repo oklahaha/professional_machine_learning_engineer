@@ -164,7 +164,10 @@ not authored by hand:
   a shuffled question order, and progress. It persists to `localStorage` key `pmle-practice-v3`.
   **Both quizzes always shuffle questions and options** — there is no In order / Shuffle options
   toggle. A stored `orderMode: "sequential"` or `shuffleOpts: false` (from before) is replaced by a
-  fresh shuffle and random option seed on load; answers are kept. **Reset** clears the
+  fresh shuffle and random option seed on load; answers are kept — also when the bank grows: the
+  stored state is parsed by `parsePractice` (`lib/practice-store.ts`, tested), which only reshuffles an
+  order that no longer fits. **Every mode adopts another tab's writes** via the `storage` event (quizzes:
+  answers; flashcards: schedules, log, limits), or the last tab to save would erase the other's. **Reset** clears the
   answers and reshuffles both. On a phone it sits in the fixed bottom bar, right of the
   question-number field, as plain text (PMLE); the DSAI quiz keeps it at the foot of the rail instead
   (its bottom-bar `JumpControl` gets no `onReset`). Both ask for confirmation.
@@ -252,7 +255,8 @@ and the `ModeSwitch` pill.
   hash as the cards (`course::unit::question`), so stored answers survive a rebuild.
 - `components/DsaiQuizApp.tsx` mirrors `PracticeApp`'s order/pos model (persisted full-bank `order`
   of **ids**, filter as a presentation cut, restart at 0 on filter change) under storage key
-  `dsai-mcq-v1`. `load()` keeps stored order for ids that still exist, appends new ones, drops orphans.
+  `dsai-mcq-v1`. `load()` keeps stored order for ids that still exist, deals new ones in at random
+  positions (appending them hid a new deck behind the whole bank), drops orphans.
 - **Option shuffle** (always on) is `lib/mcq-present.ts` — DSAI's own copy of the PMLE
   presenter, not a shared one. Answers/pending stay in original-label space; only `McqCard` sees
   display labels. Each option's explanation travels with it, and no DSAI text cites an option by

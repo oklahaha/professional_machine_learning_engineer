@@ -247,7 +247,7 @@ export function countCards(deck: Card[], states: States, now: number): Counts {
       continue;
     }
     if (s.phase === "review") {
-      if (s.due <= endOfLocalDay(now)) counts.due++;
+      if (isDue(s, now)) counts.due++;
       if (isMature(s)) counts.mature++;
     } else counts.learning++;
   }
@@ -286,8 +286,8 @@ export function buildQueue(deck: Card[], states: States, opts: QueueOptions, now
     if (!s || s.phase === "new") {
       fresh.push(c.id);
     } else if (s.phase === "review") {
-      if (s.due <= endOfLocalDay(now)) reviews.push(c.id);
-    } else if (s.due <= now) {
+      if (isDue(s, now)) reviews.push(c.id);
+    } else if (isDue(s, now)) {
       learningIds.push(c.id);
     }
   }

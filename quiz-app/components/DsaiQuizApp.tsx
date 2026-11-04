@@ -72,7 +72,7 @@ function shuffled(ids: string[]): string[] {
 
 /**
  * Stored state can predate the current bank: a deck added, a question edited (new hash). Keep
- * the stored order for ids that still exist, append any new ones, drop orphaned answers.
+ * the stored order for ids that still exist, shuffle in any new ones, drop orphaned answers.
  */
 function load(): Persisted | null {
   if (typeof window === "undefined") return null;
@@ -83,7 +83,13 @@ function load(): Persisted | null {
 
     const stored = Array.isArray(p.order) ? p.order.filter((id) => MCQ_BY_ID.has(id)) : [];
     const seen = new Set(stored);
-    const order = [...new Set(stored), ...MCQ_ORDER.filter((id) => !seen.has(id))];
+    const order = [...seen];
+    const pos = typeof p.pos === "number" && Number.isFinite(p.pos) ? p.pos : 0;
+    // A new deck's questions are dealt in at random places, not appended behind the whole bank;
+    // only after the saved position, so the question you left stays where you left it.
+    const at = Math.min(Math.max(0, Math.floor(pos)), order.length);
+    for (const id of MCQ_ORDER)
+      if (!seen.has(id)) order.splice(at + 1 + Math.floor(Math.random() * (order.length - at)), 0, id);
 
     const answers: Answers = {};
     if (p.answers && typeof p.answers === "object") {
@@ -97,7 +103,7 @@ function load(): Persisted | null {
       version: 1,
       orderMode: p.orderMode === "shuffle" ? "shuffle" : "sequential",
       order,
-      pos: typeof p.pos === "number" && Number.isFinite(p.pos) ? p.pos : 0,
+      pos,
       answers,
       shuffleOpts: p.shuffleOpts === true,
       optSeed:
@@ -191,6 +197,19 @@ export default function DsaiQuizApp() {
     }
   }, [hydrated, baseOrder, rawPos, answers, filter, optSeed]);
 
+  // Another tab answering or resetting writes the same key; adopt its answers, or this tab's next
+  // save would overwrite them with its stale copy. Order, position and filter stay per tab.
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== STORAGE_KEY) return;
+      const p = load();
+      // Unchanged answers keep the same object: no re-render, no save, no echo back to the other tab.
+      if (p) setAnswers((prev) => (JSON.stringify(prev) === JSON.stringify(p.answers) ? prev : p.answers));
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
   // The run being walked: the persisted order narrowed to the filter. Never empty — an empty
   // cut falls back to the whole bank, so `order[pos]` always resolves.
   const order = useMemo(
@@ -230,7 +249,7 @@ export default function DsaiQuizApp() {
   const revealed = committed != null;
   // Option shuffle is a pure presentation transform: answers/pending/scoring stay in
   // ORIGINAL-label space; only the card sees display labels.
-  const view = useMemo(() => presentMcq(q, true, optSeed), [q, optSeed]);
+  const view = useMemo(() => presentMcq(q, optSeed), [q, optSeed]);
   const selected = (revealed ? committed : pending).map((l) => view.origToDisplay[l]).filter(Boolean);
 
   const runItems = useMemo(() => order.map((id) => MCQ_BY_ID.get(id)!), [order]);

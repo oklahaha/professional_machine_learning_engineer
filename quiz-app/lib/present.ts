@@ -36,18 +36,7 @@ function remapExplanation(text: string, map: Record<string, string>): string {
   );
 }
 
-export function presentQuestion(
-  q: Question,
-  shuffle: boolean,
-  seed: number,
-): Presented {
-  // Non-shuffle: return the question untouched (preserves original labels,
-  // including the intentionally non-contiguous ones on flagged questions).
-  if (!shuffle) {
-    const identity = Object.fromEntries(q.options.map((o) => [o.label, o.label]));
-    return { question: q, origToDisplay: identity, displayToOrig: identity };
-  }
-
+export function presentQuestion(q: Question, seed: number): Presented {
   const order = permute(q.options.length, (q.id * 2654435761) ^ seed);
   const origToDisplay: Record<string, string> = {};
   const displayToOrig: Record<string, string> = {};

@@ -208,6 +208,31 @@ export default function FlashcardApp() {
     }
   }, [hydrated, states, log, limits, filter, shuffleSeed]);
 
+  // Another tab grading cards writes the same key. Adopt its schedules, counters and limits, or
+  // this tab's next save would overwrite that history with its stale copy. Filter and shuffle
+  // stay per tab. The queue is rebuilt, since the other tab may already have graded these cards.
+  useEffect(() => {
+    if (!hydrated) return;
+    function onStorage(e: StorageEvent) {
+      if (e.key !== STORAGE_KEY) return;
+      const p = load();
+      // Nothing this tab tracks changed (the other tab moved its filter, or echoed our own save):
+      // stop here, or the two tabs would keep re-saving to each other forever.
+      if (!p || JSON.stringify([p.states, p.log, p.limits]) === JSON.stringify([states, log, limits])) return;
+      const at = Date.now();
+      const next = fill(p.states, p.log, p.limits, deck, at);
+      setStates(p.states);
+      setLog(p.log);
+      setLimits(p.limits);
+      setUndo(null);
+      setNow(at);
+      setQueue(next);
+      if (next[0] !== queue[0]) setRevealed(false);
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [hydrated, fill, deck, queue, states, log, limits]);
+
   // Nothing left right now, but a learning step is a minute away: poll gently so the queue
   // refills itself instead of stranding the user on the "done" panel. Only runs while empty.
   useEffect(() => {

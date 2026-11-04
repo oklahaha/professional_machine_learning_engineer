@@ -17,7 +17,9 @@ export type PresentedMcq<Q extends Shuffleable> = {
   displayToOrig: Record<string, string>;
 };
 
-// FNV-1a over the hex id, so each question gets its own arrangement for a given seed.
+// FNV-1a over the hex id, so each question gets its own arrangement for a given seed. The same
+// hash as seedFrom in lib/srs.ts, copied: Node's test runner cannot resolve a runtime import
+// between these .ts files.
 function hashId(id: string): number {
   let h = 0x811c9dc5;
   for (let i = 0; i < id.length; i++) {
@@ -40,12 +42,7 @@ function permute(n: number, key: number): number[] {
   return idx;
 }
 
-export function presentMcq<Q extends Shuffleable>(q: Q, shuffle: boolean, seed: number): PresentedMcq<Q> {
-  if (!shuffle) {
-    const identity = Object.fromEntries(q.options.map((o) => [o.label, o.label]));
-    return { question: q, origToDisplay: identity, displayToOrig: identity };
-  }
-
+export function presentMcq<Q extends Shuffleable>(q: Q, seed: number): PresentedMcq<Q> {
   const order = permute(q.options.length, hashId(q.id) ^ seed);
   const origToDisplay: Record<string, string> = {};
   const displayToOrig: Record<string, string> = {};

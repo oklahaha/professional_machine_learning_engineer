@@ -8,22 +8,9 @@ import DomainPanel, { type DomainStat } from "./DomainPanel";
 import { HomeLink } from "./ModeSwitch";
 import StyleToggle from "./StyleToggle";
 import QuestionCard from "./QuestionCard";
+import { parsePractice, type Answers, type Persisted } from "@/lib/practice-store";
 
 const STORAGE_KEY = "pmle-practice-v3"; // v3: answers are label arrays (multi-answer)
-
-type OrderMode = "sequential" | "shuffle";
-
-type Answers = Record<number, string[]>; // questionId -> selected labels
-
-type Persisted = {
-  orderMode: OrderMode;
-  order: number[]; // indices into `questions` — the FULL bank, before domain filtering
-  pos: number;
-  answers: Answers;
-  shuffleOpts?: boolean; // shuffle answer options within each question
-  optSeed?: number; // seed for the option permutation
-  domains?: number[]; // exam-guide sections to drill; empty = all of them
-};
 
 // order-independent set equality — a question is correct iff the chosen labels
 // exactly match its answer set (handles single- and multi-answer questions).
@@ -57,24 +44,9 @@ function load(): Persisted | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const p = JSON.parse(raw) as Persisted;
-    if (!Array.isArray(p.order) || p.order.length !== questions.length) return null;
-    // guard against out-of-range indices from tampered/legacy data
-    if (p.order.some((i) => typeof i !== "number" || i < 0 || i >= questions.length))
-      return null;
-    if (p.answers && typeof p.answers === "object") {
-      // normalize any stray non-array values rather than trusting stored shape
-      for (const k of Object.keys(p.answers)) {
-        if (!Array.isArray(p.answers[Number(k)])) delete p.answers[Number(k)];
-      }
-    }
-    // a stored filter naming a section that does not exist would hide questions forever
-    if (p.domains && !Array.isArray(p.domains)) delete p.domains;
-    if (p.domains) p.domains = p.domains.filter((d) => DOMAINS.some((x) => x.id === d));
-    return p;
+    return raw ? parsePractice(raw, questions.length, (d) => DOMAINS.some((x) => x.id === d)) : null;
   } catch {
-    return null;
+    return null; // storage may be unavailable (private mode)
   }
 }
 
@@ -136,6 +108,19 @@ export default function PracticeApp() {
     }
   }, [hydrated, baseOrder, rawPos, answers, optSeed, domainFilter]);
 
+  // Another tab answering or resetting writes the same key; adopt its answers, or this tab's next
+  // save would overwrite them with its stale copy. Order, position and filter stay per tab.
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== STORAGE_KEY) return;
+      const p = load();
+      // Unchanged answers keep the same object: no re-render, no save, no echo back to the other tab.
+      if (p) setAnswers((prev) => (JSON.stringify(prev) === JSON.stringify(p.answers) ? prev : p.answers));
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
   // The run the user is actually walking: the persisted order, narrowed to the selected
   // exam sections. filterByDomain guarantees a non-empty result, so `order[pos]` is always
   // a real question.
@@ -179,7 +164,7 @@ export default function PracticeApp() {
   // Option shuffle is a pure presentation transform: state/scoring below stay
   // in ORIGINAL-letter space; only the view is remapped to display labels.
   const view = useMemo(
-    () => presentQuestion(q, true, optSeed),
+    () => presentQuestion(q, optSeed),
     [q, optSeed],
   );
   const selectedOrig = revealed ? committed : pending;

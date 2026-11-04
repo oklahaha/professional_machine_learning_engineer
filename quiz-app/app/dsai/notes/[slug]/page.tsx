@@ -41,10 +41,10 @@ export default async function Page({ params }: Params) {
   const siblings = notes.filter((n) => n.course === note.course);
 
   return (
-    <div className="study-shell pb-6 sm:pb-12">
-      {/* On desktop the header takes the study grid's columns, so the mode switch lines up with the
-          lecture's left edge and the style toggle with its right. */}
-      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 lg:grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-x-8">
+    <div className="study-shell max-w-7xl pb-6 sm:pb-12">
+      {/* On desktop the header takes the study grid's first two columns, so the mode switch
+          lines up with the lecture's left edge and the style toggle with its right. */}
+      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 lg:grid lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,15rem)] lg:gap-x-8">
         <Link href="/dsai/notes" className="hud-label inline-flex items-center gap-1.5 transition hover:text-paper lg:justify-self-start">
           <span aria-hidden>←</span> All Revision Notes
         </Link>
@@ -58,7 +58,7 @@ export default async function Page({ params }: Params) {
         </div>
       </header>
 
-      <div className="study-grid">
+      <div className="study-grid lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,15rem)]">
         <main id="main" className="study-main">
           <article lang="zh-Hant" className="holo-card holo-solid rounded-lg px-4 py-6 sm:px-10 sm:py-10">
             <p className="hud-label">
@@ -83,12 +83,14 @@ export default async function Page({ params }: Params) {
           </nav>
         </main>
 
-        {/* Below lg the rail (this course's lectures) comes first and the notes under it; the
+        {/* Desktop: this course's lectures on the left, the page's contents on the right (xl only;
+            narrower screens keep the contents inline at the top of the article, or the note column
+            gets phone-narrow). Below lg the lecture list comes first and the notes under it; the
             markup keeps the article first, so the skip link and reading order reach it first. */}
-        <aside className="study-rail max-lg:order-first" aria-label="Contents and lectures">
-          <div className="hidden lg:block">
-            <NotesToc headings={note.headings} variant="rail" />
-          </div>
+        <aside className="hidden xl:col-start-3 xl:row-start-1 xl:sticky xl:top-6 xl:block xl:max-h-[calc(100dvh-3rem)] xl:min-w-0 xl:overflow-y-auto" aria-label="On this page">
+          <NotesToc headings={note.headings} variant="rail" />
+        </aside>
+        <aside className="study-rail max-lg:order-first" aria-label="Lectures">
           <nav aria-label={`${note.course} lectures`} className="holo rounded-lg p-4">
             <h2 className="hud-label mb-2 px-2.5">
               <span translate="no">{note.course}</span> {note.courseTitle}
@@ -99,9 +101,9 @@ export default async function Page({ params }: Params) {
                   <Link
                     href={`/dsai/notes/${n.slug}`}
                     aria-current={n.slug === note.slug ? "page" : undefined}
-                    className="flex items-baseline gap-2 rounded-[4px] px-2.5 py-1.5 text-[14px] leading-snug text-mist transition hover:bg-signal/5 hover:text-paper aria-[current=page]:bg-signal/10 aria-[current=page]:text-signal"
+                    className="flex items-baseline gap-2 rounded-[4px] px-2.5 lg:flex-col lg:gap-0 py-1.5 text-[14px] leading-snug text-mist transition hover:bg-signal/5 hover:text-paper aria-[current=page]:bg-signal/10 aria-[current=page]:text-signal"
                   >
-                    <span className="w-[6.5rem] shrink-0 tabular-nums">{n.unitLabel}</span>
+                    <span className="w-[6.5rem] shrink-0 tabular-nums lg:w-auto lg:text-[12px]">{n.unitLabel}</span>
                     <span className="min-w-0 flex-1">{n.title}</span>
                   </Link>
                 </li>

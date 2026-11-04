@@ -10,7 +10,7 @@ import type { Heading } from "@/lib/notes";
  */
 
 /**
- * The page's sections. On a desktop it sits in the sticky rail and follows the scroll; on a
+ * The page's sections. On a wide (xl) desktop it sits in the sticky rail and follows the scroll; on a
  * phone, where the rail lands under the article, the same list is a collapsed <details> at the
  * top of the article instead (`variant="inline"`).
  */
@@ -65,7 +65,7 @@ export function NotesToc({ headings, variant }: { headings: Heading[]; variant: 
 
   if (variant === "inline")
     return (
-      <details className="group mt-6 rounded-md bg-ink/50 px-4 py-3 lg:hidden">
+      <details className="group mt-6 rounded-md bg-ink/50 px-4 py-3 xl:hidden">
         <summary className="cursor-pointer font-display text-sm font-medium text-paperdim">
           Contents · {headings.length} sections
         </summary>

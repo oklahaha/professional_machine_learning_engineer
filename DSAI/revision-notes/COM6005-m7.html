@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 7 Principal Component Analysis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m7">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 7</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 7 · Source: Lecture_PCA_L02_Complete.pdf (15 slides)</p>
+<h1>Principal Component Analysis (PCA)</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>分清 <b>Feature selection</b>（揀部分 predictors）同 <b>Feature extraction</b>（transform data，例如 PCA）。</li>
+    <li>明白 PCA 係將 data transform 去<b>新嘅 coordinates (axes)</b>：PC1 variance 最大，PC2 次之……而且 axes 互相 <b>perpendicular</b>。</li>
+    <li>用 <b>swarm of fireflies</b> 嘅比喻理解 PC1、PC2。</li>
+    <li>知道 PCA 數學上係搵 <b>covariance matrix</b> 嘅 <b>eigenvalues</b> 同 <b>eigenvectors</b>，以及佢哋喺 <code>sklearn</code> 對應邊個 attribute。</li>
+    <li>明白點解 PCA 之前要 <b>Standardization</b>，識用 <code>StandardScaler</code>。</li>
+    <li><b>PCA + Regression</b>：regress Y on 頭 k 個 PCs，用 CV error 揀 k。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>Feature selection = dump 一啲、keep 一啲 predictors；Feature extraction = transform data（例：用 internal score 代替 midterm + assignment + final）。PCA 屬 extraction。</li>
+    <li>PC1 = <b>maximum variance</b> 方向（longest stretch）；PC2 要 <b>90° perpendicular</b> to PC1，capture 下一個最大 variance。</li>
+    <li>PCA = 搵 covariance matrix 嘅 eigenvalues（importance → <code>explained_variance_ratio_</code>）同 eigenvectors（transform data → <code>components_</code>）。</li>
+    <li>PCA 之前要 standardize（mean 0、SD 1），否則大 scale 嘅 feature（例如 income in dollars）會 dominate PC1。</li>
+    <li>PCA regression：對 \( k=1,2,3,\dots \) 計 CV error，揀 CV error 最細嘅 k。</li>
+  </ol>
+</div>
+
+<h2>1. Feature extraction vs Feature selection（slide 2）</h2>
+<p>當 p 好大，好難將所有 predictors 都放入 regression model（Module 6：p = 20 已經有超過一百萬個 subsets）。有兩類處理方法：</p>
+<div class="box exam"><span class="label">⭐ 定義比較</span>
+<table>
+<tr><th></th><th>Feature selection</th><th>Feature extraction</th></tr>
+<tr><td>做法</td><td><b>選擇</b> predictors：some are dumped, some are kept</td><td><b>Transform</b> data，砌出新 variables</td></tr>
+<tr><td>例子</td><td>Best subset、forward / backward selection（Module 6）</td><td>用「internal score」代替 midterm + assignment + final 去 predict public exam score</td></tr>
+<tr><td>方法</td><td>\( C_p \)、AIC、BIC、CV</td><td><b>Principal Component Analysis (PCA)</b></td></tr>
+<tr><td>結果嘅 variables</td><td>原本嘅 predictors（易解釋）</td><td>原本 predictors 嘅 combinations（較難解釋）</td></tr>
+</table></div>
+<div class="box tip"><span class="label">💡 直覺：internal score 例子</span>
+<p>midterm、assignment、final 三科分數通常高度相關（勤力嘅學生三樣都高）。與其三個都放入 model，不如合成一個 internal score，例如 \( 0.3\times\text{midterm}+0.2\times\text{assignment}+0.5\times\text{final} \)。三個 variables 變一個，大部分資訊都保留。PCA 做嘅事類似，只不過 weights 由 data 自動決定，目標係保留最多 variance。</p></div>
+
+<h2>2. PCA 嘅概念（slides 3–5）</h2>
+<div class="box exam"><span class="label">⭐ Concepts（slide 3）</span>
+<ul>
+<li>PCA 係一個簡化複雜 data 嘅工具：搵出 data <b>spread out the most（highest variance）</b> 嘅方向。</li>
+<li>PCA = 將原本 data <b>transform 去新 coordinates (axes)</b>。</li>
+<li>新嘅第 1 條 axis 最重要，第 2 條相對冇咁重要（in the sense of variance），第 3 條又冇第 2 條咁重要，如此類推。</li>
+<li>新 axes 之間<b>互相 perpendicular</b>。</li>
+</ul></div>
+
+<h3>2.1 Swarm of Fireflies 比喻（slides 4–5）</h3>
+<p>想像一間房入面有一群螢火蟲，佢哋唔係亂飛，而係形成一個<b>長形、傾斜、雪茄形</b>嘅雲。每隻螢火蟲嘅位置由三個 coordinates 決定：Width (X)、Depth (Y)、Height (Z)，即係 <b>3D data</b>。</p>
+<p>想將 3D 簡化做較低 dimension 時，<b>唔應該直接掉咗 Height (Z) 或者 Depth (Y)</b>，因為雪茄係斜放嘅，三個方向都有資訊。PCA 叫你<b>轉換角度</b>，喺房入面畫新嘅線。</p>
+<div class="box exam"><span class="label">⭐ How PCA works（slide 5）</span>
+<ol>
+<li><b>PC1：The Longest Stretch（largest variance）</b>。沿住螢火蟲雲最長嘅部分畫一條直線，呢條線代表 <b>direction of maximum variance</b>（data points 最分散嘅方向）。</li>
+<li><b>PC2：The Next Best Direction</b>。睇返剩低嘅 spread，畫第二條線，佢<b>必須同 PC1 成 90 度（perpendicular）</b>，capture 下一個最大嘅 spread。</li>
+</ol></div>
+<p>PC3 就係同 PC1、PC2 都垂直嘅方向，capture 剩低最少嘅 spread。如果雪茄好幼長，PC1 已經 capture 大部分 variance，只用 PC1（1D）或者 PC1 + PC2（2D）都唔會失去太多資訊，呢個就係 <b>dimension reduction</b>。</p>
+
+<div class="box tip"><span class="label">💡 數字例子（2D）</span>
+<p>兩個 standardized variables \( x_1,x_2 \)，covariance matrix：</p>
+<div class="formula">$$ \Sigma=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix} $$</div>
+<p>Eigenvalues 係 \( \lambda_1=3 \)、\( \lambda_2=1 \)，對應 eigenvectors \( v_1=\tfrac{1}{\sqrt2}(1,1) \)、\( v_2=\tfrac{1}{\sqrt2}(1,-1) \)。</p>
+<ul>
+<li>PC1 方向係 \( (1,1) \)（兩個 variables 一齊升嘅斜線），PC2 係 \( (1,-1) \)，兩者垂直（dot product \( =1-1=0 \)）。</li>
+<li>PC1 嘅 explained variance ratio \( =\frac{3}{3+1}=75\% \)；PC2 \( =25\% \)。</li>
+<li>一個 data point \( (x_1,x_2)=(2,1) \) 嘅 PC1 score \( =\tfrac{1}{\sqrt2}(2+1)\approx2.12 \)，PC2 score \( =\tfrac{1}{\sqrt2}(2-1)\approx0.71 \)。</li>
+</ul></div>
+
+<h2>3. PCA in Python（slides 6–7）</h2>
+<h3>3.1 Example code：Fireflies（slide 6）</h3>
+<pre><code>import numpy as np
+import pandas as pd
+from sklearn.decomposition import PCA
+
+swarm_df = pd.read_csv('fireflies.csv')     # 3 columns：X, Y, Z
+
+pca = PCA(n_components=3)                    # 保留 3 個 PCs
+fireflies_3d = pca.fit_transform(swarm_df)   # fit + 轉去新 coordinates
+
+print(swarm_df.head())
+print(f"PC1 (Longest stretch): {pca.explained_variance_ratio_[0]*100:.1f}%")
+print(f"PC2: {pca.explained_variance_ratio_[1]*100:.1f}%")
+print(f"PC3: {pca.explained_variance_ratio_[2]*100:.1f}%")
+print(f"Total kept in 3D: {sum(pca.explained_variance_ratio_)*100:.1f}%")   # 3 個 PCs 全保留 = 100%
+
+pca.components_[0]            # PC1 嘅 loadings / weights（eigenvector）
+pca.explained_variance_[0]    # PC1 嘅 variance magnitude（eigenvalue）</code></pre>
+<div class="box note"><span class="label">📝 Slide 6 圖表</span><p>Slide 6 有 <code>import plotly.graph_objects as go</code>，但 extracted code 冇畫圖部分；<code>fireflies.csv</code> 亦唔喺 course folder。以下係一個可以自己 run 嘅版本，用 random data 模擬雪茄形雲。</p></div>
+<pre><code>import numpy as np
+import pandas as pd
+from sklearn.decomposition import PCA
+
+rng = np.random.default_rng(0)
+t = rng.normal(0, 5, 500)                       # 沿住雪茄長軸嘅位置（spread 大）
+swarm_df = pd.DataFrame({
+    'X': t + rng.normal(0, 0.5, 500),
+    'Y': 0.8 * t + rng.normal(0, 0.5, 500),     # 斜放：Y、Z 都跟住 t 變
+    'Z': 0.5 * t + rng.normal(0, 0.5, 500),
+})
+pca = PCA(n_components=3).fit(swarm_df)
+print(pca.explained_variance_ratio_.round(3))   # PC1 大約 99%，PC2、PC3 好細
+print(pca.components_[0].round(2))              # PC1 方向，大約同 (1, 0.8, 0.5) 成比例</code></pre>
+
+<h3>3.2 數學：eigenvalues 同 eigenvectors（slide 7）</h3>
+<div class="box exam"><span class="label">⭐ PCA 嘅數學同 sklearn 對應</span>
+<ul>
+<li>PCA 數學上即係搵 <b>covariance matrix</b> 嘅 <b>eigenvalues</b> 同 <b>eigenvectors</b>。</li>
+<li><b>Eigenvalues</b> 表示 transformed data 嘅 <b>importance</b> → <code>pca.explained_variance_ratio_</code></li>
+<li><b>Eigenvectors</b> 用嚟 <b>transform</b> 原本 data → <code>pca.components_</code></li>
+<li>Python：<code>pca = PCA(n_components=3)</code>；<code>pca_result = pca.fit_transform(x)</code></li>
+</ul></div>
+<table>
+<tr><th>Attribute</th><th>內容</th><th>數學</th></tr>
+<tr><td><code>explained_variance_</code></td><td>每個 PC 嘅 variance</td><td>Eigenvalue \( \lambda_j \)</td></tr>
+<tr><td><code>explained_variance_ratio_</code></td><td>每個 PC 佔 total variance 嘅比例</td><td>\( \lambda_j/\sum_i\lambda_i \)</td></tr>
+<tr><td><code>components_</code></td><td>每一 row 係一個 PC 嘅 loadings / weights</td><td>Eigenvector \( v_j \)</td></tr>
+<tr><td><code>fit_transform(X)</code></td><td>每個 observation 喺新 axes 上嘅 scores</td><td>\( (X-\bar X)\,v_j \)</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 細節</span>
+<ul>
+<li>Slide 7 話 eigenvalues「given by <code>explained_variance_ratio_</code>」。嚴格嚟講，<code>explained_variance_</code> 先係 eigenvalues 本身，<code>explained_variance_ratio_</code> 係將佢哋 normalize 成比例（加埋 = 1）。兩者都反映 importance，排序一樣。</li>
+<li><code>components_</code> 嘅 <b>row</b> 係 PC（唔係 column）：<code>components_[0]</code> 係 PC1 嘅 weights，長度 = 原本 features 數目。</li>
+<li>Eigenvectors 互相垂直，正好對應「新 axes are perpendicular」。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 <a href="COM6004-ch7.html">Matrix Algebra Review</a> 有 eigenvalue / eigenvector 嘅基本計法；<a href="COM6004-ch7b.html">Dimensionality Reduction</a> 從 data mining 角度講 PCA、SVD（該兩章唔喺 COM6004 考試範圍，但對理解呢講有幫助）。</p></div>
+
+<h2>4. Standardization（slides 8–10）</h2>
+<div class="box exam"><span class="label">⭐ 點解 PCA 前要 Standardize？（slide 9）</span>
+<ul>
+<li>PCA 搵嘅係 <b>maximize variance</b> 嘅方向。</li>
+<li>如果 features 嘅 scale / units 完全唔同（例如 income in dollars、age in years），numerical variance 大嘅 feature 會<b>完全 dominate</b> PC1。</li>
+<li>Standardizing（centering and scaling）將所有 features 變成 <b>mean = 0、standard deviation = 1</b>，確保每個 feature 公平貢獻。</li>
+</ul>
+<div class="formula">$$ z=\frac{x-\bar x}{s} $$</div></div>
+<div class="box tip"><span class="label">💡 數字例子</span>
+<p>Income 嘅 SD = 20,000 dollars → variance \( =4\times10^8 \)；Age 嘅 SD = 10 years → variance = 100。PCA 會覺得 income 方向 spread 大到不得了，PC1 幾乎就係 income axis，age 嘅資訊被忽略。其實係因為「dollar」呢個單位數值大，唔係 income 真係重要啲。Standardize 之後，兩者 variance 都係 1，PCA 就會睇佢哋之間嘅 correlation 結構。</p></div>
+<p>Python（slide 10）：</p>
+<pre><code>from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()            # get the object
+X_scaled = scaler.fit_transform(X)   # X_scaled：每個 column mean = 0、SD = 1</code></pre>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 學過嘅 scaling（standardization / normalization）同 COM6004 <a href="COM6004-ch2.html">Ch 2</a> 嘅 preprocessing 係同一件事。KNN、K-means 呢類用 distance 嘅方法，同樣需要先 standardize。</p></div>
+
+<h2>5. 用 PCs 做 regression（slides 11–15）</h2>
+<p>（Slide 11 同 slide 8 一樣係 section title；slide 12 係棒球員同 MLB pension 嘅插圖，作為 Baseball data 例子嘅引入，唔涉及考試內容。）</p>
+<div class="box exam"><span class="label">⭐ Combining PCA and regression（slide 13）</span>
+<ol>
+<li>Regress Y against 頭 <b>k</b> 個 principal components。</li>
+<li>計 <b>cross-validation error</b>。</li>
+<li>對 \( k=1,2,3,\dots \) 重複，揀 <b>CV error 最細</b>嘅 k。</li>
+</ol>
+<p>sklearn 有現成 functions 做 PCA + Regression。</p></div>
+<div class="box tip"><span class="label">💡 點解咁做？</span>
+<p>PCs 互相 uncorrelated（垂直），所以冇 multicollinearity 問題；而且頭幾個 PCs 已包含大部分 variance，用少數 PCs 代替大量 predictors 可以減少 overfitting。k 呢個「model size」點揀，就用返 Module 6 嘅 <b>CV</b> 諗法：k 太細會 underfit，太大就同用晒所有 predictors 差唔多。</p></div>
+
+<h3>5.1 Example：Hitters（Baseball）data（slides 14–15）</h3>
+<ul>
+<li>ISLP package 嘅 <code>Hitters</code> data：<b>19 predictors</b>（包括 categorical），\( n=322 \)。</li>
+<li>Response Y：球員嘅 <b>Salary</b>。</li>
+</ul>
+<pre><code># pip install ISLP
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from ISLP import load_data
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+
+HC = load_data('Hitters')
+HC = HC.dropna()                           # 刪走有 null 嘅 rows（Salary 有 missing）
+X = HC.drop(columns=['Salary'])            # 移除 target column
+X = pd.get_dummies(X, drop_first=True)     # categorical → dummy variables（statistics approach）
+y = HC['Salary']
+
+scaler = StandardScaler()                  # Standardization
+X_scaled = scaler.fit_transform(X)
+
+pca = PCA(n_components=10)
+X_pca = pca.fit_transform(X_scaled)
+cv_scores = cross_val_score(LinearRegression(), X_pca, y, cv=10,
+                            scoring='neg_mean_squared_error')
+
+plt.plot(range(1, len(cv_scores) + 1), -cv_scores, marker='o')
+plt.xlabel('Number of Principal Components')
+plt.ylabel('Mean Squared Error')
+plt.title('Cross-validation result (MSEP)')
+plt.show()</code></pre>
+<table>
+<tr><th>Step</th><th>作用</th></tr>
+<tr><td><code>dropna()</code></td><td>Hitters 有部分 Salary 係 missing，刪走嗰啲 rows</td></tr>
+<tr><td><code>get_dummies(drop_first=True)</code></td><td>Categorical（League、Division、NewLeague）變 dummy；drop first category 做 baseline，同 Module 4b 嘅 dummy variable 做法一致</td></tr>
+<tr><td><code>StandardScaler</code></td><td>PCA 前先 standardize（Section 4）</td></tr>
+<tr><td><code>cross_val_score(..., cv=10)</code></td><td>10-fold CV，score 係負 MSE；<code>-cv_scores</code> 變返 MSE</td></tr>
+<tr><td>MSEP</td><td>Mean Squared Error of Prediction，即 CV 估計嘅 prediction MSE</td></tr>
+</table>
+
+<div class="box warn"><span class="label">⚠️ Slide 14–15 code 要留意嘅地方</span>
+<ul>
+<li>Slide 14 將結果存做 <code>y_cv_pred</code>，下一行就用 <code>cv_scores</code>，變數名唔一致；跟 slide 15 用 <code>cv_scores</code> 就啱。</li>
+<li>Slide 15 嘅 <code>cv_scores</code> 係 <b>10 個 folds</b> 嘅 score（全部用 10 個 PCs），所以 x-axis 其實係 <b>fold number</b>，唔係「Number of Principal Components」。要做到 slide 13 嘅「for k = 1, 2, 3, … 揀 k」，要 loop k，每次只用頭 k 個 PCs，再平均 10 個 folds：</li>
+</ul>
+<pre><code>msep = []
+for k in range(1, 11):
+    s = cross_val_score(LinearRegression(), X_pca[:, :k], y, cv=10,
+                        scoring='neg_mean_squared_error')
+    msep.append(-s.mean())                 # 第 k 個點 = 用 k 個 PCs 嘅 CV MSE
+best_k = int(np.argmin(msep)) + 1
+plt.plot(range(1, 11), msep, marker='o')
+plt.xlabel('Number of Principal Components'); plt.ylabel('CV MSE')
+plt.show()</code></pre>
+<p>另外，scaler 同 PCA 係喺成個 dataset 上 fit 完先做 CV，test folds 嘅資訊會輕微漏入 preprocessing。更嚴謹嘅做法係將 <code>StandardScaler</code>、<code>PCA</code>、<code>LinearRegression</code> 放入同一個 <code>Pipeline</code>（Module 6 slide 23 嘅諗法）再做 CV。</p></div>
+
+<div class="box link"><span class="label">🔗 跨講連繫</span><p>Module 6 用 feature <b>selection</b> 揀 predictors；呢講用 feature <b>extraction</b>（PCA）。兩者都用 <b>CV error</b> 決定 model 大細（Module 6 揀 subset，呢度揀 k）。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Feature selection 同 feature extraction 有咩分別？各舉一個例子。</summary><p>Selection：保留部分原有 predictors，其餘 dump 走，例如 best subset、forward selection。Extraction：transform data 產生新 variables，例如用 internal score 代替 midterm + assignment + final，或者 PCA。</p></details>
+<details class="q"><summary>Q2. 用 fireflies 比喻解釋 PC1 同 PC2。</summary><p>螢火蟲形成斜放嘅雪茄形雲。PC1 係穿過雲最長部分嘅直線，即 maximum variance 方向。PC2 係同 PC1 成 90° 嘅線，capture 剩低 spread 入面最大嘅方向。</p></details>
+<details class="q"><summary>Q3. 點解唔可以直接掉咗 Height (Z) 去將 3D 變 2D？</summary><p>雪茄形雲係斜放，Z 同 X、Y 都有關，資訊分佈喺三個原本 axes 上。直接掉 Z 會失去部分 spread。PCA 換一套新 axes，令頭幾條 axes 集中最多 variance，再掉最唔重要嗰條。</p></details>
+<details class="q"><summary>Q4. 3 個 PCs 嘅 eigenvalues 係 6、3、1。計 explained variance ratio。用頭 2 個 PCs 保留幾多 variance？</summary><p>Total = 10。PC1 = 60%，PC2 = 30%，PC3 = 10%。頭 2 個 PCs 保留 90%。</p></details>
+<details class="q"><summary>Q5. <code>pca.components_</code>、<code>pca.explained_variance_</code>、<code>pca.explained_variance_ratio_</code> 分別係咩？</summary><p><code>components_</code>：eigenvectors（每 row 係一個 PC 嘅 loadings / weights），用嚟 transform data。<code>explained_variance_</code>：eigenvalues，每個 PC 嘅 variance。<code>explained_variance_ratio_</code>：eigenvalue ÷ 總和，即每個 PC 嘅 importance 比例。</p></details>
+<details class="q"><summary>Q6. 一個 dataset 有 income（dollars）同 age（years），唔 standardize 直接做 PCA 會點？</summary><p>Income 嘅數值 variance 遠大於 age，PC1 幾乎完全由 income 決定，age 被忽略。呢個係單位造成，唔係真正重要性。要先 standardize（mean 0、SD 1）。</p></details>
+<details class="q"><summary>Q7. 一個 feature 嘅 mean = 50、SD = 8。x = 66 standardize 之後係幾多？</summary><p>\( z=(66-50)/8=2 \)。</p></details>
+<details class="q"><summary>Q8. 描述 PCA + regression 點揀 k。</summary><p>對 \( k=1,2,3,\dots \)：用頭 k 個 PCs 做 regression，計 CV error（例如 10-fold CV MSE）。揀 CV error 最細嘅 k。</p></details>
+<details class="q"><summary>Q9. Slide 15 嘅 plot x-axis 寫「Number of Principal Components」，但 code 有咩問題？點改？</summary><p><code>cross_val_score(..., X_pca, cv=10)</code> 回傳嘅係 10 個 folds 嘅 score（每個都用 10 個 PCs），所以 x-axis 其實係 fold number。應該 loop k = 1…10，每次用 <code>X_pca[:, :k]</code>，取 <code>-scores.mean()</code> 做該 k 嘅 MSEP。</p></details>
+<details class="q"><summary>Q10. PCs 互相垂直對 regression 有咩好處？</summary><p>PCs 之間 uncorrelated，所以冇 multicollinearity；而且頭幾個 PCs 已包含大部分 variance，可以用較少 variables 建 model，減低 overfitting 風險。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Large p → Feature <b>selection</b>（dump / keep predictors）或 Feature <b>extraction</b>（transform，例：internal score）。PCA = extraction。</li>
+<li>PCA：transform 去新 axes；PC1 = maximum variance（longest stretch），PC2 \( \perp \) PC1 = next largest variance，PC3 …；axes 互相 perpendicular。</li>
+<li>Fireflies：3D 雪茄形雲，唔好直接掉 Z / Y，要換角度畫新線。</li>
+<li>數學：covariance matrix 嘅 eigenvalues（importance → <code>explained_variance_ratio_</code> \( =\lambda_j/\sum\lambda_i \)；<code>explained_variance_</code> \( =\lambda_j \)）同 eigenvectors（transform → <code>components_</code>，每 row 一個 PC）。</li>
+<li><code>PCA(n_components=k).fit_transform(X)</code> → PC scores。</li>
+<li>先 standardize：\( z=(x-\bar x)/s \)，mean 0、SD 1；<code>StandardScaler().fit_transform(X)</code>。否則大 scale feature dominate PC1。</li>
+<li>PCA regression：regress Y on 頭 k 個 PCs → CV error → 試 \( k=1,2,3,\dots \) → 揀 CV error 最細。</li>
+<li>Hitters：19 predictors、\( n=322 \)、Y = Salary；<code>dropna</code> → <code>get_dummies(drop_first=True)</code> → <code>StandardScaler</code> → <code>PCA</code> → <code>cross_val_score(cv=10, scoring='neg_mean_squared_error')</code>。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m6.html">← Module 6 Model Comparison</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

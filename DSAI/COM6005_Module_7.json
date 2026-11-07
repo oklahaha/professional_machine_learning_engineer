@@ -1,0 +1,622 @@
+[
+  {
+    "question": "Replacing midterm, assignment and final marks with a single 'internal score' to predict the public exam score is an example of what?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Feature extraction",
+        "Explanation": "Correct: the original predictors are transformed into a new one rather than kept or dropped."
+      },
+      {
+        "label": "B",
+        "text": "Feature selection",
+        "Explanation": "Selection keeps some of the original predictors and dumps others; here none of them is kept as-is."
+      },
+      {
+        "label": "C",
+        "text": "Standardization",
+        "Explanation": "Standardization rescales each feature to mean 0 and SD 1; it does not combine features into one."
+      },
+      {
+        "label": "D",
+        "text": "Cross-validation",
+        "Explanation": "Cross-validation estimates prediction error; it does not build new predictors."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask whether original predictors are kept/dropped or transformed.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Which statement correctly contrasts best subset selection with PCA?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both keep a subset of the original predictors unchanged",
+        "Explanation": "PCA produces new axes from the data; it does not simply keep original predictors."
+      },
+      {
+        "label": "B",
+        "text": "Best subset selection keeps some predictors and dumps others; PCA transforms the data into new coordinates",
+        "Explanation": "Correct: one is feature selection, the other feature extraction."
+      },
+      {
+        "label": "C",
+        "text": "Best subset selection transforms the data; PCA drops the least important predictors",
+        "Explanation": "This reverses the two roles."
+      },
+      {
+        "label": "D",
+        "text": "Both are methods for standardizing predictors",
+        "Explanation": "Neither is a scaling method; standardization is a separate step done before PCA."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "One is selection, the other extraction.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "What does PCA look for in the data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The predictors most correlated with the response",
+        "Explanation": "PCA never looks at a response; it works only on the spread of the predictors."
+      },
+      {
+        "label": "B",
+        "text": "The observations that are outliers",
+        "Explanation": "PCA is not an outlier detector in this lecture."
+      },
+      {
+        "label": "C",
+        "text": "The directions where the data spreads out the most",
+        "Explanation": "Correct: PCA finds the directions of highest variance."
+      },
+      {
+        "label": "D",
+        "text": "The cluster each observation belongs to",
+        "Explanation": "Assigning observations to clusters is not what PCA does."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about spread.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Which property do the new axes found by PCA have?",
+    "options": [
+      {
+        "label": "A",
+        "text": "They are all equally important",
+        "Explanation": "The 1st axis is the most important, the 2nd less so, and so on."
+      },
+      {
+        "label": "B",
+        "text": "Each one is one of the original variables",
+        "Explanation": "The new axes are new coordinates, not the original variables."
+      },
+      {
+        "label": "C",
+        "text": "The last axis captures the most variance",
+        "Explanation": "Importance decreases with each axis, so the last one captures the least."
+      },
+      {
+        "label": "D",
+        "text": "They are perpendicular to each other",
+        "Explanation": "Correct: every new axis is perpendicular to the others."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Recall the angle between PC1 and PC2.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "A swarm of fireflies forms a long, tilted, cigar-shaped cloud in a room. Following PCA, how should you reduce the 3D positions to fewer dimensions?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Draw new lines through the room along the directions of greatest spread",
+        "Explanation": "Correct: PCA changes the perspective rather than discarding an original coordinate."
+      },
+      {
+        "label": "B",
+        "text": "Throw away the Height ($Z$) coordinate",
+        "Explanation": "Dropping $Z$ discards part of the spread of a tilted cloud; the slides say not to do this."
+      },
+      {
+        "label": "C",
+        "text": "Throw away the Depth ($Y$) coordinate",
+        "Explanation": "Dropping an original axis is exactly what the analogy warns against."
+      },
+      {
+        "label": "D",
+        "text": "Average $X$, $Y$ and $Z$ into one number",
+        "Explanation": "Averaging is not how PCA builds its axes; it follows the direction of maximum variance."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The analogy says to change your perspective.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "How does PCA choose PC2 once PC1 has been found?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The direction of maximum variance, ignoring PC1",
+        "Explanation": "That would just find PC1 again."
+      },
+      {
+        "label": "B",
+        "text": "The direction of largest remaining spread that is perpendicular to PC1",
+        "Explanation": "Correct: PC2 must be at 90 degrees to PC1 and captures the next largest spread."
+      },
+      {
+        "label": "C",
+        "text": "The direction of smallest variance",
+        "Explanation": "Small-variance directions come last, not second."
+      },
+      {
+        "label": "D",
+        "text": "Any original variable not used in PC1",
+        "Explanation": "PCs are new directions, not leftover original variables."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Two conditions: an angle and an amount of spread.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Mathematically, PCA amounts to finding what?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The inverse of the data matrix",
+        "Explanation": "No inverse is involved in the slides' description."
+      },
+      {
+        "label": "B",
+        "text": "The regression coefficients of $Y$ on $X$",
+        "Explanation": "PCA uses no response variable."
+      },
+      {
+        "label": "C",
+        "text": "The eigenvalues and eigenvectors of the covariance matrix",
+        "Explanation": "Correct: that is the slides' mathematical definition of PCA."
+      },
+      {
+        "label": "D",
+        "text": "The mean and standard deviation of each feature",
+        "Explanation": "These are what standardization uses, not what PCA computes."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think linear algebra on the covariance matrix.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "In sklearn, which attribute gives the eigenvectors that transform the original data?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`pca.explained_variance_ratio_`",
+        "Explanation": "This reports how important each component is, not the transforming directions."
+      },
+      {
+        "label": "B",
+        "text": "`pca.n_components`",
+        "Explanation": "This is the number of components requested, not the eigenvectors."
+      },
+      {
+        "label": "C",
+        "text": "`pca.explained_variance_`",
+        "Explanation": "This gives the variance magnitude of each component."
+      },
+      {
+        "label": "D",
+        "text": "`pca.components_`",
+        "Explanation": "Correct: `pca.components_` holds the eigenvectors (loadings/weights)."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Loadings and weights live here.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "After fitting `pca = PCA(n_components=3)` to the fireflies data, what does `pca.explained_variance_ratio_[0]*100` print?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The percentage of variance explained by PC1",
+        "Explanation": "Correct: index 0 is PC1, and multiplying by 100 gives a percentage."
+      },
+      {
+        "label": "B",
+        "text": "The loadings of PC1",
+        "Explanation": "Loadings are in `pca.components_[0]`."
+      },
+      {
+        "label": "C",
+        "text": "The number of rows in the data",
+        "Explanation": "The attribute concerns variance, not data size."
+      },
+      {
+        "label": "D",
+        "text": "The total information kept in 3D",
+        "Explanation": "That is the sum over all three ratios, not just the first."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Index 0 refers to the first component.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "A 3-component PCA has explained variance ratios $0.70$, $0.20$ and $0.10$. What does `sum(pca.explained_variance_ratio_)*100` print?",
+    "options": [
+      {
+        "label": "A",
+        "text": "70.0",
+        "Explanation": "That is PC1 alone."
+      },
+      {
+        "label": "B",
+        "text": "100.0",
+        "Explanation": "Correct: $0.70 + 0.20 + 0.10 = 1.00$, i.e. 100% of the information is kept."
+      },
+      {
+        "label": "C",
+        "text": "90.0",
+        "Explanation": "That is PC1 + PC2 only, leaving out PC3."
+      },
+      {
+        "label": "D",
+        "text": "33.3",
+        "Explanation": "That would be the share if all three components were equally important."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Add all three, then convert to a percentage.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "A PCA has eigenvalues $6$, $3$ and $1$. What share of the total variance does PC1 explain?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$6\\%$",
+        "Explanation": "The eigenvalue itself is not a percentage; it must be compared with the total."
+      },
+      {
+        "label": "B",
+        "text": "$30\\%$",
+        "Explanation": "$3/10$ is the share of PC2."
+      },
+      {
+        "label": "C",
+        "text": "$60\\%$",
+        "Explanation": "Correct: $6/(6+3+1) = 6/10 = 0.6$."
+      },
+      {
+        "label": "D",
+        "text": "$90\\%$",
+        "Explanation": "$9/10$ is PC1 and PC2 together."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Divide by the sum of all eigenvalues.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Using the eigenvalues $6$, $3$ and $1$, what is the cumulative share of variance kept by the first two components?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$60\\%$",
+        "Explanation": "That is PC1 alone."
+      },
+      {
+        "label": "B",
+        "text": "$30\\%$",
+        "Explanation": "That is PC2 alone."
+      },
+      {
+        "label": "C",
+        "text": "$10\\%$",
+        "Explanation": "That is the share PC3 explains, which is what is lost."
+      },
+      {
+        "label": "D",
+        "text": "$90\\%$",
+        "Explanation": "Correct: $(6+3)/10 = 0.9$."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Add the first two eigenvalues before dividing.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "You run PCA on unstandardized data with income in dollars and age in years. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Income, with the larger numerical variance, dominates the first principal component",
+        "Explanation": "Correct: PCA maximizes variance, so the large-scale feature takes over PC1."
+      },
+      {
+        "label": "B",
+        "text": "Age dominates PC1 because it has fewer distinct values",
+        "Explanation": "Dominance comes from numerical variance, which is far larger for income in dollars."
+      },
+      {
+        "label": "C",
+        "text": "Both features contribute equally",
+        "Explanation": "Equal contribution is what standardization buys; without it the scales differ."
+      },
+      {
+        "label": "D",
+        "text": "PCA refuses to run on mixed units",
+        "Explanation": "PCA runs on any numbers; the problem is a misleading result, not an error."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "PCA chases variance, and units change variance.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "After `X_scaled = StandardScaler().fit_transform(X)`, what is true of every column of `X_scaled`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It lies between 0 and 1",
+        "Explanation": "That describes min-max scaling, not standardization."
+      },
+      {
+        "label": "B",
+        "text": "It has mean 0 and standard deviation 1",
+        "Explanation": "Correct: standardization centres and scales each feature."
+      },
+      {
+        "label": "C",
+        "text": "It has mean 1 and standard deviation 0",
+        "Explanation": "A standard deviation of 0 would mean a constant column."
+      },
+      {
+        "label": "D",
+        "text": "It is unchanged if all features share the same unit",
+        "Explanation": "Standardization still centres and scales each column whatever the unit."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Centering and scaling.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "A feature has mean $50$ and standard deviation $10$. After standardization, what value does an observation of $70$ take?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$7$",
+        "Explanation": "This divides by the SD without centering first."
+      },
+      {
+        "label": "B",
+        "text": "$20$",
+        "Explanation": "This centres but does not scale."
+      },
+      {
+        "label": "C",
+        "text": "$2$",
+        "Explanation": "Correct: $(70 - 50)/10 = 2$."
+      },
+      {
+        "label": "D",
+        "text": "$0.7$",
+        "Explanation": "This divides $70$ by $100$, which is neither centering nor scaling by the SD."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Subtract the mean, then divide by the SD.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Which import gives you the class used to standardize data before PCA?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`from sklearn.decomposition import PCA`",
+        "Explanation": "This imports PCA itself, not a scaler."
+      },
+      {
+        "label": "B",
+        "text": "`from sklearn.linear_model import LinearRegression`",
+        "Explanation": "This is the regression model."
+      },
+      {
+        "label": "C",
+        "text": "`from sklearn.model_selection import cross_val_score`",
+        "Explanation": "This scores a model with cross-validation."
+      },
+      {
+        "label": "D",
+        "text": "`from sklearn.preprocessing import StandardScaler`",
+        "Explanation": "Correct: `StandardScaler` centres and scales the features."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Standardization is a preprocessing step.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Combining PCA and regression, how is the number of components $k$ chosen?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fit the regression for $k = 1, 2, 3, \\ldots$ and choose the $k$ with the smallest CV error",
+        "Explanation": "Correct: that is the slides' procedure."
+      },
+      {
+        "label": "B",
+        "text": "Always use all components",
+        "Explanation": "Using every component does not reduce the problem and ignores the CV error."
+      },
+      {
+        "label": "C",
+        "text": "Choose the $k$ with the largest CV error",
+        "Explanation": "A large CV error means poor prediction; you want the smallest."
+      },
+      {
+        "label": "D",
+        "text": "Use $k = 1$ because PC1 is the most important",
+        "Explanation": "PC1 having the most variance does not make one component the best predictor of $Y$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Cross-validation decides.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "The 10-fold CV MSEP for regressions on the first $k$ PCs is $k=1$: 140, $k=2$: 125, $k=3$: 118, $k=4$: 121. Which $k$ do you choose?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$1$",
+        "Explanation": "This has the largest CV error of the four."
+      },
+      {
+        "label": "B",
+        "text": "$3$",
+        "Explanation": "Correct: 118 is the smallest CV error."
+      },
+      {
+        "label": "C",
+        "text": "$4$",
+        "Explanation": "More components raised the error to 121."
+      },
+      {
+        "label": "D",
+        "text": "$2$",
+        "Explanation": "125 is higher than the error at $k=3$."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Pick the minimum.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "Why does the Hitters code negate the output of `cross_val_score(..., scoring='neg_mean_squared_error')` before plotting it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To convert it into $R^2$",
+        "Explanation": "Negating an MSE does not give $R^2$."
+      },
+      {
+        "label": "B",
+        "text": "Because PCA returns negative components",
+        "Explanation": "The sign comes from the scoring choice, not from PCA."
+      },
+      {
+        "label": "C",
+        "text": "Because the scores are negative mean squared errors, and negating gives the MSE",
+        "Explanation": "Correct: `-cv_scores` turns them back into mean squared errors for the MSEP plot."
+      },
+      {
+        "label": "D",
+        "text": "To standardize the errors",
+        "Explanation": "Negation only flips the sign; it does not centre or scale."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Read the scoring name carefully.",
+    "course": "COM6005",
+    "week": "7"
+  },
+  {
+    "question": "In the Hitters example, what does `pd.get_dummies(X, drop_first=True)` do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Removes rows with null values",
+        "Explanation": "That is `HC.dropna()`."
+      },
+      {
+        "label": "B",
+        "text": "Removes the Salary column",
+        "Explanation": "That is `HC.drop(columns=['Salary'])`."
+      },
+      {
+        "label": "C",
+        "text": "Standardizes the predictors",
+        "Explanation": "That is `StandardScaler`."
+      },
+      {
+        "label": "D",
+        "text": "Turns the categorical predictors into dummy variables",
+        "Explanation": "Correct: it creates dummy variables, dropping the first level of each."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Some of the 19 predictors are categorical.",
+    "course": "COM6005",
+    "week": "7"
+  }
+]

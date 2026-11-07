@@ -14008,5 +14008,945 @@
     "topic": "",
     "tag": "COM6005::Module_5",
     "deck": "COM6005_Module_5"
+  },
+  {
+    "id": "5b4ea0fa0589",
+    "front": "What is the crucial idea of this lecture on model comparison?",
+    "back": "Big model is not necessarily good model.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "7c3e7205f455",
+    "front": "Which kind of problem does the lecture use to illustrate model comparison ideas?",
+    "back": "Multiple linear regression.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "72cfbfef3f8a",
+    "front": "Name the two methods the lecture uses to discourage or test big models.",
+    "back": "Method 1: punish big models with a penalty term ($C_p$, AIC, BIC). Method 2: compare models on prediction ability with cross validation.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "6e2fc795d5b0",
+    "front": "For OLS, what is the \"best result\" when fitting a model?",
+    "back": "Minimizing the sum of squared residuals (RSS).",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "a732993f34ea",
+    "front": "Write the residual sum of squares for a model with $p$ predictors.",
+    "back": "$\\sum_{t=1}^{n} (Y_t - \\hat{Y}_t)^2 = \\sum_{t=1}^{n} (Y_t - \\hat{\\beta}_0 - \\hat{\\beta}_1 X_{1t} - \\hat{\\beta}_2 X_{2t} - \\cdots - \\hat{\\beta}_p X_{pt})^2$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "9abc79fd9b20",
+    "front": "How does RSS change as the model gets bigger?",
+    "back": "The bigger the model, the smaller the RSS.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "51e3c5fbe243",
+    "front": "Why does a small RSS NOT guarantee good prediction performance?",
+    "back": "Prediction is about out-of-sample (unseen) data, while RSS is measured on the data used to fit the model.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "aad5df67d984",
+    "front": "What is the idea behind Method 1 for comparing a big and a small model?",
+    "back": "Punish the big model by adding a penalty term.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "f351f231b419",
+    "front": "For Mallows' $C_p$, is lower or higher better?",
+    "back": "Lower is better.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "15985e5b354e",
+    "front": "Define Mallows' $C_p$.",
+    "back": "$C_p = \\frac{1}{n}(RSS_{sub} + 2d\\hat{\\sigma}^2)$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "ae427e1c0ca9",
+    "front": "In $C_p$, what are $RSS_{sub}$ and $d$?",
+    "back": "$RSS_{sub}$ is the residual SS of a sub-model; $d$ is its number of predictors, including the intercept.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "1f536a853ae7",
+    "front": "Which term of $C_p$ is the penalty, and what does it do?",
+    "back": "$2d\\hat{\\sigma}^2$. It is added to the RSS to discourage big models: big models get punished.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "e794689005cb",
+    "front": "Define the Akaike information criterion (AIC) as given in the slides.",
+    "back": "$\\text{AIC} = \\frac{1}{n\\hat{\\sigma}^2}(RSS_{sub} + 2d\\hat{\\sigma}^2)$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "055109612024",
+    "front": "Define the Bayesian information criterion (BIC) as given in the slides.",
+    "back": "$\\text{BIC} = \\frac{1}{n\\hat{\\sigma}^2}(RSS_{sub} + (\\log n) \\cdot d\\hat{\\sigma}^2)$, with sample size $n$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "18420a453997",
+    "front": "How does the BIC penalty compare with the AIC and $C_p$ penalties?",
+    "back": "The penalty in BIC is even heavier than those in AIC and $C_p$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "45f9643ac877",
+    "front": "What is the penalty term in BIC?",
+    "back": "$(\\log n) \\cdot d\\hat{\\sigma}^2$: it grows with both the sample size $n$ and the number of predictors $d$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "8527cd221c02",
+    "front": "Are the mathematical rationales behind $C_p$, AIC and BIC examinable?",
+    "back": "No. They involve more advanced statistics and are out of syllabus.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "448428de92cd",
+    "front": "What is the idea behind Method 2 (cross validation)?",
+    "back": "Compare big and small models on their prediction abilities: whether a model actually works on unseen data.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "76416caf48b7",
+    "front": "What is the underlying principle of cross validation?",
+    "back": "Train-test split.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "cd8ecfc2c1a6",
+    "front": "List the four steps of the train-test split method from previous lectures.",
+    "back": "Split the data into training and testing data; apply `statsmodels.api.OLS()` to the training data; pretend you don't know $Y$ in the test data and apply `predict()`; compare actual and predicted values.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "8864f9097d61",
+    "front": "Which two measures does the train-test method use for prediction accuracy?",
+    "back": "Bias and mean squared error.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "86b031415ce9",
+    "front": "Name two improved versions of the train-test split that are widely used in practice.",
+    "back": "Leave-one-out and K-fold cross validation.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "6b38cffe9ceb",
+    "front": "How does K-fold cross validation use the data?",
+    "back": "It splits the data into K parts; each part takes a turn as the test data while the remaining parts are the training data.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "9f33704ba6ec",
+    "front": "Why is leave-one-out cross validation computationally expensive?",
+    "back": "It fits the model once per data instance: with 500 data instances you need to run 500 times.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "2910abc6bbe7",
+    "front": "Leave-one-out is the same as which K-fold cross validation?",
+    "back": "$n$-fold CV, where $n$ is the sample size.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "5f8bfdaddb89",
+    "front": "What does best subset selection mean?",
+    "back": "Select the sub-model with the smallest AIC/BIC/$C_p$, or the best performance in CV, by trying every subset.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "e6e48e233fdd",
+    "front": "Which criterion usually chooses a model with fewer predictors, BIC or $C_p$?",
+    "back": "BIC.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "f8cbb6cfbfa4",
+    "front": "When should you prefer BIC for model selection?",
+    "back": "When you prefer a parsimonious model and don't mind deselecting relevant but less influential predictors.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "88e5e6437a87",
+    "front": "How many linear models are there for the 4 savings predictors `pop15`, `pop75`, `dpi`, `ddpi`?",
+    "back": "16: $\\binom{4}{0} + \\binom{4}{1} + \\binom{4}{2} + \\binom{4}{3} + \\binom{4}{4} = 1+4+6+4+1$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "9f23fae8edaa",
+    "front": "What does `sr ~ 1` denote in the savings example?",
+    "back": "The null model: `sr` with only an intercept and no predictors.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "1f0a00a45252",
+    "front": "Which `mlxtend` class finds the best subset based on CV?",
+    "back": "`mlxtend.feature_selection.ExhaustiveFeatureSelector`, imported as `EFS`.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "c867e9c927ad",
+    "front": "Why does the slides' code call `sm.add_constant(X)` before feature selection?",
+    "back": "To include a column of ones that handles the constant term.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "ac4758c9d264",
+    "front": "In the `EFS` call, what does `fixed_features = (0,)` do?",
+    "back": "Always keeps column 0, the constant column, in every subset.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "4f098bd1213a",
+    "front": "Why does the `EFS` call use `scoring='neg_mean_squared_error'`?",
+    "back": "The score is treated as higher is better, so the negative MSE is used.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "204966b7b67c",
+    "front": "Which `EFS` attributes give the best subset and the detailed results?",
+    "back": "`efs.best_feature_names_` and `efs.subsets_`.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "b4b76ef839d5",
+    "front": "How is BIC computed in the custom `bic_scorer`?",
+    "back": "`n_samples * np.log(rss / n_samples) + n_features * np.log(n_samples)`.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "8ca4bb42308b",
+    "front": "Why does `bic_scorer` return `-bic`?",
+    "back": "`mlxtend` maximizes the score, while a lower BIC is better.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "90e4616c3b26",
+    "front": "Why is `EFS` given `cv=0` when scoring by BIC?",
+    "back": "BIC is an information criterion meant to evaluate the model on the full training set, not via cross validation.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "7414a3b45749",
+    "front": "Why is best subset selection impractical for large $p$?",
+    "back": "The number of models is $2^p$: for $p=20$ that is 1,048,576.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "5cadf70f12e5",
+    "front": "Describe forward selection step by step.",
+    "back": "Start from the null model; try each remaining predictor and keep the one that improves RSS the best; compare the new model with the old using $C_p$, AIC or BIC; stop if not improved, otherwise repeat.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "558aac44b6de",
+    "front": "How does backward selection differ from forward selection?",
+    "back": "It starts with the full model and removes predictors stepwise.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "340649556864",
+    "front": "Are forward and backward selection guaranteed to find the best subset?",
+    "back": "No. They are sub-optimal but practical, because the computation is affordable for larger $p$.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "db0e04a236ff",
+    "front": "Which `mlxtend` class performs forward and backward selection, and which argument switches between them?",
+    "back": "`SequentialFeatureSelector` (imported as `SFS`), with `forward=True` for forward and `forward=False` for backward.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "738b3f750c16",
+    "front": "In the `SFS` call, what does `k_features=\"best\"` request?",
+    "back": "The subset size with the best CV score.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "4d47b0d05309",
+    "front": "Why does the slides' code print `-sfs.k_score_` as the best MSE?",
+    "back": "`k_score_` is the negative MSE, so negating it gives the MSE.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "7836e4e9e5b8",
+    "front": "What does the `Pipeline([('feature_selection', sfs), ('regression', estimator)])` do?",
+    "back": "Chains feature selection and the regression, so `pipeline.fit(X_train, y_train)` selects features and fits the model in one step.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "376a74cf0513",
+    "front": "Why can `pipeline.predict(X_test)` be called on raw test data?",
+    "back": "The pipeline applies the selected features itself, so the test data need not be subset by hand.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "6a20f2022ef4",
+    "front": "How is out-of-sample performance measured after fitting the pipeline?",
+    "back": "Bias `np.mean(pre_val - act_val)` and RMSE `np.sqrt(mean_squared_error(act_val, pre_val))` on the test data.",
+    "course": "COM6005",
+    "unit": "Module_6",
+    "topic": "",
+    "tag": "COM6005::Module_6",
+    "deck": "COM6005_Module_6"
+  },
+  {
+    "id": "257be3691657",
+    "front": "Why can't you always input every predictor into a regression model?",
+    "back": "For large $p$ cases it is impossible to input all predictors into the model.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "6ee1853676c1",
+    "front": "What is feature selection?",
+    "back": "Techniques of selecting predictors, such as best subset selection: some predictors are dumped and some are kept.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "adab3355f2af",
+    "front": "What is feature extraction?",
+    "back": "Transforming the data, rather than keeping or dropping the original predictors.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "4958b024f29d",
+    "front": "Give the slides' example of feature extraction.",
+    "back": "Using an 'internal score' instead of midterm + assignment + final to predict the public exam score.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "af49daa59fc6",
+    "front": "Is PCA a feature selection or a feature extraction method?",
+    "back": "Feature extraction: it transforms the data.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "ee2f8f3834d2",
+    "front": "What is PCA, in one sentence?",
+    "back": "A tool to simplify complicated data by finding the directions where the data spreads out the most (highest variance).",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "d94db1a68a92",
+    "front": "What does PCA do to the original data's coordinates?",
+    "back": "It transforms the data to new coordinates (axes).",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "6b21c44724fa",
+    "front": "How is the importance of the new PCA axes ordered?",
+    "back": "The 1st axis is the most important, the 2nd less important, the 3rd less than the 2nd, and so on, in the sense of variance.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "037998777c9e",
+    "front": "In what sense is one principal component more \"important\" than another?",
+    "back": "In the sense of variance: it captures more of the spread of the data.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "4e36876c3998",
+    "front": "How are the new PCA axes oriented relative to each other?",
+    "back": "They are perpendicular to each other.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "fd73eaf1010c",
+    "front": "In the fireflies analogy, what shape does the swarm form?",
+    "back": "A long, tilted, cigar-shaped cloud.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "072dd2f64e61",
+    "front": "In the fireflies analogy, why is the data 3D?",
+    "back": "Each firefly's position has three coordinates: Width ($X$), Depth ($Y$) and Height ($Z$).",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "a787ee62b33d",
+    "front": "To reduce the fireflies data from 3D, should you throw away Height ($Z$) or Depth ($Y$)?",
+    "back": "No. PCA tells you to change your perspective and draw new lines through the room.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "ec47cf63a5c5",
+    "front": "How does PCA choose Principal Component 1 (PC1)?",
+    "back": "It draws a straight line through the longest part of the swarm: the direction of maximum variance.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "b414820ed258",
+    "front": "What does the direction of maximum variance mean?",
+    "back": "The direction where the data points are most spread out from each other.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "adc823afa3cb",
+    "front": "How does PCA choose PC2?",
+    "back": "A second line at 90 degrees (perpendicular) to PC1 that captures the next largest amount of spread.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "24508d67e117",
+    "front": "What constraint must PC2 satisfy relative to PC1?",
+    "back": "It must be perpendicular (at a 90-degree angle) to PC1.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "11c5b20c916a",
+    "front": "Which module provides `PCA` in Python?",
+    "back": "`sklearn.decomposition`: `from sklearn.decomposition import PCA`.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "2449a07e6338",
+    "front": "How do you create a PCA object that keeps 3 components?",
+    "back": "`pca = PCA(n_components=3)`",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "248abd71f54f",
+    "front": "Which method fits PCA and returns the transformed data in one step?",
+    "back": "`pca.fit_transform(x)`",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "1a0ed559b490",
+    "front": "What does `pca.explained_variance_ratio_[0]` give in the fireflies code?",
+    "back": "The share of variance explained by PC1 (the longest stretch); the code multiplies it by 100 to print a percentage.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "f5965fb0cbf5",
+    "front": "How does the fireflies code compute the total information kept in 3D?",
+    "back": "`sum(pca.explained_variance_ratio_)*100`, the sum of the explained variance ratios as a percentage.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "e3e7fcbf3064",
+    "front": "What does `pca.components_[0]` hold?",
+    "back": "The first PCA loadings (weights).",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "acfe9bf72622",
+    "front": "What does `pca.explained_variance_[0]` hold?",
+    "back": "The first PCA variance magnitude.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "06346a19ea7f",
+    "front": "Mathematically, what does PCA compute?",
+    "back": "The eigenvalues and eigenvectors of the covariance matrix.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "0208c10c5865",
+    "front": "What do the eigenvalues indicate in PCA?",
+    "back": "The importance of the transformed data.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "dba891d2eb34",
+    "front": "Which sklearn attribute does the slide give for the eigenvalues' importance?",
+    "back": "`pca.explained_variance_ratio_`",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "5312d0d084c6",
+    "front": "What are the eigenvectors used for in PCA?",
+    "back": "To transform the original data.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "898bd01295c9",
+    "front": "Which sklearn attribute gives the eigenvectors?",
+    "back": "`pca.components_`",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "dd45ac370d02",
+    "front": "When should you standardize your data in a PCA workflow?",
+    "back": "Before applying PCA.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "780e04693aa2",
+    "front": "Why does PCA need standardized features?",
+    "back": "PCA maximizes variance, so a feature on a larger scale or unit (e.g. income in dollars vs age in years) with larger numerical variance would dominate the first principal component.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "27ffd312393f",
+    "front": "Without standardization, which feature dominates PC1?",
+    "back": "The feature with the larger numerical variance.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "77164396755f",
+    "front": "What two operations make up standardization?",
+    "back": "Centering and scaling.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "73c97cf436f0",
+    "front": "What mean and standard deviation does every feature have after standardizing?",
+    "back": "Mean 0 and standard deviation 1.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "bd0a76bea473",
+    "front": "What does standardizing guarantee about each feature's role in PCA?",
+    "back": "Every feature contributes equally to the analysis.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "212dcab913d3",
+    "front": "Which sklearn class standardizes data?",
+    "back": "`StandardScaler`, from `sklearn.preprocessing`.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "6f853cb439d1",
+    "front": "Write the two lines that standardize `X` with sklearn.",
+    "back": "`scaler = StandardScaler()` then `X_scaled = scaler.fit_transform(X)`.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "52f8d97720c3",
+    "front": "How do you combine PCA and regression?",
+    "back": "Regress $Y$ against the first $k$ principal components and obtain the cross-validation error.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "7b07b4cee8b1",
+    "front": "How do you choose $k$, the number of principal components in a regression?",
+    "back": "Repeat for $k = 1, 2, 3, \\ldots$ and choose the $k$ that minimizes the CV error.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "ad5d8eb35146",
+    "front": "Describe the baseball data used for PCA + regression.",
+    "back": "The Hitters data in the ISLP package: 19 predictors (some categorical), $n = 322$, response $Y$ = player's Salary.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "bf06a04c10fc",
+    "front": "What is the response $Y$ in the Hitters example?",
+    "back": "The Salary of the player.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "d5bd6d3e2dfc",
+    "front": "How does the Hitters code handle missing values?",
+    "back": "`HC = HC.dropna()` removes rows with null values.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "8d043ab49059",
+    "front": "How does the Hitters code turn categorical predictors into numbers?",
+    "back": "`pd.get_dummies(X, drop_first=True)` creates dummy variables.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "cb6447fe4e53",
+    "front": "Which function scores a regression on the PCs with 10-fold CV?",
+    "back": "`cross_val_score(LinearRegression(), X_pca, y, cv=10, scoring='neg_mean_squared_error')`",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "73a2008d8ca4",
+    "front": "Why does the code negate the CV scores to get the MSEP?",
+    "back": "The scoring is `'neg_mean_squared_error'`, so the scores are negative MSEs; `-cv_scores` turns them back into mean squared errors.",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
+  },
+  {
+    "id": "4f7fcac452a4",
+    "front": "What does the Hitters code plot to choose the number of PCs?",
+    "back": "The cross-validation MSEP (y-axis, Mean Squared Error) against the Number of Principal Components (x-axis).",
+    "course": "COM6005",
+    "unit": "Module_7",
+    "topic": "",
+    "tag": "COM6005::Module_7",
+    "deck": "COM6005_Module_7"
   }
 ]

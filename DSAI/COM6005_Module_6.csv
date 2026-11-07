@@ -1,0 +1,48 @@
+What is the crucial idea of this lecture on model comparison?,Big model is not necessarily good model.
+Which kind of problem does the lecture use to illustrate model comparison ideas?,Multiple linear regression.
+Name the two methods the lecture uses to discourage or test big models.,"Method 1: punish big models with a penalty term ($C_p$, AIC, BIC). Method 2: compare models on prediction ability with cross validation."
+"For OLS, what is the ""best result"" when fitting a model?",Minimizing the sum of squared residuals (RSS).
+Write the residual sum of squares for a model with $p$ predictors.,$\sum_{t=1}^{n} (Y_t - \hat{Y}_t)^2 = \sum_{t=1}^{n} (Y_t - \hat{\beta}_0 - \hat{\beta}_1 X_{1t} - \hat{\beta}_2 X_{2t} - \cdots - \hat{\beta}_p X_{pt})^2$.
+How does RSS change as the model gets bigger?,"The bigger the model, the smaller the RSS."
+Why does a small RSS NOT guarantee good prediction performance?,"Prediction is about out-of-sample (unseen) data, while RSS is measured on the data used to fit the model."
+What is the idea behind Method 1 for comparing a big and a small model?,Punish the big model by adding a penalty term.
+"For Mallows' $C_p$, is lower or higher better?",Lower is better.
+Define Mallows' $C_p$.,$C_p = \frac{1}{n}(RSS_{sub} + 2d\hat{\sigma}^2)$.
+"In $C_p$, what are $RSS_{sub}$ and $d$?","$RSS_{sub}$ is the residual SS of a sub-model; $d$ is its number of predictors, including the intercept."
+"Which term of $C_p$ is the penalty, and what does it do?",$2d\hat{\sigma}^2$. It is added to the RSS to discourage big models: big models get punished.
+Define the Akaike information criterion (AIC) as given in the slides.,$\text{AIC} = \frac{1}{n\hat{\sigma}^2}(RSS_{sub} + 2d\hat{\sigma}^2)$.
+Define the Bayesian information criterion (BIC) as given in the slides.,"$\text{BIC} = \frac{1}{n\hat{\sigma}^2}(RSS_{sub} + (\log n) \cdot d\hat{\sigma}^2)$, with sample size $n$."
+How does the BIC penalty compare with the AIC and $C_p$ penalties?,The penalty in BIC is even heavier than those in AIC and $C_p$.
+What is the penalty term in BIC?,$(\log n) \cdot d\hat{\sigma}^2$: it grows with both the sample size $n$ and the number of predictors $d$.
+"Are the mathematical rationales behind $C_p$, AIC and BIC examinable?",No. They involve more advanced statistics and are out of syllabus.
+What is the idea behind Method 2 (cross validation)?,Compare big and small models on their prediction abilities: whether a model actually works on unseen data.
+What is the underlying principle of cross validation?,Train-test split.
+List the four steps of the train-test split method from previous lectures.,Split the data into training and testing data; apply `statsmodels.api.OLS()` to the training data; pretend you don't know $Y$ in the test data and apply `predict()`; compare actual and predicted values.
+Which two measures does the train-test method use for prediction accuracy?,Bias and mean squared error.
+Name two improved versions of the train-test split that are widely used in practice.,Leave-one-out and K-fold cross validation.
+How does K-fold cross validation use the data?,It splits the data into K parts; each part takes a turn as the test data while the remaining parts are the training data.
+Why is leave-one-out cross validation computationally expensive?,It fits the model once per data instance: with 500 data instances you need to run 500 times.
+Leave-one-out is the same as which K-fold cross validation?,"$n$-fold CV, where $n$ is the sample size."
+What does best subset selection mean?,"Select the sub-model with the smallest AIC/BIC/$C_p$, or the best performance in CV, by trying every subset."
+"Which criterion usually chooses a model with fewer predictors, BIC or $C_p$?",BIC.
+When should you prefer BIC for model selection?,When you prefer a parsimonious model and don't mind deselecting relevant but less influential predictors.
+"How many linear models are there for the 4 savings predictors `pop15`, `pop75`, `dpi`, `ddpi`?",16: $\binom{4}{0} + \binom{4}{1} + \binom{4}{2} + \binom{4}{3} + \binom{4}{4} = 1+4+6+4+1$.
+What does `sr ~ 1` denote in the savings example?,The null model: `sr` with only an intercept and no predictors.
+Which `mlxtend` class finds the best subset based on CV?,"`mlxtend.feature_selection.ExhaustiveFeatureSelector`, imported as `EFS`."
+Why does the slides' code call `sm.add_constant(X)` before feature selection?,To include a column of ones that handles the constant term.
+"In the `EFS` call, what does `fixed_features = (0,)` do?","Always keeps column 0, the constant column, in every subset."
+Why does the `EFS` call use `scoring='neg_mean_squared_error'`?,"The score is treated as higher is better, so the negative MSE is used."
+Which `EFS` attributes give the best subset and the detailed results?,`efs.best_feature_names_` and `efs.subsets_`.
+How is BIC computed in the custom `bic_scorer`?,`n_samples * np.log(rss / n_samples) + n_features * np.log(n_samples)`.
+Why does `bic_scorer` return `-bic`?,"`mlxtend` maximizes the score, while a lower BIC is better."
+Why is `EFS` given `cv=0` when scoring by BIC?,"BIC is an information criterion meant to evaluate the model on the full training set, not via cross validation."
+Why is best subset selection impractical for large $p$?,"The number of models is $2^p$: for $p=20$ that is 1,048,576."
+Describe forward selection step by step.,"Start from the null model; try each remaining predictor and keep the one that improves RSS the best; compare the new model with the old using $C_p$, AIC or BIC; stop if not improved, otherwise repeat."
+How does backward selection differ from forward selection?,It starts with the full model and removes predictors stepwise.
+Are forward and backward selection guaranteed to find the best subset?,"No. They are sub-optimal but practical, because the computation is affordable for larger $p$."
+"Which `mlxtend` class performs forward and backward selection, and which argument switches between them?","`SequentialFeatureSelector` (imported as `SFS`), with `forward=True` for forward and `forward=False` for backward."
+"In the `SFS` call, what does `k_features=""best""` request?",The subset size with the best CV score.
+Why does the slides' code print `-sfs.k_score_` as the best MSE?,"`k_score_` is the negative MSE, so negating it gives the MSE."
+"What does the `Pipeline([('feature_selection', sfs), ('regression', estimator)])` do?","Chains feature selection and the regression, so `pipeline.fit(X_train, y_train)` selects features and fits the model in one step."
+Why can `pipeline.predict(X_test)` be called on raw test data?,"The pipeline applies the selected features itself, so the test data need not be subset by hand."
+How is out-of-sample performance measured after fitting the pipeline?,"Bias `np.mean(pre_val - act_val)` and RMSE `np.sqrt(mean_squared_error(act_val, pre_val))` on the test data."

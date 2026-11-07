@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6005 · Module 6 Model Comparison / Feature Selection</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6005-m6">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6005 Statistical Modeling › Module 6</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6005 · Module 6 · Source: L6_Model_Comparison_L02_Complete.pdf (23 slides)</p>
+<h1>Model Comparison / Feature Selection</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>明白 <b>Big model is not necessarily good model</b>：加 predictors 一定令 RSS 細咗，但唔代表 out-of-sample prediction 好。</li>
+    <li><b>Method 1 — Penalty</b>：用 Mallows' \( C_p \)、<b>AIC</b>、<b>BIC</b> 懲罰大 model；全部 <b>lower is better</b>。</li>
+    <li><b>Method 2 — Cross Validation</b>：Train-test split、<b>K-fold CV</b>、<b>Leave-one-out (LOOCV)</b>，比較 prediction ability。</li>
+    <li><b>Best subset selection</b>：試晒 \( 2^p \) 個 models；識用 <code>ExhaustiveFeatureSelector</code>。</li>
+    <li><b>Forward / Backward selection</b>：大 p 時嘅實用（但 sub-optimal）方法；識用 <code>SequentialFeatureSelector</code> 同 <code>Pipeline</code>。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>點解 small RSS 唔保證 prediction 好：model 越大 RSS 越細（in-sample），但 prediction 係針對 <b>unseen（out-of-sample）data</b>。</li>
+    <li>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)；AIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\hat\sigma^2\right] \)；BIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\,d\,\hat\sigma^2\right] \)。<b>Lower is better</b>，\( d \) 包括 intercept。</li>
+    <li>BIC penalty 最重 → 揀出嚟嘅 model 通常 predictors 較少（<b>parsimonious</b>）。</li>
+    <li>K-fold CV：分 K 份，每份輪流做 test，平均 K 個 MSE；LOOCV = n-fold CV（500 個 data 要 fit 500 次，computationally expensive）。</li>
+    <li>Best subset 有 \( 2^p \) 個 models（p = 4 → 16；p = 20 → 1,048,576）；Forward / Backward selection 較平但 <b>唔保證</b>搵到 best subset。</li>
+  </ol>
+</div>
+
+<h2>1. Big model is not necessarily good model（slides 1–3）</h2>
+<p>呢講用 <b>multiple linear regression</b> 做例子，講點樣喺「大 model」同「細 model」之間揀。Slide 1 列出成講嘅路線：</p>
+<ul>
+<li><b>Discouraging big model by penalty term</b>（\( C_p \)、AIC、BIC）</li>
+<li>呢啲諗法用嚟做 <b>variable selection</b>（feature selection）</li>
+<li><b>Prediction ability vs cross validation</b></li>
+</ul>
+<p>Module 4 講過 OLS 嘅「best result」係 minimize <b>Residual sum of squares (RSS)</b>：</p>
+<div class="formula">$$ RSS=\sum_{t=1}^{n}\left(Y_t-\hat Y_t\right)^2=\sum_{t=1}^{n}\left(Y_t-\hat\beta_0-\hat\beta_1X_{1t}-\hat\beta_2X_{2t}-\cdots-\hat\beta_pX_{pt}\right)^2 $$</div>
+
+<div class="box exam"><span class="label">⭐ 核心概念（slide 2–3）</span>
+<ul>
+<li><b>The bigger is the model, the smaller is RSS.</b></li>
+<li><b>Small RSS does NOT guarantee a good prediction performance.</b></li>
+<li>WHY? Prediction 係對 <b>out-of-sample data (unseen)</b> 做嘅，而 RSS 係用 training data 本身計（in-sample）。</li>
+<li>Crucial idea：<b>Big model is not necessarily good model.</b></li>
+</ul></div>
+
+<div class="box tip"><span class="label">💡 直覺：點解加 predictor RSS 一定唔會升？</span>
+<p>大 model 包含細 model：如果新加嘅 \( X_{p+1} \) 完全冇用，OLS 大可以揀 \( \hat\beta_{p+1}=0 \)，RSS 就同細 model 一樣。所以 OLS minimize 出嚟嘅 RSS 只會<b>相等或者更細</b>。問題係，佢可能用新 predictor 去「fit noise」——即係記住 training data 嘅隨機波動，去到新 data 就唔 work，呢個就係 <b>overfitting</b>。</p>
+<p>例子：用學生學號尾數做 predictor 去 predict 考試分，training RSS 都可能跌少少，但對新學生完全冇預測力。</p></div>
+
+<p>點樣 compare 大細 model？本講提供兩個方法：</p>
+<table>
+<tr><th></th><th>Method 1：Penalty（slides 3–6）</th><th>Method 2：Cross Validation（slides 7–12）</th></tr>
+<tr><td>諗法</td><td>Punish big model：RSS + penalty term</td><td>直接睇 prediction ability on unseen data</td></tr>
+<tr><td>工具</td><td>Mallows' \( C_p \)、AIC、BIC</td><td>Train-test split、K-fold CV、LOOCV</td></tr>
+<tr><td>用嘅 data</td><td>Full training set（fit 一次）</td><td>Split data，fit 多次</td></tr>
+<tr><td>準則</td><td>Lower is better</td><td>CV error（MSE）lower is better</td></tr>
+</table>
+
+<h2>2. Method 1：用 Penalty 懲罰大 model（slides 3–6）</h2>
+<h3>2.1 Mallows' \( C_p \)（slide 4）</h3>
+<div class="box exam"><span class="label">⭐ Mallows' \( C_p \) — Lower is better</span>
+<div class="formula">$$ C_p=\frac{1}{n}\left[RSS_{sub}+\underbrace{2d\,\hat\sigma^2}_{\text{penalty term}}\right],\qquad \hat\sigma^2=\frac{RSS_{sub}}{n-p-1} $$</div>
+<ul>
+<li>\( RSS_{sub} \)：用 \( d \) 個 predictors（<b>including intercept</b>）嘅 sub-model 嘅 residual SS。</li>
+<li>最重要係 <b>\( 2d\hat\sigma^2 \)</b>：加落 RSS 度去 discourage big model，所以統計學家叫佢做 <b>penalty</b>。<b>Big models get punished.</b></li>
+</ul></div>
+<p>點理解：\( RSS_{sub} \) 隨 \( d \) 增加而<b>跌</b>（fit 得好啲），penalty \( 2d\hat\sigma^2 \) 隨 \( d \) 增加而<b>升</b>。\( C_p \) 係兩股力嘅 trade-off：新加嘅 predictor 要令 RSS 跌多過 \( 2\hat\sigma^2 \)，先值得加。</p>
+<div class="box note"><span class="label">📝 關於 \( \hat\sigma^2 \)</span><p>Slide 4 寫 \( \hat\sigma^2=\dfrac{RSS_{sub}}{n-p-1} \)。分母用 \( p \)（全部 predictors 數目），一般教科書（ISLR）嘅做法係用 <b>full model（包含全部 p 個 predictors）</b> 估計 \( \hat\sigma^2 \)，然後所有 sub-models 用同一個 \( \hat\sigma^2 \) 比較。考試請跟 slide 嘅寫法；如有疑問可以問 lecturer。</p></div>
+
+<h3>2.2 AIC 同 BIC（slide 5）</h3>
+<p>除咗 \( C_p \)，仲有其他方法懲罰大 model：</p>
+<div class="box exam"><span class="label">⭐ AIC 同 BIC（lower is better）</span>
+<p><b>Akaike information criterion (AIC)</b></p>
+<div class="formula">$$ AIC=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\,\hat\sigma^2\right] $$</div>
+<p><b>Bayesian information criterion (BIC)</b>，with sample size \( n \)</p>
+<div class="formula">$$ BIC=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\cdot d\,\hat\sigma^2\right] $$</div>
+<p><b>The penalty in BIC is even heavier than those in AIC and \( C_p \).</b></p></div>
+
+<table>
+<tr><th>Criterion</th><th>每個 predictor 嘅 penalty</th><th>特點</th></tr>
+<tr><td>\( C_p \)</td><td>\( 2\hat\sigma^2 \)（再除 \( n \)）</td><td>Lower is better</td></tr>
+<tr><td>AIC</td><td>\( 2\hat\sigma^2 \)（再除 \( n\hat\sigma^2 \)）</td><td>\( AIC=C_p/\hat\sigma^2 \)，同 \( C_p \) 成正比</td></tr>
+<tr><td>BIC</td><td>\( (\log n)\,\hat\sigma^2 \)</td><td>Penalty 最重 → 揀較細 model</td></tr>
+</table>
+
+<div class="box tip"><span class="label">💡 點解 BIC 最重？</span>
+<p>比較 penalty 嘅系數：AIC / \( C_p \) 係 2，BIC 係 \( \log n \)（natural log）。當 \( \log n&gt;2 \)，即 \( n&gt;e^2\approx7.39 \)，BIC 就重過 AIC。實際 data 幾乎一定 \( n\ge8 \)，例如 \( n=50 \)：\( \log 50\approx3.91 \)，差唔多係 AIC 嘅兩倍；\( n=1000 \)：\( \log 1000\approx6.91 \)。</p></div>
+
+<div class="box warn"><span class="label">⚠️ 易混淆</span>
+<ul>
+<li>依 slide 嘅定義，\( AIC=C_p/\hat\sigma^2 \)。如果所有 models 用同一個 \( \hat\sigma^2 \)，AIC 同 \( C_p \) 會揀出<b>同一個</b> model。</li>
+<li>三個都係 <b>lower is better</b>。唔好同 \( R^2 \)（higher is better）撈亂。</li>
+<li>\( d \) 數 predictors 時要<b>包埋 intercept</b>。</li>
+</ul></div>
+
+<h3>2.3 Worked example</h3>
+<p>\( n=50 \)，用 \( \hat\sigma^2=13.33 \)（全部 models 共用）。比較兩個 models：</p>
+<table>
+<tr><th>Model</th><th>\( d \)（含 intercept）</th><th>\( RSS_{sub} \)</th></tr>
+<tr><td>A（2 個 predictors）</td><td>3</td><td>650</td></tr>
+<tr><td>B（4 個 predictors）</td><td>5</td><td>600</td></tr>
+</table>
+<p>B 嘅 RSS 細啲（意料之內，因為 model 大啲）。但計埋 penalty：</p>
+<ul>
+<li>\( C_p(A)=\frac{1}{50}\left[650+2(3)(13.33)\right]=\frac{730}{50}=14.60 \)</li>
+<li>\( C_p(B)=\frac{1}{50}\left[600+2(5)(13.33)\right]=\frac{733.3}{50}=14.67 \)</li>
+<li>\( BIC(A)=\frac{1}{50(13.33)}\left[650+(\log 50)(3)(13.33)\right]=\frac{650+156.5}{666.7}\approx1.210 \)</li>
+<li>\( BIC(B)=\frac{1}{666.7}\left[600+(\log 50)(5)(13.33)\right]=\frac{600+260.8}{666.7}\approx1.291 \)</li>
+</ul>
+<p>兩個 criteria 都係 A 較低 → 揀 <b>A</b>。B 多咗 2 個 predictors，RSS 只跌咗 50，唔夠抵銷 penalty。留意 BIC 下 A 贏得更多，因為 BIC penalty 更重。</p>
+
+<p>Slide 6：呢啲定義背後嚴格嘅數學 rationale 涉及更高深嘅統計知識，屬 <b>Out-of-syllabus</b>。</p>
+
+<h2>3. Method 2：Cross Validation（slides 7–12）</h2>
+<p>Crucial idea 一樣係 <b>big model is not necessarily good model</b>，但 Method 2 直接問：個 model <b>喺 unseen data 上係咪真係 work</b>？方法係比較大細 models 嘅 <b>prediction abilities</b>。Underlying principle：<b>Train-test split</b>。</p>
+
+<h3>3.1 Train-test split（slides 8–9）</h3>
+<div class="box exam"><span class="label">⭐ 之前學過嘅流程（slide 8）</span>
+<ol>
+<li>將 full data split 做 <b>training data</b> 同 <b>testing data</b>。</li>
+<li>用 training data 做 <code>statsmodels.api.OLS()</code>。</li>
+<li>扮唔知 test data 嘅 Y，用 <code>predict()</code>。</li>
+<li>比較 actual value 同 predicted value，用 <b>bias</b> 同 <b>mean squared error</b> 量度 prediction accuracy。</li>
+</ol></div>
+<div class="formula">$$ \text{bias}=\frac{1}{m}\sum_{i=1}^{m}\left(\hat Y_i-Y_i\right),\qquad MSE=\frac{1}{m}\sum_{i=1}^{m}\left(Y_i-\hat Y_i\right)^2,\qquad RMSE=\sqrt{MSE} $$</div>
+<p>（\( m \) = test data 數目。）Slide 9 嘅圖：data 分成 Training data 同 Validation/Test data 兩段。</p>
+<p>簡單 split 有個弱點：結果視乎<b>邊啲 data 啱啱好分咗落 test set</b>，換一個 split 可能得出唔同 MSE。改良版本喺實際好常用：<b>K-fold CV</b> 同 <b>Leave-one-out</b>。</p>
+
+<h3>3.2 K-fold cross validation（slide 10）</h3>
+<p>Slide 10 嘅圖（5-fold CV，取自 ISLR Figure 5.5）：將 n 個 observations <b>randomly</b> 分成 5 個 non-overlapping groups。每一份輪流做 validation set（test data），其餘 4 份做 training set。Test error 用 <b>5 個 MSE 嘅平均</b>估計。</p>
+<div class="box exam"><span class="label">⭐ K-fold CV 步驟</span>
+<ol>
+<li>將 data 隨機分成 K 份（folds）。</li>
+<li>For \( k=1,\dots,K \)：用第 k 份做 test，其餘 K−1 份 train model，計 \( MSE_k \)。</li>
+<li>CV error：</li>
+</ol>
+<div class="formula">$$ CV_{(K)}=\frac{1}{K}\sum_{k=1}^{K}MSE_k $$</div>
+<p>每個 observation 都會<b>剛好做一次 test data</b>；model 要 fit K 次。</p></div>
+
+<h3>3.3 Leave-one-out（slides 11–12）</h3>
+<div class="box exam"><span class="label">⭐ LOOCV</span>
+<ul>
+<li>每次只留 <b>1 個</b> observation 做 test，用其餘 \( n-1 \) 個 train。</li>
+<li><b>Leave-one-out is the same as n-fold CV</b>（n = sample size）。</li>
+<li><b>Computationally expensive</b>：500 個 data instances 就要 run 500 次。</li>
+</ul></div>
+<table>
+<tr><th>方法</th><th>Fit 幾多次</th><th>特點</th></tr>
+<tr><td>Train-test split</td><td>1</td><td>最快；結果受 split 方式影響</td></tr>
+<tr><td>K-fold CV（常用 K = 5 / 10）</td><td>K</td><td>平衡準確度同計算量</td></tr>
+<tr><td>LOOCV</td><td>n</td><td>= n-fold CV；最貴</td></tr>
+</table>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6004 Classification (II)（<a href="COM6004-ch4b.html">Ch 4b</a>）講 overfitting 同 model evaluation，都用 holdout、cross-validation 呢套諗法。分別只係 classification 用 error rate / accuracy，呢度 regression 用 MSE。Module 5 嘅 logistic regression 用 misclassification rate，亦係同一個框架。</p></div>
+
+<h2>4. Best subset selection（slides 13–17）</h2>
+<div class="box exam"><span class="label">⭐ 定義（slide 13）</span>
+<ul>
+<li><b>Best subset selection</b>：揀 AIC / BIC / \( C_p \) 最細，或者 CV 表現最好嘅 sub-model。</li>
+<li><b>BIC chosen model usually contains less predictors than \( C_p \) chosen model.</b></li>
+<li>如果你偏好 <b>parsimonious（節儉）model</b>，又唔介意 deselect 一啲 relevant 但影響力較細嘅 predictors，就用 <b>BIC</b>。</li>
+</ul></div>
+<p>（Slide 14 只係一張 savings jar 嘅圖，引入下面嘅 <code>savings</code> dataset。）</p>
+
+<h3>4.1 有幾多個 models？（slide 15）</h3>
+<p>例子：Y = <code>sr</code>（savings rate），4 個 predictors：<code>pop15</code>、<code>pop75</code>、<code>dpi</code>、<code>ddpi</code>。可能嘅 linear models 例如 <code>sr ~ 1</code>、<code>sr ~ pop15+dpi</code>、<code>sr ~ pop75+dpi+ddpi</code>……</p>
+<div class="box exam"><span class="label">⭐ 點解係 16 個？</span>
+<div class="formula">$$ {}^4C_0+{}^4C_1+{}^4C_2+{}^4C_3+{}^4C_4=1+4+6+4+1=16=2^4 $$</div>
+<p>每個 predictor 只有「入」或「唔入」兩個選擇，所以 p 個 predictors 有 \( 2^p \) 個 models（包括 null model <code>sr ~ 1</code>）。<b>Best subset selection means try them all.</b></p></div>
+
+<h3>4.2 Python：ExhaustiveFeatureSelector + CV（slide 16）</h3>
+<pre><code>import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+from mlxtend.feature_selection import ExhaustiveFeatureSelector as EFS
+
+savings = pd.read_csv("savings.csv")
+X = savings[['pop15', 'pop75', 'dpi', 'ddpi']]
+X = sm.add_constant(X)          # 加一個全 1 嘅 column 代表 constant term（column 0）
+y = savings['sr']
+
+efs = EFS(LinearRegression(),
+          min_features=1,
+          max_features=4,
+          fixed_features=(0,),       # column 0（const）一定要包括
+          scoring='neg_mean_squared_error',  # higher is better，所以用負 MSE
+          cv=5)                      # 5-fold CV
+efs = efs.fit(X, y)
+print('Best subset:', efs.best_feature_names_)
+efs.subsets_                         # 每個 subset 嘅詳細結果
+# Something wrong, why cannot cover all 16 possible choices?</code></pre>
+<table>
+<tr><th>Argument</th><th>意思</th></tr>
+<tr><td><code>min_features</code> / <code>max_features</code></td><td>Subset 最少 / 最多有幾多個 columns（<b>const 都計一個</b>）</td></tr>
+<tr><td><code>fixed_features=(0,)</code></td><td>第 0 個 column（<code>const</code>）每個 subset 都包括</td></tr>
+<tr><td><code>scoring='neg_mean_squared_error'</code></td><td>mlxtend / sklearn 嘅 score 係 <b>higher is better</b>，所以將 MSE 變負數</td></tr>
+<tr><td><code>cv=5</code></td><td>用 5-fold CV 計每個 subset 嘅 score</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Slide 16 嘅問題：點解唔夠 16 個？</span>
+<p><code>sm.add_constant</code> 之後 X 有 <b>5 個 columns</b>（const + 4 predictors），而 const 已 fixed。<code>max_features=4</code> 計埋 const，即係最多只可以有 3 個真 predictors，所以 <b>full model（const + 4 個 predictors = 5 columns）冇咗</b>，只得 1 + 4 + 6 + 4 = 15 個 subsets。解決方法：設 <code>max_features=5</code>（slide 17 正係咁做）。</p></div>
+<div class="box note"><span class="label">📝 細節</span><p><code>LinearRegression()</code> 本身已經 fit intercept（<code>fit_intercept=True</code>），所以 <code>const</code> column 其實係多餘，佢嘅 coefficient 會係 0，唔影響結果。Slide 加佢入去，係為咗令 "const only" 對應 null model <code>sr ~ 1</code>，數 models 時同 statsmodels 嘅寫法一致。</p></div>
+
+<h3>4.3 Python：用 BIC 做 subset selection（slide 17）</h3>
+<pre><code># 1. 自定 BIC scorer
+def bic_scorer(estimator, X, y):
+    n_samples = X.shape[0]
+    n_features = X.shape[1]
+    y_pred = estimator.predict(X)
+    rss = np.sum((y - y_pred) ** 2)          # Residual Sum of Squares
+    if rss &lt; 1e-10:                          # 避免 log(0)
+        return -np.inf
+    bic = n_samples * np.log(rss / n_samples) + n_features * np.log(n_samples)
+    return -bic                              # mlxtend 係 maximize score，所以回傳負 BIC
+
+# 2. Base estimator
+lr = LinearRegression()
+
+# 3. ExhaustiveFeatureSelector
+efs = EFS(estimator=lr,
+          min_features=1,
+          max_features=5,                    # const + 4 個 predictors，16 個 models 齊晒
+          fixed_features=(0,),
+          scoring=bic_scorer,                # 直接傳 function
+          cv=0,                              # 0 = 用成個 training set 評估，唔做 CV
+          print_progress=True)
+efs = efs.fit(X, y)
+print('Best subset:', efs.best_feature_names_)
+efs.subsets_</code></pre>
+<div class="box exam"><span class="label">⭐ 點解 BIC 用 <code>cv=0</code>？</span>
+<p>BIC 係 <b>information criterion</b>，設計上係用 <b>full training set</b> 嘅 RSS 加 penalty 嚟評估 model（Method 1），唔需要 split data。CV 係 Method 2，兩者係<b>唔同方法</b>，唔使疊埋一齊用。</p></div>
+<div class="box warn"><span class="label">⚠️ 兩條 BIC 公式唔同樣？</span>
+<p>Code 用 \( n\log(RSS/n)+k\log n \)，同 slide 5 嘅 \( \frac{1}{n\hat\sigma^2}\left[RSS+(\log n)d\hat\sigma^2\right] \) 寫法唔同。兩者都係「fit 嘅好壞 + \( (\log n)\times \) model size」嘅 penalty 結構，前者係 normal errors 下由 likelihood 推出嘅常見版本。數值唔同，但用嚟<b>排序同一批 models</b> 時通常揀出相近嘅答案。推導屬 out-of-syllabus。</p></div>
+
+<h2>5. Forward and Backward Selection（slides 18–22）</h2>
+<p>Best subset 對大 p 唔實際（<b>impractical for large p</b>）。Slide 18 問：p = 20 時有幾多個 models？</p>
+<div class="formula">$$ 2^{20}=1{,}048{,}576 $$</div>
+<p>如果再用 5-fold CV，就要 fit 超過 500 萬次。<b>Forward</b> 同 <b>backward selection</b> 係 <b>sub-optimal but practical</b> 嘅方法。</p>
+
+<div class="box exam"><span class="label">⭐ 步驟（slide 19）</span>
+<p><b>Method A：Forward selection</b></p>
+<ol>
+<li>由 <b>null model</b> 開始。</li>
+<li>逐個試餘下嘅 predictor，計新 RSS，揀<b>改善 RSS 最多</b>嗰個。</li>
+<li>用 \( C_p \)、AIC 或 BIC 比較新 model 同原本 model。<b>如果冇改善，停</b>；否則返去 Step 2。</li>
+</ol>
+<p><b>Method B：Backward selection</b></p>
+<p>同 forward 類似，但由 <b>full model</b> 開始，逐步 <b>remove</b> predictors。</p></div>
+
+<div class="box tip"><span class="label">💡 點解 RSS 揀 candidate，但用 \( C_p \)/AIC/BIC 決定停唔停？</span>
+<p>Step 2 入面所有 candidate models 嘅 size 一樣（都係加一個 predictor），所以直接比 RSS 已經公平。Step 3 比較嘅係<b>唔同 size</b> 嘅 models，RSS 一定偏好大 model（Section 1），所以要用有 penalty 嘅 criterion。</p></div>
+
+<div class="box warn"><span class="label">⚠️ Note（slide 20）</span>
+<p>Forward / backward selection 揀出嚟嘅 model <b>唔保證係 best subset</b>，因為每步只做 greedy 決定，一旦加入（或刪除）就唔會再返轉頭。佢哋實用嘅原因係計算量即使 p 更大都負擔得起。</p></div>
+
+<p>計算量比較（p = 20）：forward selection 第 1 步試 20 個、第 2 步 19 個……最多 \( 1+20+19+\cdots+1=1+\frac{20\times21}{2}=211 \) 個 models，遠少過 1,048,576。</p>
+
+<h3>5.1 Python：SequentialFeatureSelector（slides 20–22）</h3>
+<p>用 <code>mlxtend.feature_selection.SequentialFeatureSelector</code>，以 <code>forward=True</code> / <code>forward=False</code> 切換。</p>
+<pre><code>from mlxtend.feature_selection import SequentialFeatureSelector as SFS
+
+sfs = SFS(LinearRegression(),
+          k_features="best",                 # 自動揀 score 最好嘅 subset size
+          fixed_features=(0,),
+          forward=True,                      # Forward selection；False = Backward
+          scoring='neg_mean_squared_error',
+          cv=5)
+sfs = sfs.fit(X, y)
+print('Best MSE score:', -sfs.k_score_)      # 負負得正，變返 MSE
+print('Best subset:', sfs.k_feature_names_)
+sfs.subsets_</code></pre>
+<p>Slide 21（forward）同 slide 22（backward）嘅 code 唯一分別係 <code>forward=True</code> / <code>forward=False</code>。留意呢度用嘅係 <b>CV MSE</b> 做準則，唔係 \( C_p \)/AIC/BIC。</p>
+
+<h2>6. Retrieve the optimal model：Pipeline（slide 23）</h2>
+<pre><code>from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_squared_error
+
+estimator = LinearRegression()
+pipeline = Pipeline([('feature_selection', sfs),
+                     ('regression', estimator)])
+
+pipeline.fit(X_train, y_train)          # 喺 training data 上做 feature selection + fit
+pre_val = pipeline.predict(X_test)      # 直接畀未揀 features 嘅 test data，pipeline 自己揀返 columns
+
+act_val = y_test
+bias = np.mean(pre_val - act_val)
+rmse = np.sqrt(mean_squared_error(act_val, pre_val))
+print(f'Out-of-sample RMSE: {rmse}')</code></pre>
+<div class="box exam"><span class="label">⭐ 重點</span>
+<ul>
+<li><code>Pipeline</code> 將「feature selection」同「regression」串成一個 model：<code>fit</code> 時先揀 features 再 fit regression；<code>predict</code> 時自動只用揀咗嘅 columns。</li>
+<li>Feature selection 只喺 <b>training data</b> 做，最後用 <b>test data（out-of-sample）</b> 計 bias 同 RMSE，咁先係公平評估。</li>
+</ul></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>如果用<b>全部 data</b>（包括 test）去揀 features，再用 test data 評估，test data 嘅資訊已經「漏」咗入 model selection，out-of-sample RMSE 會過分樂觀。Pipeline 嘅寫法可以避免呢個問題。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 7 會講 <b>feature extraction</b>（PCA），同呢講嘅 <b>feature selection</b> 對比：selection 係保留部分原有 predictors，extraction 係將 predictors transform 做新 variables。COM6004 <a href="COM6004-ch2.html">Ch 2</a> 嘅 data preprocessing 亦有提 feature subset selection。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Model A 有 3 個 predictors，Model B 喺 A 嘅基礎上多加 2 個。邊個 training RSS 較細？係咪代表 B 較好？</summary><p>B 嘅 RSS 一定 ≤ A（bigger model, smaller RSS）。但唔代表 B 較好：small RSS 只係 in-sample fit 好，唔保證 out-of-sample prediction 好，B 可能 overfit。要用 \( C_p \)/AIC/BIC 或 CV 比較。</p></details>
+<details class="q"><summary>Q2. 寫出 Mallows' \( C_p \)，指出 penalty term，並解釋 \( d \) 嘅意思。</summary><p>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)。Penalty term 係 \( 2d\hat\sigma^2 \)。\( d \) 係 sub-model 嘅 predictors 數目（包括 intercept）。Lower is better。</p></details>
+<details class="q"><summary>Q3. \( n=100 \)，\( \hat\sigma^2=4 \)。Model A：\( d=3 \)，RSS = 380；Model B：\( d=6 \)，RSS = 350。用 \( C_p \) 同 BIC 揀 model。</summary><p>\( C_p(A)=\frac{380+2(3)(4)}{100}=4.04 \)；\( C_p(B)=\frac{350+2(6)(4)}{100}=3.98 \) → \( C_p \) 揀 B。<br>\( \log 100\approx4.605 \)。\( BIC(A)=\frac{380+4.605(3)(4)}{400}=\frac{435.3}{400}\approx1.088 \)；\( BIC(B)=\frac{350+4.605(6)(4)}{400}=\frac{460.5}{400}\approx1.151 \) → BIC 揀 A。<br>呢個正好示範 BIC penalty 較重，揀較細 model。</p></details>
+<details class="q"><summary>Q4. 幾時 BIC 嘅 penalty 會重過 AIC？</summary><p>BIC 每個 predictor 嘅系數係 \( \log n \)，AIC 係 2。\( \log n&gt;2\iff n&gt;e^2\approx7.39 \)，即 \( n\ge8 \) 時 BIC 已經較重。</p></details>
+<details class="q"><summary>Q5. 描述 5-fold CV，並寫出 CV error。</summary><p>將 data 隨機分 5 份；每次用 1 份做 test、4 份做 training，計 MSE；重複 5 次令每份都做過 test；\( CV_{(5)}=\frac15\sum_{k=1}^{5}MSE_k \)。</p></details>
+<details class="q"><summary>Q6. 有 500 個 data instances，LOOCV 要 fit 幾多次 model？佢同 K-fold CV 有咩關係？</summary><p>500 次。LOOCV = n-fold CV（K = n），每次留 1 個做 test，所以 computationally expensive。</p></details>
+<details class="q"><summary>Q7. 有 6 個 predictors，best subset selection 要考慮幾多個 models？p = 20 呢？</summary><p>\( 2^6=64 \)（包括 null model）。\( 2^{20}=1{,}048{,}576 \)，所以大 p 時要用 forward / backward selection。</p></details>
+<details class="q"><summary>Q8. Slide 16 嘅 EFS 用 <code>max_features=4</code>，點解唔夠 16 個 models？點改？</summary><p>X 加咗 <code>const</code> 之後有 5 個 columns，const 係 fixed 而且會計入 feature 數目。<code>max_features=4</code> 即最多 3 個真 predictors，full model 被排除，只得 15 個。改做 <code>max_features=5</code>。</p></details>
+<details class="q"><summary>Q9. 簡述 forward selection 三個步驟。佢一定搵到 best subset 嗎？</summary><p>(1) 由 null model 開始；(2) 試每個餘下 predictor，揀改善 RSS 最多嘅加入；(3) 用 \( C_p \)/AIC/BIC 比較新舊 model，冇改善就停，否則返 Step 2。唔保證搵到 best subset（greedy、sub-optimal），但計算量細好多。</p></details>
+<details class="q"><summary>Q10. 點解 <code>scoring='neg_mean_squared_error'</code> 要用負數？BIC scorer 點解 return <code>-bic</code>？</summary><p>mlxtend / sklearn 嘅 selector 永遠 <b>maximize</b> score（higher is better）。MSE 同 BIC 都係 lower is better，加負號之後「最大」就等於原本「最細」。</p></details>
+<details class="q"><summary>Q11. Slide 23 點解要用 <code>Pipeline</code>？</summary><p>將 feature selection 同 regression 串埋：只用 training data 揀 features 同 fit model；predict 時直接畀原始 test data，pipeline 自動揀返同一批 columns。咁 out-of-sample RMSE 先係公平嘅評估，避免 test data 資訊漏入 selection。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li><b>Big model ≠ good model</b>。Model 越大 RSS 越細，但 prediction 係針對 out-of-sample（unseen）data。</li>
+<li>Method 1 Penalty（lower is better，\( d \) 含 intercept）：\( C_p=\frac1n[RSS_{sub}+2d\hat\sigma^2] \)；\( AIC=\frac{1}{n\hat\sigma^2}[RSS_{sub}+2d\hat\sigma^2] \)；\( BIC=\frac{1}{n\hat\sigma^2}[RSS_{sub}+(\log n)d\hat\sigma^2] \)。</li>
+<li>BIC penalty 最重（\( \log n&gt;2 \) when \( n\ge8 \)）→ 揀較少 predictors → parsimonious（節儉）model。</li>
+<li>Method 2 CV：Train-test split → K-fold（平均 K 個 MSE）→ LOOCV = n-fold（n 次，expensive）。用 bias、MSE / RMSE 量度。</li>
+<li>Best subset = 試晒 \( 2^p \) 個 models（p = 4 → 16；p = 20 → 1,048,576）；<code>ExhaustiveFeatureSelector</code>，<code>fixed_features=(0,)</code> 保留 const，<code>max_features</code> 要計埋 const。</li>
+<li>BIC scorer 用 <code>cv=0</code>（information criterion 用 full training set）；scorer 要 return 負值，因為 selector maximize score。</li>
+<li>Forward：null model → 逐個加（RSS 最好）→ \( C_p \)/AIC/BIC 冇改善就停。Backward：full model → 逐個刪。唔保證 best subset，但平。</li>
+<li><code>SequentialFeatureSelector(..., k_features="best", forward=True/False, scoring='neg_mean_squared_error', cv=5)</code>；<code>Pipeline([('feature_selection', sfs), ('regression', LinearRegression())])</code> → test data 計 out-of-sample RMSE。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6005-m5.html">← Module 5 Logistic Regression</a>
+  <a href="COM6005-m7.html">Module 7 Principal Component Analysis →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

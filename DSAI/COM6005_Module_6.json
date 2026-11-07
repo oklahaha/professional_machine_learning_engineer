@@ -1,0 +1,622 @@
+[
+  {
+    "question": "A sub-model has $RSS_{sub} = 400$ and $d = 3$, with $n = 50$ and $\\hat{\\sigma}^2 = 10$. What is its Mallows' $C_p$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "9.2",
+        "Explanation": "Correct: $C_p = \\frac{1}{50}(400 + 2 \\cdot 3 \\cdot 10) = 460/50 = 9.2$."
+      },
+      {
+        "label": "B",
+        "text": "8.0",
+        "Explanation": "This is $RSS_{sub}/n$ alone; the penalty $2d\\hat{\\sigma}^2$ has been left out."
+      },
+      {
+        "label": "C",
+        "text": "8.6",
+        "Explanation": "This adds only $d\\hat{\\sigma}^2$; the $C_p$ penalty is $2d\\hat{\\sigma}^2$."
+      },
+      {
+        "label": "D",
+        "text": "0.92",
+        "Explanation": "This divides by $n\\hat{\\sigma}^2$, which is the AIC scaling, not $C_p$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Add the penalty to the RSS before dividing by $n$.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Model 1 has $d = 2$, $RSS = 520$; Model 2 has $d = 5$, $RSS = 480$. With $n = 40$ and $\\hat{\\sigma}^2 = 12$, which model does $C_p$ prefer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Model 2, because its RSS is smaller",
+        "Explanation": "A smaller RSS is expected from a bigger model; once the penalty is added Model 2 scores 15.0, worse than Model 1."
+      },
+      {
+        "label": "B",
+        "text": "Model 1, with $C_p = 14.2$ against 15.0",
+        "Explanation": "Correct: $(520 + 48)/40 = 14.2$ and $(480 + 120)/40 = 15.0$, and lower is better."
+      },
+      {
+        "label": "C",
+        "text": "Model 2, with $C_p = 15.0$ against 14.2",
+        "Explanation": "Lower $C_p$ is better, so the higher score loses."
+      },
+      {
+        "label": "D",
+        "text": "Neither: $C_p$ cannot compare models with different $d$",
+        "Explanation": "Comparing sub-models of different sizes is exactly what the penalty term is for."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Compute both scores and remember which direction is better.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "A sub-model has $RSS_{sub} = 400$, $d = 3$, $n = 50$ and $\\hat{\\sigma}^2 = 10$. What is its AIC, using the slides' definition?",
+    "options": [
+      {
+        "label": "A",
+        "text": "9.2",
+        "Explanation": "This is the $C_p$ value, which divides by $n$ rather than $n\\hat{\\sigma}^2$."
+      },
+      {
+        "label": "B",
+        "text": "0.86",
+        "Explanation": "This uses a penalty of $d\\hat{\\sigma}^2$; AIC uses $2d\\hat{\\sigma}^2$."
+      },
+      {
+        "label": "C",
+        "text": "0.92",
+        "Explanation": "Correct: $\\frac{1}{50 \\cdot 10}(400 + 60) = 460/500 = 0.92$."
+      },
+      {
+        "label": "D",
+        "text": "0.80",
+        "Explanation": "This is $RSS_{sub}/(n\\hat{\\sigma}^2)$ with no penalty."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "AIC scales the penalised RSS by $1/(n\\hat{\\sigma}^2)$.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "What distinguishes the BIC penalty from the AIC penalty in the slides' definitions?",
+    "options": [
+      {
+        "label": "A",
+        "text": "BIC has no penalty; it only rescales the RSS",
+        "Explanation": "BIC adds a penalty of $(\\log n) \\cdot d\\hat{\\sigma}^2$ to the RSS."
+      },
+      {
+        "label": "B",
+        "text": "BIC divides the penalty by the sample size",
+        "Explanation": "The penalty is multiplied by $\\log n$, not divided by $n$."
+      },
+      {
+        "label": "C",
+        "text": "BIC penalises the RSS rather than the number of predictors",
+        "Explanation": "Both penalties grow with $d$, the number of predictors."
+      },
+      {
+        "label": "D",
+        "text": "BIC uses $\\log n$ in place of the constant 2, making the penalty heavier",
+        "Explanation": "Correct: AIC adds $2d\\hat{\\sigma}^2$ while BIC adds $(\\log n) \\cdot d\\hat{\\sigma}^2$, which the slides call even heavier."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare the multiplier in front of $d\\hat{\\sigma}^2$.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Adding a predictor to an OLS model lowers its RSS. Why is that not enough to prefer the bigger model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A lower RSS means the coefficients are biased",
+        "Explanation": "The slides make no such claim; the issue is how RSS relates to prediction."
+      },
+      {
+        "label": "B",
+        "text": "RSS can only be computed for the null model",
+        "Explanation": "RSS is computed for any fitted model, big or small."
+      },
+      {
+        "label": "C",
+        "text": "Adding a predictor always raises the RSS on the training data",
+        "Explanation": "The opposite holds: the bigger the model, the smaller the RSS."
+      },
+      {
+        "label": "D",
+        "text": "Prediction concerns unseen data, and a small training RSS does not guarantee good prediction",
+        "Explanation": "Correct: bigger models always shrink RSS, so RSS alone favours big models regardless of out-of-sample performance."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about which data a prediction is made for.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "In Mallows' $C_p$, what is the role of the term $2d\\hat{\\sigma}^2$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It is a penalty that discourages big models",
+        "Explanation": "Correct: it grows with the number of predictors, so big models get punished."
+      },
+      {
+        "label": "B",
+        "text": "It measures the model's fit to the training data",
+        "Explanation": "Fit is measured by $RSS_{sub}$; this term is added on top of it."
+      },
+      {
+        "label": "C",
+        "text": "It rewards models with more predictors",
+        "Explanation": "It increases $C_p$, and lower is better, so more predictors are penalised."
+      },
+      {
+        "label": "D",
+        "text": "It converts the RSS into a probability",
+        "Explanation": "Nothing in $C_p$ turns the RSS into a probability."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask whether a larger $d$ makes $C_p$ better or worse.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "You have 6 candidate predictors. How many linear models does best subset selection try, including the null model?",
+    "options": [
+      {
+        "label": "A",
+        "text": "36",
+        "Explanation": "This is $6^2$; each predictor is either in or out, giving a power of 2."
+      },
+      {
+        "label": "B",
+        "text": "64",
+        "Explanation": "Correct: $2^6 = 64$, the sum of $\\binom{6}{k}$ for $k = 0, \\dots, 6$."
+      },
+      {
+        "label": "C",
+        "text": "63",
+        "Explanation": "This leaves out the null model, which best subset also includes."
+      },
+      {
+        "label": "D",
+        "text": "720",
+        "Explanation": "This is $6!$, the number of orderings, not the number of subsets."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Each predictor is either in the model or not.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "For the savings data with predictors `pop15`, `pop75`, `dpi`, `ddpi`, how many of the 16 models contain exactly two predictors?",
+    "options": [
+      {
+        "label": "A",
+        "text": "4",
+        "Explanation": "This is $\\binom{4}{1}$, the number of one-predictor models."
+      },
+      {
+        "label": "B",
+        "text": "8",
+        "Explanation": "This is half of 16; the count of a given size is a binomial coefficient."
+      },
+      {
+        "label": "C",
+        "text": "6",
+        "Explanation": "Correct: $\\binom{4}{2} = 6$."
+      },
+      {
+        "label": "D",
+        "text": "12",
+        "Explanation": "This counts ordered pairs; the order of predictors in a model does not matter."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Choose two predictors out of four.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Why do the slides call best subset selection impractical for large $p$?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It cannot use $C_p$, AIC or BIC",
+        "Explanation": "Best subset picks the sub-model with the smallest AIC/BIC/$C_p$ or best CV score."
+      },
+      {
+        "label": "B",
+        "text": "It only considers models that add one predictor at a time",
+        "Explanation": "That describes forward selection; best subset tries them all."
+      },
+      {
+        "label": "C",
+        "text": "The number of models doubles with every predictor: $p = 20$ already gives 1,048,576",
+        "Explanation": "Correct: there are $2^p$ subsets, which quickly becomes too many to fit."
+      },
+      {
+        "label": "D",
+        "text": "It is not guaranteed to find the best subset",
+        "Explanation": "Trying every subset is what guarantees the best one; that caveat belongs to forward and backward selection."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Count how the number of candidate models grows with $p$.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "With 500 data instances, how many times must the model be fitted for leave-one-out cross validation?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5",
+        "Explanation": "That is 5-fold CV, which holds out a fifth of the data each time."
+      },
+      {
+        "label": "B",
+        "text": "500",
+        "Explanation": "Correct: leave-one-out is $n$-fold CV, so each of the 500 instances is held out once."
+      },
+      {
+        "label": "C",
+        "text": "1",
+        "Explanation": "A single fit is a plain train-test split, not leave-one-out."
+      },
+      {
+        "label": "D",
+        "text": "499",
+        "Explanation": "499 is the size of each training set; the number of fits equals the number of instances."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Each instance gets its own turn as the test data.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Leave-one-out cross validation is equivalent to which scheme?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$n$-fold cross validation, where $n$ is the sample size",
+        "Explanation": "Correct: each fold holds exactly one observation."
+      },
+      {
+        "label": "B",
+        "text": "5-fold cross validation",
+        "Explanation": "5-fold CV holds out a fifth of the data each time, not a single instance."
+      },
+      {
+        "label": "C",
+        "text": "A single train-test split",
+        "Explanation": "Leave-one-out repeats the fit $n$ times, once per held-out instance."
+      },
+      {
+        "label": "D",
+        "text": "Best subset selection",
+        "Explanation": "Best subset is a way to choose predictors; leave-one-out is a way to estimate prediction ability."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Count the folds when each one holds a single observation.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "In 5-fold cross validation, how is the data used?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The model is fitted once on 80% of the data and tested on the other 20%",
+        "Explanation": "That is one train-test split; K-fold repeats it so every part is tested."
+      },
+      {
+        "label": "B",
+        "text": "Each observation is held out alone in turn",
+        "Explanation": "That is leave-one-out, which is $n$-fold CV."
+      },
+      {
+        "label": "C",
+        "text": "The model is fitted on all of the data five times with different seeds",
+        "Explanation": "Fitting on all the data leaves nothing unseen to test on."
+      },
+      {
+        "label": "D",
+        "text": "The data is split into 5 parts and each part takes a turn as the test data",
+        "Explanation": "Correct: the other four parts form the training data each time."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Every part should be unseen exactly once.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "You prefer a parsimonious model and do not mind deselecting relevant but less influential predictors. Which criterion do the slides recommend?",
+    "options": [
+      {
+        "label": "A",
+        "text": "BIC",
+        "Explanation": "Correct: BIC's heavier penalty usually chooses fewer predictors."
+      },
+      {
+        "label": "B",
+        "text": "$C_p$",
+        "Explanation": "The $C_p$-chosen model usually contains more predictors than the BIC-chosen one."
+      },
+      {
+        "label": "C",
+        "text": "The smallest RSS",
+        "Explanation": "The smallest RSS always picks the biggest model."
+      },
+      {
+        "label": "D",
+        "text": "AIC",
+        "Explanation": "AIC's penalty is lighter than BIC's, so it tends to keep more predictors."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Look for the heaviest penalty.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "In forward selection, what decides when to stop adding predictors?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Stop once every predictor has been added",
+        "Explanation": "That just ends at the full model; the method stops earlier when nothing improves."
+      },
+      {
+        "label": "B",
+        "text": "Stop when the RSS stops decreasing",
+        "Explanation": "Adding a predictor always lowers RSS, so this rule would never stop."
+      },
+      {
+        "label": "C",
+        "text": "Stop when $C_p$, AIC or BIC no longer improves over the previous model",
+        "Explanation": "Correct: RSS picks the best candidate, then a criterion decides whether to keep it."
+      },
+      {
+        "label": "D",
+        "text": "Stop after a fixed number of steps chosen in advance",
+        "Explanation": "The slides' stopping rule is a model comparison, not a step count."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "RSS chooses the candidate; something else judges it.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "How does backward selection work?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Start from the null model and add the best predictor at each step",
+        "Explanation": "That is forward selection."
+      },
+      {
+        "label": "B",
+        "text": "Fit every possible subset and keep the best",
+        "Explanation": "That is best subset selection."
+      },
+      {
+        "label": "C",
+        "text": "Remove the predictor with the largest coefficient first",
+        "Explanation": "The slides describe stepwise removal like forward selection, not ranking by coefficient size."
+      },
+      {
+        "label": "D",
+        "text": "Start from the full model and remove predictors stepwise",
+        "Explanation": "Correct: it mirrors forward selection in the opposite direction."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think about where the search starts.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Why does the custom `bic_scorer` return `-bic` to `EFS`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "BIC is always negative, so negating it makes it positive",
+        "Explanation": "BIC can take either sign; the negation is about which direction is better."
+      },
+      {
+        "label": "B",
+        "text": "`mlxtend` maximizes the score, but a lower BIC is better",
+        "Explanation": "Correct: negating it turns the lowest BIC into the highest score."
+      },
+      {
+        "label": "C",
+        "text": "Negating BIC converts it into the MSE",
+        "Explanation": "BIC and MSE are different quantities; the sign does not change one into the other."
+      },
+      {
+        "label": "D",
+        "text": "It avoids taking `np.log(0)`",
+        "Explanation": "That case is handled separately by returning `-np.inf` when `rss` is near zero."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Which direction does the selector search in?",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Why does the `EFS` call that scores by BIC set `cv=0`?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Cross validation is unavailable for linear regression",
+        "Explanation": "The earlier `EFS` call uses `cv=5` with `LinearRegression()`."
+      },
+      {
+        "label": "B",
+        "text": "It makes `EFS` try only one subset",
+        "Explanation": "`cv` controls validation splits, not how many subsets are tried."
+      },
+      {
+        "label": "C",
+        "text": "BIC is an information criterion meant to evaluate the model on the full training set",
+        "Explanation": "Correct: with 0 splits the scorer sees the whole training set."
+      },
+      {
+        "label": "D",
+        "text": "It switches `EFS` into backward selection",
+        "Explanation": "Direction is an `SFS` setting, `forward=False`; `EFS` tries every subset."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Recall which of the two methods BIC belongs to.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "Which `SequentialFeatureSelector` setting performs backward selection?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`forward=False`",
+        "Explanation": "Correct: `forward=True` gives forward selection and `forward=False` gives backward."
+      },
+      {
+        "label": "B",
+        "text": "`k_features=\"best\"`",
+        "Explanation": "This asks for the best subset size; it does not set the direction."
+      },
+      {
+        "label": "C",
+        "text": "`fixed_features = (0,)`",
+        "Explanation": "This keeps the constant column in every subset."
+      },
+      {
+        "label": "D",
+        "text": "`cv=5`",
+        "Explanation": "This sets 5-fold cross validation for scoring."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The direction is a single boolean argument.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "In the slides' feature-selection code, why is `fixed_features = (0,)` passed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "To evaluate only one-predictor models",
+        "Explanation": "Subset size is controlled by `min_features`/`max_features` or `k_features`."
+      },
+      {
+        "label": "B",
+        "text": "To always keep column 0, the constant added by `sm.add_constant(X)`",
+        "Explanation": "Correct: the intercept column stays in every candidate subset."
+      },
+      {
+        "label": "C",
+        "text": "To fix the random seed of the cross validation",
+        "Explanation": "It names a feature index to keep, not a seed."
+      },
+      {
+        "label": "D",
+        "text": "To drop the first predictor from consideration",
+        "Explanation": "It keeps that column fixed in every model rather than dropping it."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Column 0 was added just before selection.",
+    "course": "COM6005",
+    "week": "6"
+  },
+  {
+    "question": "After fitting `pipeline = Pipeline([('feature_selection', sfs), ('regression', estimator)])` on the training data, what does `pipeline.predict(X_test)` do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It refits the feature selection on the test data first",
+        "Explanation": "Fitting happens in `pipeline.fit(X_train, y_train)`; prediction reuses that fit."
+      },
+      {
+        "label": "B",
+        "text": "It fails unless `X_test` is first subset to the selected columns",
+        "Explanation": "The pipeline applies the selection itself, so the raw test data is passed directly."
+      },
+      {
+        "label": "C",
+        "text": "It applies the selected features to the raw test data and predicts with the fitted regression",
+        "Explanation": "Correct: that is how the slides measure out-of-sample RMSE."
+      },
+      {
+        "label": "D",
+        "text": "It returns the cross-validated MSE of the best subset",
+        "Explanation": "`predict` returns predicted values; the RMSE is computed from them afterwards."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "The pipeline chains both fitted steps.",
+    "course": "COM6005",
+    "week": "6"
+  }
+]

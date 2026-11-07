@@ -1,0 +1,46 @@
+Why can't you always input every predictor into a regression model?,For large $p$ cases it is impossible to input all predictors into the model.
+What is feature selection?,"Techniques of selecting predictors, such as best subset selection: some predictors are dumped and some are kept."
+What is feature extraction?,"Transforming the data, rather than keeping or dropping the original predictors."
+Give the slides' example of feature extraction.,Using an 'internal score' instead of midterm + assignment + final to predict the public exam score.
+Is PCA a feature selection or a feature extraction method?,Feature extraction: it transforms the data.
+"What is PCA, in one sentence?",A tool to simplify complicated data by finding the directions where the data spreads out the most (highest variance).
+What does PCA do to the original data's coordinates?,It transforms the data to new coordinates (axes).
+How is the importance of the new PCA axes ordered?,"The 1st axis is the most important, the 2nd less important, the 3rd less than the 2nd, and so on, in the sense of variance."
+"In what sense is one principal component more ""important"" than another?",In the sense of variance: it captures more of the spread of the data.
+How are the new PCA axes oriented relative to each other?,They are perpendicular to each other.
+"In the fireflies analogy, what shape does the swarm form?","A long, tilted, cigar-shaped cloud."
+"In the fireflies analogy, why is the data 3D?","Each firefly's position has three coordinates: Width ($X$), Depth ($Y$) and Height ($Z$)."
+"To reduce the fireflies data from 3D, should you throw away Height ($Z$) or Depth ($Y$)?",No. PCA tells you to change your perspective and draw new lines through the room.
+How does PCA choose Principal Component 1 (PC1)?,It draws a straight line through the longest part of the swarm: the direction of maximum variance.
+What does the direction of maximum variance mean?,The direction where the data points are most spread out from each other.
+How does PCA choose PC2?,A second line at 90 degrees (perpendicular) to PC1 that captures the next largest amount of spread.
+What constraint must PC2 satisfy relative to PC1?,It must be perpendicular (at a 90-degree angle) to PC1.
+Which module provides `PCA` in Python?,`sklearn.decomposition`: `from sklearn.decomposition import PCA`.
+How do you create a PCA object that keeps 3 components?,`pca = PCA(n_components=3)`
+Which method fits PCA and returns the transformed data in one step?,`pca.fit_transform(x)`
+What does `pca.explained_variance_ratio_[0]` give in the fireflies code?,The share of variance explained by PC1 (the longest stretch); the code multiplies it by 100 to print a percentage.
+How does the fireflies code compute the total information kept in 3D?,"`sum(pca.explained_variance_ratio_)*100`, the sum of the explained variance ratios as a percentage."
+What does `pca.components_[0]` hold?,The first PCA loadings (weights).
+What does `pca.explained_variance_[0]` hold?,The first PCA variance magnitude.
+"Mathematically, what does PCA compute?",The eigenvalues and eigenvectors of the covariance matrix.
+What do the eigenvalues indicate in PCA?,The importance of the transformed data.
+Which sklearn attribute does the slide give for the eigenvalues' importance?,`pca.explained_variance_ratio_`
+What are the eigenvectors used for in PCA?,To transform the original data.
+Which sklearn attribute gives the eigenvectors?,`pca.components_`
+When should you standardize your data in a PCA workflow?,Before applying PCA.
+Why does PCA need standardized features?,"PCA maximizes variance, so a feature on a larger scale or unit (e.g. income in dollars vs age in years) with larger numerical variance would dominate the first principal component."
+"Without standardization, which feature dominates PC1?",The feature with the larger numerical variance.
+What two operations make up standardization?,Centering and scaling.
+What mean and standard deviation does every feature have after standardizing?,Mean 0 and standard deviation 1.
+What does standardizing guarantee about each feature's role in PCA?,Every feature contributes equally to the analysis.
+Which sklearn class standardizes data?,"`StandardScaler`, from `sklearn.preprocessing`."
+Write the two lines that standardize `X` with sklearn.,`scaler = StandardScaler()` then `X_scaled = scaler.fit_transform(X)`.
+How do you combine PCA and regression?,Regress $Y$ against the first $k$ principal components and obtain the cross-validation error.
+"How do you choose $k$, the number of principal components in a regression?","Repeat for $k = 1, 2, 3, \ldots$ and choose the $k$ that minimizes the CV error."
+Describe the baseball data used for PCA + regression.,"The Hitters data in the ISLP package: 19 predictors (some categorical), $n = 322$, response $Y$ = player's Salary."
+What is the response $Y$ in the Hitters example?,The Salary of the player.
+How does the Hitters code handle missing values?,`HC = HC.dropna()` removes rows with null values.
+How does the Hitters code turn categorical predictors into numbers?,"`pd.get_dummies(X, drop_first=True)` creates dummy variables."
+Which function scores a regression on the PCs with 10-fold CV?,"`cross_val_score(LinearRegression(), X_pca, y, cv=10, scoring='neg_mean_squared_error')`"
+Why does the code negate the CV scores to get the MSEP?,"The scoring is `'neg_mean_squared_error'`, so the scores are negative MSEs; `-cv_scores` turns them back into mean squared errors."
+What does the Hitters code plot to choose the number of PCs?,"The cross-validation MSEP (y-axis, Mean Squared Error) against the Number of Principal Components (x-axis)."

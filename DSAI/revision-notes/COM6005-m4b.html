@@ -213,7 +213,7 @@ print(model.summary())</code></pre>
 <tr><td><code>~</code></td><td>分隔 dependent（左）同 independent variables（右）</td><td><code>y ~ x1</code></td><td></td></tr>
 <tr><td><code>+</code></td><td>Add variable</td><td><code>y ~ x1 + x2</code></td><td>包括 \( x_1 \) 同 \( x_2 \)</td></tr>
 <tr><td><code>-</code></td><td>Remove variable or intercept</td><td><code>y ~ x1 - 1</code></td><td>包括 \( x_1 \)，<b>without an intercept</b></td></tr>
-<tr><td><code>:</code></td><td>Interaction term</td><td><code>y ~ x1:x2</code></td><td><b>只有</b> product \( x_1 \times x_2 \)</td></tr>
+<tr><td><code>:</code></td><td>Interaction term</td><td><code>y ~ x1:x2</code></td><td>若 x1 / x2 都 numerical：intercept + 一個 product column \(x_1x_2\)（-1 才移除 intercept）；categorical 會展開多個 columns</td></tr>
 <tr><td><code>*</code></td><td>Main effects and interactions</td><td><code>y ~ x1*x2</code></td><td><code>y ~ x1 + x2 + x1:x2</code></td></tr>
 </table></div>
 <p>Slide 20：<b><code>I()</code> function</b> 叫 formula processor 將括號入面嘅 operators 當成<b>普通數學運算</b>，唔係 formula operators：</p>
@@ -244,7 +244,7 @@ model = smf.ols(formula="y ~ x1 + poly(x2, degree=2, raw=True)", data=df).fit()<
 
 <h2>5. Interaction terms（slides 23–28）</h2>
 <h3>5.1 咩係 interaction（slide 23）</h3>
-<p>數學上，A 同 B 嘅 interaction term 就係 <b>AB</b>（相乘）。Slide 23 用打印機做例子：</p>
+<p>若 A、B 係 numerical，interaction column 就係 <b>AB</b>（相乘）；categorical 則係 contrast / cell columns 嘅展開。Slide 23 用打印機做例子：</p>
 <div class="formula">$$ \text{Value(Printer)} + \text{Value(Ink)} \;&lt;\; \text{Value(Printer + Ink)} $$</div>
 <p>單獨一部 printer（冇墨）或者單獨一盒 ink（冇機）價值都好低，合埋先有用——<b>complementary effect</b>。合埋多出嚟嗰部分（<b>the extra</b>）就係 <b>interaction</b>。</p>
 <div class="box exam"><span class="label">⭐ 冇 interaction vs 有 interaction</span>
@@ -263,17 +263,17 @@ model = smf.ols('y~A+B+A:B', data=data).fit()
 # 等同 smf.ols('y~A*B', data=data).fit()
 # Auto：smf.ols('mpg ~ horsepower + weight + horsepower:weight', data=Auto).fit()</code></pre>
 <p>直覺：horsepower 對 mileage 嘅影響，可能取決於架車有幾重——\( \beta_3 \) 量度呢個「取決於」。Slides 冇提供呢個 model 嘅 output，所以呢度唔列數字。</p>
-<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>加 interaction 時通常要保留 main effects（用 <code>A*B</code> 或 <code>A+B+A:B</code>），唔好淨係寫 <code>y ~ A:B</code>——後者只有 product 一項，等於假設 A、B 各自冇 effect。有 interaction 時，\( \beta_1 \) 只代表 \( B = 0 \) 時 A 嘅 effect，唔可以再講「A 每加 1，Y 變 \( \beta_1 \)」。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>加 interaction 時通常要保留 main effects（用 <code>A*B</code> 或 <code>A+B+A:B</code>），唔好淨係寫 <code>y ~ A:B</code>——若 A / B 都 numerical，後者保留 intercept 同 product，但冇獨立 main-effect slopes；categorical 不能照此數 columns。有 interaction 時，\( \beta_1 \) 只代表 \( B = 0 \) 時 A 嘅 effect，唔可以再講「A 每加 1，Y 變 \( \beta_1 \)」。</p></div>
 
 <h3>5.3 Categorical × categorical（slides 25–27）</h3>
 <p>Slide 25：用 <code>statsmodels.formula.api</code>，</p>
 <ul>
 <li>A 有 3 categories（Eng / Sci / Hum）→ 2 個 dummy variables（\( A_S, A_H \)）</li>
 <li>B 有 4 categories（Year 1 / 2 / 3 / 4）→ 3 個 dummy variables（\( B_2, B_3, B_4 \)）</li>
-<li>Interaction terms（最少）\( = 2 \times 3 = \) <b>6</b>：\( A_SB_2, A_SB_3, A_SB_4, A_HB_2, A_HB_3, A_HB_4 \)</li>
+<li>完整 main-effects + interaction treatment coding 下嘅 interaction columns\( = 2 \times 3 = \) <b>6</b>：\( A_SB_2, A_SB_3, A_SB_4, A_HB_2, A_HB_3, A_HB_4 \)</li>
 <li>Python output 命名：例如 \( A_SB_2 \) 會顯示成 <code>A[T.S]:B[T.2]</code>（slide 寫 “T.S T.2”）</li>
 </ul>
-<div class="box exam"><span class="label">⭐ 數 terms 公式</span>
+<div class="box exam"><span class="label">⭐ 完整 crossed main-effects + interaction 嘅 column 數</span>
 <p>A 有 \( k_A \) 個 categories、B 有 \( k_B \) 個：</p>
 <div class="formula">$$ \underbrace{1}_{\text{intercept}} + \underbrace{(k_A-1)}_{A} + \underbrace{(k_B-1)}_{B} + \underbrace{(k_A-1)(k_B-1)}_{A:B} = k_A k_B $$</div>
 <p>College × Year：\( 1 + 2 + 3 + 6 = 12 = 3 \times 4 \)。Machines（Worker × Machine）：\( 1 + 5 + 2 + 10 = 18 = 6 \times 3 \)——即每個 worker-machine 組合有自己嘅平均。每個組合有 3 次重複，所以 residual df = \( 54 - 18 = 36 \)。</p></div>
@@ -287,9 +287,11 @@ model.summary()
 model = smf.ols('score ~ C(Worker)*Machine', data=machines_data).fit()</code></pre>
 <div class="box tip"><span class="label">💡 點解呢個 data 可以 fit interaction？</span><p>因為每個 worker 喺每部機都做咗 <b>3 次</b>。如果每個組合只得 1 個 observation，18 個 parameters fit 18 個數據點會 perfect fit（residual df = 0），冇辦法估計 error，亦做唔到 test。Slides 冇提供 interaction model 嘅 output。</p></div>
 
+<div class="box exam"><span class="label">⭐ Patsy term ≠ column</span><p>Categorical <code>y ~ A:B</code> 唔一定只有一個 parameter：3-level A × 4-level B、完整 crossed observations 下有 12 columns（含 Intercept），coding labels 同 <code>A*B</code> 可唔同。Reduced / full-rank coding 取決於 intercept 同其他 terms。用 <code>model.model.exog_names</code> 或 <code>patsy.dmatrix</code> 檢查，唔好由冒號數 parameters。</p></div>
 <h3>5.4 Higher-order interactions（slide 28）</h3>
+<p>以下 3 main / 3 second-order / 1 third-order 係 formula terms 嘅數目；若全部 numerical，每 term 一個 column。Categorical terms 可以多欄，不能將 term 數直接當 parameter 數。</p>
 <pre><code>y ~ A*B*C     # All terms：A + B + C + A:B + A:C + B:C + A:B:C
-y ~ A:B:C     # Only ABC（只有三者相乘一項）</code></pre>
+y ~ A:B:C     # 指定三階 interaction term；numerical 時為 ABC column，仍含 intercept；categorical 可展開多欄</code></pre>
 <table>
 <tr><th>層次</th><th>A, B, C 嘅例子</th><th>數目</th></tr>
 <tr><td>Main effects</td><td>A, B, C</td><td>3</td></tr>
@@ -306,7 +308,7 @@ y ~ A:B:C     # Only ABC（只有三者相乘一項）</code></pre>
 <details class="q"><summary>Q4. 用 machines output（slide 16）：預測 Worker 5 用 Machine C 嘅 score；Worker 3 同 Worker 6 用同一部機，差幾多？</summary><p>Worker 5, C：\( 53.6167 + 1.8111 + 13.9167 = 69.3445 \)。Worker 3 − Worker 6 = \( 5.2111 - (-10.3333) = 15.5444 \)（冇 interaction，所以任何一部機都係呢個差）。</p></details>
 <details class="q"><summary>Q5. Worker[T.2] 嘅 coef = −2.9222，\( p = 0.056 \)，95% CI \([-5.922, 0.078]\)。用 \( \alpha = 0.05 \) 寫結論。</summary><p>\( H_0: \beta = 0 \)（Worker 2 同 Worker 1 喺同一部機嘅平均 score 一樣）。\( p = 0.056 &gt; 0.05 \)，CI 包 0 → do not reject \( H_0 \)：喺 5% level 冇足夠證據話 Worker 2 同 Worker 1 有分別。</p></details>
 <details class="q"><summary>Q6. 點解 <code>Worker</code>（數值 1–6）要 <code>astype('category')</code>？唔做會 fit 咗咩 model？</summary><p>Worker 號碼只係 ID label，冇大小意義。唔轉嘅話會當 numerical，只 fit 一個 slope：\( \text{score} = \beta_0 + \beta_1\cdot\text{Worker} + \cdots \)，即假設 worker 號碼每加 1，score 線性變 \( \beta_1 \)——毫無意義，亦只用 1 個 parameter 而唔係 5 個。</p></details>
-<details class="q"><summary>Q7. 以下 formula 各自 fit 咗咩 terms？(a) <code>y ~ x + x**2</code> (b) <code>y ~ x + I(x**2)</code> (c) <code>y ~ a*b</code> (d) <code>y ~ a:b - 1</code></summary><p>(a) Intercept、x——<code>**</code> 被當 formula operator，冇 \( x^2 \)！(b) Intercept、x、\( x^2 \)。(c) Intercept、a、b、a:b。(d) 只有 a × b，冇 intercept。</p></details>
+<details class="q"><summary>Q7. 假設 x、a、b 都 numerical，以下 formula 各自 fit 咗咩 terms？(a) <code>y ~ x + x**2</code> (b) <code>y ~ x + I(x**2)</code> (c) <code>y ~ a*b</code> (d) <code>y ~ a:b - 1</code></summary><p>(a) Intercept、x——<code>**</code> 被當 formula operator，冇 \( x^2 \)！(b) Intercept、x、\( x^2 \)。(c) Intercept、a、b、a:b。(d) 只有 a × b，冇 intercept。</p></details>
 <details class="q"><summary>Q8. \( \hat Y = 5 + 1.5A + 2B - 0.5AB \)。B = 0 同 B = 4 時，A 加 1 單位 Y 變幾多？呢個 interaction 係 complementary 定係抵消？</summary><p>A 嘅 effect = \( 1.5 - 0.5B \)。B = 0：+1.5；B = 4：\( 1.5 - 2 = -0.5 \)。\( \beta_3 &lt; 0 \)：B 越大，A 嘅正面 effect 越細甚至反轉——抵消（唔係 complementary）。</p></details>
 <details class="q"><summary>Q9. A = Faculty（4 categories），B = Gender（2），C = Mode（Full-time / Part-time）。<code>y ~ A*B*C</code> 有幾多個 parameters（包括 intercept）？</summary><p>Dummies：A 3、B 1、C 1。Main：\( 3+1+1=5 \)；second-order：\( AB=3,\ AC=3,\ BC=1 \)，共 7；third-order：\( ABC = 3 \)。總數 \( 1+5+7+3 = 16 = 4\times2\times2 \)。</p></details>
 <details class="q"><summary>Q10. 寫出 \( Y = aX^b \) 嘅 linearised form 同 smf formula。如果 fit 出 slope = 0.8，點解讀？</summary><p>\( \log Y = \log a + b\log X \)；<code>smf.ols('np.log(y) ~ np.log(x)', data=df).fit()</code>。\( b = 0.8 \)：X 增加 1%，Y 大約增加 0.8%（elasticity）。</p></details>
@@ -320,11 +322,11 @@ y ~ A:B:C     # Only ABC（只有三者相乘一項）</code></pre>
 <li>Python：<code>astype('category')</code> 或 <code>C(var)</code>；baseline = first alphabetical；<code>C(x, Treatment('B'))</code> 換 baseline；output 名 <code>Var[T.level]</code>。</li>
 <li>Machines：<code>score ~ Worker + Machine</code>，8 params，df 46，\( R^2 = 0.867 \)；Intercept 53.6167（W1, A）；B +7.9667、C +13.9167；W6 −10.3333；W2 \( p = 0.056 \) 唔顯著。</li>
 <li>Polynomial：\( Y=\beta_0+\beta_1X+\beta_2X^2 \)，對 \( \beta \) 仍然 linear；<code>I(x**2)</code>（唔加 I() 會靜靜雞冇咗 \( x^2 \)）；effect = \( \beta_1+2\beta_2X \)。</li>
-<li>Operators：<code>~</code> 分 Y/X；<code>+</code> 加；<code>-1</code> 冇 intercept；<code>:</code> 只有 product；<code>*</code> = main + interaction；<code>I()</code> 數學運算；<code>Q()</code> 特殊 column 名；<code>np.log()</code> 可直接用。</li>
+<li>Operators：<code>~</code> 分 Y/X；<code>+</code> 加；<code>-1</code> 冇 intercept；<code>:</code> 指定 interaction（numerical 為 product；categorical 展開多欄）；<code>*</code> = main + interaction；<code>I()</code> 數學運算；<code>Q()</code> 特殊 column 名；<code>np.log()</code> 可直接用。</li>
 <li>Transform：\( Y=ae^{bX} \to \log Y=\log a+bX \)；\( Y=aX^b \to \log Y=\log a+b\log X \)；\( Y=a+b/X \) 用 <code>I(1/x)</code>。</li>
 <li>Interaction = AB；complementary effect（printer + ink）；\( \partial Y/\partial A=\beta_1+\beta_3B \)；保留 main effects。</li>
-<li>Categorical interaction：\( (k_A-1)(k_B-1) \) terms（3×4 → 6）；總 params = \( k_Ak_B \)；<code>Worker + Machine + Worker:Machine</code> ≡ <code>C(Worker)*Machine</code>。</li>
-<li><code>y~A*B*C</code> = 3 main + 3 second-order + 1 third-order；<code>y~A:B:C</code> 只有 ABC；higher-order 較唔重要。</li>
+<li>含 intercept、main effects 嘅完整 crossed treatment coding：Categorical interaction：\( (k_A-1)(k_B-1) \) terms（3×4 → 6）；總 params = \( k_Ak_B \)；<code>Worker + Machine + Worker:Machine</code> ≡ <code>C(Worker)*Machine</code>。</li>
+<li><code>y~A*B*C</code> = 3 main + 3 second-order + 1 third-order；<code>y~A:B:C</code> 指定三階 interaction（numerical 為 ABC，另含 intercept；categorical 可多欄）；higher-order 較唔重要。</li>
 </ul></div>
 
 <nav class="pager">

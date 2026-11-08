@@ -77,9 +77,9 @@
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>「付費 = 準確」係錯的。即使係付費 API，都要做 sanity check（例如同另一來源對比價格），呢個就係 Week 1 講的 <b>Veracity</b>。</p></div>
 
 <h2>4. Networking basics</h2>
-<div class="box note"><span class="label">🖼️ Slides 10–11 圖片</span><p><b>Slide 10 "HTTP Request Over TCP + TLS"</b>：Client 同 Server 之間嘅時序圖。<b>Preparation steps</b> 依次係 TCP SYN → TCP SYN + ACK → TCP ACK（TCP 三次握手），之後 TLS ClientHello → TLS ServerHello → TLS Finished（加密握手）。做完之後先到 <b>HTTP Request → HTTP Response</b>（紅框：your request and your response）。所以每次 RESTful request 都要先做一輪 handshake。</p><p><b>Slide 11 REST API vs STREAMING API</b>：REST 嗰邊係重複咁 request → response、request → response…；Streaming 嗰邊只係開頭 request 一次，之後 connection 保持開住，API 不斷向 client 推送 events。</p></div>
+<div class="box note"><span class="label">🖼️ Slides 10–11 圖片</span><p><b>Slide 10 "HTTP Request Over TCP + TLS"</b>：Client 同 Server 之間嘅時序圖。<b>Preparation steps</b> 依次係 TCP SYN → TCP SYN + ACK → TCP ACK（TCP 三次握手），之後 TLS ClientHello → TLS ServerHello → TLS Finished（加密握手）。做完之後先到 <b>HTTP Request → HTTP Response</b>（紅框：your request and your response）。圖描述新 TCP/TLS connection 的 setup，並非每個 RESTful request 必須重做。</p><p><b>Slide 11 REST API vs STREAMING API</b>：REST 嗰邊係重複咁 request → response、request → response…；Streaming 嗰邊只係開頭 request 一次，之後 connection 保持開住，API 不斷向 client 推送 events。</p></div>
 <ul>
-  <li><b>RESTful</b>：Before you send your request and your data, you need to go through a <b>handshaking process</b>（preparation steps，例如 TCP/TLS 連線建立），然後先係 your request 同 your response。每個 request 都要重新經歷呢啲步驟。</li>
+  <li><b>RESTful</b>：新建 TCP/TLS connection 時需先做 <b>handshaking process</b>（slide 10 的 preparation steps），然後傳 HTTP request / response。HTTP/1.1 persistent connections 可 reuse TCP/TLS，HTTP/2 可 multiplex；REST statelessness 不等於關閉 connection。</li>
   <li><b>Streaming</b>：都需要一啲 preparation steps 去建立 stream，但之後 <b>connection is maintained</b>，所有之後的 messages 可以由 server 直接傳俾 client（或反方向），唔使再 handshake。</li>
 </ul>
 <div class="box exam"><span class="label">⭐ 考試重點：RESTful vs Streaming</span>
@@ -89,11 +89,11 @@
 <tr><td><b>Stateless</b> — each request is independent</td><td><b>Stateful</b> — usually, the messages are <b>deltas</b>（只傳「變咗乜」）</td></tr>
 <tr><td><b>One round (only)</b> — one request, one response</td><td><b>Persistent Connection</b> — connection is kept, multiple messages</td></tr>
 <tr><td><b>Initiated by the client</b></td><td><b>Push-based model</b> — server proactively sends data to client</td></tr>
-<tr><td><b>Repeats HTTP header overhead per request</b></td><td><b>Lower latency</b>（冇重複 handshake / header 的 overhead）</td></tr>
+<tr><td><b>Repeats HTTP header overhead per request</b></td><td><b>Lower latency</b>（減少 polling round-trips；REST 亦可 reuse connection）</td></tr>
 </table>
 </div>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>RESTful 似打電話問：「BTC 而家幾錢？」——問完收線，下次再問要再撥號（handshake）。Streaming 似開住條電話線，對方一有價格變動就即刻講俾你聽，而且只講「升咗 0.5」（delta），所以你要自己記住上一個價（stateful）。如果你中途漏聽一句，你手上的「state」就錯咗——呢個就係 stateful 較 complex 的原因。</p></div>
-<p>Worked example：假設每次 REST request 的 handshake + header overhead 約 100 ms，你想每秒拎 10 次價格 → 每秒有 1,000 ms 花喺 overhead，根本做唔到；Streaming 只 handshake 一次，之後每個 update 幾 ms 就到。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>RESTful 似打電話問：「BTC 而家幾錢？」——每次問一次答一次，但可以保持同一條 connection，下次毋須再 handshake。Streaming 似開住條電話線，對方一有價格變動就即刻講俾你聽，而且只講「升咗 0.5」（delta），所以你要自己記住上一個價（stateful）。如果你中途漏聽一句，你手上的「state」就錯咗——呢個就係 stateful 較 complex 的原因。</p></div>
+<p>Worked example（toy model）：假設 sequential requests、每次新建 connection 且不能 reuse，setup + header overhead 為 100 ms，10 次合共 1,000 ms，尚未計處理／傳輸。這不能推導 REST 一般做不到 10 requests/s；connection reuse、multiplexing、parallelism 都會改變成本。Streaming 減少 polling round-trips，但 latency 仍視 network / server。</p>
 
 <h2>5. HTTP requests：GET vs POST</h2>
 <div class="box exam"><span class="label">⭐ 考試重點：GET vs POST</span>
@@ -102,7 +102,7 @@
 <tr><td>Intended purpose</td><td>Retrieve data</td><td>Send data to server</td></tr>
 <tr><td>Parameter location</td><td>In URL</td><td>In request body</td></tr>
 <tr><td>Security</td><td>(Slightly) Less secure</td><td>(Slightly) More secure</td></tr>
-<tr><td>Size limit</td><td>Limited (based on browser)</td><td>No limit</td></tr>
+<tr><td>Size limit</td><td>URL 受 browser / server / proxy 限制</td><td>Slide「No limit」指非 URL length 限制；body 仍受 server / proxy / application limits</td></tr>
 </table>
 <p>In short, they use different formats to compose the request message to the server.</p>
 </div>
@@ -209,25 +209,25 @@ app.run(port=8000)</code></pre>
 <ul>
   <li><b>Producers</b> push event records to a <b>topic</b></li>
   <li><b>Consumers</b> subscribe to topics</li>
-  <li>When a topic has a new message, each consumer gets the message</li>
+  <li>Kafka-like broker：不同 consumer groups 各自接收；同一 group 內各 consumers 分工處理 partitions，並非每個 consumer 都收到每條 message</li>
 </ul>
 <p>Properties：</p>
 <ul>
   <li>Producers do not know how many consumers have subscribed the topics（解耦）</li>
-  <li>The messages are <b>persistent</b>（All messages are stored on disk）and <b>replayable</b>（Consumers can read historical messages）</li>
+  <li>課堂以 Kafka-like durable broker 為模型：設定持久儲存，並在 retention / offsets 容許範圍內 replay。Pub/Sub pattern 本身不保證 disk persistence 或 replay</li>
 </ul>
 <div class="box exam"><span class="label">⭐ 考試重點：Pub/Sub vs Webhook</span>
 <table>
 <tr><th></th><th>Pub/Sub</th><th>Webhook</th></tr>
 <tr><td>Architecture</td><td>3 parties (producer – broker – consumer)</td><td>2 parties (source – destination)</td></tr>
-<tr><td>Data Persistence</td><td>Persistent</td><td>Usually lost</td></tr>
-<tr><td>Data Replayability</td><td>Yes</td><td>No</td></tr>
+<tr><td>Data Persistence</td><td>本課 durable broker 模型；受設定及 retention 限制</td><td>pattern 本身不定義；provider 可有 durable queue / retry</td></tr>
+<tr><td>Data Replayability</td><td>retention 內、依 offset / policy replay</td><td>視 provider，可有 event redelivery / replay</td></tr>
 <tr><td>Model</td><td>Pull or push</td><td>Push-only</td></tr>
 <tr><td>Scalability</td><td><b>Higher</b> (Producer sends once to broker; fan-out is handled by distributed cluster)</td><td><b>Lower</b> (Source must manage individual HTTP POST calls to every destination)</td></tr>
 </table>
 </div>
 <div class="box warn"><span class="label">⚠️ 留意</span><p>原 slide 25 表格的 Scalability 一行，"Lower" 寫喺 Pub/Sub 欄、"Higher" 寫喺 Webhook 欄，但括號內的解釋明顯係：Webhook 要逐個 destination 發 POST → scalability 較低；Pub/Sub 只 send 一次俾 broker、由 cluster 做 fan-out → 較高。上表按解釋內容排列；溫習時以解釋的邏輯為準，如有疑問請向講師確認。</p></div>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>Webhook = 速遞員直接送貨到你屋企門口，你唔喺度（server down）就冇咗。Pub/Sub = 速遞送去一個智能櫃（broker），貨會存住（persistent），你幾時去拎都得，甚至可以翻睇以前的貨（replayable）；一千個人訂同一份報紙，速遞員都只係送一次去智能櫃。</p></div>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Webhook = 速遞員直接送貨到你屋企門口，你唔喺度（server down）時，provider 可 retry 或排 durable queue，是否掉失視實作。Pub/Sub = 速遞送去一個智能櫃（broker），貨會存住（persistent），要喺 retention 到期前去拎，甚至可以翻睇以前的貨（replayable）；一千個人訂同一份報紙，速遞員都只係送一次去智能櫃。</p></div>
 
 <h2>8. Web crawling / scraping</h2>
 <p>Website are for human to read；好多網站上的 data 冇 (official) API（例如 Wikipedia 的內容）。Objective：<b>Use a program to read and extract the data on the website</b>。</p>
@@ -330,7 +330,7 @@ with sync_playwright() as p:
 <h2>11. Anti-scraping evasion</h2>
 <p>有啲網站會偵測 request 係人定 bot，然後 block：</p>
 <ul>
-  <li><b>User-Agent</b>：browser 每個 request 都會 send 一串 string 識別自己；Python / Selenium request 預設冇呢個 header → Solution：<b>Add it on your own</b></li>
+  <li><b>User-Agent</b>：browser 每個 request 都會 send 一串 string 識別自己；Slide 39「預設沒有 header」過度簡化：requests Session 預設有 <code>python-requests/...</code>，Selenium 使用 browser User-Agent（可能有 Headless 標記）。問題是 UA 可能暴露 client/bot 特徵；按服務條款設定合適 UA</li>
   <li><b>Reaction time between "clicks"</b>：bot 撳得太快太規律 → Solution：<b>Adding some random wait time between clicks</b></li>
   <li>More advanced settings：Cookies, local storage, …</li>
 </ul>
@@ -364,27 +364,27 @@ print(rp.can_fetch("*", "https://www.google.com/search?q=btc"))   # False</code>
 </ul>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 比較 RESTful API 同 Streaming API（至少 4 點）。</summary><p>RESTful：simple、stateless（每個 request 獨立）、one request one response、由 client 發起、每個 request 重複 HTTP header / handshake overhead。Streaming：push-based（server 主動推）、persistent connection（多個 messages）、lower latency、stateful（messages 通常係 deltas）、more complex、要自己停 stream。</p></details>
+<details class="q"><summary>Q1. 比較 RESTful API 同 Streaming API（至少 4 點）。</summary><p>RESTful：simple、stateless（每個 request 獨立）、one request one response、由 client 發起、每個 request 有 HTTP header / round-trip 成本；只有新 connection 才需 TCP/TLS setup。Streaming：push-based（server 主動推）、persistent connection（多個 messages）、lower latency、stateful（messages 通常係 deltas）、more complex、要自己停 stream。</p></details>
 <details class="q"><summary>Q2. 「POST 比 GET 安全，因為 POST 會加密。」對唔對？</summary><p>錯。加密取決於 HTTP vs HTTPS，GET 同 POST 都可以用 HTTPS。POST 較安全係因為參數喺 request body；GET 參數喺 URL，而 URL 會被 browser 顯示、bookmark、developer console（及 server logs）記錄，API key 放 URL 容易洩漏。</p></details>
 <details class="q"><summary>Q3. 你 call API 收到 401、403、404、503，各代表乜？應該點處理？</summary><p>401 Unauthorized：未認證 → 檢查 / 加入 API key header。403 Forbidden：冇權限 → 可能要升級 plan。404 Not Found：endpoint / resource 唔存在 → 檢查 URL。503 Service Unavailable：server 暫時唔得 → 稍後 retry。4xx 係 client error，5xx 係 server error。</p></details>
 <details class="q"><summary>Q4. 寫 Python code 用 GET 拎 Binance BTCUSDT 同 ETHUSDT 價格，並說明參數最終喺邊度。</summary><p><code>requests.get("https://api.binance.com/api/v3/ticker/price", params={"symbols": '["BTCUSDT","ETHUSDT"]'})</code>。參數被 URL-encode 後放喺 URL query string：<code>?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%5D</code>，所以喺 browser 都可以直接開。</p></details>
-<details class="q"><summary>Q5. 比較 Pub/Sub 同 Webhook（architecture、persistence、replay、model、scalability）。</summary><p>Pub/Sub：3 parties（producer–broker–consumer）、persistent（存 disk）、replayable、pull or push、scalability 較高（producer 只 send 一次俾 broker，fan-out 由 cluster 處理）。Webhook：2 parties（source–destination）、data usually lost、不可 replay、push-only、scalability 較低（source 要逐個 destination 發 HTTP POST）。</p></details>
+<details class="q"><summary>Q5. 比較 Pub/Sub 同 Webhook（architecture、persistence、replay、model、scalability）。</summary><p>Pub/Sub：3 parties（producer–broker–consumer）、課堂 Kafka-like 模型可 persistent / retention 內 replay（不是 Pub/Sub 必然保證）、pull or push、scalability 較高（producer 只 send 一次俾 broker，fan-out 由 cluster 處理）。Webhook：2 parties（source–destination）、持久化、retry、redelivery / replay 視 provider、push-only、scalability 較低（source 要逐個 destination 發 HTTP POST）。</p></details>
 <details class="q"><summary>Q6. 一個網站的價格表係由 JavaScript 喺頁面載入後先顯示，用 requests + BeautifulSoup 會出咩問題？點解決？</summary><p>Dynamic content：requests 只拎到 initial HTML，JavaScript 未執行，價格表唔喺入面。解決：用 automated browser（Selenium / Playwright）真正行 browser，等內容載入後先抽取；亦可處理 login。</p></details>
 <details class="q"><summary>Q7. Method 1（manual HTML mapping）同 Method 3（visual LLM）各有咩優缺點？</summary><p>Method 1：最準、structured data、日後易處理；但網站改結構就要更新 crawler。Method 3：可捕捉文字以外的資料、避開 HTML parsing 問題；但 AI 未必可靠（視乎 LLM 質素），而且每次抽取都係一個 LLM call，好貴。</p></details>
-<details class="q"><summary>Q8. 列出兩種 anti-scraping 偵測方法同對應的 evasion，並解釋 robots.txt 的性質。</summary><p>(1) 檢查 User-Agent header（Python 預設冇）→ 自己加 User-Agent。(2) 檢查 clicks 之間的反應時間 → 加 random wait time。進階：cookies、local storage。robots.txt 係 plain text file，告訴 bots 邊啲部分准 / 唔准訪問；係 voluntary protocol，靠自律遵守。</p></details>
+<details class="q"><summary>Q8. 列出兩種 anti-scraping 偵測方法同對應的 evasion，並解釋 robots.txt 的性質。</summary><p>(1) 檢查 User-Agent header（requests / browser automation 預設通常有，但可能暴露 bot 特徵）→ 按服務規定設定合適 User-Agent。(2) 檢查 clicks 之間的反應時間 → 加 random wait time。進階：cookies、local storage。robots.txt 係 plain text file，告訴 bots 邊啲部分准 / 唔准訪問；係 voluntary protocol，靠自律遵守。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li>Internal（POS, CRUD）vs External（third-party API, web scraping, partners' DB, others）</li>
-<li>REST：request-response, simple, stateless, one round, client-initiated, header overhead each time</li>
+<li>REST：request-response, simple, stateless, one round, client-initiated, header overhead each time；可 reuse TCP/TLS，stateless 不等於每次 handshake</li>
 <li>Streaming：push, persistent connection, lower latency, stateful (deltas), complex, 自己停</li>
 <li>Other APIs：FIX, SOAP, GraphQL；Paid vs free</li>
 <li>API concerns：Rate limiting / Data availability / Data quality（付費都可以錯）</li>
-<li>GET：retrieve, params in URL, slightly less secure, size limited；POST：send, params in body, slightly more secure, no limit</li>
+<li>GET：retrieve, params in URL（URL 可被 log）；POST：send, params in body；兩者都有實作 size limits，body 並非無限</li>
 <li>POST 安全唔係因為加密（HTTPS 兩者都得），而係 URL 會被 log</li>
 <li>Headers：API key、Content-Type、User-Agent / client info</li>
 <li>2xx 200 OK；3xx redirect；4xx client (400/401/403/404)；5xx server (500/503)</li>
-<li>Webhook：push to your listener；Pub/Sub：producer → topic (broker, e.g., Kafka) → consumers；persistent + replayable</li>
+<li>Webhook：push to your listener；Pub/Sub：producer → topic (broker, e.g., Kafka) → consumers；durability / replay 視產品設定，Kafka-like 模型受 retention 限制；webhook 可有 retry / redelivery</li>
 <li>Web data = HTML/JS/CSS；F12；Methods：(1) map HTML (2) to pure text (Beautiful Soup) (3) visual LLM</li>
 <li>Crawling：same domain links, avoid revisits, Scrapy</li>
 <li>Challenges：dynamic content, CAPTCHAs, IP blocking/rate limiting, login → Selenium / Playwright</li>

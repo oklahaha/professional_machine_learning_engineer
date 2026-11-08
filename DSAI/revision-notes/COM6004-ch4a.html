@@ -166,6 +166,13 @@
 </table></div>
 
 
+<h3>Slide 30 原始 split 比較（20 records）</h3>
+<p>Parent 有 class 0 / class 1 各 10，Gini = 0.5。以下 children 用 (class 0, class 1) 表示；唔係前面 10-record tax data。</p>
+<table><tr><th>Test condition</th><th>Children counts</th><th>Weighted Gini</th><th>Gain</th></tr>
+<tr><td>Gender</td><td>(6,4)、(4,6)</td><td>0.48</td><td>0.02</td></tr>
+<tr><td>Car Type</td><td>Family (1,3)、Sports (8,0)、Luxury (1,7)</td><td>0.1625</td><td>0.3375</td></tr>
+<tr><td>Customer ID</td><td>20 個 single-record pure leaves</td><td>0</td><td>0.5</td></tr></table>
+<p>Car Type：\(M=(4/20)(1-(1/4)^2-(3/4)^2)+(8/20)(0)+(8/20)(1-(1/8)^2-(7/8)^2)=0.1625\)。只睇 training purity，ID 最好；但 ID 只記住 records，冇可泛化規律。呢個例子示範多值 attribute bias，唔可以把最大 apparent gain 自動當作最好 generalization。</p>
 <h3>5.1 Worked example：計單一 node 嘅 impurity</h3>
 <table>
 <tr><th>Node (C1, C2)</th><th>p</th><th>Gini</th><th>Entropy</th><th>Error</th></tr>
@@ -346,8 +353,18 @@ print(export_text(clf, feature_names=list(X_train.columns)))</code></pre>
 <pre><code>from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+
+def inverse_square(distances):
+    # 有 exact match 時，只由距離 0 嘅 neighbors 投票；避免除以 0。
+    zero = distances == 0
+    has_zero = zero.any(axis=1, keepdims=True)
+    safe = np.divide(1.0, distances**2, out=np.zeros_like(distances), where=~zero)
+    return np.where(has_zero, zero.astype(float), safe)
+
+# sklearn weights="distance" 其實係 1/d；callable 才同 slide 1/d² 一致。
 knn = make_pipeline(StandardScaler(),
-                    KNeighborsClassifier(n_neighbors=3, weights="distance"))  # 先 scale 再 KNN
+                    KNeighborsClassifier(n_neighbors=3, weights=inverse_square))  # 先 scale 再 KNN
 knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 
 <h2>8. Naïve Bayes Classifiers</h2>
@@ -412,12 +429,13 @@ knn.fit(X_train, y_train); knn.predict(X_test)</code></pre>
 <p>由 slide 58 可見 <b>\( P(\text{Refund} = \text{Yes} \mid \text{Yes}) = 0 \)</b>。如果 test record 係 Refund = Yes，咁 \( P(X \mid \text{Yes}) \) 成個乘積都會變 0——<b>無論其他 attributes 幾支持 Yes 都冇用</b>。如果某 record 對兩個 class 都有一個 conditional probability = 0，就完全分類唔到。</p>
 <p>Slide 64：\( P(\text{Yes} \mid \text{Married}) = 0 \times 3/10 / P(\text{Married}) \)，因為 \( P(\text{Married} \mid \text{Yes}) = 0 \)；\( P(\text{No} \mid \text{Married}) = 4/7 \times 7/10 / P(\text{Married}) \)。</p>
 <div class="box exam"><span class="label">⭐ Slide 65：刪咗 Tid 7 之後</span>
-<p>Tid 7（Yes, Divorced, 220K, No）刪除後，class No 剩 6 個 records：\( P(\text{Refund}=\text{Yes} \mid \text{No}) = 2/6 \)、<b>\( P(\text{Divorced} \mid \text{No}) = 0 \)</b>（唯一一個 Divorced + No 就係 Tid 7），Income 嘅 mean 變 91、variance 685；class Yes 不變，\( P(\text{Refund}=\text{Yes} \mid \text{Yes}) = 0 \)。</p>
+<p>Tid 7（Yes, Divorced, 220K, No）刪除後，class No 剩 6 個 records：\( P(\text{Refund}=\text{Yes} \mid \text{No}) = 2/6 \)、<b>\( P(\text{Divorced} \mid \text{No}) = 0 \)</b>（唯一一個 Divorced + No 就係 Tid 7），Income 剩 [125,100,70,120,60,75]，mean = 91.6666667、sample variance = 746.6666667（分母 5）；class Yes 不變，\( P(\text{Refund}=\text{Yes} \mid \text{Yes}) = 0 \)。</p>
 <p>Given \( X = (\text{Refund} = \text{Yes}, \text{Divorced}, 120\text{K}) \)：</p>
 <ul>
-<li>\( P(X \mid \text{No}) = 2/6 \times 0 \times 0.0083 = 0 \)</li>
+<li>\( P(X \mid \text{No}) = 2/6 \times 0 \times 0.008528666 = 0 \)</li>
 <li>\( P(X \mid \text{Yes}) = 0 \times 1/3 \times 1.2 \times 10^{-9} = 0 \)</li>
 </ul>
+<p><b>Source s65 errata</b>：mean 91、variance 685、density 0.0083 不符 records，唔係正常 rounding；正確 density 為 0.008528666。另一行 mean 90 / variance 25 應屬 class Yes，slide 誤標 No。數字改正，但 zero categorical conditional 仍令兩個 likelihood 都係 0，原結論不變。</p>
 <p>兩邊都係 0 → <b>"Naïve Bayes will not be able to classify X as Yes or No!"</b></p></div>
 <p>Slide 66 嘅解決方法：Need to use other estimates of conditional probabilities than simple fractions：</p>
 <div class="formula">$$ \text{original: } P(X_i = c \mid y) = \frac{n_c}{n} \qquad \text{Laplace Estimate: } P(X_i = c \mid y) = \frac{n_c + 1}{n + v} \qquad \text{m-estimate: } P(X_i = c \mid y) = \frac{n_c + mp}{n + m} $$</div>
@@ -448,8 +466,9 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <div class="box note"><span class="label">🖼️ Slides 69–75 圖片</span><p>每幅都係同一份 2D data：右上一堆紅色 ○，左下一堆綠色 ■，中間有空隙。Slides 70–72 畫出幾條都可以分開兩類嘅直線。<b>Slide 74</b> 比較兩條：<b>B1</b> 係斜向右下嘅實線，兩邊平行虛線 \(b_{11}\)、\(b_{12}\) 之間嘅 margin 好闊；<b>B2</b> 係近乎水平嘅虛線，佢嘅 \(b_{21}\)、\(b_{22}\) 幾乎貼住條線，margin 好窄。所以 B1 較好。<b>Slide 75</b> 喺 B1 上面標示：中間線係 \(\mathbf{w}\cdot\mathbf{x} + b = 0\)，兩條邊界係 \(\mathbf{w}\cdot\mathbf{x} + b = +1\)（○ 嗰邊，\(b_{11}\)）同 \(= -1\)（■ 嗰邊，\(b_{12}\)），\(\text{Margin} = 2/\|\mathbf{w}\|\)。</p></div>
 
 <h3>9.2 Linear SVM (Slides 76–79)</h3>
-<p><b>Linear model</b>：</p>
-<div class="formula">$$ f(\mathbf{x}) = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x} + b \ge 1 \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x} + b \le -1 \end{cases} $$</div>
+<p><b>Hard-margin training constraints</b>（唔係完整 prediction rule）：</p>
+<div class="formula">$$y_i(\mathbf w\cdot\mathbf x_i+b)\ge1$$</div>
+<p><b>完整 classifier</b> 以 0 為界：\(f(x)=+1\) if \(w\cdot x+b\ge0\)，否則 \(-1\)（此處 0 分配到 +1）。例如 score 0.5 仍預測 +1，唔係冇 output。</p>
 <p>Decision boundary：\(\mathbf{w}\cdot\mathbf{x} + b = 0\)；兩條 margin hyperplanes：\(\mathbf{w}\cdot\mathbf{x} + b = \pm 1\)。<b>Learning the model is equivalent to determining the values of \(\mathbf{w}\) and \(b\).</b></p>
 <div class="box exam"><span class="label">⭐ 考試重點：Learning Linear SVM (Slide 77)</span>
 <p>Objective is to <b>maximize</b>：\( \text{Margin} = \dfrac{2}{\|\mathbf{w}\|} \)</p>
@@ -488,9 +507,9 @@ CategoricalNB(alpha=1).fit(X_cat, y)   # categorical；alpha=1 即 Laplace smoot
 <h3>9.3 Non-linearly Separable: Slack Variables (Slides 80–81)</h3>
 <p>如果問題<b>唔係 linearly separable</b>？引入 <b>slack variables</b> \(\xi_i \ge 0\)，容許部分點越過 margin 甚至分錯：</p>
 <div class="formula">$$ \min\; L(\mathbf{w}) = \frac{\|\mathbf{w}\|^2}{2} + C\left(\sum_{i=1}^{N} \xi_i\right)^{k} $$</div>
-<div class="formula">$$ \text{Subject to: } y_i = \begin{cases} +1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \ge 1 - \xi_i \\ -1 &amp; \text{if } \mathbf{w}\cdot\mathbf{x}_i + b \le -1 + \xi_i \end{cases} $$</div>
-<p>If \(k\) is 1 or 2, this leads to similar objective function as linear SVM but with different constraints。\(C\) 控制「大 margin」同「少錯誤」之間嘅 trade-off（\( C \) 大 → 少容忍錯誤）。</p>
-<p>（上式同 slide 81 一樣：成個 \(\sum \xi_i\) 先至 \(k\) 次方。Slide 用藍圈突出 constraints 入面嘅 \(1 - \xi_i\) 同 \(-1 + \xi_i\)，即係同 linear SVM 唯一唔同嘅地方。）</p>
+<div class="formula">$$ \text{Subject to: } y_i(\mathbf w\cdot\mathbf x_i+b)\ge1-\xi_i,\qquad \xi_i\ge0 $$</div>
+<p>Slide 指 \(k=1\) 或 \(2\)；相對 hard-margin，<b>objective 加入 slack penalty，而且 constraints 放寬</b>，唔係只改 constraints。\(C\) 控制「大 margin」同「少錯誤」之間嘅 trade-off（\( C \) 大 → 少容忍錯誤）。</p>
+<p>（上式同 slide 81 一樣：成個 \(\sum \xi_i\) 先至 \(k\) 次方。Slide 用藍圈突出 constraints 入面嘅 \(1 - \xi_i\) 同 \(-1 + \xi_i\)，但 objective 亦加咗 penalty，唔只係 constraints 改變。標準逐點 L1 / L2 slack penalty 分別係 \(C\sum_i\xi_i\)、\(C\sum_i\xi_i^2\)，後者同 slide aggregate \(C(\sum_i\xi_i)^2\) 不同；例如 \(\xi=(1,2)\)，分別係 5C 同 9C。）</p>
 
 <h3>9.4 Characteristics of SVM (Slides 82–83)</h3>
 <ul>
@@ -555,7 +574,7 @@ svm[-1].coef_, svm[-1].intercept_, svm[-1].support_vectors_   # w, b, support ve
 <li><b>DT 優</b>：平、快、易解釋（細 tree）、robust to noise、handle redundant / irrelevant；<b>缺</b>：greedy 未必最佳、唔考慮 interactions、boundary 只涉及單一 attribute（axis-parallel）。</li>
 <li><b>KNN</b>：labeled records + distance metric + \( k \)；majority vote 或 \( w = 1/d^2 \)；\( k \) 細 → noise 敏感，\( k \) 大 → 包含其他 class；要 scale（z-score）；local、任意形狀 boundary；irrelevant 加 noise、redundant 加 bias；missing values 令 proximities 不可比。</li>
 <li><b>Naïve Bayes</b>：MAP → \( \max P(X \mid Y)P(Y) \)；conditional independence → \( \prod P(X_i \mid Y) \)；categorical = \( n_c/n \)；continuous = discretize 或 Gaussian（\(\mu\), \(\sigma^2\) 用 sample 估）；zero probability 問題（Laplace \( (n_c+1)/(n+c) \)）；robust to noise / irrelevant，missing 可忽略，redundant 違反假設。</li>
-<li><b>SVM</b>：max margin \( 2/\|w\| \) ⇔ min \( \|w\|^2/2 \) s.t. \( y_i(w\cdot x_i+b) \ge 1 \)；Lagrange multipliers；boundary 只靠 support vectors；predict \( \text{sign}(w\cdot x+b) \)；slack \( \xi_i \) + \( C \sum \xi_i^k \)；convex → global optimum；training 慢；robust；handle irrelevant / redundant；難處理 missing。</li>
+<li><b>SVM</b>：max margin \( 2/\|w\| \) ⇔ min \( \|w\|^2/2 \) s.t. \( y_i(w\cdot x_i+b) \ge 1 \)；Lagrange multipliers；boundary 只靠 support vectors；predict \( \text{sign}(w\cdot x+b) \)；slack \( \xi_i \) + \( C(\sum_i \xi_i)^k \)（slide aggregate；標準逐點 L2 則係 \(C\sum_i\xi_i^2\)，不能混用）；convex → global optimum；training 慢；robust；handle irrelevant / redundant；難處理 missing。</li>
 <li><b>Summary</b>：DT Tree/Eager；KNN Instance/Lazy；NB Probabilistic/Eager；SVM Geometric/Eager。</li>
 </ul></div>
 

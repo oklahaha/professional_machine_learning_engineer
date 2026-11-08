@@ -35,7 +35,7 @@
   </ul>
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
-    <li>Mean 對 outliers 敏感 → 用 median 或 trimmed mean；variance / sd 亦對 outliers 敏感 → 用 IQR、AAD、MAD 等。</li>
+    <li>Mean 對 outliers 敏感 → 用 median 或 trimmed mean；variance / sd 亦對 outliers 敏感 → robust 替代可用 IQR 或 median-centered MAD；slide 嘅 AAD / mean-centered MAD 並不 robust。</li>
     <li>Percentile 定義：\( p \)-th percentile \(x_p\) 令 \( p\% \) 嘅 observed values 細過 \(x_p\)；median = 50th percentile。</li>
     <li>Box plot 嘅組成：median、25th / 75th percentiles（box）、whiskers、outliers；用嚟比較 attributes。</li>
     <li>Histogram 形狀受 bins 數目影響；scatter plot array 總結多對 attributes 關係。</li>
@@ -92,12 +92,13 @@
 <li><b>Variance</b> \(s_x^2\) 或 <b>standard deviation</b> \(s_x\) 係最常用嘅 spread 量度：</li>
 </ul>
 <div class="formula">$$ \text{variance}(x) = s_x^2 = \frac{1}{m-1}\sum_{i=1}^{m}(x_i - \bar{x})^2 $$</div>
-<p>不過 variance 都<b>對 outliers 敏感</b>，所以常用其他量度（slide 10 列出 AAD、MAD、interquartile range 三個）：</p>
+<p>不過 variance 都<b>對 outliers 敏感</b>，slide 10 另列 AAD、MAD、interquartile range，但唔係三者都 robust；下面 MAD 係 source 定義嘅 mean-centered median absolute deviation：</p>
 <div class="formula">$$ \text{AAD}(x) = \frac{1}{m}\sum_{i=1}^{m}|x_i-\bar{x}|, \quad \text{MAD}(x) = \text{median}\big(\{|x_1-\bar{x}|,\dots,|x_m-\bar{x}|\}\big), \quad \text{IQR}(x) = x_{75\%} - x_{25\%} $$</div>
 <div class="box tip"><span class="label">💡 Worked example（延續）</span>
 <p>Data：2, 4, 4, 5, 7, 8（\( m = 6 \)）。\( \text{Mean} = 30/6 = 5 \)。</p>
 <p>Deviations：−3, −1, −1, 0, 2, 3 → squares 9, 1, 1, 0, 4, 9 → sum = 24。</p>
 <p>\( \text{Variance} = 24/(6 - 1) = \) <b>4.8</b>；\( \text{sd} = \sqrt{4.8} = \) <b>2.191</b>；\( \text{Range} = 8 - 2 = \) <b>6</b>；\( AAD = (3+1+1+0+2+3)/6 = \) <b>1.667</b>。</p>
+<div class="box warn"><span class="label">⚠️ 兩個 MAD 定義</span><p>通常 robust statistics 嘅 MAD 係 \(\operatorname{median}_i|x_i-\operatorname{median}(x)|\)，而 slide s10 用 mean \(\bar x\) 作中心。反例 [0,0,0,1] 嘅 mean-centered MAD = 0.25；最後一點改成 1,000,000 就變 250,000。AAD 仍用 mean 同平均 absolute deviations，亦不 robust；唔可以因外層取 median 就話 slide MAD robust。</p></div>
 <p>如果將 8 改做 80：range 變 78，variance 大增，但 IQR 幾乎唔變 → IQR 係 robust measure。</p></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Sample variance 分母係 <b>\( m - 1 \)</b>（唔係 \( m \)）。pandas <code>Series.var()</code> 預設 ddof=1（\( m - 1 \)），numpy <code>np.var()</code> 預設 ddof=0（\( m \)）——兩者答案會唔同！</p></div>
 <pre><code>import pandas as pd
@@ -259,7 +260,7 @@ parallel_coordinates(iris, "species"); plt.show()
 <li><b>Frequency / mode</b>：categorical data 用。</li>
 <li><b>\( p \)-th percentile</b> \(x_p\)：\( p\% \) 嘅值細過 \(x_p\)；median = 50th；\( IQR = Q_3 - Q_1 \)。</li>
 <li><b>Mean</b> 對 outliers 敏感 → median / trimmed mean。</li>
-<li><b>Range</b> \( = \max - \min \)；<b>variance</b> \(s^2 = \frac{1}{m-1}\sum(x-\bar x)^2\)，亦對 outliers 敏感 → AAD、MAD、IQR。</li>
+<li><b>Range</b> \( = \max - \min \)；<b>variance</b> \(s^2 = \frac{1}{m-1}\sum(x-\bar x)^2\)，亦對 outliers 敏感；IQR / median-centered MAD robust；slide AAD / mean-centered MAD 不 robust。</li>
 <li><b>Visualization</b>：轉成 visual / tabular format 以分析或報告；detect patterns、trends、outliers。</li>
 <li><b>Representation</b>：objects → points；attributes → position / color / size / shape。</li>
 <li><b>Selection</b>：減 attributes（dim. reduction 到 2–3 維或逐對）同 objects（sample 但保留 sparse 區）。</li>

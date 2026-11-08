@@ -52,7 +52,7 @@
 <div class="box exam"><span class="label">⭐ 考試重點：File-based 的 5 大缺點 (Cons)</span>
 <table>
 <tr><th>缺點</th><th>Slide 原文</th><th>解釋 / 例子</th></tr>
-<tr><td><b>Inefficiency</b></td><td>Write the entire file every time you have a tiny update</td><td>CSV 冇辦法「只改一行」—改一個股價都要重寫成個 1GB file。</td></tr>
+<tr><td><b>Inefficiency</b></td><td>Write the entire file every time you have a tiny update</td><td>Slide 用常見 read-modify-write 模型作比較：可變長 CSV 記錄修改通常要重寫全檔或其後部分，並非 file 的必然限制；等長 bytes 可原地覆寫，append-only 可追加。</td></tr>
 <tr><td><b>Data Redundancy &amp; Inconsistency</b></td><td>Same entity stored across multiple files</td><td>同一個學生喺 <code>students.csv</code> 同 <code>enrol.csv</code> 都有地址；改咗一個冇改另一個 → 兩份資料唔一致。</td></tr>
 <tr><td><b>No Concurrency Control</b></td><td>Simultaneous writes lead to corruption or simply blocking the entire system</td><td>兩個程式同時寫同一個 file，結果互相覆蓋或者 file 爛咗；或者要成個 file 鎖住，其他人全部等。</td></tr>
 <tr><td><b>Lack of Atomic Transactions</b></td><td>Partial writes leave system in inconsistent state upon failure</td><td>寫到一半斷電 → file 只有一半新資料，冇「all-or-nothing」保證。</td></tr>
@@ -77,7 +77,7 @@
 <tr><td>4/1</td><td>3.5</td><td>3.9</td><td>3.1</td><td>3.6</td><td>2.3M</td></tr>
 </table>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>File-based 好似每個部門自己有本 notebook 記資料；DBMS 就好似公司有個中央檔案室 + 專業管理員：佢負責「邊個可以睇乜」、「兩個人同時改點算」、「改到一半停電點復原」。Application 只需要用 SQL 話俾管理員知要乜。</p></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 用 pandas <code>read_csv</code> / <code>to_csv</code> 就係典型 file-based 做法：方便，但每次 <code>to_csv</code> 都重寫成個 file。一個 pandas DataFrame 本質上就係一個 relation (table)，之後 Week 4 學 SQL 時你會發現 <code>merge</code> ≈ JOIN、<code>groupby</code> ≈ GROUP BY。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 用 pandas <code>read_csv</code> / <code>to_csv</code> 就係典型 file-based 做法：方便，但預設 <code>to_csv(mode="w")</code> 會重寫檔案，但 <code>mode="a"</code> 可追加；它本身沒有 DBMS 的 page/index/transaction 管理。一個 pandas DataFrame 本質上就係一個 relation (table)，之後 Week 4 學 SQL 時你會發現 <code>merge</code> ≈ JOIN、<code>groupby</code> ≈ GROUP BY。</p></div>
 
 <h2>2. From Centralized to Distributed：Scale Up vs Scale Out</h2>
 <p>問題：How to improve the capacity of the database system? 有兩條路：</p>
@@ -127,10 +127,10 @@
   "user": "Alice",
   "text": "BTC to the moon 🚀",
   "lang": "en",
-  "media": [{"type": "image", "url": "..."}],   // 有啲 tweet 有，有啲冇
+  "media": [{"type": "image", "url": "..."}],
   "retweets": 25
 }</code></pre>
-<p>每個 key 自己描述自己（self-describing），而且唔同 tweet 可以有唔同 key——呢個就係「flexible」，同 SQL table 每行都要有一樣 columns（fixed schema）唔同。至於 <code>media</code> 指向的 image 本身就係 unstructured data。</p>
+<p>每個 key 自己描述自己（self-describing），而且唔同 tweet 可以有唔同 key——呢個就係「flexible」，同 SQL table 每行都要有一樣 columns（fixed schema）唔同。有啲 tweet 有 <code>media</code>，有啲冇；JSON 本身不允許 comments。至於 <code>media</code> 指向的 image 本身就係 unstructured data。</p>
 <div class="box warn"><span class="label">⚠️ 易混淆</span><p>JSON / XML 唔係 unstructured！佢哋有 tags / key-value 結構，只係 schema 唔固定 → <b>semi-structured</b>。PDF 雖然有格式，但內容冇 internal schema → slide 歸類為 <b>unstructured</b>。</p></div>
 
 <h3>4.4 Veracity：data quality</h3>
@@ -231,13 +231,13 @@
 <div class="box note"><span class="label">🖼️ Slides 26–27 圖片</span><p><b>Slide 26</b>：幾個 Operational Systems 同 Flat files → <b>ETL</b>（Extraction, Transformation, Loading）→ <b>Data Warehouse</b>（Metadata, Summary data, Raw data）→ OLAP analysis / Data mining / Reporting。</p><p><b>Slide 27</b>：三欄比較。<b>Data Warehouse</b>：External / Operational Data → ETL → Data Marts → BI、Reports。<b>Data Lake</b>：structured、semi-structured 同 unstructured data（圖片、影片、聲音、文件）全部倒入 data lake，再分別做 Data Prep / ETL，俾 Data Science、ML、Real-time Database、Reports 用。<b>Lakehouse</b>：同樣嘅各類 data 入 data lake，上面加一層 metadata / transaction layer，直接支援 BI、Streaming Analytics、Data Science 同 ML，唔使再 copy 去 data marts。</p></div>
 
 <h2>10. Working with Data：Where does the time go?</h2>
-<p><span class="tag exam">Exam</span><b>Data scientists spend 80% of their time cleaning data</b>——幾十年來唔同行業的調查結果都差唔多。所以 Veracity / data cleaning 係 big data 工作的大部分。</p>
+<p><span class="tag exam">Exam</span>Slide 28 引用常見的 <b>「80% time cleaning data」說法</b>，不是固定定律。不同 survey 的樣本及 cleaning / preparation 定義不同；本頁轉述 chart 的 cleansing 為 26%，loading + cleansing + visualization 為 66%，不能當作同一個 80% statistic。</p>
 <div class="box note"><span class="label">🖼️ Slides 28–29 圖片</span><p><b>Slide 28</b>：一份調查（n = 1099）嘅 data scientists 時間分佈：Data loading 19%、<b>Data cleansing 26%</b>、Data visualization 21%、Model selection 11%、Model training and scoring 12%、Deploying models 11%。旁邊係一篇文章標題「Data Scientists Spend 80% of Their Time on Data Cleaning. Here's Why That's Actually the Job.」（留意：呢個 chart 入面 cleansing 只佔 26%，但 loading + cleansing + visualization 加埋都有 66%，即係大部分時間都用喺 model 之前嘅準備工作。）</p><p><b>Slide 29</b>：一張相，有人睇緊書，枱上疊住幾本書，放大圈出其中一本：<b>"How to Lie with Statistics"</b>，提醒大家處理 data 時要小心數字可以點樣誤導人。</p></div>
 <h3>Big Data is not always successful：Google Flu Trends</h3>
 <p>Google 最初的 paper 聲稱 Google Flu Trends（用搜尋關鍵字預測流感）同 CDC 數據比較有 97% accurate；但 2012/2013 季節，佢預測的求診人數係 CDC 最終記錄的<b>兩倍</b>。教訓：資料量大唔代表準確；data quality、模型假設、搜尋行為改變（concept drift）都會令結果出錯。</p>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. 列出 File-Based Data Management 的優點同五個缺點。</summary><p>Pros：Convenient — minimal effort in coding。Cons：(1) Inefficiency — 小改動都要重寫成個 file；(2) Data Redundancy &amp; Inconsistency — 同一 entity 散落多個 file；(3) No Concurrency Control — 同時寫會損壞或 block 成個系統；(4) Lack of Atomic Transactions — 寫到一半失敗令系統 inconsistent；(5) Data Isolation &amp; Security — 難做 fine-grained access control。</p></details>
+<details class="q"><summary>Q1. 列出 File-Based Data Management 的優點同五個缺點。</summary><p>Pros：Convenient — minimal effort in coding。Cons：(1) Inefficiency — 常見可變長 CSV 修改要重寫全檔或其後部分（非所有 file 操作；可追加或等長覆寫）；(2) Data Redundancy &amp; Inconsistency — 同一 entity 散落多個 file；(3) No Concurrency Control — 同時寫會損壞或 block 成個系統；(4) Lack of Atomic Transactions — 寫到一半失敗令系統 inconsistent；(5) Data Isolation &amp; Security — 難做 fine-grained access control。</p></details>
 <details class="q"><summary>Q2. 一間公司把 database server 由 16GB RAM 升到 128GB，另一間就由 1 部 server 加到 10 部。分別係咩 scaling？後者有咩挑戰？</summary><p>前者 = Scale Up (Vertical Scaling)；後者 = Scale Out (Horizontal Scaling)。Scale out very challenging：其中一部機 fail 點算？兩部機同時處理同一個 data record 點算（一致性）？加上 network 速度影響 performance（1990s distributed DB 表現差的原因）。</p></details>
 <details class="q"><summary>Q3. 將以下資料分類為 structured / semi-structured / unstructured：(a) Excel 成績表 (b) API 回傳的 JSON (c) 錄音 mp3 (d) XML config (e) 掃描的 PDF 合約</summary><p>(a) Structured；(b) Semi-structured；(c) Unstructured；(d) Semi-structured；(e) Unstructured。</p></details>
 <details class="q"><summary>Q4. 說明 4 V's，並各舉一個 crypto 相關例子。</summary><p>Volume：多年 Twitter 討論 bitcoin 的 archive（2GB/day 的 sample）。Variety：tweet 有多語言文字、圖片、影片，follow 關係係 graph。Veracity：付費 API 的價格錯 10 倍、LUNA 崩盤後 sentiment 仍顯示 positive。Velocity：Binance 交易隊列不斷更新，來源唔會保留晒俾你之後下載。</p></details>
@@ -261,7 +261,7 @@
 <li>Analytics tools：data cleaning, ETL, ML/DM/AI, OLAP；Beer &amp; Diapers = market basket analysis</li>
 <li>Pipeline layers：Ingestion → Processing → Orchestration (DAG, Airflow) → Serving (Snowflake) + Storage</li>
 <li>Warehouse (structured) / Lake (unstructured incl. structured) / Lakehouse (metadata + transaction layer on lake)</li>
-<li>80% time on data cleaning；Google Flu Trends 高估 2 倍 → Big Data 唔一定成功</li>
+<li>80% cleaning 是 slide 引用的概括，非普遍定律；本圖 cleansing 26%，定義與樣本須分清；Google Flu Trends 高估 2 倍 → Big Data 唔一定成功</li>
 </ul></div>
 
 <nav class="pager">

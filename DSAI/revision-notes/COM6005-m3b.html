@@ -38,8 +38,8 @@
     <li>Expected count：\( E_{ij} = \dfrac{\text{row total}\times\text{column total}}{\text{grand total}} \)；例：Local Math = 300 × 1000/1250 = 240。</li>
     <li>\( \chi^2 = \sum\sum \dfrac{(n_{ij}-E_{ij})^2}{E_{ij}} \)；例子 \(\chi^2 = 55.56 &gt; 5.991\) → reject independence。</li>
     <li>df：independence = \( (r - 1)(c - 1) \)；goodness-of-fit = \( K - 1 \)。</li>
-    <li>查表：\( df = 2 \)、\(\alpha = 0.05\) → 5.991 = <code>chi2.ppf(0.95, 2)</code>；\( df = 5 \) → 11.071。</li>
-    <li>Goodness-of-fit 朱古力例：\( E = 100/6 = 16.67 \)，\(\chi^2 = 8.36 &lt; 11.071\)，\( p = 0.1374 \) → do not reject（uniform）。</li>
+    <li>查表：\( df = 2 \)、\(\alpha = 0.05\) → 5.991 = <code>stats.chi2.ppf(0.95, 2)</code>；\( df = 5 \) → 11.071。</li>
+    <li>Goodness-of-fit 朱古力例：\( E = 100/6 = 16.67 \)，\(\chi^2 = 8.36 &lt; 11.071\)，\( p = 0.1375 \) → do not reject（uniform）。</li>
   </ol>
 </div>
 
@@ -64,10 +64,10 @@
 <tr><td>10</td><td>Bad</td><td>Many</td></tr>
 </table>
 <pre><code>import pandas as pd
-x = ["G","B","G","A","A","B","A","G","A","B"]     # Rating
-y = ["F","F","M","M","M","F","F","M","M","M"]     # Number of customers (Few / Many)
-freq = pd.Series(x).value_counts()                  # one-way table：A 4, G 3, B 3
-joint_freq = pd.crosstab(pd.Series(x), pd.Series(y))  # two-way table</code></pre>
+ratings = ["G","B","G","A","A","B","A","G","A","B"]     # Rating
+customers = ["F","F","M","M","M","F","F","M","M","M"]     # Number of customers (Few / Many)
+freq = pd.Series(ratings).value_counts()                  # one-way table：A 4, G 3, B 3
+joint_freq = pd.crosstab(pd.Series(ratings), pd.Series(customers))  # two-way table</code></pre>
 <p>得到嘅 two-way table：</p>
 <table>
 <tr><th>Rating ＼ Customers</th><th>F (Few)</th><th>M (Many)</th><th>Row total</th></tr>
@@ -79,9 +79,9 @@ joint_freq = pd.crosstab(pd.Series(x), pd.Series(y))  # two-way table</code></pr
 
 <h3>1.1 Numerical → Categorical：pd.cut（slide 6）</h3>
 <p>向觀眾展示數據時，用 young / middle / senior 呢類 label 比抽象數字易明。</p>
-<pre><code>x = [68, 32, 47, 52, 15, 73, 67, 45, 24, 39]
+<pre><code>ages = [68, 32, 47, 52, 15, 73, 67, 45, 24, 39]
 age_labels = ["young", "middle", "senior"]
-age_group = pd.cut(x, bins=[0, 35, 55, float('inf')], labels=age_labels)
+age_group = pd.cut(ages, bins=[0, 35, 55, float('inf')], labels=age_labels)
 # (0,35] → young；(35,55] → middle；(55,inf) → senior
 # 結果：senior, young, middle, middle, young, senior, senior, middle, young, middle
 pd.Series(age_group).value_counts()   # middle 4, young 3, senior 3</code></pre>
@@ -90,7 +90,7 @@ pd.Series(age_group).value_counts()   # middle 4, young 3, senior 3</code></pre>
 
 <h2>2. Statistical graphics for tabular data</h2>
 <pre><code>import matplotlib.pyplot as plt
-ft = pd.crosstab(pd.Series(x), pd.Series(y))
+ft = pd.crosstab(pd.Series(ratings), pd.Series(customers))
 ft.index.name = None
 ft.columns.name = None
 fig, axs = plt.subplots(2, 2, figsize=(10, 8))
@@ -188,18 +188,18 @@ plt.show()</code></pre>
 <pre><code>import numpy as np
 from scipy import stats
 # 方法 1：直接入兩欄 raw data → 先 crosstab
-contingency_table = pd.crosstab(pd.Series(x), pd.Series(y))
-chi2, p, dof, expected = stats.chi2_contingency(contingency_table)
+contingency_table = pd.crosstab(pd.Series(ratings), pd.Series(customers))
+stat, p, dof, expected = stats.chi2_contingency(contingency_table)
 # 方法 2：直接入 joint frequency table
 Ft = np.array([[250, 50], [400, 50], [350, 150]])
-chi2, p, dof, expected = stats.chi2_contingency(Ft)
+stat, p, dof, expected = stats.chi2_contingency(Ft)
 # Chi2ContingencyResult(statistic=55.5555, pvalue=8.635e-13, dof=2,
 #   expected_freq=array([[240., 60.], [360., 90.], [400., 100.]]))</code></pre>
 <div class="box exam"><span class="label">⭐ 三個等價 decision rule（slide 18）</span>
-<pre><code>chi2 &gt; chi2.ppf(0.95, 2)       # statistic 大過 critical value
-chi2.cdf(chi2, 2) &gt; 0.95       # cumulative prob 大過 95%
-1 - chi2.cdf(chi2, 2) &lt; 0.05   # p-value 細過 α</code></pre>
-<p><code>1 - chi2.cdf(chi2, 2)</code> 就係 p-value。Python 嘅 <code>scipy.stats.chi2_contingency()</code> 一次過做晒。</p></div>
+<pre><code>stat &gt; stats.chi2.ppf(0.95, 2)       # statistic 大過 critical value
+stats.chi2.cdf(stat, 2) &gt; 0.95       # cumulative prob 大過 95%
+stats.chi2.sf(stat, 2) &lt; 0.05   # p-value 細過 α</code></pre>
+<p><code>stats.chi2.sf(stat, 2)</code> 就係 p-value。Python 嘅 <code>scipy.stats.chi2_contingency()</code> 一次過做晒。</p></div>
 <div class="box warn"><span class="label">⚠️ 留意</span><p>Slide 16 寫 “In chisq.test()…”——<code>chisq.test()</code> 係 R 嘅函數名；Python 對應係 <code>stats.chi2_contingency()</code>。另外 2×2 table 時 scipy 預設做 Yates' continuity correction（<code>correction=True</code>），所以結果會同手計少少唔同。</p></div>
 
 <h2>4. Chi-squared goodness-of-fit</h2>
@@ -234,16 +234,16 @@ chi2.cdf(chi2, 2) &gt; 0.95       # cumulative prob 大過 95%
 <tr><td colspan="3"><b>\(\chi^2\)</b></td><td><b>8.36</b></td></tr>
 </table></li>
 <li><b>Critical value</b>：\( df = K - 1 = 6 - 1 = 5 \)；\(\alpha = 0.05\) → <b>11.071</b>（slide 22 圈住）。</li>
-<li><b>Decision</b>：8.36 &lt; 11.071（p-value = 0.1374 &gt; 0.05）→ \(H_0\) is <b>not rejected</b>。結論（slide 23）：We cannot statistically reject the null hypothesis that the distribution is uniform。</li>
+<li><b>Decision</b>：8.36 &lt; 11.071（p-value = 0.1375 &gt; 0.05）→ \(H_0\) is <b>not rejected</b>。結論（slide 23）：We cannot statistically reject the null hypothesis that the distribution is uniform。</li>
 </ol></div>
 <pre><code>from scipy import stats
 obs = [20, 13, 12, 12, 18, 25]
-stats.chisquare(obs)                          # 預設 expected = 平均分配
-# Power_divergenceResult(statistic=8.36, pvalue=0.1374)
+gof_stat, gof_p = stats.chisquare(obs)  # 預設 expected = 平均分配
+# statistic=8.36, pvalue=0.137479667759504（四位小數 0.1375）
 stats.chisquare(obs, f_exp=[100/6]*6)         # 明確指定 expected
 stats.chi2.ppf(0.95, 5)                       # 11.071
-1 - stats.chi2.cdf(8.36, 5)                   # p-value 0.1374</code></pre>
-<p>Slide 24：同樣三個等價 rule（\( df = 5 \)）：<code>chi2 &gt; chi2.ppf(0.95, 5)</code> ⇔ <code>chi2.cdf(chi2, 5) &gt; 0.95</code> ⇔ <code>1 - chi2.cdf(chi2, 5) &lt; 0.05</code>；Python 用 <code>stats.chisquare()</code>。</p>
+stats.chi2.sf(8.36, 5)                   # p-value 0.1375</code></pre>
+<p>Slide 24：同樣三個等價 rule（\( df = 5 \)）：<code>gof_stat &gt; stats.chi2.ppf(0.95, 5)</code> ⇔ <code>stats.chi2.cdf(gof_stat, 5) &gt; 0.95</code> ⇔ <code>stats.chi2.sf(gof_stat, 5) &lt; 0.05</code>；Python 用 <code>stats.chisquare()</code>。</p>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span>
 <ul>
 <li>Goodness-of-fit \( df = \) <b>\( K - 1 \)</b>（類別數 − 1），唔係 \( (r - 1)(c - 1) \)。</li>
@@ -272,21 +272,21 @@ stats.chi2.ppf(0.95, 5)                       # 11.071
 <details class="q"><summary>Q3. 一個 4×3 contingency table 嘅 df 係幾多？\(\alpha = 0.01\) critical value？</summary><p>\( df = (4 - 1)(3 - 1) = 6 \)；\(\alpha = 0.01\) → 16.812。</p></details>
 <details class="q"><summary>Q4. 骰子擲 60 次：1–6 點分別出現 8, 9, 12, 11, 6, 14 次。用 \(\alpha = 0.05\) 檢驗骰子是否公平。</summary><p>\( E = 10 \)。\( \chi^2 = (4 + 1 + 4 + 1 + 16 + 16)/10 = 4.2 \)。\( df = 5 \)，critical 11.071。4.2 &lt; 11.071 → do not reject：冇證據顯示骰子唔公平。</p></details>
 <details class="q"><summary>Q5. 某品牌聲稱顏色比例係 Red 40%、Blue 30%、Green 30%。抽 200 粒：Red 95、Blue 50、Green 55。寫 expected 同 \(\chi^2\)。</summary><p>\( E = 80, 60, 60 \)。\(\chi^2 = 225/80 + 100/60 + 25/60 = 2.8125 + 1.6667 + 0.4167 = 4.896\)。\( df = 2 \)，critical 5.991 → do not reject。Python：<code>stats.chisquare([95,50,55], f_exp=[80,60,60])</code>。</p></details>
-<details class="q"><summary>Q6. 寫出三個等價嘅 decision rule（df = 2，\(\alpha = 0.05\)）。</summary><p><code>chi2 &gt; chi2.ppf(0.95, 2)</code>；<code>chi2.cdf(chi2, 2) &gt; 0.95</code>；<code>1 - chi2.cdf(chi2, 2) &lt; 0.05</code>。</p></details>
+<details class="q"><summary>Q6. 寫出三個等價嘅 decision rule（df = 2，\(\alpha = 0.05\)）。</summary><p><code>stat &gt; stats.chi2.ppf(0.95, 2)</code>；<code>stats.chi2.cdf(stat, 2) &gt; 0.95</code>；<code>stats.chi2.sf(stat, 2) &lt; 0.05</code>。</p></details>
 <details class="q"><summary>Q7. <code>pd.cut([35, 55, 56], bins=[0, 35, 55, float('inf')], labels=["young","middle","senior"])</code> 結果係咩？</summary><p>young, middle, senior（bins 右閉：\( 35 \in (0,35] \)，\( 55 \in (35,55] \)，\( 56 \in (55,\infty) \)）。</p></details>
 <details class="q"><summary>Q8. 點解 chi-square test 唔分 one-tailed / two-tailed？</summary><p>\(\chi^2\) 係平方和，永遠 \( \ge 0 \)；任何方向嘅偏離（\( O &gt; E \) 或 \( O &lt; E \)）都會令 \(\chi^2\) 變大，所以 rejection region 只喺右尾。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li>One-way table：<code>pd.Series(x).value_counts()</code>；two-way：<code>pd.crosstab(x, y)</code>；binning：<code>pd.cut(x, bins, labels)</code>（右閉）。</li>
+<li>One-way table：<code>pd.Series(ratings).value_counts()</code>；two-way：<code>pd.crosstab(x, y)</code>；binning：<code>pd.cut(x, bins, labels)</code>（右閉）。</li>
 <li>Plot：<code>ft.T.plot(kind='bar'/'barh', stacked=True/False)</code>。</li>
 <li>Independence：\(H_0\) independent；\( E_{ij}=\frac{\text{row}\times\text{col}}{N} \)；\( df = (r - 1)(c - 1) \)；<code>chi2_contingency</code>。</li>
 <li>Goodness-of-fit：\(H_0\) 指定 distribution；\( E_i = np_i \)；\( df = K - 1 \)；<code>chisquare</code>。</li>
 <li>\( \chi^2=\sum (O-E)^2/E \)；永遠 right-tailed；用 counts。</li>
-<li>Critical：df 1 → 3.841｜df 2 → 5.991｜df 5 → 11.071（\(\alpha = 0.05\)）；<code>chi2.ppf(0.95, df)</code>。</li>
-<li>p-value = <code>1 - chi2.cdf(stat, df)</code>；\(p &lt; \alpha\) → reject。</li>
+<li>Critical：df 1 → 3.841｜df 2 → 5.991｜df 5 → 11.071（\(\alpha = 0.05\)）；<code>stats.chi2.ppf(0.95, df)</code>。</li>
+<li>p-value = <code>stats.chi2.sf(stat, df)</code>；\(p &lt; \alpha\) → reject。</li>
 <li>例 1：Local/Foreign × Math/Computer/Lit：\( E = 240/60, 360/90, 400/100 \)；\(\chi^2 = 55.56\) → reject（dependent）。</li>
-<li>例 2：朱古力 6 色：\( E = 16.67 \)；\(\chi^2 = 8.36\)、\( p = 0.1374 \) → not reject（uniform）。</li>
+<li>例 2：朱古力 6 色：\( E = 16.67 \)；\(\chi^2 = 8.36\)、\( p = 0.1375 \) → not reject（uniform）。</li>
 </ul></div>
 
 <nav class="pager">

@@ -164,7 +164,7 @@
 <tr><td>Document 2</td><td>0</td><td>7</td><td>0</td><td>2</td><td>1</td><td>0</td><td>0</td><td>3</td><td>0</td><td>0</td></tr>
 <tr><td>Document 3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>2</td><td>2</td><td>0</td><td>3</td><td>0</td></tr>
 </table>
-<p><b>Slide 17 Transaction data</b>（Chapter 6 association rules 都會再用）：TID 1 {Bread, Coke, Milk}；2 {Beer, Bread}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Coke, Diaper, Milk}。</p>
+<p><b>Slide 17 Transaction data</b>（Chapter 6 association rules 亦有相近示範，但 transactions 不同，不能沿用本表 support counts）：TID 1 {Bread, Coke, Milk}；2 {Beer, Bread}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Coke, Diaper, Milk}。</p>
 <p><b>Slide 19 Graph data</b>：(1) 一個有 5 個 nodes 嘅 generic graph，edges 帶 weights（2、5、1、2、5）；(2) Benzene molecule C<sub>6</sub>H<sub>6</sub>：6 粒 carbon 圍成環，每粒連住一粒 hydrogen；(3) 幾個網頁之間用 hyperlinks 連住（"Useful Links" 頁 → Bibliography 頁 → Books / General Data Mining 頁）。</p>
 <p><b>Slide 21 Sequences of transactions</b>：三條 sequences，例如 (A B) (D) (C E)。括號入面嘅係 items/events，每對括號係 sequence 嘅一個 element。另外兩條係 (B D) (C) (E) 同 (C D) (B) (A E)。</p>
 <p><b>Slide 22 Genomic sequence data</b>：一大段由 A、C、G、T 組成嘅 DNA 字串，例如 GGTTCCGCCTTCAGCCCCGCGCC…</p>
@@ -193,7 +193,7 @@
   <li><b>Case 1</b>：Outliers 係 noise，干擾分析 → 要處理 / 移除。</li>
   <li><b>Case 2</b>：Outliers 正正係分析目標 → 例如 credit card fraud、intrusion detection（Anomaly Detection）。</li>
 </ul>
-<div class="box warn"><span class="label">⚠️ 易混淆：Noise vs Outlier</span><p>Noise 係<b>隨機誤差</b>（量度錯誤），通常冇意義；Outlier 係<b>真實但罕見</b>嘅 object，可能非常有意義（例如一筆盜用信用卡交易）。Noise 唔一定係 outlier，outlier 亦唔一定係 noise。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆：Noise vs Outlier</span><p>Noise 係 data 嘅錯誤／扭曲，不限於隨機量度誤差；Outlier 係<b>相對其他 observations 特徵顯著不同</b>嘅 object。佢可以來自 measurement / entry error，亦可以係真實而有意義嘅罕見事件（例如盜用信用卡交易）；真偽同原因要另外調查。Noise 唔一定係 outlier，outlier 亦唔一定係 noise。</p></div>
 
 <h3>4.3 Missing Values (Slides 28–29)</h3>
 <p><b>原因</b>：(1) 資料冇收集到（例如人哋拒絕提供年齡同體重）；(2) Attribute 唔適用於所有 cases（例如小朋友冇 annual income）。</p>
@@ -207,11 +207,12 @@
 <div class="box exam"><span class="label">⭐ 考試重點：MCAR / MAR / MNAR</span>
 <table>
 <tr><th>機制</th><th>定義</th><th>處理 / 後果</th><th>例子（補充）</th></tr>
-<tr><td><b>MCAR</b> Missing Completely At Random</td><td>Missingness 同任何 attributes 都<b>無關</b></td><td>用該 attribute 本身嘅值填補（例如 mean）；分析整體 <b>may be unbiased</b></td><td>問卷因為郵寄途中隨機遺失</td></tr>
-<tr><td><b>MAR</b> Missing At Random</td><td>Missingness 同<b>其他（已觀察）variables</b> 有關</td><td>根據其他 values 填補；<b>almost always produces a bias</b></td><td>年輕人較少填收入欄（缺失與 age 有關）</td></tr>
+<tr><td><b>MCAR</b> Missing Completely At Random</td><td>Missingness 同任何 attributes 都<b>無關</b></td><td>Complete-case analysis 在適當條件下可無偏；唔代表任意 imputation 都無偏（mean imputation 會壓低 variance）</td><td>問卷因為郵寄途中隨機遺失</td></tr>
+<tr><td><b>MAR</b> Missing At Random</td><td>Missingness 給定<b>已觀察 variables</b> 後，不再依賴 missing values</td><td>按 observed variables 作適當 likelihood / multiple imputation 可避免 bias；取決於 estimand、方法同模型假設</td><td>年輕人較少填收入欄（缺失與 age 有關）</td></tr>
 <tr><td><b>MNAR</b> Missing Not At Random</td><td>Missingness 同<b>未觀察到嘅量度</b>（通常係缺失值本身）有關；informative / non-ignorable</td><td><b>Not possible to know the situation from the data</b></td><td>高收入人士故意唔填收入</td></tr>
 </table></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 Week 7 用 pandas <code>dropna()</code> / <code>fillna()</code> 同 scikit-learn <code>SimpleImputer</code>、<code>KNNImputer</code>、<code>IterativeImputer</code> 處理 missing values——<code>SimpleImputer(strategy="mean")</code> 對應「fill in values based on the attribute」(MCAR)；<code>IterativeImputer</code> / <code>KNNImputer</code> 用其他 columns 估計，對應「fill in values based on other values」(MAR)。</p></div>
+<div class="box warn"><span class="label">⚠️ Source s29 過度概括</span><p>Slide 原句「MAR: Almost always produces a bias in the analysis」唔係 MAR 嘅定理。未適當處理可有 bias；是否 biased 取決於 estimand、處理方法及模型假設。Missingness mechanism 唔係填補方法嘅名稱，亦唔能單靠選用 imputer 就判定。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6001 Week 7 用 pandas <code>dropna()</code> / <code>fillna()</code> 同 scikit-learn <code>SimpleImputer</code>、<code>KNNImputer</code>、<code>IterativeImputer</code> 處理 missing values——<code>SimpleImputer(strategy="mean")</code> 用單一 attribute；<code>IterativeImputer</code> / <code>KNNImputer</code> 用其他 columns 估計。呢啲係方法，唔等同 MCAR / MAR，亦唔自動保證無偏。</p></div>
 <pre><code>import pandas as pd
 from sklearn.impute import SimpleImputer, KNNImputer
 
@@ -303,16 +304,16 @@ print(cdist(P, P, "minkowski", p=3))</code></pre>
 
 <h3>6.4 Mahalanobis Distance (Slides 39–40)</h3>
 <div class="formula">$$ \text{mahalanobis}(\mathbf{x},\mathbf{y}) = \sqrt{(\mathbf{x}-\mathbf{y})^{T}\, \Sigma^{-1}\, (\mathbf{x}-\mathbf{y})} $$</div>
-<p>其中 \(\Sigma\) 係 data 嘅 <b>covariance matrix</b>（slide 39 版本有開平方根；教科書另一版本冇開）。佢考慮咗 attributes 之間嘅 <b>correlation</b> 同各自嘅 variance：沿住 data 分佈「長軸」方向嘅差距會被打折，沿「短軸」方向嘅差距會被放大。</p>
-<p>Slide 39 例子：圖中兩個紅點，<b>Euclidean distance 係 14.7，但 Mahalanobis distance 只係 6</b>——因為兩點雖然直線距離遠，但係沿住 data 嘅主要分佈方向排列，以 data 嘅分佈嚟講其實「唔算遠」。Slide 40 例子：\( \text{Mahal}(A, B) = 2.27 \)、\( \text{Mahal}(A, C) = 2 \)。</p>
+<p>其中 \(\Sigma\) 係 data 嘅 <b>covariance matrix</b>（此頁依 slide 39 採 rooted distance；冇根號者須明確稱 squared Mahalanobis）。佢考慮咗 attributes 之間嘅 <b>correlation</b> 同各自嘅 variance：沿住 data 分佈「長軸」方向嘅差距會被打折，沿「短軸」方向嘅差距會被放大。</p>
+<p>Slide 39 例子：圖中兩個紅點，<b>Euclidean distance 係 14.7，但 Mahalanobis distance 只係 6</b>——因為兩點雖然直線距離遠，但係沿住 data 嘅主要分佈方向排列，以 data 嘅分佈嚟講其實「唔算遠」。Slide 40 原印 \( \text{Mahal}(A, B) = 2.27 \) 係 source numerical inconsistency；按所列數值應為 \(\sqrt5\approx2.24\)，而 \( \text{Mahal}(A, C) = 2 \) 正確。</p>
 <div class="box note"><span class="label">🖼️ Slides 39–40 圖片</span><p><b>Slide 39</b>：一大團向右上方傾斜（正相關）嘅點，兩粒紅點分別喺左下角約 (−6.8, −2.8) 同右上角約 (6.5, 3.2)，即係沿住長軸方向。</p>
 <p><b>Slide 40</b>：一團同樣向右上傾斜嘅點，有三粒標示點：\( A = (0.5, 0.5) \)、\( B = (0, 1) \)、\( C = (1.5, 1.5) \)，同埋 \( \Sigma = \begin{bmatrix} 0.3 &amp; 0.2 \\ 0.2 &amp; 0.3 \end{bmatrix} \)。A→C 沿住 data 嘅長軸，A→B 就打橫穿過短軸。</p></div>
 <div class="box exam"><span class="label">⭐ Worked example：Slide 40 計算</span>
 <p>\( \det\Sigma = 0.3^2 - 0.2^2 = 0.05 \)，\( \Sigma^{-1} = \frac{1}{0.05}\begin{bmatrix} 0.3 &amp; -0.2 \\ -0.2 &amp; 0.3 \end{bmatrix} = \begin{bmatrix} 6 &amp; -4 \\ -4 &amp; 6 \end{bmatrix} \)</p>
 <p>A, C：\( \mathbf{x}-\mathbf{y} = (-1, -1) \) → \( 6(1) + 6(1) - 2 \times 4 \times (1) = 4 \) → \( \sqrt{4} = \) <b>2</b>（Euclidean \( = \sqrt{2} \approx 1.41 \)）</p>
-<p>A, B：\( \mathbf{x}-\mathbf{y} = (0.5, -0.5) \) → \( 6(0.25) + 6(0.25) - 2 \times 4 \times (-0.25) = 5 \) → \( \sqrt{5} \approx \) <b>2.24</b>（slide 寫 2.27，差少少應該係 rounding；Euclidean 只係 \( \approx 0.71 \)）</p>
+<p>A, B：\( \mathbf{x}-\mathbf{y} = (0.5, -0.5) \) → \( 6(0.25) + 6(0.25) - 2 \times 4 \times (-0.25) = 5 \) → \( \sqrt{5} \approx \) <b>2.24</b>（slide 寫 2.27，係 source numerical inconsistency；由已顯示數值計出 2.23606798，round 2 decimals 係 2.24，唔係 2.27；Euclidean 只係 \( \approx 0.71 \)）</p>
 <p>結論：用 Euclidean 計，B 離 A 比 C 近好多；用 Mahalanobis 計就倒轉，C 反而較近，因為 A→C 係沿住 data 嘅主要分佈方向。</p></div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>如果 \(\Sigma\) 係 identity matrix（attributes 互不相關且 variance = 1），Mahalanobis distance 就退化成（平方）Euclidean distance。COM6005 嘅 z-score \( (x-\mu)/\sigma \) 就係一維版本嘅「以 standard deviation 為單位量距離」。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>如果 \(\Sigma\) 係 identity matrix（attributes 互不相關且 variance = 1），Mahalanobis distance 就退化成 Euclidean distance（有 square root）；squared version 必須另標為 \(d_M^2\)，squared Euclidean 唔係 metric，會違反 triangle inequality。COM6005 嘅 z-score \( (x-\mu)/\sigma \) 就係一維版本嘅「以 standard deviation 為單位量距離」。</p></div>
 
 <h3>6.5 Common Properties of a Distance (Slide 41)</h3>
 <p><span class="tag exam">Exam</span>設 \(d(\mathbf{x},\mathbf{y})\) 為兩點之間嘅 distance：</p>
@@ -507,7 +508,7 @@ df.groupby("cls", group_keys=False).apply(lambda g: g.sample(frac=0.1))  # strat
 <h3>11.3 Curse of Dimensionality (Slide 68)</h3>
 <p><span class="tag exam">Exam</span><b>When dimensionality increases, data becomes increasingly sparse in the space that it occupies.</b> Clustering 同 outlier detection 依賴嘅 <b>density 同 distance 定義變得冇咁有意義</b>。</p>
 <p>Slide 實驗：隨機產生 500 點，計任何兩點之間 max distance 同 min distance 嘅差（相對差）。隨住維度上升，呢個相對差趨向 0 → 「最近」同「最遠」嘅點距離差唔多，nearest neighbor 失去意義。</p>
-<div class="box note"><span class="label">🖼️ Slide 68 圖片</span><p>y 軸係 \( \log_{10}\big((\text{MAX\_DIST} - \text{MIN\_DIST}) / \text{MIN\_DIST}\big) \)，x 軸係 number of dimensions（2 至 50）。條曲線喺 2 維時約 3.3（即最遠距離大約係最近距離嘅 \( 10^{3.3} \approx 2000 \) 倍），之後急跌：約 10 維時跌到 1，50 維時只剩約 0.2（大約 1.6 倍）。所以維度越高，「最近」同「最遠」嘅距離差越細。</p></div>
+<div class="box note"><span class="label">🖼️ Slide 68 圖片</span><p>y 軸係 \( \log_{10}\big((\text{MAX\_DIST} - \text{MIN\_DIST}) / \text{MIN\_DIST}\big) \)，x 軸係 number of dimensions（2 至 50）。條曲線喺 2 維時約 3.3（即最遠距離大約係最近距離嘅 \( 1+10^{3.3} \approx 1996.26 \) 倍），之後急跌：約 10 維時跌到 1，50 維時只剩約 0.2（relative gap 約 \(10^{0.2}=1.584893\)，所以最遠距離約為最近距離 \(1+10^{0.2}=2.584893\) 倍）。所以維度越高，「最近」同「最遠」嘅距離差越細。</p></div>
 <div class="box tip"><span class="label">💡 直覺理解</span><p>喺 1 維 \( [0,1] \) 放 10 點已經幾密；2 維 \( [0,1]^2 \) 要 100 點先有同樣密度；10 維要 \( 10^{10} \) 點！維度一高，所有點都「孤零零」，距離都差唔多遠。</p></div>
 
 <h3>11.4 Dimensionality Reduction (Slides 69–70)</h3>
@@ -617,9 +618,9 @@ MinMaxScaler().fit_transform(df[["height", "income"]])</code></pre>
 <li><b>NOIR</b>：Nominal（\( =, \ne \)）→ Ordinal（+ order）→ Interval（+ differences）→ Ratio（+ ratios，有真零點）。°C/°F、dates = interval；Kelvin、length、counts、elapsed time = ratio。</li>
 <li>Discrete（finite / countably infinite；binary 係特例）vs Continuous（real numbers）。</li>
 <li>Data sets：Record（Data Matrix、Document、Transaction）、Graph（WWW、molecules）、Ordered（sequences、genomic、spatio-temporal）。Characteristics：dimensionality、sparsity、resolution、size。</li>
-<li>Data quality：noise（隨機扭曲）、outliers（可以係 noise 或目標）、missing（eliminate / estimate / ignore；MCAR 無偏、MAR 依其他變數有偏、MNAR 依未觀察值無法得知）、duplicates（合併來源時常見）。</li>
+<li>Data quality：noise（錯誤／扭曲，不限隨機）、outliers（可以係 noise 或目標）、missing（eliminate / estimate / ignore；MCAR = missingness 獨立於 data；MAR = given observed variables 後不依賴 missing values；MNAR = 仍依賴未觀察值；bias 要按 estimand / 方法 / 模型判定）、duplicates（合併來源時常見）。</li>
 <li>Minkowski \( (\sum|x_k-y_k|^r)^{1/r} \)：\( r=1 \) Manhattan（binary 時 = Hamming）、\( r=2 \) Euclidean、\( r \to \infty \) supremum = max 差。Scales 唔同要 standardize。</li>
-<li>Mahalanobis \( (\mathbf{x}-\mathbf{y})^T\Sigma^{-1}(\mathbf{x}-\mathbf{y}) \)：考慮 correlation（slide：Euclid 14.7 vs Mahal 6）。</li>
+<li>Mahalanobis \( \sqrt{(\mathbf{x}-\mathbf{y})^T\Sigma^{-1}(\mathbf{x}-\mathbf{y})} \)：考慮 correlation（slide：Euclid 14.7 vs Mahal 6）。</li>
 <li>Metric：positive definiteness、symmetry、triangle inequality。Similarity：\( s=1 \) only if \( x=y \)（cosine 唔滿足）、symmetry。</li>
 <li>\( SMC = (f_{11}+f_{00}) \)/全部；\( JC = f_{11}/(f_{01}+f_{10}+f_{11}) \)（asymmetric binary 用 JC）。Slide 例：0.7 vs 0。</li>
 <li>Cosine = \( \langle d_1,d_2\rangle/(\|d_1\|\,\|d_2\|) \)；slide 例 = \( 5/(6.481 \times 2.449) = 0.3150 \)。</li>

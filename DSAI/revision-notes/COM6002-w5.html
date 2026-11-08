@@ -112,7 +112,7 @@ A Rate  = DIVIDE([Num A], COUNTROWS(Results))</code></pre>
 <tr><th>OLTP</th><th>OLAP</th></tr>
 <tr><td><b>Large</b> number of concurrent users</td><td><b>Small</b> number of concurrent users</td></tr>
 <tr><td>Modify a small part (typically a few records) of the database</td><td>Usually <b>read-only</b>；aggregate queries to generate statistics</td></tr>
-<tr><td><b>Strong consistency (ACID) is very important</b></td><td>Data from a data warehouse / lake；strong consistency (ACID) is not necessary</td></tr>
+<tr><td><b>ACID compliance 很重要</b>（不等同 CAP strong consistency）</td><td>Data from warehouse / lake 常可容許 ingestion / refresh delay；同一次 report 仍可能需要 consistent snapshot、多表一致性及 ACID load。Slide 19 將 strong consistency 與 ACID 畫等號並說不需要，是過度簡化</td></tr>
 <tr><td>Response time must be very small（may handle a large number of transactions at the same time）</td><td>Response time (during exploration) longer than OLTP but still real-time level；don't mind a longer initial setup time</td></tr>
 <tr><td>Simpler queries</td><td>More complex queries</td></tr>
 </table>
@@ -274,9 +274,9 @@ SELECT Grade, SUM(Count) FROM Cube GROUP BY Grade;   -- A 17, F 9</code></pre>
 <tr><th></th><th>VertiPaq</th><th>Data cube</th></tr>
 <tr><td>Support in Power BI</td><td>Native engine</td><td>Need external data cubes</td></tr>
 <tr><td>Query speed</td><td>Good for general workload</td><td>Near-instant for anticipated queries</td></tr>
-<tr><td>Storage</td><td>No additional storage</td><td>Require additional storage; small</td></tr>
+<tr><td>Storage</td><td>import model 本身要 memory / disk storage；不一定另建 aggregate cube</td><td>Require additional storage; small</td></tr>
 <tr><td>Flexibility</td><td>Handle any query</td><td>Only for anticipated queries</td></tr>
-<tr><td>Preparation time</td><td>No preparation is required</td><td>The query time to build the cube; slow when the database is very large</td></tr>
+<tr><td>Preparation time</td><td>需要 ingest、encode、compress、refresh；可免 query-specific cube preparation</td><td>The query time to build the cube; slow when the database is very large</td></tr>
 </table>
 <p><b>Simple Integration</b>：Load the data cube cell data instead of raw data in Power BI → Power BI 要管理的 records 少好多 → much faster!</p>
 </div>
@@ -324,14 +324,14 @@ WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 列出 Excel 同 Power BI 的三個共通點同三個分別。</summary><p>共通：都係 Microsoft 產品；都用 Power Query Editor 做 ETL；Power Pivot / Power BI 都用 VertiPaq engine；都用 DAX 做 calculated columns 同 measures；都可做 visualization。分別：Purpose（spreadsheet vs BI dashboard）、Capacity（~1M rows 變慢 vs big data）、Data model（optional vs mandatory）、Refresh（manual vs scheduled）、Sharing（file vs cloud）。</p></details>
-<details class="q"><summary>Q2. 大學選科系統同 BI dashboard 分別屬於 OLTP 定 OLAP？各自的要求係乜？</summary><p>選科系統 = OLTP：大量 concurrent users、每次改少量 records、ACID 非常重要、response time 要極短、query 簡單。Dashboard = OLAP：少量 users、read-only aggregate queries、數據來自 warehouse/lake、唔需要 strong consistency、response 可以稍長但仍 real-time、query 複雜、可接受較長 initial setup。</p></details>
+<details class="q"><summary>Q2. 大學選科系統同 BI dashboard 分別屬於 OLTP 定 OLAP？各自的要求係乜？</summary><p>選科系統 = OLTP：大量 concurrent users、每次改少量 records、ACID 非常重要、response time 要極短、query 簡單。Dashboard = OLAP：少量 users、read-only aggregate queries、數據來自 warehouse/lake、常可接受資料較舊，但仍可能需要 consistent snapshot、多表一致性及 ACID load（strong consistency ≠ ACID）、response 可以稍長但仍 real-time、query 複雜、可接受較長 initial setup。</p></details>
 <details class="q"><summary>Q3. 比較 star schema 同 snowflake schema，並解釋點解 OLAP 偏好 star schema。</summary><p>Star：central fact table + 非 normalized 的 dimension tables；joins 少、query 快、用多啲 disk（redundancy）。Snowflake：dimension tables normalized（有 child dimension tables）；joins 多而複雜、query 慢、慳空間。OLAP 主要讀取分析，速度重要過空間，所以偏好 star。</p></details>
 <details class="q"><summary>Q4. Normalization 的兩個目的係乜？</summary><p>(1) Minimize data redundancy；(2) Improve data integrity。</p></details>
 <details class="q"><summary>Q5. 由 (Major, Grade, Count) 表：DSAI A 10、B 15、F 3；CS A 7、B 21、F 6。將 A/B roll-up 成 Pass，並計各 major 的 pass rate。</summary><p>DSAI Pass = 25、F = 3 → 25/28 ≈ 89.3%。CS Pass = 28、F = 6 → 28/34 ≈ 82.4%。</p></details>
 <details class="q"><summary>Q6. 以下屬於邊種 OLAP action？(a) 加入 Year dimension 睇每年分佈 (b) 只睇 2025 年數據 (c) 由 "CS, F, 6" 跳去另一頁列出 6 個學生名 (d) 將 Major 合併成 School 層次</summary><p>(a) Drill-down（加 dimension）；(b) Slicing（filter）；(c) Drill-through；(d) Roll-up（concept hierarchy 向上）。</p></details>
 <details class="q"><summary>Q7. Data cube 的三個 assumptions 同兩個 limitations 係乜？Features Grade (A, B, F)、Major (DSAI, CS, Math)、Sex (M, F) 的 cube 最多有幾多 cells？</summary><p>Assumptions：知道 user 會 explore 的 features F；F 夠細；F 值組合數遠少於 database size。Limitations：新 feature 要重新建 cube；新數據要 maintenance 更新 cube，否則分析唔包括新數據。Cells = 3 × 3 × 2 = 18。</p></details>
 <details class="q"><summary>Q8. 寫 SQL 由 Enrol(StudentID, Grade, Major, Sex) 生成 data cube，再由 cube roll-up 到每個 Major 的總人數。</summary><p><code>CREATE TABLE Cube AS SELECT Grade, Major, Sex, COUNT(*) AS Count FROM Enrol GROUP BY Grade, Major, Sex;</code> 然後 <code>SELECT Major, SUM(Count) FROM Cube GROUP BY Major;</code>（要用 SUM(Count) 唔係 COUNT(*)。）</p></details>
-<details class="q"><summary>Q9. VertiPaq 有咩特點？佢同 data cube 比較有咩取捨？</summary><p>VertiPaq：in-memory、columnar、compression、multi-threading、caching；快但 complexity 仍 \(O(n)\)。對比 data cube：VertiPaq 係 native、可處理任何 query、唔使額外 storage 或準備時間，適合 general workload；data cube 對 anticipated queries 近乎即時，但要額外（少量）storage、只支援預計的 queries、建 cube 喺大 database 好慢、而且 Power BI 要外部 cube。</p></details>
+<details class="q"><summary>Q9. VertiPaq 有咩特點？佢同 data cube 比較有咩取捨？</summary><p>VertiPaq：in-memory、columnar、compression、multi-threading、caching；快但 complexity 仍 \(O(n)\)。對比 data cube：VertiPaq 係 native、可處理任何 query、需要 native imported model 的 storage、ingest / encoding / compression / refresh，但不必先建 query-specific aggregate cube（slide 33 的 no storage / no preparation 只宜如此限定），適合 general workload；data cube 對 anticipated queries 近乎即時，但要額外（少量）storage、只支援預計的 queries、建 cube 喺大 database 好慢、而且 Power BI 要外部 cube。</p></details>
 <details class="q"><summary>Q10. Power Query Merge Queries 中，A Left Anti Join B 會回傳乜？用 slide 例子答。</summary><p>只回傳喺 A 但唔喺 B 的 records：A = Module、B = Result，結果係 (COM6002, Database)——冇學生修的 module。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
@@ -340,14 +340,14 @@ WHERE r.Module IS NULL;            -- COM6002（冇人修）</code></pre>
 <li>Excel &amp; Power BI 共用：Power Query (ETL)、VertiPaq、DAX、visualizations；Power BI：big data、data model mandatory、scheduled refresh、cloud sharing</li>
 <li>Workflow：Connect (Power Query) → Transform (Power Query Editor, M) → Model (relationships, types, hierarchies) → Calculate (DAX measures &amp; calculated columns) → Visualize &amp; Publish</li>
 <li>OLTP：many users、few-record updates、ACID、tiny latency、simple queries</li>
-<li>OLAP：few users、read-only aggregates、warehouse/lake、no strict ACID、complex queries、setup time OK</li>
+<li>OLAP：few users、read-only aggregates、warehouse/lake、可接受 refresh lag，非不需要 snapshot / transactional consistency、complex queries、setup time OK</li>
 <li>Fact table = what happened；Dimension = who / what / when / where</li>
 <li>Star：fewer joins、faster、more space；Snowflake：normalized dimensions、more joins、slower、less space；OLAP prefers star</li>
 <li>Normalization：minimize redundancy + improve integrity</li>
 <li>Roll-up（aggregate / 上 concept hierarchy / 減 dimension）↔ Drill-down；Drill-through（去明細頁）；Slicing（filter）；drill-down 同一 data，slicing 過濾 data</li>
 <li>VertiPaq：in-memory、columnar、compression、multi-threading、caching、仍 \(O(n)\)</li>
 <li>Data cube：已知細 feature set F → 預先 GROUP BY；快；新 feature / 新 data 要重建；roll-up 用 SUM(Count)</li>
-<li>VertiPaq vs cube：native / any query / no prep vs external / anticipated only / extra small storage / build time</li>
+<li>VertiPaq vs cube：native / general queries / imported model storage + refresh，未必另建 cube vs external / anticipated only / extra small storage / build time</li>
 <li>Practical：Get data → Use first row as headers → New Source → Merge Queries（inner / left outer / full outer / left anti）→ Group by → visuals</li>
 </ul></div>
 

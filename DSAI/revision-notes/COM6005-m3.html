@@ -77,14 +77,14 @@
 <h3>3.1 Notation（slide 6）</h3>
 <table>
 <tr><th></th><th>Mean</th><th>Standard deviation</th></tr>
-<tr><td><b>Population</b></td><td>mu (\( \mu \))</td><td>Sigma (\( \sigma \)) or \( \sigma_\mu \)</td></tr>
-<tr><td><b>Sample</b></td><td>x-bar (\( \bar x \))</td><td>\( \sigma_{\bar x} \) or \( s \)</td></tr>
-</table>
+<tr><td><b>Population</b></td><td>mu (\( \mu \))</td><td>Observation population SD：\(\sigma\)</td></tr>
+<tr><td><b>Sample</b></td><td>x-bar (\( \bar x \))</td><td>Observation sample SD：\(s\)</td></tr>
+</table><p>Sample mean 嘅 SD 為 \(\mathrm{SD}(\bar x)=\sigma/\sqrt n\)；用 sample SD 估計嘅 standard error 為 \(\widehat{SE}(\bar x)=s/\sqrt n\)。唔好將 observation SD 同 mean 嘅 SE 混為一談。</p>
 
 <h2>4. Interval estimate 公式</h2>
 <p>Slide 7 嘅 t-based interval（\(\sigma\) 未知，用 sample SD s）：</p>
 <div class="formula">$$ \bar x - t_{n-1}\frac{s}{\sqrt n} \;\le\; \mu \;\le\; \bar x + t_{n-1}\frac{s}{\sqrt n} $$</div>
-<p>各部分（slide 7 標註）：\( \bar x \) = sample mean；\( s \) = sample SD；\( n \) = sample size；\( t_{n-1} \) = distribution value（critical value）。Slide 7 用三個 sample（\( \bar x = 12, 10, 13 \)）各自砌出一個 interval（例如 10–14、7.5–12.5、12–14），表示「95% of chance that the population mean falls in the interval」——每個 sample 嘅 interval 都唔同，有啲 cover 到真 \(\mu\)、有啲 cover 唔到。</p>
+<p>各部分（slide 7 標註）：\( \bar x \) = sample mean；\( s \) = sample SD；\( n \) = sample size；\( t_{n-1} \) = distribution value（critical value）。Slide 7 用三個 sample（\( \bar x = 12, 10, 13 \)）各自砌出一個 interval（例如 10–14、7.5–12.5、12–14），原 slide 寫「95% of chance that the population mean falls in the interval」，但嚴格 frequentist 解讀係 95% 嘅隨機 intervals 長期 cover 固定真值——每個 sample 嘅 interval 都唔同，有啲 cover 到真 \(\mu\)、有啲 cover 唔到。</p>
 
 <h3>4.1 Boundary、alpha 同 tails（slides 8–10）</h3>
 <ul>
@@ -144,16 +144,16 @@
 </ol></div>
 
 <h3>4.4 正確解讀 CI（slide 12）</h3>
-<div class="box exam"><span class="label">⭐ Interpretation（slide 12）</span><p>Given a set of random sample, you can follow the above procedure to construct an interval to ‘cover’ the true underlying parameter. If the procedure is repeated for hundreds of times, <b>(\(1 - \alpha\))% of the constructed intervals will cover the true value</b>.</p></div>
+<div class="box exam"><span class="label">⭐ Interpretation（slide 12）</span><p>Given a set of random sample, you can follow the above procedure to construct an interval to ‘cover’ the true underlying parameter. If the procedure is repeated for hundreds of times, <b>\(100(1-\alpha)\%\) of the constructed intervals will cover the true value</b>.</p></div>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>\(\mu\) 係一個固定（但未知）嘅數，唔係 random；random 嘅係 interval。所以嚴格嚟講唔應該話「\(\mu\) 有 95% 機會喺 (12.66, 13.34) 入面」，而應該話「用呢個 procedure 砌出嚟嘅 interval，長遠有 95% 會 cover \(\mu\)」。</p></div>
 
 <h2>5. Hypothesis Testing 嘅推理（Coin Toss Challenge）</h2>
 <p>Slide 14：朋友擲硬幣連續 5 次 Heads，你懷疑個硬幣有古惑。</p>
 <ul>
 <li><b>\(H_0\) (Null Hypothesis，Boring Idea)</b>：硬幣完全正常，佢只係好彩。</li>
-<li><b>\(H_1\) (Alternative Hypothesis，Detective Idea)</b>：硬幣被做咗手腳，傾向出 Heads。</li>
+<li><b>\(H_1\) (Alternative Hypothesis，Detective Idea)</b>：硬幣向 Heads 偏斜（唔推斷有冇人造假）。</li>
 <li><b>The Math Check</b>：假設公平硬幣 \( p = 0.5 \)，\( P(HHHHH) = 0.5^5 = 0.03125 \approx 3\% \)。</li>
-<li><b>The Decision</b>：3% 對「純粹好彩」嚟講太低 → reject \(H_0\)，硬幣好大機會有古惑。但即使 \(H_0\) 其實啱，都有機會判錯（have risk even \(H_0\) is correct）。</li>
+<li><b>The Decision</b>：預先指定 right-sided \(H_1:p&gt;0.5\) 同 \(\alpha=0.05\)，p-value = 0.03125，所以 reject fair-coin null；有向 Heads 偏斜嘅 evidence，唔係「硬幣造假嘅 probability」。若事後才選方向，不能沿用呢個 one-sided inference。</li>
 <li>Pre-specified acceptable level of risk = significance level \(\alpha = 0.05\)；0.03125 &lt; 0.05 → reject。</li>
 </ul>
 <p>Hypothesis testing 就係一個正式、逐步嘅方法去問：「呢個證據夠唔夠強去支持新理論，定只係巧合？」</p>
@@ -168,7 +168,7 @@
 <h3>5.2 Logic of Hypothesis testing（slide 16）</h3>
 <ul>
 <li>根據 sampling distribution 作「induced judgement」：observed sample statistic → population parameter；observed values → \(H_0\) 或 \(H_1\)。</li>
-<li>假設 \(H_0\) 為真，有幾大機會見到咁嘅結果？如果機會低過預先指定嘅 significance level \(\alpha\)，就 <b>reject</b> null，改為接受 alternative。→ 有機會作出錯誤結論。</li>
+<li>假設 \(H_0\) 為真，有幾大機會見到咁嘅結果？如果機會低過預先指定嘅 significance level \(\alpha\)，就 <b>reject</b> null，得到支持 alternative 嘅 evidence（唔係證明 alternative）。→ 有機會作出錯誤結論。</li>
 <li>研究者通常將佢嘅「hope」放喺 <b>alternative hypothesis</b>；reject null 時 hope 就得到支持。</li>
 <li>Significance level \(\alpha\) = Type I error。</li>
 </ul>
@@ -193,7 +193,7 @@
 <p>Slide 18：</p>
 <ul>
 <li>Reject \(H_0\) 時，我哋話 subject of interest 係 <b>statistically significant</b>。</li>
-<li>Statistical significance：表示個 effect 唔係由 chance 造成。</li>
+<li>Statistical significance：在指定 \(H_0\) 同 sampling model 下，至少同樣極端結果嘅 p-value 低於預先指定 \(\alpha\)；唔證明 effect 絕非 chance，亦唔係 \(P(H_0\mid\text{data})\)。</li>
 <li>Statistical significance ≠ <b>practical significance</b>：一個好細嘅 coefficient，practical significance 好細，但如果 sample size 好大，都可以 highly statistically significant。</li>
 </ul>
 <div class="box tip"><span class="label">💡 例子</span><p>一個新教學法令考試平均分高 0.3 分（滿分 100）。如果 \( n = 100{,}000 \)，standard error 極細，p-value 可以 &lt; 0.001（statistically significant），但 0.3 分喺實際上冇乜意義（practically insignificant）。</p></div>
@@ -210,7 +210,7 @@
 <li><b>Significance level \(\alpha\)</b>（= 0.05, 0.1）：假設 \(H_0\) 正確，出現嗰啲極端值嘅機率；亦即我哋願意承受作出「錯誤」決定（Type I error）嘅 risk——\(H_0\) 正確但我哋結論佢錯。</li>
 <li><b>p-value</b>：假設 \(H_0\) 正確，數據出現比目前 sample 更極端值（圖中右手邊）嘅機率。</li>
 <li>Slide 20 嘅圖：sampling distribution of \( z = (\bar x - \mu_0)/(\sigma/\sqrt n) \)，\(\alpha = 0.05\) 嘅 critical line，p-value = 0.011（右尾橙色面積）。p-value 細過 \(\alpha\) → \(H_0\) is rejected。</li>
-<li>\(\alpha\) 係接受錯誤結論（\(H_0\) 啱都 reject）嘅 risk；p-value 細過 \(\alpha\)，即呢個 risk 可以接受 → reject \(H_0\)。</li>
+<li>\(\alpha\) 控制 \(H_0\) 成立時長期重複 test 嘅 Type I error rate（或上限），唔係本次結論為錯嘅 posterior probability。p-value 係 null 下資料嘅 extremeness，\(p&lt;\alpha\) 觸發預定 rejection rule，唔係觀察後「可接受錯判 risk」。</li>
 </ul>
 
 <div class="box exam"><span class="label">⭐ Worked example：用 slide 19 數據做完整 test（5-step procedure）</span>
@@ -269,7 +269,7 @@
 <details class="q"><summary>Q4. 解釋 Type I error、Type II error、Power，並講 \(\alpha\) 同邊個有關。</summary><p>Type I：\(H_0\) 真但 reject（機率 \(\alpha\) = significance level）。Type II：\(H_0\) 假但冇 reject（機率 \(\beta\)）。Power = \(1 - \beta\)：\(H_0\) 假時正確 reject。</p></details>
 <details class="q"><summary>Q5. 某廠聲稱電池平均壽命至少 500 小時，你想證明佢誇大。寫 \(H_0\) 同 \(H_1\)，係咩 tail？</summary><p>\(H_0: \mu \ge 500\)；\(H_1: \mu &lt; 500\)。Left-tailed test。</p></details>
 <details class="q"><summary>Q6. 一個 two-tailed test 得 p-value = 0.03。\(\alpha = 0.05\) 同 \(\alpha = 0.01\) 時結論各係咩？對應 95% / 99% CI 會唔會包 \(\mu_0\)？</summary><p>\(\alpha = 0.05\)：0.03 &lt; 0.05 → reject \(H_0\)；95% CI 唔包 \(\mu_0\)。\(\alpha = 0.01\)：0.03 &gt; 0.01 → do not reject；99% CI 包 \(\mu_0\)。</p></details>
-<details class="q"><summary>Q7. 擲硬幣 5 次全部 Heads。假設公平，p-value 係幾多（one-sided）？\(\alpha = 0.05\) 結論？</summary><p>p-value = \( P(5 \text{ heads} \mid \text{fair}) = 0.5^5 = 0.03125 &lt; 0.05 \) → reject \(H_0\)，結論硬幣傾向出 Heads（但有 \(\alpha\) 嘅 Type I 風險）。</p></details>
+<details class="q"><summary>Q7. 擲硬幣 5 次全部 Heads。假設公平，p-value 係幾多（one-sided）？\(\alpha = 0.05\) 結論？</summary><p>p-value = \( P(5 \text{ heads} \mid \text{fair}) = 0.5^5 = 0.03125 &lt; 0.05 \) → reject \(H_0\)，有向 Heads 偏斜嘅 evidence；預先指定嘅 test 控制長期 Type I error rate，唔係本次結論為錯嘅 probability。</p></details>
 <details class="q"><summary>Q8. 「\( n = 1{,}000{,}000 \)，回歸係數 0.0001，\( p &lt; 0.001 \)」。點評？</summary><p>Statistically significant 但 practical significance 可能好細：sample size 極大時，極細嘅 effect 都會顯著（slide 18）。</p></details>
 <details class="q"><summary>Q9. 「6 sigma」嘅 \(\alpha\) 係幾多？點解？</summary><p>\(\mu \pm 3\sigma\)（闊 \(6\sigma\)）包含約 99.7% 數據，所以 \(\alpha = 1 - 99.7\% = 0.3\%\)。</p></details>
 
@@ -284,6 +284,7 @@
 <li>p-value = P(結果 ≥ 觀察值咁極端 | \(H_0\) 真)；唔係 P(\(H_0\) 真)。\(p &lt; \alpha\) → reject \(H_0\)。</li>
 <li>Type I = reject 真 \(H_0\)（\(\alpha\)）；Type II = 唔 reject 假 \(H_0\)（\(\beta\)）；Power = \(1 - \beta\)。</li>
 <li>Two-tailed：\( \ne \)，\( |z| &gt; 1.96 \)；Right：\( &gt; \)，\( z &gt; 1.645 \)；Left：\( &lt; \)，\( z &lt; -1.645 \)（\(\alpha = 0.05\)）。</li>
+<li>\(s\) 係 observation sample SD；\(SE(\bar x)\) 估計為 \(s/\sqrt n\)。p-value / \(\alpha\) 唔係本次 hypothesis 為真或結論為錯嘅 probability。</li>
 <li>Statistical ≠ practical significance（大 n 令細 effect 都顯著）。</li>
 <li>95% CI 唔包 \(\mu_0\) ⇔ two-tailed \( p &lt; 0.05 \) ⇔ reject \(H_0\)。</li>
 <li>5 steps：\(H_0/H_1\) → \(\alpha\) → test statistic → critical value / p-value → decision + conclusion。</li>

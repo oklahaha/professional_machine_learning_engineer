@@ -81,7 +81,7 @@ sample = np.random.choice(range(1, 10), 5)   # 每次 run 都係同一組 5 個�
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Seed 唔係令結果「更隨機」或者「更準」，只係令結果可以重現（方便 debug、交功課、比較模型）。另外 <code>np.random.choice(range(1, 10), 5)</code> 預設 <code>replace=True</code>。</p></div>
 
 <h2>2. Different types of Variables</h2>
-<p>Slide 7 嘅樹狀圖：<b>Data Types</b> 分做 <b>Categorical</b>（= discrete value）同 <b>Numerical</b>（= continuous value）；Categorical 再分 <b>Ordinal</b> 同 <b>Nominal</b>，Numerical 再分 <b>Interval</b> 同 <b>Ratio</b>。</p>
+<p>Slide 7 將 categorical = discrete、numerical = continuous 畫成同一分類，屬 oversimplification。Categorical / quantitative 描述 data meaning；discrete / continuous 描述 possible values。事件數目係 quantitative、discrete、ratio；numerical 唔一定 continuous。Categorical 可分 Nominal / Ordinal；quantitative measurement scales 可分 Interval / Ratio。</p>
 <table>
 <tr><th>Type</th><th>大類</th><th>定義（slides 8–10）</th><th>例子</th></tr>
 <tr><td><b>Nominal</b></td><td>Categorical</td><td>Named variables；unordered, categorical and mutually exclusive</td><td>Countries（Afghanistan, Brazil, China）；Yes/No（只有兩個值 → <mark class="k">dichotomous / binary</mark>）</td></tr>
@@ -205,7 +205,7 @@ print(d.dtypes)</code></pre>
 <ul>
 <li>以為 <code>norm.pdf(x)</code> 係 probability：佢只係曲線高度，可以 \( &gt; 1 \)（例如 \( \sigma = 0.1 \) 時 \( \text{pdf}(\mu) \approx 3.99 \)）。</li>
 <li>Continuous 嘅 \( P(X \le a) \) 同 \( P(X &lt; a) \) 一樣（因為單點機率 = 0）；但 discrete 唔一樣：\( P(X \le 5) \ne P(X &lt; 5) = P(X \le 4) \)。</li>
-<li>計區間 probability 要用 CDF 相減：\( P(a\le X\le b) = F(b) - F(a) \)。</li>
+<li>Continuous 區間：\(P(a\le X\le b)=F(b)-F(a)\)；integer-valued X、整數 a / b：\(P(a\le X\le b)=F(b)-F(a-1)\)。</li>
 </ul></div>
 
 <h2>6. 用 scipy.stats 計 probability</h2>
@@ -221,13 +221,14 @@ print(f"CMF/CDF (5 heads or fewer): {cmf_up_to_5:.4f}")</code></pre>
 <p>\( P(X=5) = \binom{10}{5}(0.5)^5(0.5)^5 = 252/1024 \approx 0.2461 \)</p>
 <p>\( P(X\le 5) = \frac{1+10+45+120+210+252}{1024} = 638/1024 \approx 0.6230 \)</p>
 <p>延伸：\( P(X\ge 6) = 1 - 0.6230 = 0.3770 \)（= <code>1 - binom.cdf(5, 10, 0.5)</code> 或 <code>binom.sf(5, 10, 0.5)</code>）。</p></div>
-<p>Slide 25 嘅 visualization：左邊用 <code>axes[0].stem()</code> 畫 PMF（每個整數一支棒）；右邊用 <code>axes[1].step(..., where="mid")</code> 畫 CDF（樓梯形，因為 probability 喺整數之間保持不變）。</p>
+<p>Slide 25 用 mid 畫 discrete CDF，會將 jumps 錯移至半整數。正確係整數位置跳升，於每個整數至下一整數之間保持不變，用 <code>where="post"</code> 並延伸兩端。</p>
 <pre><code>import numpy as np, matplotlib.pyplot as plt, scipy.stats as stats
 n, p = 10, 0.5
 x = np.arange(0, n + 1)
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 axes[0].stem(x, stats.binom.pmf(x, n, p), basefmt=" ")      # PMF：棒形
-axes[1].step(x, stats.binom.cdf(x, n, p), where="mid", marker="o")  # CMF/CDF：樓梯形
+cdf_x = np.arange(-1, n + 2)  # 左端 F(-1)=0，右端 F(n+1)=1
+axes[1].step(cdf_x, stats.binom.cdf(cdf_x, n, p), where="post", marker="o")
 plt.tight_layout(); plt.show()</code></pre>
 
 <h3>6.2 Continuous：Standard normal（slides 26–27）</h3>
@@ -251,8 +252,8 @@ cdf_up_to_zero = stats.norm.cdf(0, loc=0, scale=1)  # 0.5000 —— 對稱鐘形
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li><code>np.random.choice(a, size, replace, p)</code>：replace=False → 唔重複；p 指定各結果機率；<code>np.random.seed()</code> → 可重現。</li>
 <li>Train/test 70/30：<code>np.random.choice(range(0,100), size=70, replace=False)</code>；Python index 由 0 開始。</li>
-<li>Categorical（discrete）：Nominal（冇次序；binary = dichotomous）、Ordinal（有次序；Likert）。</li>
-<li>Numerical（continuous）：Interval（冇 true zero：°C、鞋碼）、Ratio（有 true zero：cm、kg）；SPSS 叫 Scale。</li>
+<li>Categorical（按 data meaning）：Nominal（冇次序；binary = dichotomous）、Ordinal（有次序；Likert）。</li>
+<li>Numerical（可 discrete 或 continuous）：Interval（冇 true zero：°C、鞋碼）、Ratio（有 true zero：cm、kg、事件 count；count 係 discrete quantitative）；SPSS 叫 Scale。</li>
 <li>Poisson = 時段內次數；Geometric = 第一次成功要幾多次；Normal = 生物量度；Exponential = 事件間隔；Weibull = 壽命；Pareto = 收入。</li>
 <li>\( \text{Density} = \text{freq} / (n \times \text{bin width}) \)；所有 bar 面積 = 1。</li>
 <li>Normal：\( f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/2\sigma^2} \)；\(\mu\) = location，\(\sigma^2\) = scale。</li>

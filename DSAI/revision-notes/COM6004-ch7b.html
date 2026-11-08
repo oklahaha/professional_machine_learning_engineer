@@ -24,7 +24,7 @@
 <p class="meta">COM6004 · Chapter 7 · Source: COM6004_Chapter_7_Dimensionality_Reduction.pptx (21 slides) · Tan, Steinbach, Karpatne, Kumar, <i>Introduction to Data Mining</i> 2nd ed.</p>
 <h1>Dimensionality Reduction: PCA, SVD &amp; Factor Analysis（非考試範圍）</h1>
 
-<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>COM6004 考試範圍只包括 <b>Chapter 1–6</b>，所以呢頁冇 Exam 標記，亦冇 Exam-only 按鈕。如果要準備考試，請先溫 <a href="COM6004-ch1.html">Chapter 1</a> 至 <a href="COM6004-ch6.html">Chapter 6</a>。呢章需要用到嘅 eigenvalue、eigenvector 同 orthogonal 等概念，可以喺 <a href="COM6004-ch7.html">Matrix Algebra Review</a> 溫返。</p></div>
+<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>已確認：COM6004 考試範圍只包括 <b>Chapter 1–6</b>。Chapter 7（Matrix Algebra Review、PCA / SVD / Factor Analysis）同 Chapter 8（Ensemble Methods）唔考。Slides 本身冇寫明，以呢個確認為準。所以呢頁冇 Exam 標記，亦冇 Exam-only 按鈕。如果要準備考試，請先溫 <a href="COM6004-ch1.html">Chapter 1</a> 至 <a href="COM6004-ch6.html">Chapter 6</a>。呢章需要用到嘅 eigenvalue、eigenvector 同 orthogonal 等概念，可以喺 <a href="COM6004-ch7.html">Matrix Algebra Review</a> 溫返。</p></div>
 
 <div class="overview">
   <h3>🎯 本講內容</h3>
@@ -138,7 +138,7 @@ print(pca.components_)                     # 每一行係一個 eigenvector v_i<
 
 <h2>7. Singular Value Decomposition（Slide 10–12）</h2>
 <p>Slide 10 指出，只要每個 variable 嘅 mean 已經減咗，PCA 就同對 data matrix 做 SVD 係<b>等價</b>嘅。不過，從 SVD 角度理解 dimensionality reduction 都好有用，因為有時唔適合減 mean，特別係 <b>data 比較 sparse</b> 嘅時候。</p>
-<p>SVD 直接分解 \(n \times p\) 嘅 data matrix \(D\)（Slide 11）：</p>
+<p>SVD 直接分解 \(n \times p\) 嘅 data matrix \(D\)（Slide 11）。此處用 full SVD：\(U\in\mathbb R^{n\times n}\)、\(\Sigma\in\mathbb R^{n\times p}\)、\(V\in\mathbb R^{p\times p}\)，所以 rectangular \(\Sigma\) 不能直接平方。Rank-\(r\) convention 則為 \(D=U_r\Sigma_rV_r^T\)，shapes 依次 \(n\times r,r\times r,p\times r\)，此時才可寫 \(D^TD=V_r\Sigma_r^2V_r^T\)。</p>
 <div class="formula">$$D = \sum_{i=1}^{\mathrm{rank}(D)} \sigma_i\, u_i\, v_i^T = U \Sigma V^T, \qquad \sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_{\mathrm{rank}(D)}$$</div>
 <ul>
   <li>\(\sigma_i\)：<b>singular values</b>，由大至細排列，放喺 diagonal matrix \(\Sigma\)。</li>
@@ -148,12 +148,12 @@ print(pca.components_)                     # 每一行係一個 eigenvector v_i<
 <p>要得到一個只有 \(k\) 個 attributes 嘅新 data matrix（Slide 12），就用頭 \(k\) 個 right singular vectors：</p>
 <div class="formula">$$D_{SVD} = D \times [v_1, v_2, \dots, v_k] \qquad (n \times k)$$</div>
 <p>每一項 \(\sigma_i u_i v_i^T\) 都係一個 rank-1 matrix。\(D\) 係呢啲「層」疊加出嚟嘅結果，而 \(\sigma_i\) 越大，嗰一層越重要。只保留頭 \(k\) 層，就係保留最主要嘅結構。</p>
-<div class="box tip"><span class="label">💡 SVD 同 PCA 點樣連埋一齊</span><p>如果 \(D\) 已經 centered：\(D^TD = V\Sigma U^T U \Sigma V^T = V \Sigma^2 V^T\)。所以：</p>
+<div class="box tip"><span class="label">💡 SVD 同 PCA 點樣連埋一齊</span><p>如果 \(D\) 已經 centered：\(D^TD = V\Sigma^T U^T U \Sigma V^T = V \Sigma^T\Sigma V^T\)。所以：</p>
 <ul><li>Right singular vectors \(v_i\) 就係 \(S\) 嘅 eigenvectors，即係 PCA 嘅方向。</li>
 <li>\(\lambda_i = \dfrac{\sigma_i^2}{n-1}\)。</li>
 <li>\(D_{SVD} = D[v_1, \dots, v_k]\) 正正就係頭 \(k\) 個 PCs。</li></ul>
 <p>用返第 4 節嘅例子：\(\sigma_1 = \sqrt{3 \times 6} = 3\sqrt2\)，\(\sigma_2 = \sqrt{3 \times \tfrac23} = \sqrt2\)。</p></div>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 11 有一張圖（可能係 \(U\)、\(\Sigma\)、\(V^T\) 嘅 dimension 示意圖），冇抽到 text，所以呢度唔估圖入面嘅內容。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 11 嘅圖冇文字可抽；以上 dimensions 係明確標示嘅 full / rank-r SVD conventions。</p></div>
 
 <h2>8. SVD 嘅應用：Document Data（Slide 13）</h2>
 <ul>
@@ -207,7 +207,7 @@ print(pca.components_)                     # 每一行係一個 eigenvector v_i<
 <details class="q"><summary>Q4. \(S\) 嘅 eigenvalues 係 \(5, 3, 1.5, 0.5\)。Total variance 係幾多？PC2 嘅 variance 係幾多？要保留 90% variability 需要幾多個 PCs？</summary><p>Total variance \(= 5 + 3 + 1.5 + 0.5 = 10\)。PC2 嘅 variance \(= \lambda_2 = 3\)。Cumulative proportion 依次係 50%、80%、95%，所以需要 \(k = 3\)。</p></details>
 <details class="q"><summary>Q5. 幾時應該用 correlation matrix \(R\) 代替 \(S\) 做 PCA？點解？</summary><p>當 attributes 嘅 scale 同 variance 相差好遠時。PCA 追求最大 variance，scale 大嘅 attribute 會霸佔頭幾個 PCs。用 \(R\) 等同先將每個 attribute standardize，令每個 attribute 都有平等地位。</p></details>
 <details class="q"><summary>Q6. \(D = U\Sigma V^T\) 入面，邊啲係 right singular vectors？點樣得到 \(k\) 維嘅新 data？</summary><p>\(V\) 嘅 columns \(v_1, \dots, v_p\) 係 right singular vectors，\(U\) 嘅 columns 係 left singular vectors。新 data 係 \(D_{SVD} = D[v_1, \dots, v_k]\)，size 係 \(n \times k\)。</p></details>
-<details class="q"><summary>Q7. PCA 同 SVD 幾時等價？點解 document-term matrix 偏向直接用 SVD？</summary><p>當每個 variable 嘅 mean 已經減咗，兩者就等價（\(v_i\) 相同，\(\lambda_i = \sigma_i^2/(n-1)\)）。Document-term matrix 好 sparse，減 mean 之後大量 0 會變成非 0，破壞 sparsity，所以直接對 \(D\) 做 SVD 會比較好。</p></details>
+<details class="q"><summary>Q7. PCA 同 SVD 幾時等價？Full SVD 嘅 Gram matrix 點寫？點解 document-term matrix 偏向直接用 SVD？</summary><p>當每個 variable 嘅 mean 已經減咗，兩者就等價（\(v_i\) 相同，\(\lambda_i = \sigma_i^2/(n-1)\)）。Full SVD 中 \(\Sigma\) 係 \(n\times p\)，所以 \(D^TD=V\Sigma^T\Sigma V^T\)；rank-r 嘅 square \(\Sigma_r\) 才可直接平方。Document-term matrix 好 sparse，減 mean 之後大量 0 會變成非 0，破壞 sparsity，所以直接對 \(D\) 做 SVD 會比較好。</p></details>
 <details class="q"><summary>Q8. PCA 同 Factor Analysis 喺「linear combination」方向上有咩分別？</summary><p>PCA / SVD：新 attributes 係原有 variables 嘅 linear combinations。FA：原有 variables 表示成少量 latent factors 嘅 linear combinations（\(z = \Lambda f + \epsilon\)），方向啱啱相反。</p></details>
 <details class="q"><summary>Q9. 喺 FA model 入面，\(\lambda_{ij}\)、\(f_j\) 同 \(\epsilon_i\) 分別叫咩，代表咩？</summary><p>\(\lambda_{ij}\)：factor loading，第 \(j\) 個 factor 對第 \(i\) 個 attribute 嘅重要性。\(f_j\)：common factor，即係 latent attribute。\(\epsilon_i\)：specific / unique factor，代表第 \(i\) 個 attribute 入面 common factors 解釋唔到嘅部分。</p></details>
 <details class="q"><summary>Q10. 用 decathlon 解釋 FA 嘅 motivation。</summary><p>10 個項目嘅表現睇得到，但 speed 同 strength 睇唔到。著重 speed 嘅項目之間表現相近，著重 strength 嘅項目亦一樣。所以可以假設每個項目嘅表現由項目性質加兩個 latent factors（speed、strength）決定。FA 可以將 10 個 variables 減到 2 個 factors，同時令人更了解 data。</p></details>
@@ -219,7 +219,7 @@ print(pca.components_)                     # 每一行係一個 eigenvector v_i<
 <li>性質：PCs 兩兩 uncorrelated；\(\mathrm{Var}(\text{PC}_i) = \lambda_i\)；\(\sum \mathrm{Var}(\text{attributes}) = \sum \lambda_i\)，total variability 冇損失。</li>
 <li>揀 \(k\)：cumulative \(\sum_{i \le k}\lambda_i / \sum \lambda_i \ge 90\%\)，或者 scree plot 嘅 elbow。Scale 差好遠就用 correlation matrix \(R\)。</li>
 <li><b>SVD</b>：\(D = \sum \sigma_i u_i v_i^T = U\Sigma V^T\)，\(\sigma_1 \ge \sigma_2 \ge \dots\)。\(V\) 係 right singular vectors，\(U\) 係 left singular vectors。\(D_{SVD} = D[v_1, \dots, v_k]\)。</li>
-<li>Centered 嘅話，PCA 同 SVD 等價，\(\lambda_i = \sigma_i^2/(n-1)\)。Sparse data（document-term matrix）唔減 mean，直接做 SVD。</li>
+<li>Full SVD shapes：\(U:n\times n,\ \Sigma:n\times p,\ V:p\times p\)；\(D^TD=V\Sigma^T\Sigma V^T\)。Rank-r convention 用 square \(\Sigma_r\)，才可寫 \(V_r\Sigma_r^2V_r^T\)。Centered 嘅話，PCA 同 SVD 等價，\(\lambda_i = \sigma_i^2/(n-1)\)。Sparse data（document-term matrix）唔減 mean，直接做 SVD。</li>
 <li><b>FA</b>：原有 standardized variables 係少量 latent factors 嘅 linear combinations：\(z_i = \sum_j \lambda_{ij} f_j + \epsilon_i\)。\(f_j\) 係 common factors，\(\lambda_{ij}\) 係 factor loading，\(\epsilon_i\) 係 specific factor。\(D\)（\(n \times p\)）會變成 \(F\)（\(n \times k\)）。</li>
 <li>FA 例子：IQ tests 同 intelligence；decathlon 同 speed、strength。</li>
 </ul></div>

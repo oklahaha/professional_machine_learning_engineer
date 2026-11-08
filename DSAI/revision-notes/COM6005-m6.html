@@ -37,7 +37,7 @@
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>點解 small RSS 唔保證 prediction 好：model 越大 RSS 越細（in-sample），但 prediction 係針對 <b>unseen（out-of-sample）data</b>。</li>
-    <li>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)；AIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\hat\sigma^2\right] \)；BIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\,d\,\hat\sigma^2\right] \)。<b>Lower is better</b>，\( d \) 包括 intercept。</li>
+    <li>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)；lecture fixed-scaled AIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\hat\sigma^2\right] \)；lecture fixed-scaled BIC \( =\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\,d\,\hat\sigma^2\right] \)。<b>Lower is better</b>，\( d \) 包括 intercept；所有 submodels 共用 full-model variance，唔逐個重估。</li>
     <li>BIC penalty 最重 → 揀出嚟嘅 model 通常 predictors 較少（<b>parsimonious</b>）。</li>
     <li>K-fold CV：分 K 份，每份輪流做 test，平均 K 個 MSE；LOOCV = n-fold CV（500 個 data 要 fit 500 次，computationally expensive）。</li>
     <li>Best subset 有 \( 2^p \) 個 models（p = 4 → 16；p = 20 → 1,048,576）；Forward / Backward selection 較平但 <b>唔保證</b>搵到 best subset。</li>
@@ -78,28 +78,29 @@
 <h2>2. Method 1：用 Penalty 懲罰大 model（slides 3–6）</h2>
 <h3>2.1 Mallows' \( C_p \)（slide 4）</h3>
 <div class="box exam"><span class="label">⭐ Mallows' \( C_p \) — Lower is better</span>
-<div class="formula">$$ C_p=\frac{1}{n}\left[RSS_{sub}+\underbrace{2d\,\hat\sigma^2}_{\text{penalty term}}\right],\qquad \hat\sigma^2=\frac{RSS_{sub}}{n-p-1} $$</div>
+<div class="formula">$$ C_p=\frac{1}{n}\left[RSS_{sub}+\underbrace{2d\,\hat\sigma^2}_{\text{penalty term}}\right],\qquad \hat\sigma^2=\hat\sigma_{full}^2=\frac{RSS_{full}}{n-p_{full}-1} $$</div>
 <ul>
 <li>\( RSS_{sub} \)：用 \( d \) 個 predictors（<b>including intercept</b>）嘅 sub-model 嘅 residual SS。</li>
 <li>最重要係 <b>\( 2d\hat\sigma^2 \)</b>：加落 RSS 度去 discourage big model，所以統計學家叫佢做 <b>penalty</b>。<b>Big models get punished.</b></li>
 </ul></div>
 <p>點理解：\( RSS_{sub} \) 隨 \( d \) 增加而<b>跌</b>（fit 得好啲），penalty \( 2d\hat\sigma^2 \) 隨 \( d \) 增加而<b>升</b>。\( C_p \) 係兩股力嘅 trade-off：新加嘅 predictor 要令 RSS 跌多過 \( 2\hat\sigma^2 \)，先值得加。</p>
-<div class="box note"><span class="label">📝 關於 \( \hat\sigma^2 \)</span><p>Slide 4 寫 \( \hat\sigma^2=\dfrac{RSS_{sub}}{n-p-1} \)。分母用 \( p \)（全部 predictors 數目），一般教科書（ISLR）嘅做法係用 <b>full model（包含全部 p 個 predictors）</b> 估計 \( \hat\sigma^2 \)，然後所有 sub-models 用同一個 \( \hat\sigma^2 \) 比較。考試請跟 slide 嘅寫法；如有疑問可以問 lecturer。</p></div>
+<div class="box note"><span class="label">📝 Source correction：共同 variance</span><p>Slide 4 原式 numerator 寫 RSS_sub，呢點需要更正：所有 submodels 必須共用 \(\hat\sigma_{full}^2=RSS_{full}/(n-p_{full}-1)\)，\(p_{full}\) 不含 intercept，full model 要有正 residual df。不能逐個 submodel 重估 variance 再比較。Lecture prediction-error-scale \(C_p=(RSS+2d\hat\sigma^2)/n\) 同 dimensionless \(RSS/\hat\sigma^2-n+2d\) 在共同 variance 固定時係正 affine transformation，ranking 相同。</p></div>
+<div class="box exam"><span class="label">⭐ 考試作答：slide 答案 vs 更正答案</span><p>Slide 4 寫 \(\hat\sigma^2=RSS_{sub}/(n-p-1)\)；更正答案係所有 submodels 共用 \(\hat\sigma^2_{full}=RSS_{full}/(n-p_{full}-1)\)。如果題目已經畫 \(\hat\sigma^2\)（例如本頁 2.3 嘅 13.33），直接代入，兩個寫法冇分別。如果要自己估 \(\hat\sigma^2\)，用 full model 嘅 RSS，並註明 slide 4 寫法有誤；唔肯定就問 lecturer。</p></div>
 
 <h3>2.2 AIC 同 BIC（slide 5）</h3>
 <p>除咗 \( C_p \)，仲有其他方法懲罰大 model：</p>
-<div class="box exam"><span class="label">⭐ AIC 同 BIC（lower is better）</span>
+<div class="box exam"><span class="label">⭐ Lecture 固定共同 variance、scaled AIC / BIC（lower is better）</span>
 <p><b>Akaike information criterion (AIC)</b></p>
-<div class="formula">$$ AIC=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\,\hat\sigma^2\right] $$</div>
+<div class="formula">$$ AIC_{fixed,scaled}=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+2d\,\hat\sigma^2\right] $$</div>
 <p><b>Bayesian information criterion (BIC)</b>，with sample size \( n \)</p>
-<div class="formula">$$ BIC=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\cdot d\,\hat\sigma^2\right] $$</div>
+<div class="formula">$$ BIC_{fixed,scaled}=\frac{1}{n\hat\sigma^2}\left[RSS_{sub}+(\log n)\cdot d\,\hat\sigma^2\right] $$</div>
 <p><b>The penalty in BIC is even heavier than those in AIC and \( C_p \).</b></p></div>
 
 <table>
 <tr><th>Criterion</th><th>每個 predictor 嘅 penalty</th><th>特點</th></tr>
 <tr><td>\( C_p \)</td><td>\( 2\hat\sigma^2 \)（再除 \( n \)）</td><td>Lower is better</td></tr>
-<tr><td>AIC</td><td>\( 2\hat\sigma^2 \)（再除 \( n\hat\sigma^2 \)）</td><td>\( AIC=C_p/\hat\sigma^2 \)，同 \( C_p \) 成正比</td></tr>
-<tr><td>BIC</td><td>\( (\log n)\,\hat\sigma^2 \)</td><td>Penalty 最重 → 揀較細 model</td></tr>
+<tr><td>Lecture fixed-scaled AIC</td><td>\( 2\hat\sigma^2 \)（再除 \( n\hat\sigma^2 \)）</td><td>\( AIC=C_p/\hat\sigma^2 \)，同 \( C_p \) 成正比</td></tr>
+<tr><td>Lecture fixed-scaled BIC</td><td>\( (\log n)\,\hat\sigma^2 \)</td><td>Penalty 最重 → 揀較細 model</td></tr>
 </table>
 
 <div class="box tip"><span class="label">💡 點解 BIC 最重？</span>
@@ -112,7 +113,7 @@
 <li>\( d \) 數 predictors 時要<b>包埋 intercept</b>。</li>
 </ul></div>
 
-<h3>2.3 Worked example</h3>
+<h3>2.3 Worked example（lecture fixed-common-variance criteria）</h3>
 <p>\( n=50 \)，用 \( \hat\sigma^2=13.33 \)（全部 models 共用）。比較兩個 models：</p>
 <table>
 <tr><th>Model</th><th>\( d \)（含 intercept）</th><th>\( RSS_{sub} \)</th></tr>
@@ -223,12 +224,16 @@ efs.subsets_                         # 每個 subset 嘅詳細結果
 <pre><code># 1. 自定 BIC scorer
 def bic_scorer(estimator, X, y):
     n_samples = X.shape[0]
-    n_features = X.shape[1]
+    design = np.column_stack([np.ones(n_samples), np.asarray(X)])
+    d = np.linalg.matrix_rank(design)  # const column / fitted intercept 只計一次
     y_pred = estimator.predict(X)
     rss = np.sum((y - y_pred) ** 2)          # Residual Sum of Squares
-    if rss &lt; 1e-10:                          # 避免 log(0)
-        return -np.inf
-    bic = n_samples * np.log(rss / n_samples) + n_features * np.log(n_samples)
+    # 浮點 perfect / near-perfect fit 明確中止，唔回傳反向分數
+    scale = max(float(np.sum(np.asarray(y, dtype=float) ** 2)), 1.0)
+    if n_samples &lt;= d or not np.isfinite(rss) or rss &lt;= np.finfo(float).eps * scale:
+        raise ValueError('Degenerate Gaussian BIC: perfect fit or no residual df')
+    K = d + 1  # regression parameters + unknown variance
+    bic = n_samples * np.log(rss / n_samples) + K * np.log(n_samples)
     return -bic                              # mlxtend 係 maximize score，所以回傳負 BIC
 
 # 2. Base estimator
@@ -248,7 +253,7 @@ efs.subsets_</code></pre>
 <div class="box exam"><span class="label">⭐ 點解 BIC 用 <code>cv=0</code>？</span>
 <p>BIC 係 <b>information criterion</b>，設計上係用 <b>full training set</b> 嘅 RSS 加 penalty 嚟評估 model（Method 1），唔需要 split data。CV 係 Method 2，兩者係<b>唔同方法</b>，唔使疊埋一齊用。</p></div>
 <div class="box warn"><span class="label">⚠️ 兩條 BIC 公式唔同樣？</span>
-<p>Code 用 \( n\log(RSS/n)+k\log n \)，同 slide 5 嘅 \( \frac{1}{n\hat\sigma^2}\left[RSS+(\log n)d\hat\sigma^2\right] \) 寫法唔同。兩者都係「fit 嘅好壞 + \( (\log n)\times \) model size」嘅 penalty 結構，前者係 normal errors 下由 likelihood 推出嘅常見版本。數值唔同，但用嚟<b>排序同一批 models</b> 時通常揀出相近嘅答案。推導屬 out-of-syllabus。</p></div>
+<p>Slide 5 係固定共同 variance 嘅 scaled RSS criterion；上面 scorer 用 unknown-variance Gaussian maximized likelihood：\(AIC=-2\log\hat L+2K\)，\(BIC=-2\log\hat L+K\log n\)，省略所有候選共用常數後 \(-2\log\hat L=n\log(RSS/n)\)。\(K=d+1\) 計入 unknown variance；若每個 model 都加同一 variance parameter，ranking 唔受影響。只比較相同 n、response 同 parameter-count convention。固定 variance 版本同 likelihood 版本<b>不是等價縮放，ranking 可以不同</b>，不能混用公式解釋 code。RSS=0 時 unknown-variance likelihood degenerate；formal limit BIC 趨向負 infinity、negative-BIC 趨向正 infinity，唔係最差 score。本 code 對 numerical near-perfect fit / residual df 不足明確 raise，須檢查資料同 noise model，唔靜默 floor RSS。</p></div>
 
 <h2>5. Forward and Backward Selection（slides 18–22）</h2>
 <p>Best subset 對大 p 唔實際（<b>impractical for large p</b>）。Slide 18 問：p = 20 時有幾多個 models？</p>
@@ -314,8 +319,8 @@ print(f'Out-of-sample RMSE: {rmse}')</code></pre>
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. Model A 有 3 個 predictors，Model B 喺 A 嘅基礎上多加 2 個。邊個 training RSS 較細？係咪代表 B 較好？</summary><p>B 嘅 RSS 一定 ≤ A（bigger model, smaller RSS）。但唔代表 B 較好：small RSS 只係 in-sample fit 好，唔保證 out-of-sample prediction 好，B 可能 overfit。要用 \( C_p \)/AIC/BIC 或 CV 比較。</p></details>
-<details class="q"><summary>Q2. 寫出 Mallows' \( C_p \)，指出 penalty term，並解釋 \( d \) 嘅意思。</summary><p>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)。Penalty term 係 \( 2d\hat\sigma^2 \)。\( d \) 係 sub-model 嘅 predictors 數目（包括 intercept）。Lower is better。</p></details>
-<details class="q"><summary>Q3. \( n=100 \)，\( \hat\sigma^2=4 \)。Model A：\( d=3 \)，RSS = 380；Model B：\( d=6 \)，RSS = 350。用 \( C_p \) 同 BIC 揀 model。</summary><p>\( C_p(A)=\frac{380+2(3)(4)}{100}=4.04 \)；\( C_p(B)=\frac{350+2(6)(4)}{100}=3.98 \) → \( C_p \) 揀 B。<br>\( \log 100\approx4.605 \)。\( BIC(A)=\frac{380+4.605(3)(4)}{400}=\frac{435.3}{400}\approx1.088 \)；\( BIC(B)=\frac{350+4.605(6)(4)}{400}=\frac{460.5}{400}\approx1.151 \) → BIC 揀 A。<br>呢個正好示範 BIC penalty 較重，揀較細 model。</p></details>
+<details class="q"><summary>Q2. 寫出 Mallows' \( C_p \)，指出 penalty term，並解釋 \( d \) 嘅意思。</summary><p>\( C_p=\frac1n\left[RSS_{sub}+2d\hat\sigma^2\right] \)，所有 submodels 共用 full-model variance estimate \(\hat\sigma^2=RSS_{full}/(n-p_{full}-1)\)。Penalty term 係 \( 2d\hat\sigma^2 \)。\( d \) 係 sub-model 嘅 predictors 數目（包括 intercept）。Lower is better。</p></details>
+<details class="q"><summary>Q3. \( n=100 \)，\( \hat\sigma^2=4 \)。Model A：\( d=3 \)，RSS = 380；Model B：\( d=6 \)，RSS = 350。用 \( C_p \) 同 lecture fixed-scaled BIC 揀 model。</summary><p>\( C_p(A)=\frac{380+2(3)(4)}{100}=4.04 \)；\( C_p(B)=\frac{350+2(6)(4)}{100}=3.98 \) → \( C_p \) 揀 B。<br>\( \log 100\approx4.605 \)。\( BIC(A)=\frac{380+4.605(3)(4)}{400}=\frac{435.3}{400}\approx1.088 \)；\( BIC(B)=\frac{350+4.605(6)(4)}{400}=\frac{460.5}{400}\approx1.151 \) → BIC 揀 A。<br>呢個正好示範 BIC penalty 較重，揀較細 model。</p></details>
 <details class="q"><summary>Q4. 幾時 BIC 嘅 penalty 會重過 AIC？</summary><p>BIC 每個 predictor 嘅系數係 \( \log n \)，AIC 係 2。\( \log n&gt;2\iff n&gt;e^2\approx7.39 \)，即 \( n\ge8 \) 時 BIC 已經較重。</p></details>
 <details class="q"><summary>Q5. 描述 5-fold CV，並寫出 CV error。</summary><p>將 data 隨機分 5 份；每次用 1 份做 test、4 份做 training，計 MSE；重複 5 次令每份都做過 test；\( CV_{(5)}=\frac15\sum_{k=1}^{5}MSE_k \)。</p></details>
 <details class="q"><summary>Q6. 有 500 個 data instances，LOOCV 要 fit 幾多次 model？佢同 K-fold CV 有咩關係？</summary><p>500 次。LOOCV = n-fold CV（K = n），每次留 1 個做 test，所以 computationally expensive。</p></details>
@@ -328,11 +333,12 @@ print(f'Out-of-sample RMSE: {rmse}')</code></pre>
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li><b>Big model ≠ good model</b>。Model 越大 RSS 越細，但 prediction 係針對 out-of-sample（unseen）data。</li>
-<li>Method 1 Penalty（lower is better，\( d \) 含 intercept）：\( C_p=\frac1n[RSS_{sub}+2d\hat\sigma^2] \)；\( AIC=\frac{1}{n\hat\sigma^2}[RSS_{sub}+2d\hat\sigma^2] \)；\( BIC=\frac{1}{n\hat\sigma^2}[RSS_{sub}+(\log n)d\hat\sigma^2] \)。</li>
+<li>Method 1 lecture fixed-common-variance / scaled Penalty（所有 submodels 共用 full-model variance；lower is better，\( d \) 含 intercept）：\( C_p=\frac1n[RSS_{sub}+2d\hat\sigma^2] \)；\( AIC_{fixed,scaled}=\frac{1}{n\hat\sigma^2}[RSS_{sub}+2d\hat\sigma^2] \)；\( BIC_{fixed,scaled}=\frac{1}{n\hat\sigma^2}[RSS_{sub}+(\log n)d\hat\sigma^2] \)。</li>
 <li>BIC penalty 最重（\( \log n&gt;2 \) when \( n\ge8 \)）→ 揀較少 predictors → parsimonious（節儉）model。</li>
 <li>Method 2 CV：Train-test split → K-fold（平均 K 個 MSE）→ LOOCV = n-fold（n 次，expensive）。用 bias、MSE / RMSE 量度。</li>
 <li>Best subset = 試晒 \( 2^p \) 個 models（p = 4 → 16；p = 20 → 1,048,576）；<code>ExhaustiveFeatureSelector</code>，<code>fixed_features=(0,)</code> 保留 const，<code>max_features</code> 要計埋 const。</li>
-<li>BIC scorer 用 <code>cv=0</code>（information criterion 用 full training set）；scorer 要 return 負值，因為 selector maximize score。</li>
+<li>標準 likelihood：\(AIC=-2\log\hat L+2K\)、\(BIC=-2\log\hat L+K\log n\)；unknown-variance Gaussian 用 \(n\log(RSS/n)\)，不是 fixed-scaled criterion 嘅等價縮放，ranking 可以不同。</li>
+<li>BIC scorer 用 <code>cv=0</code>（information criterion 用 full training set）；scorer 回傳 negative-BIC，因為 selector maximize score；本例用 unknown-variance likelihood，perfect / near-perfect fit 明確 raise，唔回傳最差分數。</li>
 <li>Forward：null model → 逐個加（RSS 最好）→ \( C_p \)/AIC/BIC 冇改善就停。Backward：full model → 逐個刪。唔保證 best subset，但平。</li>
 <li><code>SequentialFeatureSelector(..., k_features="best", forward=True/False, scoring='neg_mean_squared_error', cv=5)</code>；<code>Pipeline([('feature_selection', sfs), ('regression', LinearRegression())])</code> → test data 計 out-of-sample RMSE。</li>
 </ul></div>

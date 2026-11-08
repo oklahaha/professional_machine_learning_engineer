@@ -233,7 +233,7 @@ print(type(df[['city']]))   # &lt;class 'pandas.core.frame.DataFrame'&gt;</code>
 <h4>File paths</h4>
 <ul>
   <li>Current path：<code>"./"</code></li>
-  <li>當前路徑下 sub-folder：<code>"./sub_folder/"</code> (slide 亦列 <code>"/sub_folder/"</code>)</li>
+  <li>當前路徑下 sub-folder：<code>"sub_folder/"</code> 或 <code>"./sub_folder/"</code>。Source erratum（p.18）：<code>"/sub_folder/"</code> 係 rooted path；POSIX 由 filesystem root 起，唔係 current directory。建議 <code>from pathlib import Path</code> 後用 <code>Path(dir_path) / filename</code> 組合路徑。</li>
   <li>另一個 drive：<code>"D:/another_folder/"</code> (absolute path)</li>
 </ul>
 <pre><code>df = pd.read_csv('your_file_with_its_path.csv')                 # 同一 folder
@@ -504,7 +504,7 @@ hero.rename(mapper=str.upper(),         axis='columns')  # ✗ wrong</code></pre
 <details class="q"><summary>Q4. 點解以下 DataFrame 全部係 NaN？<code>s = pd.Series([1, 2, 3]); pd.DataFrame({'v': s}, index=['x', 'y', 'z'])</code></summary><p>Series 有自己嘅 index 0, 1, 2；DataFrame 按 index label 對齊，'x','y','z' 喺 s 入面搵唔到，所以全填 NaN。應該 <code>pd.Series([1,2,3], index=['x','y','z'])</code>。</p></details>
 <details class="q"><summary>Q5. <code>df['city']</code> 同 <code>df[['city']]</code> 有咩分別？</summary><p>前者返回 Series (1D)；後者入面係 list of column labels，返回只有一個 column 嘅 DataFrame (2D)。</p></details>
 <details class="q"><summary>Q6. 你將一個有 <code>category</code> 同 <code>string</code> dtype 嘅 DataFrame 存做 CSV 再讀返，會發生咩？想完整保留 dtypes 應該點？</summary><p>CSV 唔儲存 dtype 資訊，讀返時 pandas 重新推斷：string → object，category → int64 / object 等。想 100% 保留就用 <code>to_pickle()</code> / <code>read_pickle()</code>，但 pickle 唔可預覽、只應開 trusted source。</p></details>
-<details class="q"><summary>Q7. A 有 key [1, 2, 3, 4]，B 有 key [3, 4, 5]。<code>pd.merge(A, B, on='key', how=?)</code> 喺 inner / outer / left / right / cross 各有幾多 rows？</summary><p>inner：{3, 4} → 2 rows；outer：{1, 2, 3, 4, 5} → 5 rows；left：4 rows；right：3 rows；cross：4 × 3 = 12 rows。(假設 keys 冇重複。)</p></details>
+<details class="q"><summary>Q7. A 有 key [1, 2, 3, 4]，B 有 key [3, 4, 5]。<code>pd.merge(A, B, on='key', how=?)</code> 喺 inner / outer / left / right 各有幾多 rows？Cross join 點寫？</summary><p>inner → 2；outer → 5；left → 4；right → 3（假設 keys 冇重複）。Cross 另寫 <code>pd.merge(A, B, how='cross')</code> → 4 × 3 = 12 rows；不可傳 on / left_on / right_on，否則 MergeError。</p></details>
 <details class="q"><summary>Q8. DC (215 rows) 同 Marvel (388 rows) 有相同 columns，應該用 concat 定 merge 合併？寫出 code。</summary><p>用 concat 沿 rows 疊：<code>hero_info = pd.concat([hero_dc, hero_marvel], ignore_index=True)</code> → (603, 9)。merge 係用嚟按 key 將唔同 columns 嘅資料配對。</p></details>
 <details class="q"><summary>Q9. 寫 code 將 df 所有 column 名轉細楷並把空格換成底線 (例如 'Eye color' → 'eye_color')。</summary><p><code>df.columns = df.columns.str.lower().str.replace(' ', '_')</code>，或者 <code>df = df.rename(columns=lambda x: x.lower().replace(' ', '_'))</code>。記得 assign 返。</p></details>
 <details class="q"><summary>Q10. 點解 <code>rename(mapper=str.upper())</code> 錯，而 <code>rename(mapper=str.upper)</code> 啱？</summary><p><code>mapper</code> 需要一個 function 本身，由 pandas 對每個 label call。<code>str.upper</code> 係 function object ✓；<code>str.upper()</code> 會即刻執行 (而且冇 argument → TypeError)，傳入嘅唔係 function ✗。同理 <code>lambda x: x.upper()</code> ✓ 但 <code>lambda x: x.upper</code> 返回 method object 而唔係 string ✗。</p></details>

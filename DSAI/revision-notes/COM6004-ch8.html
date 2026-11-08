@@ -24,13 +24,13 @@
 <p class="meta">COM6004 · Chapter 8 · Source: COM6004_Chapter_8_Ensemble_Methods.pptx (27 slides) · Tan, Steinbach, Karpatne, Kumar, <i>Introduction to Data Mining</i> 2nd ed.</p>
 <h1>Ensemble Methods: Bagging, Boosting (AdaBoost) &amp; Random Forest（非考試範圍）</h1>
 
-<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>COM6004 考試範圍只包括 <b>Chapter 1–6</b>，所以呢頁冇 Exam 標記。不過呢章同 <a href="COM6004-ch4a.html">Chapter 4 Classification</a> 嘅 decision tree、entropy、overfitting 關係好密切，可以當係 classification 嘅延伸嚟睇。</p></div>
+<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>已確認：COM6004 考試範圍只包括 <b>Chapter 1–6</b>。Chapter 7（Matrix Algebra Review、PCA / SVD / Factor Analysis）同 Chapter 8（Ensemble Methods）唔考。Slides 本身冇寫明，以呢個確認為準。所以呢頁冇 Exam 標記。不過呢章同 <a href="COM6004-ch4a.html">Chapter 4 Classification</a> 嘅 decision tree、entropy、overfitting 關係好密切，可以當係 classification 嘅延伸嚟睇。</p></div>
 
 <div class="overview">
   <h3>🎯 本講內容</h3>
   <ul>
     <li><b>Ensemble 嘅概念</b>：由 training data 建立一組 base classifiers，再將佢哋嘅 predictions 合併（majority vote / weighted majority vote）。</li>
-    <li><b>點解 ensemble 有用</b>：25 個 \(\varepsilon = 0.35\) 嘅 independent classifiers，majority vote 之後 error 跌到大約 0.06；同埋兩個 necessary conditions。</li>
+    <li><b>點解 ensemble 有用</b>：25 個 \(\varepsilon = 0.35\) 嘅 independent classifiers，majority vote 之後 error 跌到大約 0.06；呢個 Binomial 示範嘅 sufficient assumptions（唔係一般 ensemble 改善嘅必要條件）。</li>
     <li><b>三類 ensemble</b>：manipulate data distribution（bagging、boosting）、manipulate input features（random forests）、manipulate class labels（error-correcting output coding）。</li>
     <li><b>Bagging</b>：bootstrap sampling，每個 instance 被抽中嘅機會 \(1-(1-1/n)^n \approx 0.632\)；1-D decision stump 例子。</li>
     <li><b>Boosting / AdaBoost</b>：weights 點樣隨每個 round 改變，error rate \(\varepsilon_i\)、importance \(\alpha_i\)、weight update 同 weighted vote 嘅公式；1-D 例子。</li>
@@ -40,7 +40,7 @@
   <table>
   <tr><th></th><th>Bagging</th><th>Boosting (AdaBoost)</th><th>Random Forest</th></tr>
   <tr><td>點樣整唔同嘅 training sets</td><td>Bootstrap（uniform，sampling with replacement）</td><td>按 weights 抽樣，weights 每 round 更新</td><td>Bootstrap ＋ 每個 node 隨機揀 \(p\) 個 attributes</td></tr>
-  <tr><td>Base classifiers 之間</td><td>互相獨立，可以 parallel 訓練</td><td>有先後次序（sequential），後一個專攻前一個錯嘅 records</td><td>獨立，而且 decorrelated</td></tr>
+  <tr><td>Base classifiers 之間</td><td>訓練工作可 parallel；errors 未必 statistical independent</td><td>有先後次序（sequential），後一個專攻前一個錯嘅 records</td><td>可 parallel 訓練；random features 旨在降低 error correlation，唔保證 independence</td></tr>
   <tr><td>點樣合併</td><td>Majority vote</td><td>Weighted vote（weight \(= \alpha_i\)）</td><td>Majority vote</td></tr>
   <tr><td>主要改善</td><td>Variance（適合 unstable classifiers）</td><td>Bias 同 variance 都可以改善，但較易受 noise 影響</td><td>Variance，同時唔太影響 bias</td></tr>
   </table>
@@ -60,25 +60,25 @@
 <ul>
   <li>有 25 個 base classifiers，每個嘅 error rate 都係 \(\varepsilon = 0.35\)</li>
   <li>用 majority vote 做 classification</li>
-  <li>假設各個 classifiers 犯嘅錯誤 <b>uncorrelated</b></li>
+  <li>Slide 寫 errors <b>uncorrelated</b>；要用下面 Binomial 計法，實際需要更強嘅 <b>mutually independent Bernoulli errors</b>（pairwise uncorrelated 唔夠）</li>
 </ul>
-<p>Ensemble 要錯，即係 25 個入面最少 13 個錯（過半數）。每個 classifier 錯唔錯可以當係一次 Bernoulli trial，所以「錯嘅數目」跟 Binomial distribution \(B(25, 0.35)\)：</p>
+<p>Ensemble 要錯，即係 25 個入面最少 13 個錯（過半數）。假設 mutually independent、同 error probability 嘅 Bernoulli trials，先有「錯嘅數目」跟 Binomial distribution \(B(25, 0.35)\)：</p>
 <div class="formula">$$P(\text{ensemble wrong}) = \sum_{i=13}^{25} \binom{25}{i} \varepsilon^{i} (1-\varepsilon)^{25-i} = \sum_{i=13}^{25} \binom{25}{i} (0.35)^{i} (0.65)^{25-i} \approx 0.06$$</div>
 <p>由單一 classifier 嘅 0.35 跌到 ensemble 嘅 0.06，改善好明顯。</p>
 <div class="box link"><span class="label">🔗 COM6005</span><p>呢個計法就係 COM6005 Module 2 嘅 <b>Binomial distribution</b>：\(n = 25\) 次 trials，success（呢度指「錯」）probability \(p = 0.35\)，求 \(P(X \ge 13)\)。\(E(X) = np = 8.75\)，遠低於 13，所以 \(P(X \ge 13)\) 好細。</p></div>
 
-<p>Slide 5 嘅圖顯示 25 個 base classifiers（errors uncorrelated）時，<b>base classifier error</b>（x 軸）同 <b>ensemble classifier error</b>（y 軸）嘅關係。紅色曲線係 ensemble，藍色虛線係 \(y = x\)（即係同單一 classifier 一樣）：</p>
+<p>Slide 5 嘅圖顯示 25 個 base classifiers（Binomial 模型假設 independent errors）時，<b>base classifier error</b>（x 軸）同 <b>ensemble classifier error</b>（y 軸）嘅關係。紅色曲線係 ensemble，藍色虛線係 \(y = x\)（即係同單一 classifier 一樣）：</p>
 <ul>
   <li>\(\varepsilon &lt; 0.5\)：紅線喺虛線下面，ensemble 比單一 classifier 好，例如 \(\varepsilon = 0.35\) 時大約 0.06。</li>
   <li>\(\varepsilon = 0.5\)：兩條線相交，ensemble 冇幫助。</li>
   <li>\(\varepsilon &gt; 0.5\)：紅線喺虛線上面，ensemble 反而<b>更差</b>，好快去到接近 1。</li>
 </ul>
-<p>所以 Slide 5 列出 ensemble 比單一 base classifier 好嘅 <b>necessary conditions</b>：</p>
+<p>Slide 5 標題寫 <b>Necessary Conditions</b>，但應理解成呢個理想化 binary majority-vote Binomial 示範嘅 <b>sufficient assumptions</b>，唔係所有 ensemble 改善嘅必要條件：</p>
 <ol>
-  <li>All base classifiers are <b>independent</b> of each other</li>
+  <li>Base classifiers 嘅 error indicators <b>mutually independent</b>，並有相同 error probability</li>
   <li>All base classifiers perform <b>better than random guessing</b>（binary classification 嘅 error rate \(&lt; 0.5\)）</li>
 </ol>
-<div class="box warn"><span class="label">⚠️ 現實限制</span><p>實際上 base classifiers 用同一份 data 訓練，好難完全 independent。所以 bagging、boosting、random forest 嘅設計目標，就係用唔同方法令 base classifiers <b>盡量唔同</b>，令佢哋嘅錯誤唔會集中喺同一啲 records。即使只係 slightly correlated，ensemble 通常都會有改善。</p></div>
+<div class="box warn"><span class="label">⚠️ 現實限制</span><p>實際上 base classifiers 用同一份 data 訓練，好難完全 independent。所以 bagging、boosting、random forest 嘅設計目標，就係用唔同方法令 base classifiers <b>盡量唔同</b>，令佢哋嘅錯誤唔會集中喺同一啲 records。有 correlation 但 errors 互補嘅 ensemble 亦可改善，惟唔能保證；能 parallel 訓練亦唔代表 predictions / errors statistical independent。</p></div>
 
 <h2>3. General Approach（Slide 6）</h2>
 <p>Slide 6 嘅流程圖分三步：</p>
@@ -181,7 +181,7 @@
   <li>\(\varepsilon = 0.5\) 時，\(\alpha = 0\)（同亂估一樣，冇投票權）。</li>
   <li>\(\varepsilon &gt; 0.5\) 時，\(\alpha &lt; 0\)。所以 AdaBoost 會避免呢種情況（見下面 weight update）。</li>
 </ul>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 18 嘅 \(\alpha_i\) 公式係 MathType 圖片。圖入面嘅文字記錄有 \(\alpha\)、\(\varepsilon\)、ln、1 同 2，同上面嘅標準 AdaBoost 公式吻合，而且下面例子嘅 \(\alpha\) 值都用呢條公式計到。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 18 嘅 \(\alpha_i\) 公式係 MathType 圖片。圖入面嘅文字記錄有 \(\alpha\)、\(\varepsilon\)、ln、1 同 2，同上面嘅標準 AdaBoost 公式吻合；下面 example 已更正 source s22–23 同此公式不一致嘅數字。</p></div>
 
 <p><b>Weight update（Slide 19）</b>：</p>
 <div class="formula">$$w_j^{(i+1)} = \frac{w_j^{(i)}}{Z_i} \times \begin{cases} \exp(-\alpha_i) &amp; \text{if } C_i(x_j) = y_j \\ \exp(\alpha_i) &amp; \text{if } C_i(x_j) \ne y_j \end{cases}$$</div>
@@ -190,7 +190,7 @@
 <p><b>Classification（Slide 19）</b>：</p>
 <div class="formula">$$C^*(x) = \arg\max_{y} \sum_{i=1}^{T} \alpha_i \,\delta\big(C_i(x) = y\big)$$</div>
 <p>即係 <b>weighted majority vote</b>：每個 classifier 嘅一票，價值等於佢嘅 \(\alpha_i\)。對 \(y \in \{-1, 1\}\)，等同計 \(\sum_i \alpha_i C_i(x)\) 嘅正負號。</p>
-<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 20 嘅 AdaBoost Algorithm 係一張圖片，冇抽到文字。流程同上面嘅公式一致：(1) weights 初始化為 \(1/N\)；(2) 每個 round 按 weights 抽 sample、訓練 \(C_i\)、計 \(\varepsilon_i\)；如果 \(\varepsilon_i &gt; 0.5\)，就 reset weights 再嚟過；(3) 計 \(\alpha_i\)，更新 weights；(4) 用 weighted vote 做 prediction。</p></div>
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Slide 20 嘅 AdaBoost Algorithm 4.6 係圖片：第 1 行初始化 weights，第 7 行係 weighted error sum，<b>冇額外除 N</b>。流程同上面嘅公式一致：(1) weights 初始化為 \(1/N\)；(2) 每個 round 按 weights 抽 sample、訓練 \(C_i\)、計 \(\varepsilon_i\)；如果 \(\varepsilon_i &gt; 0.5\)，就 reset weights 再嚟過；(3) 計 \(\alpha_i\)，更新 weights；(4) 用 weighted vote 做 prediction。</p></div>
 
 <h2>9. AdaBoost Example（Slide 21–23）</h2>
 <p>用返同 bagging example 一樣嘅 1-D data 同 decision stump。Slide 22 顯示頭 3 個 boosting rounds 嘅 training sets：</p>
@@ -199,36 +199,35 @@
   <li>Round 2：0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.3, 0.3, 0.3, 0.3（集中喺 Round 1 分錯嘅 0.1–0.3）</li>
   <li>Round 3：0.2, 0.2, 0.4, 0.4, 0.4, 0.4, 0.5, 0.6, 0.6, 0.7（集中喺 Round 2 分錯嘅 0.4–0.7）</li>
 </ul>
-<p><b>Summary（Slide 22）</b>：</p>
+<p><b>Corrected summary（固定 source s22 三棵 stumps，依 s18 / s20 algorithm 重算）</b>：</p>
 <table>
-<tr><th>Round</th><th>Split point</th><th>Left class</th><th>Right class</th><th>\(\alpha\)</th></tr>
-<tr><td>1</td><td>0.75</td><td>−1</td><td>1</td><td>1.738</td></tr>
-<tr><td>2</td><td>0.05</td><td>1</td><td>1</td><td>2.7784</td></tr>
-<tr><td>3</td><td>0.3</td><td>1</td><td>−1</td><td>4.1195</td></tr>
+<tr><th>Round</th><th>Split point</th><th>Left class</th><th>Right class</th><th>Weighted error \(\varepsilon_i\)</th><th>正確 \(\alpha_i\)</th></tr>
+<tr><td>1</td><td>0.75</td><td>−1</td><td>1</td><td>0.3</td><td>0.423648930</td></tr>
+<tr><td>2</td><td>0.05</td><td>1</td><td>1</td><td>2/7 ≈ 0.285714286</td><td>0.458145366</td></tr>
+<tr><td>3</td><td>0.3</td><td>1</td><td>−1</td><td>0.15</td><td>0.867300528</td></tr>
 </table>
-<p><b>Weights（Slide 23）</b>：</p>
+<p><b>每輪訓練前嘅 normalized per-record weights</b>（每個區域內每一點各自有以下 weight，唔係整組 total）：</p>
 <table>
-<tr><th>Round</th><th>x = 0.1–0.3</th><th>x = 0.4–0.7</th><th>x = 0.8–1.0</th></tr>
+<tr><th>Round</th><th>x = 0.1–0.3（3 點）</th><th>x = 0.4–0.7（4 點）</th><th>x = 0.8–1.0（3 點）</th></tr>
 <tr><td>1</td><td>0.1</td><td>0.1</td><td>0.1</td></tr>
-<tr><td>2</td><td>0.311</td><td>0.01</td><td>0.01</td></tr>
-<tr><td>3</td><td>0.029</td><td>0.228</td><td>0.009</td></tr>
+<tr><td>2</td><td>1/6 ≈ 0.166666667</td><td>1/14 ≈ 0.071428571</td><td>1/14 ≈ 0.071428571</td></tr>
+<tr><td>3</td><td>7/60 ≈ 0.116666667</td><td>1/8 = 0.125</td><td>1/20 = 0.05</td></tr>
 </table>
-<p>逐步解釋：</p>
 <ol>
-  <li><b>Round 1</b>：stump \(x \le 0.75 \Rightarrow -1\)，否則 1。喺 original data 上分錯 x = 0.1, 0.2, 0.3（真 class 係 1）。所以呢三個嘅 weight 由 0.1 升到 0.311，其餘 7 個跌到 0.01（\(3 \times 0.311 + 7 \times 0.01 \approx 1\)）。</li>
-  <li><b>Round 2</b>：sample 幾乎全部係 0.1–0.3（class 1），學到「全部都係 1」（split 0.05，兩邊都係 1）。分錯 x = 0.4–0.7，所以佢哋嘅 weight 升到 0.228。</li>
-  <li><b>Round 3</b>：sample 集中喺 0.4–0.7，學到 \(x \le 0.3 \Rightarrow 1\)，否則 −1，分錯 x = 0.8–1.0。</li>
+<li><b>Round 1</b>：錯左邊 3 點，\(\varepsilon_1=3(0.1)=0.3\)，\(\alpha_1=\frac12\ln(7/3)\)。更新並 normalize 後，錯分組 total = 1/2，所以每點 1/6；其餘每點 1/14。</li>
+<li><b>Round 2</b>：全預測 +1，錯中間 4 點，\(\varepsilon_2=4/14=2/7\)，\(\alpha_2=\frac12\ln(5/2)\)。更新後中組每點 1/8，左組每點 7/60，右組每點 1/20。</li>
+<li><b>Round 3</b>：錯右組 3 點，\(\varepsilon_3=3/20=0.15\)，\(\alpha_3=\frac12\ln(17/3)\)。每輪 weights 都加埋等於 1，唔可再除 \(N\)。</li>
 </ol>
-<div class="box warn"><span class="label">⚠️ 數字同公式嘅細節</span><p>例子入面嘅 \(\alpha\) 值，係用 \(\varepsilon_i = \frac{1}{N}\sum_j w_j\,\delta(C_i(x_j) \ne y_j)\) 計出嚟（Tan 書嘅版本，比 Slide 18 多咗一個 \(\frac{1}{N}\)）。例如 Round 1 分錯嘅 weights 加埋係 0.3，\(\varepsilon_1 = 0.3/10 = 0.03\)，\(\alpha_1 = \frac{1}{2}\ln(0.97/0.03) \approx 1.738\)。如果照 Slide 18 唔除 \(N\)，\(\varepsilon_1 = 0.3\)，\(\alpha_1 = \frac{1}{2}\ln(0.7/0.3) \approx 0.424\)。兩個版本嘅最終 prediction 都一樣，但如果要計數，就要跟 lecturer 用嘅版本。另外 Round 3 嘅 0.009 應該係 0.0009，因為 weights 加埋要等於 1（\(3 \times 0.029 + 4 \times 0.228 + 3 \times 0.0009 \approx 1\)）。</p></div>
-
-<p><b>Classification（Slide 23）</b>：計 \(\sum_i \alpha_i C_i(x)\)：</p>
+<div class="box warn"><span class="label">⚠️ Source s22–23 worked-example error，唔係另一個有效版本</span><p>s18 同 s20 Algorithm 4.6 第 7 行都寫 \(\varepsilon_i=\sum_j w_j\delta(C_i(x_j)\ne y_j)\)，而 s20 第 1 行已初始化 \(w_j=1/N\)。原例卻印 \(\alpha=(1.738,2.7784,4.1195)\)，只有<b>錯誤地再除一次 N=10</b> 才能重現（第一輪把 0.3 變成 0.03）。呢個係 source example 同 algorithm 矛盾，唔可以稱為「Tan 書另一版本」。Source weights Round2 0.311 / 0.01、Round3 0.029 / 0.228 / 0.009 亦唔係上面正確算法嘅 weights；即使沿額外除 N 嘅錯法，Round3 左組每點約 0.0284624、右組約 0.0008803，右組印 0.009 仲有量級錯誤。以下 corrected table 跟 algorithm 計。</p></div>
+<div class="box note"><span class="label">📝 Slide 答案 vs 更正答案</span><p>Slide 22–23 答案：\(\alpha=(1.738,\ 2.7784,\ 4.1195)\)，x = 0.8–1.0 嘅 sum = 0.397。更正答案：\(\alpha=(0.4236,\ 0.4581,\ 0.8673)\)，sum = 0.0145。兩者最終 predictions 相同（全對）。呢章唔考；如果要計，寫更正答案並註明 slide 例子多除咗一次 N，或者問 lecturer 跟邊個版本。</p></div>
+<p><b>Corrected classification</b>：計 \(\sum_i\alpha_i C_i(x)\)：</p>
 <table>
-<tr><th>x</th><th>Round 1 (\(\alpha=1.738\))</th><th>Round 2 (\(\alpha=2.778\))</th><th>Round 3 (\(\alpha=4.120\))</th><th>Sum</th><th>Sign</th><th>True</th></tr>
-<tr><td>0.1–0.3</td><td>−1</td><td>1</td><td>1</td><td>\(-1.738 + 2.778 + 4.120 = 5.16\)</td><td>1</td><td>1</td></tr>
-<tr><td>0.4–0.7</td><td>−1</td><td>1</td><td>−1</td><td>\(-1.738 + 2.778 - 4.120 \approx -3.08\)</td><td>−1</td><td>−1</td></tr>
-<tr><td>0.8–1.0</td><td>1</td><td>1</td><td>−1</td><td>\(1.738 + 2.778 - 4.120 \approx 0.40\)</td><td>1</td><td>1</td></tr>
+<tr><th>x</th><th>Round 1 prediction</th><th>Round 2 prediction</th><th>Round 3 prediction</th><th>Corrected score</th><th>Sign / True</th></tr>
+<tr><td>0.1–0.3</td><td>−1</td><td>1</td><td>1</td><td>\(-0.423648930+0.458145366+0.867300528\approx0.901796963\)</td><td>1 / 1</td></tr>
+<tr><td>0.4–0.7</td><td>−1</td><td>1</td><td>−1</td><td>\(-0.423648930+0.458145366-0.867300528\approx-0.832804092\)</td><td>−1 / −1</td></tr>
+<tr><td>0.8–1.0</td><td>1</td><td>1</td><td>−1</td><td>\(0.423648930+0.458145366-0.867300528\approx0.014493768\)</td><td>1 / 1</td></tr>
 </table>
-<p>（Slide 嘅 Sum 係 5.16、−3.08、0.397。）只用 3 個 stumps，AdaBoost 已經做到 100% accuracy。留意 Round 3 嘅 \(\alpha\) 最大，但佢喺 x = 0.8–1.0 投錯票，仍然被 Round 1 同 2 加埋嘅票蓋過，所以結果正確。</p>
+<p>正確算法固定呢 3 棵 source stumps，training accuracy 都係 100%；source 錯誤算法剛巧亦有相同 labels，<b>唔代表 weights / errors / α 可互換</b>。呢度係檢查指定 stumps 嘅 arithmetic，唔係聲稱正確 weights 必定抽出 s22 原有 resampling sequence。</p>
 <pre><code># 參考用 scikit-learn 示範（唔係 lecture code）
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
@@ -236,13 +235,14 @@ from sklearn.ensemble import BaggingClassifier, AdaBoostClassifier
 
 X = np.arange(1, 11).reshape(-1, 1) / 10
 y = np.array([1, 1, 1, -1, -1, -1, -1, 1, 1, 1])
-stump = DecisionTreeClassifier(max_depth=1)   # decision stump
+stump = DecisionTreeClassifier(max_depth=1, random_state=0)   # 固定 seed 嘅 decision stump
 
 print(stump.fit(X, y).score(X, y))            # 單一 stump：0.7
 bag = BaggingClassifier(stump, n_estimators=10, random_state=1).fit(X, y)
-ada = AdaBoostClassifier(stump, n_estimators=3).fit(X, y)
-print(bag.score(X, y), ada.score(X, y))       # 通常可以去到 1.0（bagging 視乎 random_state）
+ada = AdaBoostClassifier(stump, n_estimators=3, random_state=0).fit(X, y)
+print(bag.score(X, y), ada.score(X, y))       # 例如 0.9 1.0（random_state=0）；唔會重現 s14 手工 bootstrap samples
 </code></pre>
+<p>Python 例子係另外嘅 sklearn 示範：隨機 samples / defaults / split criterion 可同 lecture 手工表不同。s14 指定 10 棵 stumps 嘅 vote accuracy 係 1.0，唔代表以上 bagging seed1 都係 1.0；library version／seed 應連同輸出記錄。</p>
 
 <h2>10. Random Forest（Slide 24–25）</h2>
 <p>Construct an ensemble of decision trees by manipulating <b>training set as well as features</b>：</p>
@@ -258,14 +258,14 @@ print(bag.score(X, y), ada.score(X, y))       # 通常可以去到 1.0（bagging
   <li>Random forests reduce <b>variance</b> without negatively impacting the <b>bias</b></li>
   <li>Selection of hyper-parameter \(p\)：
     <ul>
-      <li>Small values ensure <b>lack of correlation</b>（trees 之間更唔同）</li>
+      <li>Small values aim for <b>lower correlation</b>（唔保證 independence）（trees 之間更唔同）</li>
       <li>High value promotes <b>strong base classifiers</b>（每棵 tree 更準）</li>
       <li>Common default choices：\(\sqrt{d}\)、\(\log_2(d+1)\)（\(d\) 係 attributes 嘅總數）</li>
     </ul>
   </li>
 </ul>
 <div class="box warn"><span class="label">⚠️ Slide 用字</span><p>Slide 25 寫 "pruned trees"、"lack of correction"、"reduce negatively impacting the bias"。根據 Slide 24（unpruned tree）同 Tan 書，原意應該係 <b>unpruned</b> trees、lack of <b>correlation</b>、reduce <b>variance</b> without negatively impacting the bias。上面已經用返原意。</p></div>
-<div class="box tip"><span class="label">💡 點解要隨機揀 attributes</span><p>如果有一個 attribute 特別強，bagging 嘅每棵 tree 都會用佢做 root split，咁 trees 就好相似（highly correlated），平均之後 variance 減得唔多。Random forest 每個 node 只畀 tree 睇 \(p\) 個 attributes，強 attribute 唔係次次都揀得到，trees 就會唔同，即係滿足第 2 節嘅 independence 條件。例如 \(d = 16\)：\(\sqrt{16} = 4\)，\(\log_2 17 \approx 4.09\)，即係每個 node 隨機睇大約 4 個 attributes。</p></div>
+<div class="box tip"><span class="label">💡 點解要隨機揀 attributes</span><p>如果有一個 attribute 特別強，bagging 嘅每棵 tree 都會用佢做 root split，咁 trees 就好相似（highly correlated），平均之後 variance 減得唔多。Random forest 每個 node 只畀 tree 睇 \(p\) 個 attributes，強 attribute 唔係次次都揀得到，trees 就會唔同，即係降低 error correlation，唔等同滿足 statistical independence。例如 \(d = 16\)：\(\sqrt{16} = 4\)，\(\log_2 17 \approx 4.09\)，即係每個 node 隨機睇大約 4 個 attributes。</p></div>
 <div class="box link"><span class="label">🔗 跨章連繫</span><p>Chapter 4 講 decision tree 會 overfit，所以要 pruning。Random forest 唔做 pruning，每棵 tree 都 overfit，但靠大量 decorrelated trees 平均，抵消 high variance。呢度用 entropy / Gini 揀 split 嘅方法同 Chapter 4 完全一樣。</p></div>
 
 <h2>11. Gradient Boosting（Slide 26）</h2>
@@ -285,28 +285,28 @@ gbm = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=
 </code></pre>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. Ensemble method 嘅定義係咩？Ensemble 要比單一 base classifier 好，需要咩 necessary conditions？</summary><p>由 training data 建立一組 classifiers，再合併佢哋嘅 predictions 嚟預測 test records 嘅 class label。條件：(1) base classifiers 之間互相 independent；(2) 每個 base classifier 都比 random guessing 好（binary classification 嘅 error rate \(&lt; 0.5\)）。</p></details>
+<details class="q"><summary>Q1. Ensemble method 嘅定義係咩？第 2 節 Binomial majority-vote 示範需要咩 assumptions？係普遍必要條件嗎？</summary><p>由 training data 建立一組 classifiers，再合併佢哋嘅 predictions 嚟預測 test records 嘅 class label。理想化示範假設 errors mutually independent、同 error probability，而且每個比 random guessing 好（binary error rate \(&lt;0.5\)）；呢啲係該示範嘅 sufficient assumptions，唔係 ensemble 改善嘅普遍必要條件。</p></details>
 <details class="q"><summary>Q2. 有 5 個 independent base classifiers，每個 \(\varepsilon = 0.2\)，用 majority vote。Ensemble 嘅 error rate 係幾多？</summary><p>最少 3 個錯先會錯：\(\binom{5}{3}(0.2)^3(0.8)^2 + \binom{5}{4}(0.2)^4(0.8) + (0.2)^5 = 0.0512 + 0.0064 + 0.00032 \approx 0.058\)，比 0.2 細好多。</p></details>
-<details class="q"><summary>Q3. 如果每個 base classifier 嘅 \(\varepsilon = 0.6\)，用 ensemble 會點？</summary><p>Ensemble error 會比 0.6 更高（Slide 5 曲線喺 \(\varepsilon &gt; 0.5\) 時喺 \(y = x\) 上面），因為大多數 classifiers 都會錯，majority vote 會放大錯誤。</p></details>
+<details class="q"><summary>Q3. 沿用獨立、同 error probability 嘅 binary majority-vote 模型，如果每個 base classifier 嘅 \(\varepsilon = 0.6\)，用 ensemble 會點？</summary><p>Ensemble error 會比 0.6 更高（Slide 5 曲線喺 \(\varepsilon &gt; 0.5\) 時喺 \(y = x\) 上面），因為大多數 classifiers 都會錯，majority vote 會放大錯誤。</p></details>
 <details class="q"><summary>Q4. Training set 有 \(n = 5\) 個 records。某個 record 喺一個 bootstrap sample 入面出現最少一次嘅機會係幾多？\(n\) 好大時呢？</summary><p>\(1 - (1 - 1/5)^5 = 1 - 0.8^5 = 1 - 0.32768 \approx 0.672\)。\(n\) 好大時趨向 \(1 - 1/e \approx 0.632\)。</p></details>
 <details class="q"><summary>Q5. Ensemble methods 分邊三類？每類舉一個例子。</summary><p>Manipulate data distribution（bagging、boosting）；manipulate input features（random forests）；manipulate class labels（error-correcting output coding）。</p></details>
-<details class="q"><summary>Q6. Bagging 同 boosting 有咩主要分別？</summary><p>Bagging：每個 bootstrap sample 都係 uniform 抽樣，classifiers 互相獨立（可以 parallel），用 majority vote，主要減 variance。Boosting：iterative，每個 round 按 weights 抽樣，分錯嘅 records weight 增加，classifiers 有先後次序，用 weighted vote（\(\alpha_i\)），較易受 noise / outliers 影響。</p></details>
+<details class="q"><summary>Q6. Bagging 同 boosting 有咩主要分別？</summary><p>Bagging：每個 bootstrap sample 都係 uniform 抽樣，訓練可 parallel（唔代表 errors independent），用 majority vote，主要減 variance。Boosting：iterative，每個 round 按 weights 抽樣，分錯嘅 records weight 增加，classifiers 有先後次序，用 weighted vote（\(\alpha_i\)），較易受 noise / outliers 影響。</p></details>
 <details class="q"><summary>Q7. 某個 AdaBoost round 嘅 \(\varepsilon_i = 0.1\)。計 \(\alpha_i\)。分啱同分錯嘅 records 嘅 weight（normalize 之前）會乘咩數？</summary><p>\(\alpha_i = \frac{1}{2}\ln(0.9/0.1) = \frac{1}{2}\ln 9 \approx 1.099\)。分啱乘 \(e^{-1.099} \approx 0.333\)，分錯乘 \(e^{1.099} \approx 3\)，之後再除以 \(Z_i\)，令 weights 加埋等於 1。</p></details>
-<details class="q"><summary>Q8. 點解 AdaBoost 要求每個 round 嘅 \(\varepsilon_i \le 0.5\)？超過咗會點做？</summary><p>\(\varepsilon_i = 0.5\) 時 \(\alpha_i = 0\)，\(\varepsilon_i &gt; 0.5\) 時 \(\alpha_i &lt; 0\)，即係 classifier 比亂估仲差，亦違反 ensemble 嘅 necessary condition。Slide 19：如果 error rate 高過 50%，weights 會 reset 返 \(1/n\)，再重新 resampling。</p></details>
-<details class="q"><summary>Q9. 喺 AdaBoost example 入面，3 個 stumps 嘅 \(\alpha\) 係 1.738、2.778、4.120。x = 0.8 時三個 stumps 分別預測 1、1、−1。Ensemble 預測咩？</summary><p>\(1.738 + 2.778 - 4.120 = 0.396 &gt; 0\)，所以預測 1（正確）。雖然 \(\alpha\) 最大嘅 Round 3 投 −1，但另外兩個加埋嘅 weight 更大。</p></details>
+<details class="q"><summary>Q8. 點解 AdaBoost 要求每個 round 嘅 \(\varepsilon_i \le 0.5\)？超過咗會點做？</summary><p>\(\varepsilon_i = 0.5\) 時 \(\alpha_i = 0\)，\(\varepsilon_i &gt; 0.5\) 時 \(\alpha_i &lt; 0\)，即係原方向 classifier 比亂估差；對正權重 AdaBoost 唔符合 weak-learning 要求，唔係普遍 ensemble 必要條件。Slide 19：如果 error rate 高過 50%，weights 會 reset 返 \(1/n\)，再重新 resampling。</p></details>
+<details class="q"><summary>Q9. 喺 AdaBoost example 入面，corrected 3 個 stumps 嘅 \(\alpha\) 係 0.423648930、0.458145366、0.867300528。x = 0.8 時三個 stumps 分別預測 1、1、−1。Ensemble 預測咩？</summary><p>\(0.423648930+0.458145366-0.867300528\approx0.014493768 &gt; 0\)，所以預測 1（正確）。雖然 \(\alpha\) 最大嘅 Round 3 投 −1，但另外兩個加埋嘅 weight 更大。</p></details>
 <details class="q"><summary>Q10. Random forest 同 bagging 有咩分別？Hyper-parameter \(p\) 大細有咩 trade-off？</summary><p>兩者都用 bootstrap samples，但 random forest 喺每個 internal node 只隨機揀 \(p\) 個 attributes 嚟揀 split，而且 tree 唔做 pruning，所以 trees 更 decorrelated。\(p\) 細：trees 之間 correlation 低，但每棵 tree 較弱；\(p\) 大：每棵 tree 較強，但 trees 較相似（\(p = d\) 就變返 bagging）。常用 \(\sqrt{d}\) 或 \(\log_2(d+1)\)。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box note"><span class="label">📋 速查（非 COM6004 考試範圍）</span><ul>
 <li><b>Ensemble</b>：一組 base classifiers ＋ 合併 predictions（majority / weighted majority vote）。</li>
 <li>25 個 independent classifiers、\(\varepsilon = 0.35\)：\(\sum_{i=13}^{25}\binom{25}{i}\varepsilon^i(1-\varepsilon)^{25-i} \approx 0.06\)。</li>
-<li>Necessary conditions：base classifiers <b>independent</b>；每個都 <b>better than random</b>（\(\varepsilon &lt; 0.5\)）。\(\varepsilon &gt; 0.5\) 嘅話 ensemble 會更差。</li>
+<li>Binomial 示範嘅 sufficient assumptions：errors mutually independent、同 error probability，而且 \(\varepsilon&lt;0.5\)。呢啲唔係所有 ensemble 改善嘅必要條件；RF 只降低 correlation，parallel training 唔代表 errors independent。只喺此理想化模型下，\(\varepsilon&gt;0.5\) 嘅 majority vote 會放大錯誤。</li>
 <li>三類：data distribution（bagging、boosting）／ input features（random forest）／ class labels（ECOC）。</li>
 <li><b>Bagging</b>：bootstrap（with replacement，size \(n\)），\(P(\text{selected}) = 1-(1-1/n)^n \approx 0.632\)；majority vote；減 variance，適合 unstable classifiers。</li>
 <li><b>Boosting</b>：weights 初始 \(1/N\)；分錯 ↑、分啱 ↓；sequential。</li>
 <li><b>AdaBoost</b>：\(\varepsilon_i = \sum_j w_j\,\delta(C_i(x_j) \ne y_j)\)；\(\alpha_i = \frac{1}{2}\ln\frac{1-\varepsilon_i}{\varepsilon_i}\)；\(w_j^{(i+1)} = \frac{w_j^{(i)}}{Z_i}e^{\mp\alpha_i}\)（分啱 \(-\)、分錯 \(+\)）；\(\varepsilon_i &gt; 0.5\) 就 reset 做 \(1/n\)；\(C^*(x) = \arg\max_y \sum_i \alpha_i\,\delta(C_i(x) = y)\)。</li>
-<li>1-D 例子：單一 stump 最多 70%；bagging（10 rounds）同 AdaBoost（3 rounds）都做到 100%。</li>
-<li><b>Random Forest</b>：bootstrap ＋ 每個 node 隨機揀 \(p\) 個 attributes ＋ unpruned trees；decorrelated；減 variance 而唔影響 bias；\(p = \sqrt{d}\) 或 \(\log_2(d+1)\)。</li>
+<li>1-D 例子：單一 stump 最多 70%；s14 指定 10 棵 bagging stumps 同 corrected 3-round AdaBoost 都達 training 100%。sklearn bagging 示範（random_state=0）得 90%，唔係重現手工 samples；corrected AdaBoost \(\alpha=(0.423648930,0.458145366,0.867300528)\)，weights 已 normalized，error sum 唔可再除 N。</li>
+<li><b>Random Forest</b>：bootstrap ＋ 每個 node 隨機揀 \(p\) 個 attributes ＋ unpruned trees；旨在降低 correlation（不保證 independent）；減 variance 而唔影響 bias；\(p = \sqrt{d}\) 或 \(\log_2(d+1)\)。</li>
 <li><b>Gradient Boosting</b>：一連串 models（通常係 trees），differentiable loss，functional gradient descent；XGBoost。</li>
 </ul></div>
 

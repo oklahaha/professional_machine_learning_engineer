@@ -40,7 +40,7 @@
     <li>K-means 手計 iterations + \( SSE = \sum_i \sum_{x\in C_i} \text{dist}^2(m_i, x) \)。</li>
     <li>Agglomerative clustering 用 MIN / MAX / Group Average 更新 proximity matrix 同畫 dendrogram。</li>
     <li>Silhouette coefficient \( s = (b - a)/\max(a, b) \) 計算同解讀。</li>
-    <li>K-means limitations（differing sizes、densities、non-globular shapes、outliers）同 initial centroids 問題（\( P = K!/K^K \)，\( K = 10 \) 時 0.00036）、K-means++。</li>
+    <li>K-means limitations（differing sizes、densities、non-globular shapes、outliers）同 initial centroids 問題（獨立 with replacement 假設下 \( P = K!/K^K \)，\( K = 10 \) 時 0.00036）、K-means++。</li>
     <li>MIN（處理 non-elliptical shapes，但對 noise 敏感）vs MAX（較唔受 noise 影響，但會打散大 cluster、偏向 globular）vs Group Average（折衷）。</li>
   </ol>
 </div>
@@ -171,6 +171,7 @@ km.labels_, km.cluster_centers_, km.inertia_      # inertia_ = SSE = 150</code><
 <p>Slides 25–26 圖示：好嘅 initial centroids 幾個 iterations 就搵到 optimal；差嘅 initial centroids 會卡喺 sub-optimal（local minimum）。</p>
 <p><span class="tag exam">Exam</span>Slide 27：如果有 K 個 'real' clusters，揀到每個 cluster 各一個 initial centroid 嘅機會好細，K 越大越細。如果每個 cluster 大小都係 n：</p>
 <div class="formula">$$ P = \frac{\text{number of ways to select one centroid from each cluster}}{\text{number of ways to select } K \text{ centroids}} = \frac{K!\,n^K}{(Kn)^K} = \frac{K!}{K^K} $$</div>
+<p>以上 \(K!/K^K\) 對獨立、with replacement、等機率 cluster labels 抽樣精確；若每個 cluster 有 \(n\) 點，without replacement 抽 \(K\) 個 distinct records，精確機率係 \(n^K/\binom{Kn}{K}\)。例如 \(K=5,n=10\) 為 0.0471974；\(n=1\) 為 1。Lecture 公式可作 large-cluster approximation，唔係任意有限 dataset 嘅精確值。</p>
 <p>例如 <b>\( K = 10 \)</b>：\( P = 10!/10^{10} = 3{,}628{,}800 / 10{,}000{,}000{,}000 = \) <b>0.00036</b>。（\( K = 3 \)：3!/27 = 0.222；\( K = 5 \)：120/3125 = 0.0384。）</p>
 <p>有時 initial centroids 會自己 readjust 去「正確」位置，有時唔會。<b>Five pairs of clusters</b> 例子（10 clusters，slides 28–31）：</p>
 <ul>
@@ -539,7 +540,7 @@ labels = DBSCAN(eps=1.5, min_samples=3).fit_predict(np.array([1,2,3,4,8,9,20]).r
 <p>Iter 1：\( C_1 = \{1, 2\} \)（2：|2−1| = 1 &lt; 6），\( C_2 = \{6, 7, 8, 15\} \)（6：5 &gt; 2）→ \(c_1 = 1.5\)，\(c_2 = 36/4 = 9\)。<br>Iter 2：6：|6−1.5| = 4.5 &gt; |6−9| = 3 → \(C_2\)；assignments 冇變 → converged。<br>\( SSE = (1-1.5)^2 + (2-1.5)^2 + (6-9)^2 + (7-9)^2 + (8-9)^2 + (15-9)^2 = 0.25 + 0.25 + 9 + 4 + 1 + 36 = \) <b>50.5</b>。<br>（如果 \( K = 3 \) 用 {1,2}、{6,7,8}、{15}，\( SSE = 0.5 + 2 + 0 = 2.5 \)，明顯好啲——15 係 outlier 拉走咗 centroid。）</p></details>
 <details class="q"><summary>Q2. 點解唔可以揀令 SSE 最細嘅 K？應該點揀？</summary>
 <p>因為 SSE 隨 K 增加而下降，\( K = n \) 時 \( SSE = 0 \)，所以「最細 SSE」永遠揀最大 K。應用 SSE vs K 曲線搵 elbow / knee，或用 silhouette coefficient、或同 random data 比較（statistical framework）。</p></details>
-<details class="q"><summary>Q3. 有 5 個大小相同嘅真實 clusters，隨機揀 5 個 initial centroids，每個 cluster 剛好一個嘅概率係幾多？</summary>
+<details class="q"><summary>Q3. 有 5 個大小相同嘅真實 clusters，獨立 with replacement 隨機揀 5 個 initial centroids（cluster labels 等機率），每個 cluster 剛好一個嘅概率係幾多？</summary>
 <p>\( P = K!/K^K = 5!/5^5 = 120/3125 = \) <b>0.0384</b>。（\( K = 10 \) 時只有 0.00036。）</p></details>
 <details class="q"><summary>Q4. Distance matrix（\( p_1 \)–\( p_4 \)）：\( d_{12} = 1 \), \( d_{13} = 4 \), \( d_{14} = 5 \), \( d_{23} = 3 \), \( d_{24} = 6 \), \( d_{34} = 2 \)。用 MIN 同 MAX 做 agglomerative clustering，寫出每步 merge 嘅高度。</summary>
 <p>Step 1：merge {p1, p2} @1。<br>
@@ -566,7 +567,7 @@ Group Average 最後一步 = (4+5+3+6)/4 = 4.5。</p></details>
 <li><b>Cluster types</b>：well-separated、center-based（centroid / medoid）、contiguity-based（transitive）、density-based（irregular + noise）。</li>
 <li><b>K-means</b>：揀 K 個 initial centroids → assign to closest → recompute mean → repeat until no change。\(O(n\cdot K\cdot I\cdot d)\)。Random init → 每次結果唔同。</li>
 <li><b>SSE</b> = \( \sum\sum \text{dist}^2(m_i, x) \)；mean 令 SSE 最細；增加 K 一定減 SSE。</li>
-<li><b>Initial centroids</b>：P(每 cluster 一個) = \( K!/K^K \)（\( K = 10 \) → 0.00036）；solutions：multiple runs、hierarchical on sample、多啲 clusters 再 merge、揀多過 k 再揀 widely separated、<b>K-means++</b>（prob \( \propto D(x)^2 \)，\( O(\log k) \)）。</li>
+<li><b>Initial centroids</b>：P(每 cluster 一個；獨立 with replacement / large-cluster approximation) = \( K!/K^K \)（\( K = 10 \) → 0.00036）；solutions：multiple runs、hierarchical on sample、多啲 clusters 再 merge、揀多過 k 再揀 widely separated、<b>K-means++</b>（prob \( \propto D(x)^2 \)，\( O(\log k) \)）。</li>
 <li><b>K-means limitations</b>：differing sizes、densities、non-globular shapes、outliers → 用多啲 clusters 再 post-process merge；pre（normalize、remove outliers）、post（remove small、split high-SSE、merge close low-SSE）。</li>
 <li><b>Hierarchical</b>：唔使預設 K（cut dendrogram）、可對應 taxonomy；agglomerative（merge closest）vs divisive（split）。</li>
 <li><b>Linkage</b>：MIN（closest pair；non-elliptical ✓、noise ✗）、MAX（farthest pair；noise ✓、breaks large、globular bias）、Group Average（\( \sum d / (|C_i||C_j|) \)；折衷）、Centroid distance。</li>

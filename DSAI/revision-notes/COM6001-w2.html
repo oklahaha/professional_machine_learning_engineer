@@ -28,7 +28,7 @@
 <div class="overview">
   <h3>🎯 本講重點 (Learning outcomes)</h3>
   <ul>
-    <li>了解 computer program 同 Python 嘅特性 (scripting language、interpreted line-by-line)。</li>
+    <li>了解 computer program 同 Python 嘅特性（scripting language、interpreter 自動處理 compilation）。</li>
     <li>分辨 IDE、editor、Jupyter notebook / Lab、Anaconda、Python interpreter、Python kernel。</li>
     <li>識用 Jupyter 嘅 code / markdown / raw cells 同 markdown heading 語法。</li>
     <li>掌握 main data types：<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>；variables、assignment、<code>is</code>。</li>
@@ -52,7 +52,7 @@
 <ul>
   <li>本科用 <b>Python 3</b>。</li>
   <li>易學：syntax 簡單，有大量 standard library 同 toolkits。</li>
-  <li>係 <mark class="k">scripting language</mark>，<b>唔需要 run 之前先 compile</b>；code 係 <b>line-by-line</b> 咁邊執行邊處理 (interpreted)。</li>
+  <li>係 scripting language：使用者通常毋須手動 compile 成 executable；CPython 自動先 parse / compile code unit 成 bytecode，再執行。Notebook cell 係一個 execution unit。Slide 4 嘅逐行 compile/run 係過度簡化。</li>
   <li>Syntax 同 C-family (C, C++, Java, C#) 好唔同 (例如用 indentation 代替 <code>{ }</code>)。</li>
   <li>Python programs 行得比 Java 同 C <b>慢</b>。</li>
 </ul>
@@ -257,7 +257,7 @@ print("this is the 'abc' book")   # 雙引號入面用單引號</code></pre>
 </ul>
 <div class="box exam"><span class="label">⭐ 考試重點：slicing 規則</span>
 <ul>
-  <li>結果長度 (step = 1 時) = <code>stop − start</code>。例：<code>s[2:5]</code> 攞 index 2, 3, 4 共 3 個字。</li>
+  <li>只有 step = 1 且已 normalize 到 <code>0 &lt;= start &lt;= stop &lt;= len(s)</code>，長度先係 <code>stop - start</code>。一般用 <code>len(s[start:stop:step])</code> 或 <code>len(range(*slice(start, stop, step).indices(len(s))))</code>（step 不可為 0）。例如 <code>'abc'[2:1]</code> 長度 0、<code>'abc'[1:100]</code> 長度 2、<code>'abc'[-2:]</code> 長度 2。</li>
   <li><b>step 為負</b>時，方向反轉：default start 變成<b>最後一個</b>字 (-1)，default stop 變成<b>超越開頭</b> (包含 index 0)。</li>
   <li>如果 start 喺 stop 嘅「錯誤方向」(例如 step 正但 start &gt; stop)，結果係<b>空 string</b> <code>''</code> — 呢個就係 slide 29 「Why empty?」嘅答案。</li>
 </ul></div>
@@ -375,8 +375,8 @@ first = nums.pop(0)  # 移除並返回 1 → nums = [2, 3]
 print(len(nums), max(nums), min(nums))   # 2 3 2</code></pre>
 
 <h3>10.2 Tuples (slide 37)</h3>
-<p>Tuple 用一個 variable 存多個 items，係 <b>ordered and unchangeable</b> — 一經 assign，元素就唔可以改。</p>
-<p><b>Why do we need tuples?</b> 因為 immutable 嘅特性保證元素唔會被改動，確保 <b>data integrity</b>，喺某些情況好重要 (例如做 dict key、儲存座標 / 設定值)。</p>
+<p>Tuple 係 ordered、immutable：長度同各位置引用不可替換，但 mutable element 內部仍可改。<code>t = ([1], 2); t[0].append(3)</code> 後係 <code>([1, 3], 2)</code>。</p>
+<p>Slide 37「elements cannot be changed」只適用於 tuple slots，唔係深層凍結。Tuple 可保護結構（例如座標），但只有所有 elements 都 hashable 先可做 dict key；含 list 嘅 tuple 唔可以。</p>
 <pre><code>my_tup = ('com', 6001, 'john', 70.2)
 print(my_tup[1])        # 6001
 my_tup[2] = 'Aileen'    # TypeError: 'tuple' object does not support item assignment</code></pre>
@@ -504,11 +504,11 @@ print(my_list.append(0))   # None  ← append 只係 in-place 修改 list，冇 
 <p>Slicing 規則 (<code>start:stop</code>，stop 唔包含) 同樣適用於 list、tuple，以及 Week 4 pandas 嘅 <code>.iloc[]</code>。Dict of lists 正正係 Week 4 建 <code>pd.DataFrame</code> 最常用嘅輸入格式。Set 嘅 difference / intersection 概念對應 COM6002 SQL 嘅 <code>EXCEPT</code> / <code>INTERSECT</code> 同 Week 4 merge 嘅 inner join。</p></div>
 
 <h2>自我測驗 Self-test</h2>
-<details class="q"><summary>Q1. Python 點解叫 scripting language？同 C / Java 比較有咩優缺點？</summary><p>Python 唔需要 run 之前先 compile，code 係執行時 line-by-line 處理。優點：syntax 簡單易學、大量 libraries；缺點：行得比 Java 同 C 慢。</p></details>
+<details class="q"><summary>Q1. Python 點解叫 scripting language？同 C / Java 比較有咩優缺點？</summary><p>通常毋須使用者手動 compilation step；CPython 自動 parse / compile code unit 成 bytecode 再執行。同一 cell 第二行有 SyntaxError，第一行 print 都唔會執行，唔係逐行 compile/run。優點：syntax 簡單、大量 libraries；效能視 implementation / workload，純 Python loops 通常較慢。</p></details>
 <details class="q"><summary>Q2. Python、Python interpreter、Python kernel 有咩分別？</summary><p>Python 係 programming language (規則同藍圖)；interpreter 係明白並執行 Python code 嘅引擎；kernel 係你嘅 code (例如 notebook) 同 interpreter 之間嘅 interface。三者 version number 幾乎一樣，揀 kernel version 即係揀 Python version。</p></details>
 <details class="q"><summary>Q3. s = 'Data Science'。寫出 s[0:4]、s[-7:]、s[::-1]、s[5:2]、s[::3] 嘅結果。</summary><p><code>s[0:4]</code> = 'Data'；<code>s[-7:]</code> = 'Science'；<code>s[::-1]</code> = 'ecneicS ataD'；<code>s[5:2]</code> = '' (step 預設 +1，start &gt; stop → 空)；<code>s[::3]</code> = index 0,3,6,9 → 'D', 'a', 'c', 'n' → 'Dacn'。</p></details>
 <details class="q"><summary>Q4. 執行 a = b = c = 1; a = 2 之後，a is b 同 b is c 係咩？點解？</summary><p><code>a is b</code> → False；<code>b is c</code> → True。Variables 只係指向 object 嘅 references。一開始三個都指向 object 1；<code>a = 2</code> 令 a 改為指向 object 2，b 同 c 仍然指向 1。</p></details>
-<details class="q"><summary>Q5. 比較 list、tuple、set、dict：邊個 immutable？邊個唔可以有重複？邊個用 key 存取？</summary><p>Tuple immutable；set 只容許 unique elements (dict 嘅 keys 亦必須 unique)；dict 用 key 存取 (<code>d[key]</code>)。List 同 tuple 係 ordered sequences 用 index 存取；set unordered 冇 index。</p></details>
+<details class="q"><summary>Q5. 比較 list、tuple、set、dict：邊個 immutable？邊個唔可以有重複？邊個用 key 存取？</summary><p>Tuple slots immutable，但 mutable element 內部可改；set 只容許 unique elements (dict 嘅 keys 亦必須 unique)；dict 用 key 存取 (<code>d[key]</code>)。List 同 tuple 係 ordered sequences 用 index 存取；set unordered 冇 index。</p></details>
 <details class="q"><summary>Q6. print(my_list.append(0)) 點解印出 None？</summary><p><code>append()</code> 係 in-place 修改 list，冇 return value；Python function / method 冇 return 時預設 return <code>None</code>。相反 <code>pop()</code> 會 remove and return 該 item，所以印到元素。</p></details>
 <details class="q"><summary>Q7. Function 同 method 有咩分別？各舉一例。</summary><p>Function 獨立定義，直接用名 call，例如 <code>len(s)</code>、<code>print(s)</code>。Method 屬於某個 object / class，要經 object call，例如 <code>s.upper()</code>、<code>my_list.append(1)</code>；<code>int</code> 冇 <code>upper()</code> method。</p></details>
 <details class="q"><summary>Q8. 以下邊啲 variable 名合法？2data, my data, myData, _temp, print</summary><p><code>2data</code> ✗ (數字開頭)；<code>my data</code> ✗ (有空格)；<code>myData</code> ✓ (合法但 PEP 8 建議 <code>my_data</code>)；<code>_temp</code> ✓；<code>print</code> 語法上可以但<b>應避免</b>，會覆蓋 built-in function。</p></details>
@@ -516,7 +516,7 @@ print(my_list.append(0))   # None  ← append 只係 in-place 修改 list，冇 
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-  <li>Python 3 = scripting language，無需 compile，line-by-line 執行；比 C / Java 慢。</li>
+  <li>Python 3 = scripting language；CPython 自動先 parse / compile code unit 成 bytecode，再執行；通常毋須手動 compile。</li>
   <li>IDE ≠ editor (VS Code) ≠ environment manager (Anaconda)；Jupyter Lab 係支援 notebook 嘅 IDE；kernel = code ↔ interpreter 嘅 interface。</li>
   <li>Cells：code / markdown (<code>#</code> heading, <code>*italic*</code>, <code>**bold**</code>) / raw；Shift + Enter 執行。</li>
   <li>PEP 8：snake_case (var / func)、PascalCase (class)、UPPER_SNAKE_CASE (const)、4 spaces。</li>
@@ -524,7 +524,7 @@ print(my_list.append(0))   # None  ← append 只係 in-place 修改 list，冇 
   <li>Variable = reference；<code>is</code> 比較同一 object，<code>==</code> 比較值；名唔可以數字開頭、有空格；case sensitive；避免 keywords。</li>
   <li>Index：\( 0 \dots N-1 \) / \( -1 \dots -N \)。Slicing <code>[start:stop:step]</code>：stop 唔包含；defaults 0 / 盡頭(含) / 1；step 負 → 由尾向頭；方向錯 → <code>''</code>。</li>
   <li>String：<code>+</code> 連接、<code>\n</code> 換行、<code>.find()</code> (搵唔到 −1)、<code>.upper()</code>、<code>.lower()</code>、<code>f"{expr}"</code>。</li>
-  <li>List <code>[]</code> mutable · Tuple <code>()</code> immutable (data integrity) · Set <code>{}</code> unique, <code>-</code> difference, <code>&amp;</code> intersection, <code>.add()</code> · Dict <code>{k: v}</code>, <code>d[k] = v</code> 插入, <code>d[k]</code> 取值。</li>
+  <li>List <code>[]</code> mutable · Tuple <code>()</code> slots immutable（mutable elements 內部仍可改；全 hashable 先可做 key） · Set <code>{}</code> unique, <code>-</code> difference, <code>&amp;</code> intersection, <code>.add()</code> · Dict <code>{k: v}</code>, <code>d[k] = v</code> 插入, <code>d[k]</code> 取值。</li>
   <li>List：<code>.sort()</code>, <code>.append()</code> (return None), <code>.pop(i)</code> (remove &amp; return，default 最後)；<code>len/max/min</code>。</li>
   <li>Help：hover、<code>help(list.append)</code> (唔加括號)、<code>.__doc__</code>、Ctrl+Shift+Space。</li>
 </ul></div>

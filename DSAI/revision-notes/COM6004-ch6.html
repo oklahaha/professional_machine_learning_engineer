@@ -40,7 +40,7 @@
     <li>由 transaction table 計 support 同 confidence：\( s(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{|T|} \)，\( c(X \rightarrow Y) = \frac{\sigma(X \cup Y)}{\sigma(X)} \)。</li>
     <li>Apriori principle：frequent itemset 嘅所有 subsets 都 frequent ⇔ infrequent itemset 嘅所有 supersets 都 infrequent；識行 Apriori（minsup = 3 嘅 Bread/Milk/Diaper 例子，6 + 6 + 1 = 13）。</li>
     <li>\( F_{k-1} \times F_{k-1} \) merge（頭 \( k-2 \) 個 items 相同）＋ candidate pruning（任何一個 \( (k-1) \)-subset infrequent 就刪）。</li>
-    <li>Maximal vs closed：識喺 transaction grid 搵出 frequent / maximal / closed itemsets；Maximal ⊆ Closed ⊆ Frequent。</li>
+    <li>Maximal vs closed：識喺 transaction grid 搵出 frequent / maximal / closed itemsets；\(\text{Maximal Frequent}\subseteq\text{Closed Frequent}\subseteq\text{Frequent}\)。</li>
     <li>Lift / Interest \( = \frac{P(X, Y)}{P(X)P(Y)} \)：&gt; 1 正相關、= 1 independent、&lt; 1 負相關（Tea → Coffee：0.9375）；Simpson's paradox（hospital / county 例子）。</li>
   </ol>
 </div>
@@ -165,6 +165,7 @@
       <li><b>Candidate Pruning</b>：Prune candidate itemsets in \( L_{k+1} \) containing subsets of length \( k \) that are infrequent</li>
       <li><b>Support Counting</b>：Count the support of each candidate in \( L_{k+1} \) by scanning the DB</li>
       <li><b>Candidate Elimination</b>：Eliminate candidates in \( L_{k+1} \) that are infrequent, leaving only those that are frequent ⇒ \( F_{k+1} \)</li>
+      <li><b>Index update</b>：\(k \leftarrow k+1\)，再檢查新嘅 \(F_k\)；source s23 漏咗呢步，照字面會不斷重算同一層。</li>
     </ul></li>
 </ol></div>
 <div class="box warn"><span class="label">⚠️ 易混淆：Pruning vs Elimination</span><p><b>Candidate pruning</b> 唔使 scan database，只係睇 \( F_k \)：candidate 有某個 k-subset 唔喺 \( F_k \) 就刪。<b>Candidate elimination</b> 要 scan database 數 support 之後，先刪 support &lt; minsup 嘅。Pruning 喺 counting 之前做，目的係減少要數嘅 candidates。</p></div>
@@ -319,7 +320,7 @@
 <h2>11. Closed Itemset</h2>
 <div class="box exam"><span class="label">⭐ 考試重點：定義</span>
 <p><b>Closed itemset</b>：An itemset X is closed if <b>none of its immediate supersets has the same support</b> as the itemset X。</p>
-<p>X is <b>not closed</b> if at least one of its immediate supersets has the same support count as X。</p></div>
+<p>X is <b>not closed</b> if at least one of its immediate supersets has the same support count as X。</p><p><b>Closed 同 frequent 係獨立判準</b>。例如 transactions [AB,A,C]、minsup count = 2：AB 係 closed（冇同 support 嘅 proper superset），但 support = 1，所以 infrequent；Closed Frequent 先係兩者交集。</p></div>
 <p>Slide 57 例子：</p>
 <table>
 <tr><th>TID</th><th>Items</th></tr>
@@ -330,7 +331,7 @@
 <tr><td>{A}</td><td>4</td><td>{A,B,C}</td><td>2</td></tr>
 <tr><td>{B}</td><td>5</td><td>{A,B,D}</td><td>3</td></tr>
 <tr><td>{C}</td><td>3</td><td>{A,C,D}</td><td>2</td></tr>
-<tr><td>{D}</td><td>4</td><td>{B,C,D}</td><td>2</td></tr>
+<tr><td>{D}</td><td>4</td><td>{B,C,D}</td><td>3（原 s57 印 2，已更正）</td></tr>
 <tr><td>{A,B}</td><td>4</td><td>{A,B,C,D}</td><td>2</td></tr>
 <tr><td>{A,C}</td><td>2</td><td></td><td></td></tr>
 <tr><td>{A,D}</td><td>3</td><td></td><td></td></tr>
@@ -401,7 +402,7 @@
 <tr><th></th><td>\( f_{+1} \)</td><td>\( f_{+0} \)</td><td>\( N \)</td></tr>
 </table>
 <p>\( f_{11} \)：support of X and Y；\( f_{10} \)：support of X and \( \overline{Y} \)；\( f_{01} \)：support of \( \overline{X} \) and Y；\( f_{00} \)：support of \( \overline{X} \) and \( \overline{Y} \)。用嚟定義 support、confidence、Gini、entropy 等 measures。</p>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個 2×2 contingency table 同 COM6005 Module 3b <b>Chi-square test of independence</b> 用嘅 table 完全一樣；Gini、entropy 就係 COM6004 Chapter 3 decision tree 嘅 impurity measures。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>呢個 2×2 contingency table 同 COM6005 Module 3b <b>Chi-square test of independence</b> 用嘅 table 完全一樣；Gini、entropy 就係 COM6004 Chapter 4A decision tree 嘅 impurity measures。</p></div>
 
 <h2>13. Drawback of Confidence</h2>
 <div class="box exam"><span class="label">⭐ 考試重點：Tea → Coffee</span>
@@ -453,13 +454,45 @@
 
 <h2>15. 唔同 Measures 同佢哋嘅 Properties</h2>
 <p>文獻提出咗好多 measures（slide 78 列出 21 個：φ-coefficient、Goodman-Kruskal's λ、odds ratio α、Yule's Q、Yule's Y、Kappa κ、Mutual Information、J-Measure、Gini index、Support、Confidence、Laplace、Conviction、Interest、cosine (IS)、Piatetsky-Shapiro's (PS)、Certainty factor、Added Value、Collective strength、Jaccard、Klosgen）。</p>
+<h3>Slide 78：21 measures compact formula reference</h3>
+<p>以下用簡寫避免重複長式。設 \(a=P(A,B),\ b=P(A,\bar B),\ c=P(\bar A,B),\ d=P(\bar A,\bar B)\)，\(a+b+c+d=1\)；\(p=P(A)=a+b,\ q=P(B)=a+c\)，\(N\) 係 transaction 數。另設 \(p_{jk}=P(A_j,B_k)\)，\(j,k\in\{0,1\}\)，\(p_{j+},p_{+k}\) 係 marginals。\(H\) 係 entropy，所有 logs 統一用 base 2，零機率項按 \(0\log0=0\) 嘅 limit 處理。</p>
+<div class="box note"><span class="label">📎 原表 conventions，唔代表 21 式全部必考</span><p>s78 把 confidence、Laplace、conviction、J-measure、Gini、Certainty factor、Added Value 等寫成兩方向嘅 <b>max</b>，所以呢張 reference 嘅版本係 symmetric；後面 properties 分類講嘅係 <b>directional rule versions</b>。例如 rule confidence \(P(B\mid A)\) 一般 asymmetric，但 \(\max(P(B\mid A),P(A\mid B))\) symmetric。唔好混用。核心 support / confidence / lift / PS / φ 同 properties 要理解；本表其餘式係 lecture coverage reference，冇自行升格為全部必考。</p></div>
+<table id="s78-measures">
+<tr><th># / Measure</th><th>Formula（依 s78 convention）</th><th>用途／基準</th></tr>
+<tr><td>1. φ-coefficient</td><td>\(\frac{a-pq}{\sqrt{p(1-p)q(1-q)}}\)</td><td>Binary correlation；範圍 [-1,1]，independence 為 0。</td></tr>
+<tr><td>2. Goodman–Kruskal’s λ</td><td>\(\frac{\sum_j\max_k p_{jk}+\sum_k\max_j p_{jk}-\max_j p_{j+}-\max_k p_{+k}}{2-\max_j p_{j+}-\max_k p_{+k}}\)</td><td>雙向 proportional reduction in prediction error；[0,1]，0 代表冇 error reduction（不保證 independence）。</td></tr>
+<tr><td>3. Odds ratio α</td><td>\(\alpha=\frac{ad}{bc}\)</td><td>Odds 相對比；independence 為 1，較大／較小分別為 positive／negative association。</td></tr>
+<tr><td>4. Yule’s Q</td><td>\(Q=\frac{ad-bc}{ad+bc}=\frac{\alpha-1}{\alpha+1}\)</td><td>Odds ratio 嘅 bounded transformation；[-1,1]，independence 為 0。</td></tr>
+<tr><td>5. Yule’s Y</td><td>\(Y=\frac{\sqrt{ad}-\sqrt{bc}}{\sqrt{ad}+\sqrt{bc}}=\frac{\sqrt\alpha-1}{\sqrt\alpha+1}\)</td><td>另一 odds transformation；[-1,1]，independence 為 0。</td></tr>
+<tr><td>6. Kappa κ</td><td>\(\kappa=\frac{a+d-pq-(1-p)(1-q)}{1-pq-(1-p)(1-q)}\)</td><td>扣除 chance agreement 嘅 agreement；1 完全一致，0 為 chance baseline，可為負。</td></tr>
+<tr><td>7. Mutual Information M</td><td>\(M=\frac{\sum_{j,k}p_{jk}\log_2\frac{p_{jk}}{p_{j+}p_{+k}}}{\min(H(A),H(B))}\)</td><td>原 s78 係 normalized MI，唔係 Ch2 未 normalized 嘅 bits；[0,1]，independence 為 0。</td></tr>
+<tr><td>8. J-measure J</td><td>\(J=\max(J_{A\to B},J_{B\to A})\)</td><td>s78 取兩方向最大；非負，independence 為 0；單向式見下文。</td></tr>
+<tr><td>9. Gini index G</td><td>\(G=\max(G_{B\mid A},G_{A\mid B})\)</td><td>Conditional purity gain，唔係 decision-tree node impurity；非負，independence 為 0。</td></tr>
+<tr><td>10. Support s</td><td>\(s=a\)</td><td>共同出現比例；[0,1]，冇固定 independence baseline。</td></tr>
+<tr><td>11. Confidence c</td><td>\(c_{78}=\max(a/p,a/q)\)</td><td>s78 取兩方向最大；[0,1]。Rule A→B 嘅 directional confidence 仍係 a/p。</td></tr>
+<tr><td>12. Laplace L</td><td>\(L_{78}=\max\left(\frac{Na+1}{Np+2},\frac{Na+1}{Nq+2}\right)\)</td><td>Binary Laplace smoothing；[0,1]，small counts 向 1/2 收縮。</td></tr>
+<tr><td>13. Conviction V</td><td>\(V_{78}=\max\left(\frac{p(1-q)}{b},\frac{q(1-p)}{c}\right)\)</td><td>預期 counterexamples / 實際 counterexamples；independence 為 1，無 counterexamples 時可趨無限。</td></tr>
+<tr><td>14. Interest I</td><td>\(I=\frac{a}{pq}\)</td><td>等於 lift；independence 為 1，正 association &gt;1。</td></tr>
+<tr><td>15. Cosine IS</td><td>\(IS=\frac{a}{\sqrt{pq}}\)</td><td>共同出現除以 geometric mean support；[0,1]，independence 為根號 pq，唔係固定 0 或 1。</td></tr>
+<tr><td>16. Piatetsky–Shapiro PS</td><td>\(PS=a-pq\)</td><td>實際減 independence 預期共同出現率；0 為 independence，正負示方向。</td></tr>
+<tr><td>17. Certainty factor F</td><td>\(F_{78}=\max\left(\frac{a/p-q}{1-q},\frac{a/q-p}{1-p}\right)\)</td><td>s78 使用正向 improvement 相對可改善空間嘅 normalization；independence 為 0，正向最大 1；負值分支並非另一 piecewise CF 定義。</td></tr>
+<tr><td>18. Added Value AV</td><td>\(AV_{78}=\max(a/p-q,a/q-p)\)</td><td>Confidence 超過 consequent baseline 幾多；independence 為 0，正負示方向。</td></tr>
+<tr><td>19. Collective strength S</td><td>\(S=\frac{a+d}{pq+(1-p)(1-q)}\,\frac{1-pq-(1-p)(1-q)}{1-a-d}\)</td><td>同時比較 agreement 同 disagreement；independence 為 1，無 disagreement 時可趨無限。</td></tr>
+<tr><td>20. Jaccard ζ</td><td>\(\zeta=\frac{a}{p+q-a}\)</td><td>Intersection / union；[0,1]，null-addition invariant，冇固定 independence baseline。</td></tr>
+<tr><td>21. Klosgen K</td><td>\(K=\sqrt a\,\max(a/p-q,a/q-p)\)</td><td>用根號 support 加權 Added Value，兼顧頻率同 improvement；independence 為 0。</td></tr>
+</table>
+<p>J-measure 嘅 directional component：\(J_{A\to B}=a\log_2\frac{a/p}{q}+b\log_2\frac{b/p}{1-q}\)；\(J_{B\to A}\) 交換 A、B（即交換 p、q 及 b、c）。Gini component：</p>
+<div class="formula">$$G_{B\mid A}=p\left[\left(\frac ap\right)^2+\left(\frac bp\right)^2\right]+(1-p)\left[\left(\frac c{1-p}\right)^2+\left(\frac d{1-p}\right)^2\right]-q^2-(1-q)^2.$$</div>
+<p>\(G_{A\mid B}\) 同樣交換 A、B。Goodman–Kruskal λ 將無條件 modal prediction 嘅 error，同按另一 variable 分組後嘅 modal prediction error 比較。Normalized MI 嘅 denominator 為 \(\min(H(A),H(B))\)，若任何 entropy 為 0，唔可直接除。</p>
+<div class="box warn"><span class="label">⚠️ Domain 同 baseline</span><p>以上比值只喺 denominator 有定義時使用。Degenerate margins、zero counterexample cells 可能令 ratio undefined／取 extended limit；唔好當 0。Independence 唔係每個 measure 都等於 1：Lift / Interest、Odds ratio、Conviction、Collective strength 係 1；PS / φ、MI、J、Gini、Added Value、CF、Klosgen 係 0（非退化情況）；Support / Confidence / Cosine / Jaccard 冇固定常數 baseline。</p></div>
+
 <p><b>Comparing different measures</b>（slide 79）：用 10 個 contingency tables（E1–E10）比較唔同 measures 嘅 ranking，排名可以差好遠。例如 E10（\( f_{11} = 61, f_{10} = 2483, f_{01} = 4, f_{00} = 7452 \)）用 Gini index (G) 排第 10，但用 Interest (I) 排第 1。</p>
 
 <h3>Property under Variable Permutation（symmetry）</h3>
 <p>將 contingency table 嘅 A、B 對調（transpose），\( M(A, B) = M(B, A) \) 嗎？</p>
 <ul>
   <li><b>Symmetric measures</b>：support、lift、collective strength、cosine、Jaccard 等</li>
-  <li><b>Asymmetric measures</b>：confidence、conviction、Laplace、J-measure 等</li>
+  <li><b>Asymmetric measures（directional versions）</b>：confidence、conviction、Laplace、J-measure 等；s78 取兩方向 max 嘅版本則 symmetric</li>
 </ul>
 <div class="box tip"><span class="label">💡 用途</span><p>Symmetric measures 適合評估 <b>itemsets</b>；asymmetric measures 適合評估 <b>rules</b>（因為 X → Y 同 Y → X 意義唔同，例如 confidence \( P(Y \mid X) \neq P(X \mid Y) \)）。</p></div>
 
@@ -508,13 +541,14 @@
 <tr><td>\( PS \)</td><td>Piatetsky-Shapiro's</td><td>Yes</td><td>No</td><td>No</td></tr>
 <tr><td>\( S \)</td><td>Collective strength</td><td>Yes</td><td>No</td><td>No</td></tr>
 <tr><td>\( \zeta \)</td><td>Jaccard</td><td>No</td><td>Yes</td><td>No</td></tr>
-<tr><td>\( h \)</td><td>All-confidence</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>\( h \)</td><td>All-confidence</td><td>No</td><td>Yes（原 s87 印 No；按定義更正）</td><td>No</td></tr>
 <tr><td>\( s \)</td><td>Support</td><td>No</td><td>No</td><td>No</td></tr>
 </table>
 <p>（Yes = 喺該 operation 下 invariant。）</p></div>
 <div class="box note"><span class="label">🖼️ Slides 83、86 圖片</span><p><b>Slide 83 Inversion</b>：(a) 兩個 binary columns A、B，每行係一個 transaction（Transaction 1 至 N），大部分係 0，A 只有頭尾兩個 1，B 只有一個 1；(b) 係 \(\bar{A}\)、\(\bar{B}\)：每個 0 變 1、1 變 0。Inversion 即係「冇買」同「有買」對調。</p>
 <p><b>Slide 86 Null addition</b>：左表 \(A,B = 700\)、\(A,\bar{B} = 100\)、\(\bar{A},B = 100\)、\(\bar{A},\bar{B} = 100\)，N = 1000；右表將 \(\bar{A},\bar{B}\) 加到 1100（即係加 1000 個 A、B 都冇嘅 transactions），N = 2000。（右表 \(\bar{A},B\) 格印咗 "10"，但 column total 仍然係 800，應該係 100 嘅 typo。）Slide 86 寫 invariant measures：cosine、Jaccard、All-confidence、confidence；non-invariant：correlation、Interest/Lift、odds ratio。</p>
-<p>⚠️ Slide 86 將 All-confidence 列為 null-addition invariant，但 slide 87 個表寫 No，兩頁有出入，請以 lecturer 講法為準。（按定義 \( h = s(A,B) / \max(s(A), s(B)) \)，分子分母都唔受 \(\bar{A}\bar{B}\) 影響，所以應該係 invariant。）</p></div>
+<p>⚠️ <b>Source s87 error</b>：All-confidence 嘅 Null Addition 應為 Yes，同 s86 一致。因為 \(h=\frac{s(A,B)}{\max(s(A),s(B))}=\frac{f_{11}}{\max(f_{11}+f_{10},f_{11}+f_{01})}\)，式內冇 \(f_{00}\)；只增加 null transactions 必定不變，唔係未能判定嘅兩種答案。</p></div>
+<div class="box exam"><span class="label">⭐ 考試作答：slide 答案 vs 更正答案</span><p>Slide 87 表寫 All-confidence 嘅 Null Addition = <b>No</b>；按定義同 slide 86 應為 <b>Yes</b>。作答寫 Yes，並註明 slide 87 表同定義／slide 86 不符。Slide 57 嘅 {B,C,D} support count 印 2，按 transaction table 重數係 3；計 support 時用 3，並註明更正。</p></div>
 
 <h2>16. Simpson's Paradox</h2>
 <p>HDTV / Exercise Machine 例子（slide 88–89）：</p>
@@ -571,9 +605,9 @@ print(rule({'Milk','Beer'}, {'Diaper'}))  # (0.4, 1.0, 1.25)</code></pre>
 <details class="q"><summary>Q4. \( F_2 \) = {AB, AC, AD, BC, BD, CE}。用 \( F_{k-1} \times F_{k-1} \) 產生 \( L_3 \)，再做 candidate pruning。</summary><p>Merge（第一個 item 相同）：AB+AC → ABC；AB+AD → ABD；AC+AD → ACD；BC+BD → BCD。Pruning：ABC 嘅 subsets AB、AC、BC 都喺 \( F_2 \) ✓；ABD：AB、AD、BD ✓；ACD：CD 唔喺 \( F_2 \) ✗；BCD：CD ✗。結果 \( L_3 \) = {ABC, ABD}。</p></details>
 <details class="q"><summary>Q5. Frequent itemset {A,B,C} 有幾多條 candidate rules？如果 \( c(BC \rightarrow A) \) 低過 minconf，邊啲 rules 可以直接 prune？</summary><p>\( 2^3 - 2 = 6 \) 條。Confidence 對 RHS 數目 anti-monotone：RHS 包含 A 而且 LHS 係 {B,C} 嘅 subset 嘅 rules——\( B \rightarrow AC \) 同 \( C \rightarrow AB \)——confidence 一定 ≤ \( c(BC \rightarrow A) \)，可以 prune。</p></details>
 <details class="q"><summary>Q6. Transactions：1 = ABC，2 = ABCD，3 = BCE，4 = ACDE，5 = DE；minsup = 2。{A,C} 係 closed 嗎？係 maximal 嗎？</summary><p>\( \sigma(\{A, C\}) = 3 \)（T1, T2, T4）。Immediate supersets：ABC = 2、ACD = 2、ACE = 1，冇一個係 3 → <b>closed</b>。但 ABC、ACD 都 frequent（≥ 2）→ <b>唔係 maximal</b>。</p></details>
-<details class="q"><summary>Q7. 點解 maximal frequent itemsets 一定係 closed？</summary><p>假設 X maximal 但唔 closed，即有 immediate superset Y 同 X support 一樣。咁 Y 都 ≥ minsup，係 frequent，同「X 冇 frequent immediate supersets」矛盾。所以 Maximal ⊆ Closed。</p></details>
+<details class="q"><summary>Q7. 點解 maximal frequent itemsets 一定係 closed？</summary><p>假設 X maximal 但唔 closed，即有 immediate superset Y 同 X support 一樣。咁 Y 都 ≥ minsup，係 frequent，同「X 冇 frequent immediate supersets」矛盾。所以 \(\text{Maximal Frequent}\subseteq\text{Closed Frequent}\)；唔代表任意 closed itemset 都 frequent。</p></details>
 <details class="q"><summary>Q8. 1000 個客：Tea 200 人，當中 150 人飲 Coffee；全部 Coffee 800 人。Tea → Coffee confidence 0.75 好高，點解呢條 rule 誤導？計 lift。</summary><p>\( P(\text{Coffee}) = 0.8 &gt; 0.75 \)，即 confidence &lt; support(Y)：飲茶反而降低飲咖啡機率。Lift \( = \frac{0.15}{0.2 \times 0.8} = 0.9375 &lt; 1 \)，negatively associated。</p></details>
-<details class="q"><summary>Q9. 邊啲 measures 喺 null addition 下 invariant？點解對 market-basket data 重要？</summary><p>Cosine、Jaccard、All-confidence、confidence（按 slide 86）。Market-basket data 大部分 transactions 都唔含某兩件貨，\( f_{00} \) 好大而且隨 database 擴大；理想 measure 唔應該因為加入無關 transactions 而改變。</p></details>
+<details class="q"><summary>Q9. 邊啲 measures 喺 null addition 下 invariant？點解對 market-basket data 重要？</summary><p>Cosine、Jaccard、All-confidence、confidence（按定義及 slide 86；s87 嘅 All-confidence「No」係錯）。Market-basket data 大部分 transactions 都唔含某兩件貨，\( f_{00} \) 好大而且隨 database 擴大；理想 measure 唔應該因為加入無關 transactions 而改變。</p></details>
 <details class="q"><summary>Q10. 解釋 Simpson's paradox，用 hospital 例子說明。</summary><p>整體數據顯示 B（90%）好過 A（80%），但按年齡分層後，A 喺年長（50% vs 30%）同年輕（99% vs 98%）兩組都較好。年齡係 confounding (hidden) variable：A 收較多恢復率低嘅年長病人，拉低整體比率。所以要 proper stratification。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
@@ -585,17 +619,17 @@ print(rule({'Milk','Beer'}, {'Diaper'}))  # (0.4, 1.0, 1.25)</code></pre>
   <li>Brute-force counting \( O(NMw) \)，\( M = 2^d \)；策略：減 \( M \)（pruning）、減 \( N \)（DHP / vertical）、減 \( NM \)（hash tree）。</li>
   <li>Apriori principle：frequent ⇒ subsets frequent；support anti-monotone \( X \subseteq Y \Rightarrow s(X) \geq s(Y) \)。</li>
   <li>例子 minsup = 3：41（全部）→ 16（support-based）→ 13（\( F_{k-1} \times F_{k-1} \)）。minsup = 2 → 全部 56。</li>
-  <li>Apriori：\( F_1 \) → loop {Candidate Generation \( L_{k+1} \)；Candidate Pruning；Support Counting；Candidate Elimination → \( F_{k+1} \)} until empty。</li>
+  <li>Apriori：\( F_1 \) → loop {Candidate Generation \( L_{k+1} \)；Candidate Pruning；Support Counting；Candidate Elimination → \( F_{k+1} \)；\(k\leftarrow k+1\)} until 新 \(F_k\) empty。</li>
   <li>\( F_{k-1} \times F_{k-1} \)：頭 \( k-2 \) items 相同先 merge；Alternate：第一個嘅尾 \( k-2 \) = 第二個嘅頭 \( k-2 \)。Pruning：任何 \( (k-1) \)-subset infrequent 就刪。</li>
   <li>Hash tree：hash function（1,4,7 / 2,5,8 / 3,6,9）+ max leaf size；transaction (1,2,3,5,6) 只同 11/15 candidates 比較。</li>
   <li>Rule generation：\( |L| = k \) → \( 2^k - 2 \) rules；同一 itemset confidence 對 RHS items 數目 anti-monotone：\( c(ABC \rightarrow D) \geq c(AB \rightarrow CD) \geq c(A \rightarrow BCD) \)。</li>
   <li>Complexity factors：minsup、dimensionality、database size、average transaction width。</li>
-  <li>Maximal：frequent 而且冇 immediate superset frequent。Closed：冇 immediate superset 有同樣 support。Maximal ⊆ Closed ⊆ Frequent；closed 保留 support 資訊。</li>
+  <li>Maximal：frequent 而且冇 immediate superset frequent。Closed：冇 immediate superset 有同樣 support。\(\text{Maximal Frequent}\subseteq\text{Closed Frequent}\subseteq\text{Frequent}\)；closed 保留 support 資訊。</li>
   <li>Contingency table \( f_{11}, f_{10}, f_{01}, f_{00} \)；confidence 缺點：Tea → Coffee c = 0.75 &lt; P(Coffee) = 0.8。</li>
-  <li>Lift \( = P(Y \mid X)/P(Y) \)（rules）；Interest \( = P(X, Y)/(P(X)P(Y)) \)（itemsets）；PS \( = P(X, Y) - P(X)P(Y) \)；φ = correlation for binary。=1 independent，&gt;1 positive，&lt;1 negative。</li>
+  <li>Lift \( = P(Y \mid X)/P(Y) \)（rules）；Interest \( = P(X, Y)/(P(X)P(Y)) \)（itemsets）；PS \( = P(X, Y) - P(X)P(Y) \)；φ = correlation for binary。<b>Lift / Interest</b>：1 為 independence，&gt;1 positive，&lt;1 negative；<b>PS / φ</b>：0 為 independence，正／負號判 association 方向（nondegenerate margins）。</li>
   <li>Lift 對 rare items 偏高（10 vs 1.11）。</li>
-  <li>Symmetric：support、lift、cosine、Jaccard、collective strength；Asymmetric：confidence、conviction、Laplace、J-measure。</li>
-  <li>Scaling invariant：odds ratio \( f_{11}f_{00}/(f_{10}f_{01}) \)。Inversion invariant：φ、odds ratio、κ、PS、S。Null addition invariant：cosine、Jaccard（+ confidence）。</li>
+  <li>Symmetric：support、lift、cosine、Jaccard、collective strength；Asymmetric（directional versions）：confidence、conviction、Laplace、J-measure；s78 max 版本 symmetric。</li>
+  <li>Scaling invariant：odds ratio \( f_{11}f_{00}/(f_{10}f_{01}) \)。Inversion invariant：φ、odds ratio、κ、PS、S。Null addition invariant：cosine、Jaccard、All-confidence、confidence。</li>
   <li>Simpson's paradox：confounding / hidden variables 令關係消失或反轉 → proper stratification（HDTV、hospital、county 例子）。</li>
 </ul></div>
 

@@ -29,7 +29,7 @@
   <h3>🎯 本講重點 (Learning outcomes)</h3>
   <ul>
     <li>用 parametric test flowchart 揀啱 test：1-sample t / Z test、paired t、2-sample (independent) t、1-way ANOVA。</li>
-    <li>理解點解用 t 而唔用 Z（\(\sigma\) 未知、n 細；t 有 heavier tails，df 越大越似 Z）。</li>
+    <li>理解點解用 t 而唔用 Z（\(\sigma\) 未知；唔以 30 作硬切點；t 有 heavier tails，df 越大越似 Z）。</li>
     <li>One-sample t-test：寫 \(H_0/H_1\)、計 \( T=(\bar y-\mu_0)/(s/\sqrt n) \)、查 t-table（\( df = n - 1 \)）、用 p-value 決定。</li>
     <li>識講三個等價 decision rule（T vs ppf、cdf、p-value）同 one-sided / two-sided 嘅 rejection rule。</li>
     <li>由 two-sided decision rule 推出 Confidence interval。</li>
@@ -38,7 +38,7 @@
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>One-sample t：\( T = \dfrac{\bar y - \mu_0}{s/\sqrt n} \)，\( df = n - 1 \)；腫瘤例 \( T = 2.076 &gt; 1.833 \) → reject \(H_0\)（\( p = 0.0339 \)）。</li>
-    <li>查 t-table：\( n = 10 \)、\(\alpha = 5\%\)（one-sided）→ 1.833 = <code>t.ppf(0.95, 9)</code>；two-sided 用 \(\alpha/2\)。</li>
+    <li>查 t-table：\( n = 10 \)、\(\alpha = 5\%\)（one-sided）→ 1.833 = <code>stats.t.ppf(0.95, 9)</code>；two-sided 用 \(\alpha/2\)。</li>
     <li>Rejection rules：\(\mu &gt; \mu_0\) → \( T &gt; t_{\alpha,n-1} \)；\(\mu &lt; \mu_0\) → \( T &lt; -t_{\alpha,n-1} \)；\(\mu \ne \mu_0\) → \( |T| &gt; t_{\alpha/2,n-1} \)。</li>
     <li>CI：\( \bar y \pm t_{\alpha/2,n-1}\, s/\sqrt n \)。</li>
     <li>Paired（\( t = \bar W/(S/\sqrt n) \)，df = 對數 − 1）vs Independent（pooled \( s_p \)，\( df = n + m - 2 \)）；分辨題目屬邊種 design。</li>
@@ -46,11 +46,12 @@
 </div>
 
 <h2>1. 揀邊個 test？Parametric Test Flowchart</h2>
-<p>Slide 2 嘅 flowchart（Test for Means, 1 Factor）：</p>
+<p>Slide 2 flowchart 用 30 作 t / Z shortcut，唔係嚴格分界；以下係修正後選法。Small n 嘅 non-normality / outliers 唔會因為用 t 就自動解決，仍要檢查 design 同 assumptions。</p>
+<div class="box exam"><span class="label">⭐ 考試作答：slide 答案 vs 更正答案</span><p>Slide 2 答案：\(n&lt;30\) 用 t，\(n&gt;30\) 用 Z。更正答案：揀 t 定 Z 睇 \(\sigma\) 知唔知，唔睇 30。考試題目通常 \(\sigma\) 未知兼 n 細，兩套規則都揀 t；如果 n &gt; 30 但 \(\sigma\) 未知，寫 t test 並註明大 n 時 t ≈ Z，用 Z 亦接近。</p></div>
 <table>
 <tr><th>情況</th><th>條件</th><th>Test</th></tr>
-<tr><td>1 Sample（同 target mean 比較）</td><td>Sample size \( n &lt; 30 \)</td><td><b>1 Sample t Test</b></td></tr>
-<tr><td>1 Sample（同 target mean 比較）</td><td>Sample size \( n &gt; 30 \)</td><td><b>Z Test</b></td></tr>
+<tr><td>1 Sample（同 target mean 比較）</td><td>\(\sigma\) unknown；i.i.d. Normal 下任何有效 \(n\ge2\)</td><td><b>1 Sample t Test</b></td></tr>
+<tr><td>1 Sample（同 target mean 比較）</td><td>\(\sigma\) known，Normal sampling model（或有合理 large-sample approximation）</td><td><b>Z Test</b></td></tr>
 <tr><td>2 Samples</td><td>Independent data</td><td><b>2 Sample t Test</b>（equal variance → pooled SD；unequal variance → unpooled SD）</td></tr>
 <tr><td>2 Samples</td><td>Paired data</td><td><b>Paired t Test</b></td></tr>
 <tr><td>&gt; 2 Samples</td><td></td><td><b>1-Way ANOVA</b></td></tr>
@@ -62,7 +63,7 @@
 <table>
 <tr><th></th><th>Z-test</th><th>t-test</th></tr>
 <tr><td>\(\sigma\)（population SD）</td><td>已知（或 n 大，用 s 近似）</td><td>未知，用 sample SD s 估計</td></tr>
-<tr><td>Sample size</td><td>\( n &gt; 30 \)</td><td>\( n &lt; 30 \)（細 sample）</td></tr>
+<tr><td>Sample size</td><td>唔必須大於 30；取決於 sampling model</td><td>唔限小於 30；large n 時 t 近似 Z</td></tr>
 <tr><td>Distribution</td><td>\( N(0, 1) \)</td><td>t with \( df = n - 1 \)</td></tr>
 <tr><td>Critical value（one-sided \(\alpha = 0.05\)）</td><td>1.645</td><td>例：\( df = 9 \) → 1.833（較大）</td></tr>
 </table>
@@ -123,7 +124,7 @@
   <li>\( s/\sqrt n = 2.6505/3.1623 = 0.8381 \)</li>
   <li>\( T = 1.74/0.8381 = \mathbf{2.076} \)</li>
   </ul></li>
-<li><b>Critical value</b>：\(\nu = 9\)、\(\alpha = 0.05\) → 1.833。（p-value = 1 − t.cdf(2.076, 9) = 0.0339）</li>
+<li><b>Critical value</b>：\(\nu = 9\)、\(\alpha = 0.05\) → 1.833。（p-value = 1 − stats.t.cdf(2.076, 9) = 0.0339）</li>
 <li><b>Decision</b>：2.076 &gt; 1.833（\( p = 0.0339 &lt; 0.05 \)）→ <b>reject \(H_0\)</b>。結論：有證據顯示治療令腫瘤縮細（「腫瘤增大或不變」被 reject）。</li>
 </ol></div>
 <pre><code>import numpy as np
@@ -140,10 +141,10 @@ crit = stats.t.ppf(0.95, 9)                               # 1.833</code></pre>
 
 <h3>5.1 三個等價嘅 decision rule（slide 11）</h3>
 <div class="box exam"><span class="label">⭐ 以下三句意思一樣</span>
-<pre><code>T &gt; t.ppf(0.95, 9)        # test statistic 大過 critical value
-t.cdf(T, 9) &gt; 0.95        # T 嘅 cumulative probability 大過 95%
-1 - t.cdf(T, 9) &lt; 0.05    # p-value 細過 α</code></pre>
-<p><code>1 - t.cdf(T, 9)</code> 就係 <b>p-value</b>。Decision rule：比較 p-value 同你揀嘅 \(\alpha\)。p-value 冇電腦好難計（所以以前用 t-table + critical value）。</p></div>
+<pre><code>T &gt; stats.t.ppf(0.95, 9)        # test statistic 大過 critical value
+stats.t.cdf(T, 9) &gt; 0.95        # T 嘅 cumulative probability 大過 95%
+1 - stats.t.cdf(T, 9) &lt; 0.05    # p-value 細過 α</code></pre>
+<p><code>1 - stats.t.cdf(T, 9)</code> 就係 <b>p-value</b>。Decision rule：比較 p-value 同你揀嘅 \(\alpha\)。p-value 冇電腦好難計（所以以前用 t-table + critical value）。</p></div>
 
 <h3>5.2 Assumptions（slide 13）</h3>
 <ul>
@@ -156,9 +157,9 @@ t.cdf(T, 9) &gt; 0.95        # T 嘅 cumulative probability 大過 95%
 <div class="box exam"><span class="label">⭐ Rejection rules（\( T = \frac{\bar y - \mu_0}{s/\sqrt n} \)）</span>
 <table>
 <tr><th>Type</th><th>Hypotheses</th><th>Reject \(H_0\) if</th><th>Python</th></tr>
-<tr><td>One-sided (right)</td><td>\( H_0:\mu\le\mu_0 \) vs \( H_1:\mu&gt;\mu_0 \)</td><td>\( T &gt; t_{\alpha,n-1} \) = <code>t.ppf(1-α, n-1)</code></td><td><code>alternative='greater'</code></td></tr>
-<tr><td>One-sided (left)</td><td>\( H_0:\mu\ge\mu_0 \) vs \( H_1:\mu&lt;\mu_0 \)</td><td>\( T &lt; -t_{\alpha,n-1} \) = <code>t.ppf(α, n-1)</code></td><td><code>alternative='less'</code></td></tr>
-<tr><td>Two-sided</td><td>\( H_0:\mu=\mu_0 \) vs \( H_1:\mu\ne\mu_0 \)</td><td>\( |T| &gt; t_{\alpha/2,n-1} \) = <code>t.ppf(1-α/2, n-1)</code></td><td><code>alternative='two-sided'</code></td></tr>
+<tr><td>One-sided (right)</td><td>\( H_0:\mu\le\mu_0 \) vs \( H_1:\mu&gt;\mu_0 \)</td><td>\( T &gt; t_{\alpha,n-1} \) = <code>stats.t.ppf(1-α, n-1)</code></td><td><code>alternative='greater'</code></td></tr>
+<tr><td>One-sided (left)</td><td>\( H_0:\mu\ge\mu_0 \) vs \( H_1:\mu&lt;\mu_0 \)</td><td>\( T &lt; -t_{\alpha,n-1} \) = <code>stats.t.ppf(α, n-1)</code></td><td><code>alternative='less'</code></td></tr>
+<tr><td>Two-sided</td><td>\( H_0:\mu=\mu_0 \) vs \( H_1:\mu\ne\mu_0 \)</td><td>\( |T| &gt; t_{\alpha/2,n-1} \) = <code>stats.t.ppf(1-α/2, n-1)</code></td><td><code>alternative='two-sided'</code></td></tr>
 </table></div>
 <p>Slide 15 two-sided 例：<code>stats.ttest_1samp(y, 50, alternative='two-sided')</code>：\(H_0\) “equal to 50”，\(H_1\) “does not equal to 50”。</p>
 
@@ -169,7 +170,7 @@ t.cdf(T, 9) &gt; 0.95        # T 嘅 cumulative probability 大過 95%
 <li>\(H_0: \mu \ge 50\)；\(H_1: \mu &lt; 50\)（left-tailed）。</li>
 <li>\(\alpha = 0.05\)。</li>
 <li>\( \bar y = 48.26 \)，\( s = 2.6505 \)，\( SE = 0.8381 \)；\( T = (48.26-50)/0.8381 = \mathbf{-2.076} \)。</li>
-<li>Critical value：\( -t_{0.05,9} = -1.833 \)；p-value = t.cdf(−2.076, 9) = 0.0339。</li>
+<li>Critical value：\( -t_{0.05,9} = -1.833 \)；p-value = stats.t.cdf(−2.076, 9) = 0.0339。</li>
 <li>−2.076 &lt; −1.833（\( p = 0.0339 &lt; 0.05 \)）→ reject \(H_0\)：有證據顯示牛油平均輕過 50 g。</li>
 </ol></div>
 <pre><code>y = np.array([45.3, 52.4, 47.9, 48.1, 51.4, 44.3, 50.2, 49.7, 46.1, 47.2])
@@ -267,7 +268,7 @@ stats.ttest_ind(x, y, equal_var=False)</code></pre>
 <ul>
 <li>Slide 33 寫 “Reject \(H_0\) if \( T &gt; t_{\alpha/2} \)”，two-sided 應理解為 <b>\( |T| \gt t_{\alpha/2,n+m-2} \)</b>（呢個例子 T 係負數）。</li>
 <li>Paired df = 對數 − 1；Independent \( df = n + m - 2 \)。用錯 df 就查錯表。</li>
-<li>同一組數據（drug vs placebo）如果錯當 independent：\( T = 2.168 \)，\( df = 8 \)，two-sided critical 2.306 → 結論亦唔同。Design 決定 test，唔係數據樣子。</li>
+<li>同一組數據（drug vs placebo）如果錯當 independent：\( T = 2.168 \)，\( df = 8 \)，two-sided critical 2.306 → two-sided \(p\approx0.0621\)，在 .05 同 paired one-sided \(p\approx0.0753\) 都 do not reject。Statistics / p-values 唔同，並非呢兩個 decisions 不同；比較方向亦唔一樣。Design 決定 test，唔可以為求顯著改 design 或事後轉 one-sided。</li>
 </ul></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Between-group / within-group variation 嘅比較係 1-way ANOVA（&gt; 2 groups）同 Module 4 regression ANOVA F-test 嘅核心；亦同 COM6004 Cluster Analysis 嘅 SSE（within-cluster）vs between-cluster separation 同一個 idea。</p></div>
 
@@ -275,8 +276,8 @@ stats.ttest_ind(x, y, equal_var=False)</code></pre>
 <details class="q"><summary>Q1. \( n = 16 \)，\( \bar y = 103 \)，\( s = 8 \)。Test \(H_0: \mu \le 100\) vs \(H_1: \mu &gt; 100\)，\(\alpha = 0.05\)。</summary><p>\( T = (103 - 100)/(8/4) = 1.5 \)；\( df = 15 \)，\( t_{0.05,15} = 1.753 \)。1.5 &lt; 1.753 → do not reject \(H_0\)。冇足夠證據顯示 \(\mu &gt; 100\)。</p></details>
 <details class="q"><summary>Q2. 同上數據，求 \(\mu\) 嘅 95% CI。</summary><p>\( t_{0.025,15} = 2.131 \)；margin = 2.131 × 2 = 4.262；CI = (98.74, 107.26)。</p></details>
 <details class="q"><summary>Q3. <code>stats.t.ppf(0.95, 9)</code>、<code>stats.t.ppf(0.975, 9)</code>、<code>stats.t.ppf(0.05, 9)</code> 分別係幾多？各用喺咩 test？</summary><p>1.833（right-tailed \(\alpha = 0.05\)）；2.262（two-sided \(\alpha = 0.05\)）；−1.833（left-tailed \(\alpha = 0.05\)）。</p></details>
-<details class="q"><summary>Q4. \( T = 2.5 \)，\( df = 9 \)，one-sided right。寫出三個等價嘅 decision rule 並判斷。</summary><p>T &gt; t.ppf(0.95, 9) ⇔ t.cdf(T, 9) &gt; 0.95 ⇔ 1 − t.cdf(T, 9) &lt; 0.05。2.5 &gt; 1.833 → reject \(H_0\)（\( p \approx 0.017 \)）。</p></details>
-<details class="q"><summary>Q5. 以下用邊個 test？(a) 同一班學生上堂前後測驗分數 (b) 隨機分 30 人做 A 組、30 人做 B 組比較減肥效果 (c) 比較 4 個品牌電池壽命 (d) 一批 15 個零件同規格 20 mm 比較</summary><p>(a) Paired t-test；(b) Independent two-sample t-test；(c) 1-way ANOVA；(d) One-sample t-test（\( n &lt; 30 \)）。</p></details>
+<details class="q"><summary>Q4. \( T = 2.5 \)，\( df = 9 \)，one-sided right。寫出三個等價嘅 decision rule 並判斷。</summary><p>T &gt; stats.t.ppf(0.95, 9) ⇔ stats.t.cdf(T, 9) &gt; 0.95 ⇔ 1 − stats.t.cdf(T, 9) &lt; 0.05。2.5 &gt; 1.833 → reject \(H_0\)（\( p \approx 0.017 \)）。</p></details>
+<details class="q"><summary>Q5. 以下用邊個 test？(a) 同一班學生上堂前後測驗分數 (b) 隨機分 30 人做 A 組、30 人做 B 組比較減肥效果 (c) 比較 4 個品牌電池壽命 (d) 一批 15 個零件同規格 20 mm 比較</summary><p>(a) Paired t-test；(b) Independent two-sample t-test；(c) 1-way ANOVA；(d) One-sample t-test（\(\sigma\) unknown、assumptions 合適）。</p></details>
 <details class="q"><summary>Q6. Paired 數據 \( W = 3, 5, -1, 4, 4 \)。Test \(H_0: \mu \le 0\) vs \(H_1: \mu &gt; 0\)，\(\alpha = 0.05\)。</summary><p>\( \bar W = 15/5 = 3 \)；偏差平方 0 + 4 + 16 + 1 + 1 = 22；\(S^2 = 5.5\)，\( S = 2.345 \)；\( t = 3/(2.345/\sqrt{5}) = 3/1.049 = 2.86 \)；\( df = 4 \) → 2.132。2.86 &gt; 2.132 → reject \(H_0\)。</p></details>
 <details class="q"><summary>Q7. 兩組 independent：\( n = m = 6 \)，\( \bar X = 20,\ \bar Y = 15,\ S_X^2 = 9,\ S_Y^2 = 16 \)。Two-sided \(\alpha = 0.05\)。</summary><p>\( S_p^2 = (5 \cdot 9 + 5 \cdot 16)/10 = 12.5 \) → \( s_p = 3.536 \)；\( SE = 3.536 \times \sqrt{1/6 + 1/6} = 3.536 \times 0.5774 = 2.041 \)；\( T = 5/2.041 = 2.45 \)；\( df = 10 \)，\( t_{0.025,10} = 2.228 \)。2.45 &gt; 2.228 → reject \(H_0\)。</p></details>
 <details class="q"><summary>Q8. 點解 pooled variance 唔等於將兩組數據合埋計 variance？用 slide 32 解釋。</summary><p>合併 variance 包含組與組之間嘅差距（between-group），薪金例子兩組差 6 萬幾，令合併 variance 極大；pooled variance 只計每組圍繞自己 mean 嘅離散（within-group），反映純 noise。t-test 要嘅係 within-group noise 做分母。</p></details>
@@ -284,12 +285,12 @@ stats.ttest_ind(x, y, equal_var=False)</code></pre>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li>Flowchart：1 sample \( n &lt; 30 \) → t；\( n &gt; 30 \) → Z；2 samples independent → 2-sample t（pooled / unpooled）；paired → paired t；&gt; 2 → ANOVA。</li>
+<li>Flowchart：1 sample，\(\sigma\) unknown → t（i.i.d. Normal）；known → Z（Normal sampling model）；30 唔係硬切點；2 samples independent → 2-sample t（pooled / unpooled）；paired → paired t；&gt; 2 → ANOVA。</li>
 <li>t vs Z：\(\sigma\) 未知用 s → t，tails 較厚；\( df \to \infty \) 時 \( t \to Z \)。</li>
 <li>One-sample：\( T=\frac{\bar y-\mu_0}{s/\sqrt n} \)，\( df = n - 1 \)，\( s^2=\frac{\sum(y-\bar y)^2}{n-1} \)（<code>ddof=1</code>）。</li>
-<li>Table：row = df，column = \(\alpha\)（右尾）；\( n = 10 \)、\( \alpha = .05 \) → 1.833 = <code>t.ppf(0.95, 9)</code>；two-sided 查 \(\alpha/2\)。</li>
+<li>Table：row = df，column = \(\alpha\)（右尾）；\( n = 10 \)、\( \alpha = .05 \) → 1.833 = <code>stats.t.ppf(0.95, 9)</code>；two-sided 查 \(\alpha/2\)。</li>
 <li>Right：\( T &gt; t_{\alpha} \)｜Left：\( T &lt; -t_\alpha \)｜Two：\( |T| &gt; t_{\alpha/2} \)。</li>
-<li>p-value = 1 − t.cdf(T, df)（right-tailed）；\(p &lt; \alpha\) → reject。</li>
+<li>p-value = 1 − stats.t.cdf(T, df)（right-tailed）；\(p &lt; \alpha\) → reject。</li>
 <li>腫瘤：\( T = 2.076 \)，\( p = 0.0339 \) → reject；牛油：\( T = -2.076 \)，\( p = 0.0339 \) → reject。</li>
 <li>CI：\( \bar y \pm t_{\alpha/2,n-1}\,s/\sqrt n \)；牛油 95% CI (46.36, 50.16)。</li>
 <li>Assumption：i.i.d. normal。</li>

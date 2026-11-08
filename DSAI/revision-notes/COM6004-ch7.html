@@ -24,7 +24,7 @@
 <p class="meta">COM6004 · Chapter 7 Supplement · Source: COM6004_Chapter_7_supp_Matrix_Algebra_Review.pptx (34 slides)</p>
 <h1>Matrix Algebra Review（非考試範圍）</h1>
 
-<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>COM6004 考試範圍只包括 <b>Chapter 1–6</b>，所以呢頁冇 Exam 標記，亦冇 Exam-only 按鈕。趕時間可以直接跳過，先溫 <a href="COM6004-ch1.html">Chapter 1</a> 至 <a href="COM6004-ch6.html">Chapter 6</a>。</p></div>
+<div class="box warn"><span class="label">🚫 非 COM6004 考試範圍</span><p>已確認：COM6004 考試範圍只包括 <b>Chapter 1–6</b>。Chapter 7（Matrix Algebra Review、PCA / SVD / Factor Analysis）同 Chapter 8（Ensemble Methods）唔考。Slides 本身冇寫明，以呢個確認為準。所以呢頁冇 Exam 標記，亦冇 Exam-only 按鈕。趕時間可以直接跳過，先溫 <a href="COM6004-ch1.html">Chapter 1</a> 至 <a href="COM6004-ch6.html">Chapter 6</a>。</p></div>
 
 <div class="overview">
   <h3>🎯 本講內容</h3>
@@ -133,9 +133,9 @@
 
 <h2>7. Eigenvalue 同 Eigenvector（slides 23–24）</h2>
 <p><b>Definition 3</b>：對 square matrix \( A\in\mathbb{R}^{p\times p} \)，non-zero vector \( \boldsymbol{v} \) 係 <mark class="k">eigenvector</mark>，如果：</p>
-<div class="formula">$$ A\boldsymbol{v}=\lambda\boldsymbol{v},\quad\lambda\in\mathbb{R} $$</div>
-<p>Scalar \( \lambda \) 就係對應 \( \boldsymbol{v} \) 嘅 <mark class="k">eigenvalue</mark>。</p>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>一般 vector 乘 \( A \) 之後方向會變。Eigenvector 係特別方向：乘 \( A \) 之後只會伸縮（或者反轉），伸縮倍數就係 \( \lambda \)。</p></div>
+<div class="formula">$$ A\boldsymbol{v}=\lambda\boldsymbol{v},\quad \boldsymbol{v}\ne\boldsymbol{0},\quad\lambda\in\mathbb{C} $$</div>
+<p>一般 real square matrix 要容許 complex eigenpairs：例如 \(\begin{pmatrix}0&amp;-1\\1&amp;0\end{pmatrix}\) 嘅 eigenvalues 係 \(\pm i\)。Source s23 寫 \(\lambda\in\mathbb R\) 缺少限制；本講後續 real symmetric matrices 才保證全為 real；\(X^TX\) 非負，full column rank 時為正。Characteristic polynomial 嘅 roots 按 complex 數域及 multiplicity 計。Scalar \( \lambda \) 就係對應 \( \boldsymbol{v} \) 嘅 <mark class="k">eigenvalue</mark>。</p>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>一般 vector 乘 \( A \) 之後方向會變。對 real eigenpairs，Eigenvector 係特別方向：乘 \( A \) 之後只會伸縮（或者反轉），伸縮倍數就係 \( \lambda \)；complex eigenpairs 唔應直接當作 real plane 入面嘅同方向伸縮。</p></div>
 <ul>
 <li><b>Scale-invariant</b>：\( A\boldsymbol{v}=\lambda\boldsymbol{v}\iff A(c\boldsymbol{v})=\lambda(c\boldsymbol{v}) \)。\( \boldsymbol{v} \) 係 eigenvector iff \( c\boldsymbol{v} \) 都係，\( c\in\mathbb{R}\setminus\{0\} \)。</li>
 <li>為簡單起見，假設 \( |\boldsymbol{v}|=1 \)。</li>
@@ -186,7 +186,7 @@
 <div class="formula">$$ A^{\frac12}=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\sqrt{4.5}&amp;0\\0&amp;\sqrt2\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}=\begin{pmatrix}1.98&amp;-0.28\\-0.28&amp;1.56\end{pmatrix} $$</div>
 <div class="formula">$$ A^{-1}=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\frac{1}{4.5}&amp;0\\0&amp;\frac12\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}=\frac{1}{18}\begin{pmatrix}5&amp;2\\2&amp;8\end{pmatrix} $$</div>
 <div class="formula">$$ A^{-\frac12}=V\Lambda^{-\frac12}V'=\frac15\begin{pmatrix}2&amp;1\\-1&amp;2\end{pmatrix}\begin{pmatrix}\frac{1}{\sqrt{4.5}}&amp;0\\0&amp;\frac{1}{\sqrt2}\end{pmatrix}\begin{pmatrix}2&amp;-1\\1&amp;2\end{pmatrix}\approx\begin{pmatrix}0.519&amp;0.0943\\0.0943&amp;0.660\end{pmatrix} $$</div>
-<div class="box warn"><span class="label">⚠️ Slide 32 嘅數字</span><p>Slide 32 嘅左上角寫 0.520。用 numpy 計係 0.5185，四捨五入應該係 0.519，只係細微嘅捨入差異。</p></div>
+<div class="box warn"><span class="label">⚠️ Slide 32 嘅數字</span><p>Slide 32 嘅左上角寫 0.520。用 numpy 計係 0.5185，四捨五入應該係 0.519，係 source numerical inconsistency；由所列 matrix 計到 0.51854497，正常 round 3 decimals 應係 0.519 而非 0.520。</p></div>
 <p><b>Trace、rank、determinant 同 eigenvalues 嘅關係</b>（slide 33）：</p>
 <div class="formula">$$ tr(A)=tr(V\Lambda V')=tr(\Lambda V'V)=tr(\Lambda)=\sum_{i=1}^{p}\lambda_i $$</div>
 <div class="formula">$$ rank(A)=\#(\lambda_i&gt;0)=\text{number of non-zero eigenvalues} $$</div>
@@ -220,10 +220,10 @@ print(np.linalg.det(A), vals.prod())  # 兩者都係 9</code></pre>
 <li>Transpose：\( (ABCD)'=D'C'B'A' \)。Inverse：\( (AB)^{-1}=B^{-1}A^{-1} \)。\( AB\ne BA \)，但 \( tr(AB)=tr(BA) \)。</li>
 <li>\( 2\times2 \)：\( |A|=ad-bc \)。\( |\alpha A|=\alpha^p|A| \)，\( |AB|=|A||B| \)，\( |A^{-1}|=1/|A| \)。</li>
 <li>Orthogonal：\( Q'Q=QQ'=I \)，\( Q'=Q^{-1} \)。</li>
-<li>Eigen：\( A\boldsymbol{v}=\lambda\boldsymbol{v} \)；\( |A-\lambda I_p|=0 \)。</li>
-<li>\( A=\boldsymbol{X}'\boldsymbol{X} \)（linearly independent columns）：\( \lambda_i&gt;0 \)；\( \lambda_i\ne\lambda_j\Rightarrow\boldsymbol{v}_i\perp\boldsymbol{v}_j \)；\( V'V=VV'=I_p \)。</li>
+<li>Eigen：\( A\boldsymbol{v}=\lambda\boldsymbol{v} \)；\( |A-\lambda I_p|=0 \)。一般 real square matrix 可有 complex eigenvalues（rotation matrix 有 \(\pm i\)）；real symmetric 才保證全 real。</li>
+<li>\( A=\boldsymbol{X}'\boldsymbol{X} \)（linearly independent columns）：\( \lambda_i&gt;0 \)；\( \lambda_i\ne\lambda_j\Rightarrow\boldsymbol{v}_i\perp\boldsymbol{v}_j \)；選 normalized orthogonal eigenbasis（重複 eigenvalues 亦須如此）才有 \( V'V=VV'=I_p \)。</li>
 <li>\( A=V\Lambda V' \)；\( A^{\frac12}=V\Lambda^{\frac12}V' \)；\( A^{-1}=V\Lambda^{-1}V' \)。</li>
-<li>\( tr(A)=\sum\lambda_i \)；\( |A|=\prod\lambda_i \)；\( rank(A)=\#(\lambda_i&gt;0) \)。</li>
+<li>\( tr(A)=\sum\lambda_i \)；\( |A|=\prod\lambda_i \)；此講嘅 \(A=X^TX\)（PSD）才有 \( rank(A)=\#(\lambda_i&gt;0) \)。</li>
 </ul></div>
 
 <nav class="pager">

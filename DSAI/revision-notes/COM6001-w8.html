@@ -36,8 +36,8 @@
   <h3>⭐ 考試必溫 Top-5</h3>
   <ol>
     <li>三條 scaling 公式：Standard \( x' = \frac{x - \text{mean}}{\text{std}} \)；Min-max \( x' = \frac{x - \min}{\max - \min} \)；Robust \( x' = \frac{x - Q_2}{Q_3 - Q_1} \)。</li>
-    <li>Outlier 敏感度：MinMax <b>最敏感</b> &gt; Standard <b>中等</b> &gt; Robust <b>最唔敏感</b>；只有 MinMax 有固定 range [0, 1]。</li>
-    <li>Rules of thumb：無強 outliers / distance-based 或 assume normality → Standard；要固定 interval / activation function input → MinMax；好多 outliers / heavy tails → Robust。</li>
+    <li>Outlier 敏感度：MinMax <b>最敏感</b> &gt; Standard <b>中等</b> &gt; Robust <b>最唔敏感</b>；只有 MinMax 將 fitted training values 放入 [0, 1]；新 data 可超出（預設 clip=False）。</li>
+    <li>Rules of thumb：無強 outliers / 想按 std 比較 distance-based features → Standard（唔會製造 Normal distribution）；要固定 interval / activation function input → MinMax；好多 outliers / heavy tails → Robust。</li>
     <li>Scaler 只可以 <b>fit 喺 training data</b>，validation/test 用已 fit 嘅 scaler 去 <code>transform</code>（避免 data leakage）。</li>
     <li><code>.str</code> accessor + string method 處理成個 column；regex 基本符號同 <code>str.extract()</code>（capture group <code>( )</code>）／<code>str.contains()</code> 用法。</li>
   </ol>
@@ -194,7 +194,7 @@ print(rows_without_floor_category)    # 771</code></pre></div>
 </ul>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span>
 <ul>
-  <li><b>Greedy vs lazy</b>：如果寫 <code>^(.*)(?:,|$)</code>（冇 <code>?</code>），<code>.*</code> 會食到最後一個逗號，抽到 "Grand Jete, Phase 1, Tower 2, 7/F"，唔係 estate name。</li>
+  <li><b>Greedy vs lazy</b>：如果寫 <code>^(.*)(?:,|$)</code>（冇 <code>?</code>），<code>.*</code> 會食晒整個 address，抽到 "Grand Jete, Phase 1, Tower 2, 7/F, Flat J"，再由 <code>$</code> 零長度 match，唔係 estate name。</li>
   <li><code>str.extract()</code> 一定要有至少一個 capture group <code>( )</code>，否則會出 error；<code>(?: )</code> 唔計 capture group。</li>
   <li><code>str.contains(pattern)</code> default 會將 pattern 當 regex（<code>regex=True</code>），所以搵 "." 呢類特殊字元時要 escape 或者設 <code>regex=False</code>。</li>
 </ul></div>
@@ -216,7 +216,7 @@ print(rows_without_floor_category)    # 771</code></pre></div>
 </table>
 <div class="formula">$$ d(J, A) = \sqrt{35^2 + 1000^2} = 1000.61, \qquad d(A, M) = \sqrt{5^2 + 2000^2} = 2000.01 $$</div>
 <p>John 同 Amy 年齡相差 100%+，income 只差約 3%；但因為 income 嘅數值大好多，Euclidean distance 幾乎完全由 income 決定，結論變成「Amy 同 John 近過同 Mike」——age 完全冇影響力。Scaling 之後兩個 features 先至有可比較嘅影響力。</p></div>
-<p>三種方法嘅共通目標：（或多或少）將 data 嘅 <b>center 變 0、spread 變 1</b>。</p>
+<p>三種方法都調整 scale，但基準唔同：<b>StandardScaler</b> 用 mean / std；<b>MinMaxScaler</b> 用 min / max（training range [0, 1]，唔保證 mean 0 / std 1）；<b>RobustScaler</b> 用 median / IQR（非退化 feature 嘅 median 0 / IQR 1）。</p>
 
 <p>Demo data：9000 個 \( N(50, 10) \) 正常值 + 100 個 \( N(100, 5) \) 高端 outliers。</p>
 <pre><code>import numpy as np
@@ -230,7 +230,7 @@ X.hist()   # 主峰喺 50 附近，100 附近有一小撮 outliers</code></pre>
 
 <h2>6. Standard Scaling (<code>StandardScaler</code>)</h2>
 <ul>
-  <li>將 variables 轉成 standard normal variables（mean = 0, std = 1）。</li>
+  <li>將 variables 轉成 standardized variables：非 constant training feature 嘅 mean 約 0、population std 約 1；唔會令任意 distribution 變 Normal。只有原分佈係 Normal，standardization 後先係 standard normal；constant feature 會變 0（std 0）。</li>
   <li>方法：減 mean，再除 standard deviation。</li>
   <li>Mean 同 std 會被 outliers 拉動，但冇 min-max scaling 咁嚴重。</li>
   <li>唔會限制喺某個指定 range。</li>
@@ -246,7 +246,7 @@ X_ss.std()    # 1.0</code></pre>
 
 <h2>7. Min-max Scaling (<code>MinMaxScaler</code>)</h2>
 <ul>
-  <li>將 variables 轉成 (0, 1) interval 入面嘅連續值。</li>
+  <li>將 variables 轉成 [0, 1] 閉區間（非 constant fitted training feature；包括兩端） 入面嘅連續值。</li>
   <li>將最小值 map 去 0、最大值 map 去 1。</li>
   <li><b>Sensitive to outliers</b>：想所有值喺 0 至 1 之間就好用，但可以被 outliers 嚴重影響。</li>
 </ul>
@@ -291,7 +291,7 @@ X_rs.std()    # 0.831</code></pre>
 <tr><th></th><th>StandardScaler</th><th>MinMaxScaler</th><th>RobustScaler</th></tr>
 <tr><td>公式</td><td>\( \frac{x - \text{mean}}{\text{std}} \)</td><td>\( \frac{x - \min}{\max - \min} \)</td><td>\( \frac{x - Q_2}{Q_3 - Q_1} \)</td></tr>
 <tr><td>Effect on outliers</td><td><b>Moderately affected</b>：mean、std 隨 outliers 移動</td><td><b>Highly sensitive</b>：outliers 將大部分 data 壓縮入細範圍</td><td><b>Much less sensitive</b>：median 同 IQR 減低極端值影響</td></tr>
-<tr><td>Output range</td><td>無固定 range；mean ≈ 0，unit variance</td><td>固定，通常 [0, 1]；保留 relative spacing</td><td>無固定 range；保留 median-centered spread，對 long tails robust</td></tr>
+<tr><td>Output range</td><td>無固定 range；mean ≈ 0，unit variance</td><td>Fitted training values 喺 [0, 1]；新 data 可超出；保留 relative spacing</td><td>無固定 range；保留 median-centered spread，對 long tails robust</td></tr>
 <tr><td>When to prefer</td><td>Algorithms assume zero-centered data：PCA、logistic regression、linear models、k-means</td><td>需要 bounded range：neural networks with sigmoids、visualization、expect [0, 1] 嘅 algorithms</td><td>Data 有 outliers，想減低影響但 <b>唔 clip</b></td></tr>
 </table></div>
 
@@ -313,7 +313,7 @@ X_test_s  = ss.transform(X_test)        # test 用 train 嘅 mean / std，唔好
 
 <div class="box exam"><span class="label">⭐ Quick rules of thumb</span>
 <ul>
-  <li>No strong outliers，algorithms assume normality 或者用 distances → <b>StandardScaler</b>。</li>
+  <li>No strong outliers，想按 std 統一 features 嘅 distance scale → <b>StandardScaler</b>；唔係令 data 滿足 Normality assumption。</li>
   <li>Need fixed interval 或者 activation functions 嘅 inputs → <b>MinMaxScaler</b>。</li>
   <li>Many outliers 或 heavy tails → <b>RobustScaler</b>。</li>
 </ul></div>
@@ -333,7 +333,7 @@ X_test_s  = ss.transform(X_test)        # test 用 train 嘅 mean / std，唔好
 <details class="q"><summary>Q2. 寫一行 code：數有幾多 rows 嘅 <code>PU_Address</code>（已 lower）含 "airport" 而且 <code>Status</code> 係 "Cancelled"。</summary><p><code>nyc[nyc['PU_Address'].str.contains('airport') &amp; (nyc['Status'] == 'Cancelled')].shape[0]</code>。也可以用 <code>(...).sum()</code> 直接數 Boolean mask。注意 <code>&amp;</code> 兩邊條件要加括號。</p></details>
 <details class="q"><summary>Q3. 以下邊個 strings 會被 <code>ab+c</code> match？"ac"、"abc"、"abbbc"。換成 <code>ab*c</code> 呢？</summary><p><code>ab+c</code>：abc、abbbc（"ac" 唔得，因為 <code>+</code> 要至少一個 b）。<code>ab*c</code>：三個都 match（<code>*</code> 容許 0 個 b）。</p></details>
 <details class="q"><summary>Q4. <code>re.findall(r'\d+', "Flat 12, 3/F, Block 7B")</code> 回傳乜？</summary><p><code>['12', '3', '7']</code>。<code>\d+</code> 抽每段連續 digits；"7B" 只抽到 7。</p></details>
-<details class="q"><summary>Q5. 點解抽 estate name 要用 <code>^(.*?)(?:,|$)</code> 而唔係 <code>^(.*)(?:,|$)</code>？<code>(?:...)</code> 有乜作用？</summary><p><code>.*?</code> 係 lazy，會喺第一個逗號停；<code>.*</code> 係 greedy，會食到最後一個逗號。<code>(?:...)</code> 係 non-capturing group：用嚟組合「逗號或字串尾」，但唔會被 <code>str.extract()</code> 抽出嚟，所以結果只有一個 column（estate name）。</p></details>
+<details class="q"><summary>Q5. 點解抽 estate name 要用 <code>^(.*?)(?:,|$)</code> 而唔係 <code>^(.*)(?:,|$)</code>？<code>(?:...)</code> 有乜作用？</summary><p><code>.*?</code> 係 lazy，會喺第一個逗號停；<code>.*</code> 係 greedy，配合 <code>,|$</code> 會食到字串尾，再 match <code>$</code>，所以抽出完整 address（包括 Flat J），唔係最後一個逗號前。<code>(?:...)</code> 係 non-capturing group：用嚟組合「逗號或字串尾」，但唔會被 <code>str.extract()</code> 抽出嚟，所以結果只有一個 column（estate name）。</p></details>
 <details class="q"><summary>Q6. Data = [2, 4, 6, 8, 50]。計 x = 8 嘅 min-max 同 robust scaled value（\( Q_1 = 4 \)，\( Q_3 = 8 \)）。</summary><p>Min-max：\( \frac{8 - 2}{50 - 2} = \frac{6}{48} = 0.125 \)。Robust：median \( Q_2 = 6 \)，IQR = 8 − 4 = 4，\( \frac{8 - 6}{4} = 0.5 \)。Min-max 將 2–8 擠入 0–0.125，因為 outlier 50 決定咗 max。</p></details>
 <details class="q"><summary>Q7. Demo data 經 MinMaxScaler 之後 std 只有 0.104，經 RobustScaler 之後係 0.831。解釋點解。</summary><p>MinMax 嘅分母係 max − min，被高端 outliers（約 100–120）撐大，正常值被壓縮喺細範圍，所以 spread 細。Robust 嘅分母係 IQR，只由中間 50% data 決定，唔受 outliers 影響，正常值保持原本嘅 spread（std 接近 1）。</p></details>
 <details class="q"><summary>Q8. 下面三個情況各揀邊個 scaler？(a) neural network 用 sigmoid activation；(b) income data 有好多極端富豪；(c) 冇明顯 outliers，做 PCA。</summary><p>(a) MinMaxScaler（需要 bounded [0, 1] input）；(b) RobustScaler（many outliers / heavy tail）；(c) StandardScaler（PCA assume zero-centered data）。</p></details>
@@ -348,12 +348,12 @@ X_test_s  = ss.transform(X_test)        # test 用 train 嘅 mean / std，唔好
   <li>Regex：<code>.</code> 任意字元；<code>\d</code> digit；<code>\w</code> word char；<code>\s</code> whitespace；<code>*</code> 0+；<code>+</code> 1+；<code>?</code> 0 或 1；<code>^</code> 開頭；<code>$</code> 結尾；<code>\b</code> word boundary；<code>( )</code> capture；<code>(?: )</code> non-capturing；<code>|</code> OR；<code>.*?</code> lazy。</li>
   <li><code>re.findall(p, s)</code> 回傳 list；<code>re.sub(p, repl, s)</code> 替換；<code>s.str.extract(p)</code> 抽 capture group（冇 match → NaN）；<code>s.str.contains(p)</code> Boolean。</li>
   <li>Scaling 原因：features scale 唔同 → distance-based algorithms（K-means）被大數值 feature 主導（\( \sqrt{35^2 + 1000^2} = 1000.61 \)）。</li>
-  <li>Standard：\( \frac{x - \text{mean}}{\text{std}} \)，mean 0 std 1，無固定 range，outliers 中度影響。</li>
+  <li>Standard：\( \frac{x - \text{mean}}{\text{std}} \)，非 constant training feature mean 約 0 / population std 約 1（唔保證 Normal），無固定 range，outliers 中度影響。</li>
   <li>Min-max：\( \frac{x - \min}{\max - \min} \)，[0, 1]，對 outliers 最敏感，新 data 超出 min/max 有 extrapolation 問題。</li>
   <li>Robust：\( \frac{x - Q_2}{Q_3 - Q_1} \)，median-centered、IQR → 1，最 robust，但唔保證喺 [0, 1]。</li>
   <li>Syntax：<code>from sklearn.preprocessing import StandardScaler / MinMaxScaler / RobustScaler</code>；<code>X_s = scaler.fit_transform(X)</code>；輸出係 NumPy array。</li>
   <li>Fit on training only → <code>transform</code> validation / test。</li>
-  <li>Rules：無 outliers / distances / normality → Standard；fixed interval / activation → MinMax；outliers / heavy tails → Robust。</li>
+  <li>Rules：無強 outliers / 按 std 統一 distance scale → Standard（唔會改成 Normal distribution）；fixed interval / activation → MinMax；outliers / heavy tails → Robust。</li>
 </ul></div>
 
 <nav class="pager">

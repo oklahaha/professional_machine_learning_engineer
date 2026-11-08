@@ -150,7 +150,7 @@ df.describe().T
 </ul>
 <pre><code>wdi_imp.hist(figsize=(20, 20));          # 分號：唔顯示返回嘅 Axes object 文字
 wdi_imp['population'].hist(bins=50)</code></pre>
-<div class="box note"><span class="label">🖼️ Histograms（PDF 第 7、8、10 頁）</span><p><b>第 7 頁</b>：<code>wdi_imp.hist()</code> 每個 numerical column 一幅。access_to_electricity_pct 大部分擠喺 100%（left-skewed）；atms_per_100000、gdp_per_capita_usd / ppp、population_density、population、unemployment_rate 都係嚴重 right-skewed（大部分值喺左邊，條尾拖好長）；life_expectancy 系列偏右（left-skewed）；year 只有 2017 同 2018 兩條 bar；is_region 只有 0（約 350）同 1（約 100）。</p><p><b>第 8 頁</b>：<code>wdi_imp['population'].hist(bins=50)</code>，x 軸去到約 \(7.5 \times 10^9\)：約 345 個值擠喺最左邊第一條 bar，右邊零星有幾條細 bar（World、各 regions 呢類 aggregated rows）。</p><p><b>第 10 頁</b>：<code>wdi_country_only</code>（刪咗 regions）嘅 population histogram：x 軸只去到約 \(1.4 \times 10^9\)，約 330 個國家喺第一條 bar，最右邊 1.3–\(1.4 \times 10^9\) 有一條細 bar，就係 China 同 India（下面 method 1 嘅輸出：index 36、253 係 China，91、308 係 India）。</p></div>
+<div class="box note"><span class="label">🖼️ Histograms（PDF 第 7、8、10 頁）</span><p><b>第 7 頁</b>：<code>wdi_imp.hist()</code> 每個 numerical column 一幅。access_to_electricity_pct 大部分擠喺 100%（left-skewed）；atms_per_100000、gdp_per_capita_usd / ppp、population_density、population、unemployment_rate 都係嚴重 right-skewed（大部分值喺左邊，條尾拖好長）；life_expectancy 系列偏右（left-skewed）；year 只有 2017 同 2018 兩條 bar；is_region 只有 0（約 350）同 1（約 100）。</p><p><b>第 8 頁</b>：<code>wdi_imp['population'].hist(bins=50)</code>，x 軸去到約 \(7.5 \times 10^9\)：約 345 個值擠喺最左邊第一條 bar，右邊零星有幾條細 bar（World、各 regions 呢類 aggregated rows）。</p><p><b>第 10 頁</b>：<code>wdi_country_only</code>（刪咗 regions）嘅 population histogram：x 軸只去到約 \(1.4 \times 10^9\)，約 330 筆 observations（由圖估讀；唔係 unique countries）喺第一條 bar，最右邊 1.3–\(1.4 \times 10^9\) 有一條細 bar，就係 China 同 India（下面 method 1 嘅輸出：index 36、253 係 China，91、308 係 India）。</p></div>
 
 <h3>1.5 Q1：Outlier detection（含答案）</h3>
 <pre><code># Q1.1 人口最多嘅「國家」
@@ -177,16 +177,16 @@ wdi_country_only.nlargest(5, 'population')[['country_name', 'population']]
 <div class="box exam"><span class="label">⭐ 考試重點：IQR 公式</span>
 <div class="formula">$$ IQR = Q_3 - Q_1 $$</div>
 <div class="formula">$$ \text{Upper bound} = Q_3 + 1.5 \times IQR, \qquad \text{Lower bound} = Q_1 - 1.5 \times IQR $$</div>
-<p>大過 upper bound 或細過 lower bound 嘅值 = potential outliers。Slide 補充：如果冇 data 高過 \(Q_3 + 1.5 IQR\)，upper bound 就用 data 嘅 max（lower 同理用 min）——即係 boxplot whisker 嘅畫法：whisker 伸到「界限內最遠嘅真實數據點」。</p></div>
+<p>大過 upper fence 或細過 lower fence 嘅值 = potential outliers。Fence 永遠係以上公式 threshold，唔會改成 max / min；whisker endpoint 先係 fence 內最遠嘅 observed value。Box 只包中間 50%，所以 box 外仍可有正常 observations。Slide 將 bound 同 whisker 混寫，兩者要分清。</p></div>
 <pre><code># Q2（homework）：33% percentile
 wdi_imp['atms_per_100000'].quantile(0.33)     # np.float64(24.32170064268077)
 
-# Boxplot（根據 IQR 畫，盒外嘅點 = outliers）
+# Boxplot（根據 IQR 畫，whiskers 以外獨立標記嘅 points = 按 IQR 規則嘅 potential outliers；box 外唔等於 outlier）
 wdi_imp.boxplot(column='atms_per_100000', figsize=(3, 5))
 
 Q1 = wdi_imp['atms_per_100000'].quantile(0.25)   # 11.894731154404873
 Q3 = wdi_imp['atms_per_100000'].quantile(0.75)   # 64.21371556643965</code></pre>
-<div class="box note"><span class="label">🖼️ Boxplot 同 IQR detection.png（PDF 第 12–13 頁）</span><p><b>第 12 頁</b>：<code>atms_per_100000</code> 嘅 boxplot：box 大約 12–64，median 約 38，上 whisker 去到約 140，上面有一串圓圈（outliers）約 145–270；下面冇 outliers。</p><p><b>IQR detection.png</b>：同一幅 boxplot 加標注：box 由下至上係 <b>Q1</b>、<b>Q2 = median</b>、<b>Q3</b>；Q3 之上嘅 whisker 長度標示為 <b>1.5*IQR</b>；最底標示 <b>Min of the value</b>；紅字 <b>Range of the data</b> 指住兩條 whiskers 之間；上面一個框圈住所有圓圈，寫住 "considered outliers — How many are there?"。下面 Q3 嘅答案：upper_bound = 142.69、lower_bound = −66.58，large outliers 有 <b>15</b> 個。（驗算：\(IQR = 64.21 - 11.89 = 52.32\)，\(1.5 \times IQR = 78.48\)，\(64.21 + 78.48 = 142.69\)，\(11.89 - 78.48 = -66.58\)。）</p></div>
+<div class="box note"><span class="label">🖼️ Boxplot 同 IQR detection.png（PDF 第 12–13 頁）</span><p><b>第 12 頁</b>：<code>atms_per_100000</code> 嘅 boxplot：box 大約 12–64，median 約 38，上 whisker 去到約 140，上面有一串圓圈（outliers）約 145–270；下面冇 outliers。</p><p><b>IQR detection.png</b>：同一幅 boxplot 加標注：box 由下至上係 <b>Q1</b>、<b>Q2 = median</b>、<b>Q3</b>；Q3 之上嘅圖示標記寫 <b>1.5*IQR</b>，呢個係 fence 距離，唔代表實際 whisker 長度一定等於佢；最底標示 <b>Min of the value</b>；紅字 <b>Range of the data</b> 指住兩條 whiskers 之間；上面一個框圈住所有圓圈，寫住 "considered outliers — How many are there?"。下面 Q3 嘅答案：upper_bound = 142.69、lower_bound = −66.58，large outliers 有 <b>15 rows</b>（唔係已去重嘅 countries）。（驗算：\(IQR = 64.21 - 11.89 = 52.32\)，\(1.5 \times IQR = 78.48\)，\(64.21 + 78.48 = 142.69\)，\(11.89 - 78.48 = -66.58\)。）</p></div>
 
 <h3>2.1 Q3：計 bounds 同數 outliers</h3>
 <pre><code>IQR = Q3 - Q1                       # 52.3190
@@ -201,7 +201,7 @@ len(large_outliers)                 # 15
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><ul><li>寫成 <code>quantile(25)</code>——參數要喺 [0,1]，應為 <code>quantile(0.25)</code>。</li><li>將 1.5 乘錯對象：係 <b>\( 1.5 \times IQR \)</b> 加落 \( Q_3 \)，唔係 \( 1.5 \times Q_3 \)。</li><li>Lower bound 用 Q3、upper bound 用 Q1 調轉咗。</li></ul></div>
 
 <h2>3. Treating the outliers by capping</h2>
-<p>IQR 方法搵到 15 個超出範圍嘅值（共 217 個國家/地區）——全部當 outliers drop 走就太多。改為睇 <b>99th percentile</b>（99% 嘅值細過佢），揀出真正極端嘅：</p>
+<p>IQR 方法喺 446 observations 中搵到 15 rows 超過 fence（country-year / region-year），唔係已證明有 15 個 unique countries。217 係 distinct names，唔可同 row count 混做分母；country-only 係 446 − 95 = 351 rows。涉及幾多 unique countries / regions，要對 outlier subset 嘅 name column 另做 nunique()。唔應單憑 outlier 標籤就全部 drop。改為睇 <b>99th percentile</b>（99% 嘅值細過佢），揀出真正極端嘅：</p>
 <pre><code>p99 = wdi_imp['atms_per_100000'].quantile(0.99)    # 220.007919399819
 wdi_imp.sort_values(by='atms_per_100000', ascending=False).head(10)
 #      country_name   atms_per_100000
@@ -317,7 +317,7 @@ date_time_range.days                      # 1460</code></pre>
 
 <h3>4.5 Time until / time prior to a specific date</h3>
 <ul>
-  <li><code>date_time</code> column − 特定日期 → 「time until」嗰個日期（或之後）；特定日期 − column → 「time prior to」嗰個日期。</li>
+  <li><code>time_until_target = target - observed_date</code>；<code>time_since_target = observed_date - target</code>。未來 target 嘅 until 係正數，已過則負數。例如 2022-01-01 − 2013-03-01 = +3228 days，反向 = −3228 days。</li>
   <li>結果係 Timedelta（dtype <code>timedelta64[ns]</code>）——適合需要「時間跨度」而唔係實際日期嘅 features。</li>
   <li>因為 column 每個 element 係 Timestamp，所以要構造 Timestamp 或 datetime object 嚟減。</li>
 </ul>

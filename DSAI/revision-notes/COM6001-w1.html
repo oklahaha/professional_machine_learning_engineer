@@ -66,6 +66,21 @@
   <tr><td>7</td><td>Feature engineering &amp; project briefing</td><td></td><td></td></tr>
 </table>
 
+<div class="box warn"><span class="label">⚠️ Tentative schedule ≠ delivered syllabus</span><p>以上保留 Week 1 原定 timetable，唔係已完成授課清單。已按 Week 1–10 folders 嘅 lecture files 同各 revision page h1 核對；未提供 Week 11–13 lecture，唔由 tentative table 推斷已教／考試範圍。</p></div>
+<table>
+<tr><th>Week</th><th>實際 delivered lecture（檔案 / revision page）</th><th>同 tentative 比較</th></tr>
+<tr><td>1</td><td>Lecture01-Introduction.pdf：Introduction to Big Data</td><td>Introduction</td></tr>
+<tr><td>2</td><td>Lecture 02.pdf：Python environment / types / structures</td><td>Python crash course 1</td></tr>
+<tr><td>3</td><td>Lecture03_Python_crash_course.pdf：control / functions / lambda / packages</td><td>Python crash course 2</td></tr>
+<tr><td>4</td><td>Lecture04_pandas_data_manipulation.pdf：Series / DataFrame / I/O / combining / rename</td><td>Data manipulation</td></tr>
+<tr><td>5</td><td>Lecture05_notebook.pdf：pandas manipulation II（selection / modification / sorting / cleaning intro）</td><td>唔只原定 cleaning 1</td></tr>
+<tr><td>6</td><td>Lecture06_Data_cleaning_Part_1.pdf：unnecessary data / missing values / imputation</td><td>實際 cleaning I</td></tr>
+<tr><td>7</td><td>Lecture07_notebook.pdf：outliers / datetime / encoding / binning</td><td>Cleaning II + feature engineering</td></tr>
+<tr><td>8</td><td>Lecture08_Text_Cleaning_Scaling.pdf：text cleaning / feature scaling</td><td>唔係原定 EDA 1</td></tr>
+<tr><td>9</td><td>Lecture09_EDA_1.pdf + ipynb：map / apply；EDA aggregation / sampling / correlation</td><td>實際 EDA 1</td></tr>
+<tr><td>10</td><td>Lecture10_EDA_2.pdf：groupby / pivot tables / visualization intro</td><td>實際 EDA 2，唔係完整 visualization lecture</td></tr>
+</table>
+
 <h3>Assessments</h3>
 <table>
   <tr><th>Component</th><th>Weight</th><th>重點</th></tr>
@@ -249,7 +264,7 @@ print(df["rating"] &gt; "fair")   # 有次序先可以比較大細</code></pre>
 <div class="box note"><span class="label">🖼️ CRISP-DM 同 Data Science Processes 圖（PDF 第 25–26 頁，slide 上印住嘅頁碼係 26–27）</span><p><b>CRISP-DM 循環圖</b>：中間係 "Data"，外圈有一個大箭咀循環。Business Understanding ⇄ Data Understanding 之間有雙向箭咀，Data Preparation ⇄ Modeling 之間亦有雙向箭咀，跟住 Modeling → Evaluation；Evaluation 有一條箭咀返去 Business Understanding，另一條去 Deployment。所以上面講嘅「iterative / 來回」同圖一致。</p><p><b>Data Science Processes</b>（來源 towardsdatascience）：五個步驟 Collection → Cleaning → Exploratory Data Analysis → Model Building → Model Deployment，下面用橫條標示每個角色負責嘅範圍：<b>Data Engineers</b>（Collection、Cleaning）、<b>Data Analysts</b>（Cleaning 至 EDA）、<b>Machine Learning Engineers</b>（Model Building、Deployment）、<b>Data Scientists</b>（由頭到尾全部）。</p></div>
 
 <div class="box tip"><span class="label">💡 直覺理解</span>
-<p>對應本科內容：Week 4 data manipulation (載入、合併) + Week 5–7 data cleaning / feature engineering = <b>Prepare Data</b>；Week 8–9 EDA = <b>Data Understanding</b>；Week 10 visualization 用於 Understanding 同 presenting results。實際做 project 時大部分時間 (常說 60–80%) 都花喺 Data Preparation。</p></div>
+<p>對應本科內容：Week 4 data manipulation (載入、合併) + Week 5–7 data cleaning / feature engineering = <b>Prepare Data</b>；Week 8 text cleaning / scaling 仍屬 <b>Prepare Data</b>；Week 9–10 EDA = <b>Data Understanding</b>；Week 10 只有 visualization intro，用於 Understanding 同 presenting results。實際做 project 時大部分時間 (常說 60–80%) 都花喺 Data Preparation。</p></div>
 
 <pre><code>import pandas as pd
 # 一個極簡 CRISP-DM 流程示意 (假設有 sales.csv)

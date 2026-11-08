@@ -28,8 +28,8 @@
 <div class="overview">
   <h3>🎯 本講重點 (Learning outcomes)</h3>
   <ul>
-    <li>用 boxplot、histogram、empirical CDF 睇數據分佈（<code>plt.hist(..., cumulative=True, histtype='step')</code>）。</li>
-    <li>理解 residual（\( e = y - \hat y \)）同點解 normal residual 代表 model 已經冇得再改善 mean prediction。</li>
+    <li>用 boxplot、histogram 同精確 empirical CDF 睇分佈；cumulative histogram 只係分箱累積圖，唔等於 ECDF。</li>
+    <li>理解 residual（\(e=y-\hat y\)）；normal、mean-zero 嘅 marginal distribution 唔能夠證明 prediction 已最優。</li>
     <li>分清 <code>norm.pdf</code>（density）、<code>norm.cdf</code>（probability）、<code>norm.ppf</code>（quantile）、<code>norm.rvs</code>（random）。</li>
     <li>用 simulation + histogram、QQ-plot、<code>stats.normaltest</code> 檢查數據係咪 normal。</li>
     <li>Normal approximation to Binomial（\( np \ge 10 \)、\( n(1-p) \ge 10 \)；\( \mu = np \)、\( \sigma^2 = np(1-p) \)）同 Poisson approximation to Binomial（\( n \ge 50 \)、\( p \le 0.1 \)；\( \lambda = np \)）。</li>
@@ -40,27 +40,32 @@
     <li>QQ-plot：如果數據 normal，點會貼近一條直線；亦用嚟檢查 regression residuals。</li>
     <li><code>normaltest</code>：\(H_0\) = data comes from a normal distribution；p-value &gt; 0.05 → do not reject \(H_0\)。</li>
     <li>Normal approximation 條件同 parameters：\( np \ge 10 \)、\( n(1-p) \ge 10 \)；\( \mu = np \)、\( \sigma^2 = np(1-p) \)。</li>
-    <li>Poisson approximation 條件同 parameter：n large、p small（\( n \ge 50 \)、\( p \le 0.1 \) 或 \( np \le 10 \)）；\( \lambda = np \)。</li>
+    <li>Poisson approximation 條件同 parameter：n large、p small（\( n \ge 50 \)、\( p \le 0.1 \)；\(np\le10\) 並非獨立充分條件）；\( \lambda = np \)。</li>
   </ol>
 </div>
 
 <h2>1. Revision：Boxplot、Histogram、Empirical CDF</h2>
-<p>Slide 2：如果數據冇 missing values (NA)，<code>plt.hist</code> 加 <code>histtype='step'</code>（同 <code>cumulative=True</code>）就可以畫出 <mark class="k">empirical cumulative distribution function</mark>。</p>
+<p>Slide 2 將 cumulative histogram 稱為 empirical CDF，呢個係簡化得唔準確：未 normalize 嘅 histogram 終點係 count；即使加 density=True，仍然係 binned estimate。精確 ECDF 定義為 \(F_n(t)=n^{-1}\sum_i\mathbf{1}(y_i\le t)\)，由 0 升至 1，以下直接用每個 observation 嘅 jump。</p>
 <pre><code>import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 d = pd.read_csv("bee_wax.txt", sep='\t')       # 蜂蠟熔點數據（tab 分隔）
-y = d['Melting']
+y = d['Melting'].dropna()
 fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 axs[0].boxplot(y);                         axs[0].set_title('Boxplot')
 axs[1].hist(y, bins='auto');               axs[1].set_title('Histogram')
-axs[2].hist(y, bins=50, cumulative=True, histtype='step')   # Empirical CDF
-axs[2].set_title('Cumulative Distribution')
+values = np.sort(y.to_numpy())
+if len(values) == 0:
+    raise ValueError('ECDF needs nonempty data')
+axs[2].step(np.r_[-np.inf, values, np.inf],
+            np.r_[0, np.arange(1, len(values)+1)/len(values), 1], where='post')
+axs[2].set_title('Empirical CDF')
 plt.tight_layout(); plt.show()</code></pre>
 <div class="box tip"><span class="label">💡 三幅圖各自睇咩</span>
 <ul>
 <li><b>Boxplot</b>：median、Q1、Q3（IQR）、outliers——快速睇 location 同 spread。</li>
 <li><b>Histogram</b>：分佈形狀（bell-shape？skewed？bimodal？）。</li>
-<li><b>Empirical CDF</b>：由 0 升到 n（或 1）嘅樓梯線；可以直接讀「有幾多比例 ≤ 某值」。</li>
+<li><b>Empirical CDF</b>：由 0 升至 1，於每個 observed value 跳升，直接讀取小於或等於該值嘅 sample proportion；重複值嘅 jumps 合併。</li>
 </ul></div>
 <div class="box warn"><span class="label">⚠️ 注意</span><p>有 NaN 嘅話 <code>plt.hist</code> 會出錯或者結果唔啱，先 <code>y.dropna()</code>（連返 COM6001 data cleaning）。</p></div>
 
@@ -69,11 +74,11 @@ plt.tight_layout(); plt.show()</code></pre>
 <ul>
 <li>True height (target) = \( y \)；Predicted height = \( \hat y \) (y_hat)</li>
 <li><mark class="k">Residual</mark> (prediction error) = \( e = y - \hat y \)</li>
-<li>如果 residual is <b>normally distributed with zero mean</b>，即係佢純粹 random，model cannot be further optimized/improved for the mean prediction。</li>
+<li>Slide 5 原句將 normal、mean-zero residual 推成「cannot be further improved」，呢個推論不成立：\(E(e)=0\) 唔保證 \(E(e\mid X)=0\)。</li>
 <li>好多量度數據嘅 histogram 都係 bell-shape：中間高、兩邊 tails 薄；residuals 嘅 histogram 好多時都似鐘形。</li>
-<li>Linear regression 嘅統計方法正正建基於 error (residual) terms 係 bell-shape（normal）呢個理論。</li>
+<li>OLS estimation 唔需要 normal errors；在正確 conditional mean 等條件下仍可估計。Normality 主要支援經典精確小樣本 t / F inference；observed OLS residuals 唔等於不可觀察嘅 i.i.d. errors。</li>
 </ul>
-<div class="box tip"><span class="label">💡 直覺理解</span><p>如果 residual 仲有 pattern（例如全部偏正、或者跟 X 有曲線關係），代表 model 仲有「可以學」嘅嘢未學到；如果 residual 就好似 random noise（normal、mean 0），model 已經榨乾咗數據入面嘅系統性資訊。</p></div>
+<div class="box tip"><span class="label">💡 正確 diagnostics</span><p>Normal histogram、QQ-plot 同 \(E(e)=0\) 只係部分檢查。要同時睇 residual 對 predictors、fitted values 同 observation order 有冇 predictable pattern。Squared-error prediction 嘅目標係正確 conditional mean \(E(Y\mid X)\)；未見 pattern 亦唔係證明已達最優。</p></div>
 <div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 4 Linear regression 嘅 diagnostic plots（residual vs fitted、QQ-plot of residuals、residual histogram）就係用呢度嘅概念。</p></div>
 
 <h2>3. scipy.stats.norm：pdf、cdf、ppf、rvs</h2>
@@ -184,7 +189,7 @@ print(stats.norm.cdf(55.5, 50, 5))         # with continuity correction: 0.8643<
 <div class="box exam"><span class="label">⭐ 條件同 parameter</span>
 <ul>
 <li><b>Condition</b>：n is large and p is small。</li>
-<li><b>Rule of Thumb</b>：\( n \ge 50 \) and \( p \le 0.1 \)，or when the expected value \( np \le 10 \)。</li>
+<li><b>Rule of Thumb</b>：\( n \ge 50 \) and \( p \le 0.1 \)；仍須 large n / small p，\(np\le10\) 本身不足夠。</li>
 <li><b>Parameter</b>：\( \lambda = np \)。</li>
 </ul></div>
 <div class="box tip"><span class="label">💡 Worked example（補充）</span>
@@ -197,7 +202,7 @@ print(stats.norm.cdf(55.5, 50, 5))         # with continuity correction: 0.8643<
 <table>
 <tr><th></th><th>Normal approx.</th><th>Poisson approx.</th></tr>
 <tr><td>幾時用</td><td>n 大、p 接近 0.5</td><td>n 大、p 細（rare events）</td></tr>
-<tr><td>Rule of thumb</td><td>\( np \ge 10 \) 且 \( n(1-p) \ge 10 \)</td><td>\( n \ge 50 \) 且 \( p \le 0.1 \)（或 \( np \le 10 \)）</td></tr>
+<tr><td>Rule of thumb</td><td>\( np \ge 10 \) 且 \( n(1-p) \ge 10 \)</td><td>\( n \ge 50 \) 且 \( p \le 0.1 \)（\(np\le10\) 不能取代 rare-event 前提）</td></tr>
 <tr><td>Parameters</td><td>\( \mu = np \)，\( \sigma^2 = np(1-p) \)</td><td>\( \lambda = np \)</td></tr>
 </table>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Normal approximation 用嘅係 \( \sigma^2 \)（variance）\( = np(1-p) \)，代入 <code>norm.cdf</code> 時要開方做 \(\sigma\)。例如 \( n = 100, p = 0.5 \) → \(\sigma = 5\)，唔係 25。</p></div>
@@ -210,20 +215,20 @@ print(stats.norm.cdf(55.5, 50, 5))         # with continuity correction: 0.8643<
 <details class="q"><summary>Q4. QQ-plot 啲點喺兩端明顯偏離直線（左下向下、右上向上）代表咩？</summary><p>兩邊 tails 比 normal 厚（heavy tails / outliers 多），數據唔太符合 normal。</p></details>
 <details class="q"><summary>Q5. \( \text{Binomial}(n = 40, p = 0.2) \)：可唔可以用 normal approximation？</summary><p>\( np = 8 &lt; 10 \) → 按 slide 嘅 rule of thumb（10）唔適合；如果用寬鬆標準（5），\( np = 8 \)、\( n(1-p) = 32 \) 都 \( \ge 5 \) → 勉強可以。考試跟 slide：答唔適合（或說明兩種標準）。</p></details>
 <details class="q"><summary>Q6. \( n = 500 \)、\( p = 0.004 \)，求 P(X = 3) 嘅 Poisson approximation。</summary><p>\( \lambda = np = 2 \)：\( P(X=3) \approx 2^3 e^{-2}/3! = 8 \times 0.1353/6 \approx 0.1804 \)。</p></details>
-<details class="q"><summary>Q7. 點解 residual 係 normal 而且 mean 0 代表 model 冇得再改善 mean prediction？</summary><p>因為 residual 只係純 random noise，冇系統性 pattern 可以再被 X 解釋；如果仲有 pattern（例如 \( \text{mean} \ne 0 \) 或跟 X 有關），代表 model 漏咗資訊。</p></details>
+<details class="q"><summary>Q7. Normal、mean-zero residual 能否證明 mean prediction 已最優？</summary><p>不能。Marginal normality 同 \(E(e)=0\) 唔推出 \(E(e\mid X)=0\)。例如 \(Y=X\)、predictor 為 0 而 X 為 mean-zero Normal，residual 就係 X；用 X 預測即可改善。要檢查 conditional patterns，而唔係只睇 histogram。</p></details>
 <details class="q"><summary>Q8. 寫 code：模擬 1000 個 \( N(5, 2^2) \)，畫 density histogram 並疊上理論曲線。</summary><p><code>x = norm.rvs(5, 2, 1000); plt.hist(x, bins='auto', density=True); g = np.linspace(-2, 12, 200); plt.plot(g, norm.pdf(g, 5, 2)); plt.show()</code></p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li>ECDF：<code>plt.hist(y, bins=50, cumulative=True, histtype='step')</code>（數據要冇 NA）。</li>
-<li>Residual \( e = y-\hat y \)；normal + mean 0 → random → model 冇得再改善 mean prediction；regression 理論建基於 normal error。</li>
+<li>精確 ECDF：排序後累積比例，用 <code>step(..., where='post')</code>；cumulative histogram 係分箱圖，未 normalize 終點係 count。</li>
+<li>Residual \(e=y-\hat y\)：normal + mean 0 唔代表最優；要查 residual 對 X / fitted / order 嘅 patterns，區分 \(E(e)\) 同 \(E(e\mid X)\)。Normality 主要關乎精確小樣本 inference。</li>
 <li>pdf = density｜cdf = probability｜ppf = quantile｜rvs = random。預設 loc = 0、scale = 1（scale = SD）。</li>
 <li>\( Z=(X-\mu)/\sigma \)；\(\Phi(1) = 0.8413\)、\(\Phi(1.96) = 0.975\)、\(\Phi(0) = 0.5\)。</li>
 <li>Histogram vs pdf：<code>density=True</code>。</li>
 <li>QQ-plot（<code>sm.qqplot(x, fit=True, line="45")</code>）：normal → 近直線；亦用嚟查 residuals。</li>
 <li><code>stats.normaltest</code>：\(H_0\) = normal；p &gt; 0.05 → not rejected → “weakly” normal。</li>
 <li>Normal approx. to Binomial：\( np \ge 10 \)、\( n(1-p) \ge 10 \)（或 5）；\( \mu = np \)，\( \sigma^2 = np(1-p) \)。</li>
-<li>Poisson approx. to Binomial：\( n \ge 50 \)、\( p \le 0.1 \)（或 \( np \le 10 \)）；\( \lambda = np \)。</li>
+<li>Poisson approx. to Binomial：\( n \ge 50 \)、\( p \le 0.1 \)（\(np\le10\) 不能取代 rare-event 前提）；\( \lambda = np \)。</li>
 </ul></div>
 
 <nav class="pager">

@@ -139,7 +139,7 @@ print(a_copy is a)      # False</code></pre>
 <p>Integer 冇 <code>copy()</code> method，因為 int 係 immutable，冇需要 copy。就算用 <code>copy.deepcopy()</code>，Python 都唔會整新 object：</p>
 <ul>
   <li>細而常用嘅 integers（slide 寫 [-5, 255]／[-5, 256]；CPython 實際係 −5 至 256）會被 <mark class="k">intern</mark>：每個值只有一個 object，所以 <code>i1 = 1; i2 = 1</code> 嘅 <code>id</code> 完全一樣。</li>
-  <li>範圍外（例如 −6）：<code>i1 = -6</code> 同 <code>i2 = -6</code> 分開寫會係兩個唔同 object（id 唔同）；但 <code>i1_ref = i1</code> 同 <code>copy.deepcopy(i1)</code> 都只係指返同一個 object。</li>
+  <li>Small-int cache 範圍外（例如 −6）嘅 identity 依 implementation / compilation unit 而定，同一 code object 可以重用 literal。Slide 9 嘅不同 IDs 只係該次執行觀察。比較數值用 <code>==</code>，唔用 <code>is</code>；assignment 同 CPython 嘅 <code>copy.deepcopy(i1)</code> 對 immutable int 仍引用同一 object。</li>
 </ul>
 
 <h2>3. Selecting columns</h2>
@@ -147,8 +147,8 @@ print(a_copy is a)      # False</code></pre>
 <pre><code>DataFrame.select_dtypes(include=None, exclude=None)  # → 回傳 DataFrame</code></pre>
 <ul>
   <li><code>include</code>：要保留嘅 dtypes；<code>exclude</code>：要排除嘅 dtypes。</li>
-  <li>可以用 pandas dtypes：<code>int64</code>、<code>float64</code>、<code>object</code>、<code>bool</code>、<code>datetime64</code>、<code>category</code>；亦可以用 Python types：<code>int</code>、<code>float</code>、<code>str</code>、<code>bool</code>。</li>
-  <li>廣義類別：<code>'number'</code> 包晒所有 numeric（int64、float64）；<code>object</code> 包 string-like。</li>
+  <li>可用 pandas dtype 名（如 <code>'int64'</code>、<code>'float64'</code>、<code>'bool'</code>、<code>'category'</code>），或 Python types <code>int</code>、<code>float</code>、<code>bool</code>。Slide 將 <code>str</code> 當通用選項需加 version 限定：pandas 2.2.3 嘅 <code>include=[str]</code> 會 TypeError；pandas 3.x 預設 text str dtype 行為不同（3.1.1 接受）。</li>
+  <li><code>'number'</code> 包 numeric dtypes；舊版 object-backed text 用 <code>include='object'</code>，但 object 可含任意 Python objects，唔等於純 strings。明確 nullable <code>dtype='string'</code> 用 <code>include='string'</code>；先檢查 <code>df.dtypes</code>，分清 object / string / pandas 3.x str。</li>
 </ul>
 <pre><code>hero = pd.read_pickle(dir_path + "hero.pkl")
 hero.select_dtypes(include=['int64'])           # 537 rows × 1 column（height）
@@ -303,7 +303,7 @@ hero.loc[(hero['flight'] == True) &amp; (hero['gender'] == 'Male'), ['hero_names
 <pre><code>df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 2, 9]], columns=['A', 'B', 'C'])
 df.iloc[2, 1] = -100        # 第 3 行第 2 列
 #    A    B  C
-# 0  1  100  3     ← （notebook 之前已改 B[0]=100）
+# 0  1    2  3     ← 本例重建咗 df，唔會保留 notebook 舊 state 嘅 B[0]=100
 # 1  4    5  6
 # 2  7 -100  9
 df.iloc[0:2, 0:2] = 999     # rows 0–1、columns 0–1（stop exclusive）
@@ -371,7 +371,7 @@ hero[['race', 'height']].sort_values(by=['race', 'height'], ascending=[True, Fal
 <table>
 <tr><th><code>keep=</code></th><th>意思</th></tr>
 <tr><td><code>'first'</code>（default）</td><td>並列時優先保留最早出現嘅</td></tr>
-<tr><td><code>'last'</code></td><td>並列時優先保留最後出現嘅</td></tr>
+<tr><td><code>'last'</code></td><td>並列時優先保留最後出現嘅，ties 亦會按出現次序反向排列，即使全部入選</td></tr>
 <tr><td><code>'all'</code></td><td>保留所有同「最細入圍值」並列嘅 rows，即使超過 n 行</td></tr>
 </table>
 <p>Help 文件例子（population）：<code>nlargest(3, 'population')</code> → France, Italy, Malta；<code>keep='last'</code> → France, Italy, <b>Brunei</b>（434000 並列中最後一個）；<code>keep='all'</code> → France, Italy, Malta, Maldives, Brunei（5 行）。注意 nlargest 唔係揀「n 個不同值」。</p></div>
@@ -470,7 +470,7 @@ assert_single_value_result(wdi['country_name'], wdi['Country Name'], return_type
 <details class="q"><summary>Q4. 寫一句 code：揀出 <code>gender</code> 為 Male <b>或</b> height 大於 200 嘅 heroes，只顯示 <code>race</code> 同 <code>publisher</code>。</summary><pre><code>hero.loc[(hero['gender'] == 'Male') | (hero['height'] &gt; 200), ['race', 'publisher']]</code></pre><p>要點：用 <code>|</code> 唔係 <code>or</code>；每個條件加括號；條件放 row indexer，column list 放第二個位置。</p></details>
 <details class="q"><summary>Q5. <code>hero['race'].isin(['Human ', 'Mutant'])</code> 有咩問題？點修正？</summary><p><code>'Human '</code> 尾有空格，同 data 中嘅 <code>'Human'</code> 唔相等，所以 Human 唔會被 match。修正：寫 <code>'Human'</code>；或者先清理 data：<code>hero['race'] = hero['race'].str.strip()</code>。</p></details>
 <details class="q"><summary>Q6. 有 df（index 為 'r1','r2'，columns A,B 皆 int）。執行 <code>df.loc[0, 'A'] = 5</code> 後會點？</summary><p>因為冇 label <code>0</code>，pandas 會 enlargement：新增一個 index 為 <code>0</code> 嘅 row，A = 5，B = NaN。由於出現 NaN，B column（甚至 A）會變成 float64。唔會報錯——呢個係常見 bug 來源；如果想改「第一行」應該用 <code>df.iloc[0, 0] = 5</code>。</p></details>
-<details class="q"><summary>Q7. heights = [305, 701, 366, 305, 975, 366, 305]（index 0–6）。<code>nlargest(4, keep='first')</code>、<code>keep='last'</code>、<code>keep='all'</code> 各回傳邊啲 index？</summary><p>排序：975(4), 701(1), 366(2), 366(5), 305(0), 305(3), 305(6)。頭 4 個係 975, 701, 366, 366 —— 第 4 名 366 有兩個並列，兩個都入到，所以三種 keep 都係 index [4, 1, 2, 5]。如果改成 <code>nlargest(5)</code>：first → 加 index 0；last → 加 index 6；all → 加 0、3、6（共 7 rows）。</p></details>
+<details class="q"><summary>Q7. heights = [305, 701, 366, 305, 975, 366, 305]（index 0–6）。<code>pd.Series(heights).nlargest(4, keep='first')</code>、<code>keep='last'</code>、<code>keep='all'</code> 各回傳邊啲 index？</summary><p>first / all → <code>[4, 1, 2, 5]</code>；last → <code>[4, 1, 5, 2]</code>。兩個 366 都入選，last 仍反轉 ties 次序。改成 nlargest(5)：first → <code>[4, 1, 2, 5, 0]</code>；last → <code>[4, 1, 5, 2, 6]</code>；all → <code>[4, 1, 2, 5, 0, 3, 6]</code>（7 rows）。</p></details>
 <details class="q"><summary>Q8. 點樣用一句 code 搵出 DataFrame 入面所有 constant columns 嘅名？</summary><pre><code>wdi.columns[wdi.nunique(dropna=False) == 1]   # → Index(['planet'])</code></pre><p><code>nunique()</code> 回傳每 column unique 數，等於 1 即 constant。用 <code>dropna=False</code> 可以避免「一個值 + 一堆 NaN」被誤判為 constant。</p></details>
 <details class="q"><summary>Q9. <code>wdi.nunique(dropna=False) - wdi.nunique(dropna=True)</code> 結果為 1 代表咩？</summary><p>代表嗰個 column 含有至少一個 NaN（因為 dropna=False 將 NaN 多數一個 unique value）。結果 0 = 冇 missing values。</p></details>
 
@@ -488,7 +488,7 @@ assert_single_value_result(wdi['country_name'], wdi['Country Name'], return_type
   <li><code>isin([...])</code> + <code>.sum()</code> 數符合條件 rows；小心字串空格。</li>
   <li>Subsetting：<code>df.loc[row_cond, ['c1','c2']]</code>；<code>df.iloc[1:4, 2:10:2]</code>。</li>
   <li>改值：<code>df.loc[r, c] = v</code>、<code>df.iloc[i, j] = v</code>、<code>df.iloc[0:2, 0:2] = v</code>；唔存在嘅 label → 新增 row/column（enlargement）。</li>
-  <li><code>sort_values(by=[...], ascending=[True, False])</code>；<code>nlargest/nsmallest(n, col, keep='first'|'last'|'all')</code>。</li>
+  <li><code>sort_values(by=[...], ascending=[True, False])</code>；<code>nlargest/nsmallest(n, col, keep='first'|'last'|'all')</code>；last 會反轉 ties 次序，即使全部 ties 都入選。</li>
   <li>Data cleaning：Garbage in, Garbage out；collection → cleaning → analysis → insights。</li>
   <li>Unnecessary data：constant（<code>nunique()==1</code>、<code>value_counts(normalize=True)</code>）、duplicated columns（<code>compare()</code> 空 / <code>(a==b).value_counts()</code>）。</li>
 </ul></div>

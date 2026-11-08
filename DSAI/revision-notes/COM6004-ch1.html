@@ -78,6 +78,9 @@
 <div class="box tip"><span class="label">💡 直覺理解：咩唔算 Data Mining？</span>
 <p>「Non-trivial」同「previously unknown」排除咗普通查詢。例如喺 database 用 SQL 查「張三嘅電話號碼」或者「上個月總銷售額」——答案係<b>已知結構入面直接攞</b>，唔係新發現，所以唔算 Data Mining。相反，發現「買尿片嘅人好可能同時買啤酒」就係由 data 中搵出隱藏 (implicit) 又有用嘅 pattern。</p></div>
 
+<div class="box exam"><span class="label">⭐ Slide 9：Knowledge Discovery pipeline</span>
+<p><b>Input Data → Data Preprocessing → Data Mining → Postprocessing → Information</b>。Knowledge Discovery 係完整流程；Data Mining 只係中間發現 patterns 嘅一步，唔等同全部流程。</p>
+<ul><li><b>Data Preprocessing</b>：Feature Selection、Dimensionality Reduction、Normalization、Data Subsetting，先揀相關 features / records、整理尺度同表示，令 mining 有合適 input。</li><li><b>Data Mining</b>：用 algorithms 從處理後 data 發現 patterns / models。</li><li><b>Postprocessing</b>：Filtering Patterns、Visualization、Pattern Interpretation；篩走無用 patterns，視覺化並解讀結果，先成為可用 Information。</li></ul></div>
 <h3>2.1 Origins of Data Mining (Slide 10)</h3>
 <p>Data Mining 吸收咗四個領域嘅 ideas：<b>machine learning / AI</b>、<b>pattern recognition</b>、<b>statistics</b>、<b>database systems</b>。點解唔直接用傳統技術？因為現代 data 係：</p>
 <table>
@@ -222,7 +225,7 @@
 <p>例如 transaction data（每行係一張單買咗咩），發現嘅 rules：</p>
 <pre><code>{Milk} --&gt; {Coke}
 {Diaper, Milk} --&gt; {Beer}</code></pre>
-<div class="box note"><span class="label">🖼️ Slide 23 表格</span><p>TID 1 {Bread, Coke, Milk}；2 {Beer, Bread}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Coke, Diaper, Milk}（Chapter 2 slide 17 同 Chapter 6 都用同一個表）。</p>
+<div class="box note"><span class="label">🖼️ Slide 23 表格</span><p>TID 1 {Bread, Coke, Milk}；2 {Beer, Bread}；3 {Beer, Coke, Diaper, Milk}；4 {Beer, Bread, Diaper, Milk}；5 {Coke, Diaper, Milk}（Chapter 2 slide 17 使用同表；Chapter 6 只係相近 market-basket 示範，transactions 不同，support counts 必須用當頁 table 重數）。</p>
 <p>可以驗證兩條 rules：有 Milk 嘅 transactions 係 {1, 3, 4, 5}，其中有 Coke 嘅係 {1, 3, 5}，所以 {Milk} → {Coke} 嘅 confidence = 3/4；有 {Diaper, Milk} 嘅係 {3, 4, 5}，其中有 Beer 嘅係 {3, 4}，所以 {Diaper, Milk} → {Beer} 嘅 confidence = 2/3（Chapter 6 會正式教 support 同 confidence）。</p></div>
 
 <h3>7.1 Applications (Slide 24)</h3>
@@ -308,6 +311,7 @@
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
 <li><b>Why</b>：commercial（web / transaction data 大量、電腦平、競爭 → CRM）；scientific（衛星、望遠鏡、gene data；automated analysis + hypothesis formation）。</li>
+<li><b>Knowledge Discovery</b>：Input Data → Data Preprocessing（selection / reduction / normalization / subsetting）→ Data Mining → Postprocessing（filtering / visualization / interpretation）→ Information；mining 只係一步。</li>
 <li><b>Definition</b>：non-trivial extraction of implicit, previously unknown, potentially useful information；automatic / semi-automatic discovery of meaningful patterns in large data。</li>
 <li><b>Origins</b>：ML/AI + pattern recognition + statistics + database systems；data 係 large-scale, high-dimensional, heterogeneous, complex, distributed。</li>
 <li><b>Prediction</b>（predict unknown / future values）：Classification（categorical target）、Regression（continuous target）。</li>

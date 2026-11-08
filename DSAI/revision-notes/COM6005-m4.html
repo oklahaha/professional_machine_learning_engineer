@@ -29,10 +29,10 @@
   <h3>🎯 本講重點 (Learning outcomes)</h3>
   <ul>
     <li>Simple linear regression \( Y=\beta_0+\beta_1X_1+\text{error} \)：適用條件、dependent / independent variable 嘅叫法。</li>
-    <li>OLS：最小化 \( SS(a,b)=\sum(Y_t-a-bX_t)^2 \)；用 <code>smf.ols('fuel~dlic', data).fit()</code>、讀 <code>model.summary()</code>、<code>model.params</code>、<code>model.predict()</code>。</li>
+    <li>OLS：最小化 \( SS(a,b)=\sum(Y_t-a-bX_t)^2 \)；用 <code>smf.ols('fuel~dlic', data).fit()</code>、讀 <code>fuel_model.summary()</code>、<code>fuel_model.params</code>、<code>fuel_model.predict()</code>。</li>
     <li>Matrix 解法：\( \hat\beta=(X'X)^{-1}X'Y \)，識用 3 點例子手計。</li>
     <li>\( R^2 = 1 - RSS/TSS \) 嘅意思；\( TSS = ESS + RSS \)。</li>
-    <li>Regression 幾時 fail：non-linearity、residuals 唔 i.i.d. normal；四幅 diagnostic plots 點讀。</li>
+    <li>Regression diagnostics：conditional mean、variance、dependence 同 normality 分開檢查；non-normality 唔等於 OLS estimation 失效。</li>
     <li>Multiple linear regression、coefficient interpretation、train/test split、Bias / RMSE、in-sample vs out-of-sample、AIC / BIC。</li>
     <li>（Optional）interval prediction、ANOVA F-test、coefficient t-test 同 standard error 公式。</li>
   </ul>
@@ -79,9 +79,9 @@ plt.scatter(fueldata['dlic'], fueldata['fuel'])    # 先睇 scatter plot 係咪�
 plt.show()</code></pre>
 <p>Slide 7：Simple linear regression 搵 \( \hat a \)、\( \hat b \) 令 sum of squared errors 最細——<mark class="k">OLS (Ordinary Least Squares)</mark>：</p>
 <div class="formula">$$ SS(a,b) = \sum_{t=1}^{n}\left(Y_t - a - bX_t\right)^2 $$</div>
-<pre><code>model = smf.ols('fuel~dlic', data=fueldata).fit()   # 'Y~X'：左邊 dependent，右邊 independent
-print(model.summary())
-print(model.params)                                  # 睇 a-hat 同 b-hat</code></pre>
+<pre><code>fuel_model = smf.ols('fuel~dlic', data=fueldata).fit()   # 'Y~X'：左邊 dependent，右邊 independent
+print(fuel_model.summary())
+print(fuel_model.params)                                  # 睇 a-hat 同 b-hat</code></pre>
 <p>\( \hat a \) 讀做 “a-hat”，代表由數據估計出嚟嘅值。</p>
 <div class="box tip"><span class="label">💡 Simple regression 嘅 closed-form（補充，手計用）</span>
 <div class="formula">$$ \hat b = \frac{S_{XY}}{S_{XX}} = \frac{\sum (X_t-\bar X)(Y_t-\bar Y)}{\sum (X_t-\bar X)^2}, \qquad \hat a = \bar Y - \hat b\,\bar X $$</div>
@@ -115,14 +115,14 @@ print(model.params)                                  # 睇 a-hat 同 b-hat</code
 
 <h3>2.2 畫 fitted line 同 prediction（slides 9–10）</h3>
 <pre><code>plt.scatter(fueldata['dlic'], fueldata['fuel'])
-predicted_values = model.predict()                 # training data 嘅 fitted values
+predicted_values = fuel_model.predict()                 # training data 嘅 fitted values
 plt.plot(fueldata['dlic'], predicted_values)
 plt.show()
 
 newdata = pd.DataFrame({'dlic': [50]})             # test dataset：column 名要同 formula 一樣
-prediction = model.predict(newdata)                # 477.61
+prediction = fuel_model.predict(newdata)                # 477.61
 newdata = pd.DataFrame({'dlic': [50, 55, 60]})
-predictions = model.predict(newdata)               # 477.61, 548.10, 618.59</code></pre>
+predictions = fuel_model.predict(newdata)               # 477.61, 548.10, 618.59</code></pre>
 <div class="box exam"><span class="label">⭐ 手計 prediction</span><p>\( \text{dlic} = 50 \)：\( \hat Y = -227.3091 + 14.0984 \times 50 = -227.3091 + 704.92 = 477.61 \)。<br>\( \text{dlic} = 60 \)：\( -227.3091 + 845.904 = 618.59 \)。</p></div>
 
 <h2>3. Step-by-step numerical example：Matrix OLS（slides 11–19）</h2>
@@ -172,8 +172,8 @@ beta_hat = XTX_inv @ XTY
 print(f"Intercept (Beta 0): {beta_hat[0][0]:.3f}")      # 0.333
 print(f"Slope (Beta 1):     {beta_hat[1][0]:.3f}")      # 1.500
 # 同 library 比較：endog = dependent，exog = independent（要自己加 constant 欄）
-model = sm.OLS(endog=Y, exog=X).fit()
-print(model.summary())</code></pre>
+toy_model = sm.OLS(endog=Y, exog=X).fit()
+print(toy_model.summary())</code></pre>
 <div class="box warn"><span class="label">⚠️ 常見錯誤</span><p><code>sm.OLS</code>（大寫，array API）唔會自動加 intercept，要自己加一欄 1（或 <code>sm.add_constant(x)</code>）；<code>smf.ols</code>（細寫，formula API）會自動加 Intercept。</p></div>
 
 <h2>4. R squared（slide 20）</h2>
@@ -196,17 +196,17 @@ print(model.summary())</code></pre>
 <div class="box exam"><span class="label">⭐ 失敗情況</span>
 <ul>
 <li><b>Relationship does not look linear</b>。</li>
-<li><b>Error terms / residuals are not i.i.d. normal</b>（independent and identically distributed）：
+<li><b>Classical inference 嘅 errors assumptions 有偏離</b>：observed residuals 本身唔係 i.i.d. errors；normality 唔係 OLS estimation 必要條件，偏離時要分辨 prediction 同 inference：
   <ul>
   <li><b>Independent</b>：check serial correlation → 改善：加 time series model component。</li>
   <li><b>Identically distributed</b>：Var(error) 應該 constant，唔應該跟 fitted values 或 time/index 改變 → 否則係 <mark class="k">Heteroskedasticity</mark>（non-constant variance）→ time-varying variance model (GARCH)。</li>
-  <li><b>Normal</b>：residuals \( Y_t-\hat a-\hat bX_t \) 應該 bell-shaped：QQ-plot（intuitive）同 Anderson-Darling test（rigorous，not discussed）→ 否則其他 model 可能更好。</li>
+  <li><b>Normal</b>：residuals \( Y_t-\hat a-\hat bX_t \) 應該 bell-shaped：QQ-plot（intuitive）同 Anderson-Darling test（rigorous，not discussed）→ 偏離會影響精確小樣本 inference，但不能單憑 normality 判斷其他 model prediction 更好。</li>
   </ul></li>
 </ul></div>
 
 <h3>5.1 Visual diagnostics check（slides 23–25）</h3>
-<pre><code>resid = model.resid
-fitted = model.fittedvalues
+<pre><code>resid = fuel_model.resid
+fitted = fuel_model.fittedvalues
 n = len(resid)
 fig, axs = plt.subplots(2, 2, figsize=(10, 10))
 axs[0, 0].scatter(fitted, resid);            axs[0, 0].axhline(0, color='red', lw=2)  # e(i) vs fit(i)
@@ -225,7 +225,7 @@ plt.hist(resid, bins=20); plt.show()         # residual histogram</code></pre>
 <tr><td>Residual histogram (20 bins)</td><td>Normality、symmetry、skewness</td><td>以 0 為中心嘅鐘形</td><td>偏斜、多峰</td></tr>
 </table></div>
 <p>Slide 24 係 fuel model 嘅四幅 diagnostic plots：residual vs predicted fuel、vs index、vs lagged error 大致都係圍繞 0 嘅散點，冇明顯 pattern；QQ-plot 大致沿直線，但右上尾有幾個大 residual（約 180、250）偏離 → 可能有 outliers／少少 right skew。（Summary 嘅 Skew = 0.747、Prob(Omnibus) = 0.049 亦提示 residual 唔算完全 normal；Durbin-Watson = 1.645 接近 2，autocorrelation 唔嚴重。）</p>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 2c：residual normal + mean 0 → random，model 冇得再改善 mean prediction；QQ-plot 用法一樣。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Module 2c：normal、mean-zero residual 唔代表 prediction 已最優。\(E(e)=0\) 唔保證 \(E(e\mid X)=0\)，要查 residual 對 predictors / fitted / order 嘅 predictable patterns。Observed OLS residuals 唔等於 unobserved i.i.d. errors；normality 主要支援精確小樣本 inference。</p></div>
 
 <h2>6. Multiple linear regression（slides 26–29）</h2>
 <div class="formula">$$ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \cdots + \beta_pX_p + \text{error} $$</div>
@@ -248,8 +248,9 @@ plt.hist(resid, bins=20); plt.show()         # residual histogram</code></pre>
 <h2>7. Multiple regression with Python（slides 30–34）</h2>
 <p>要識：點寫 regression formula、計 coefficients、指定 training / test data。</p>
 <div class="formula">$$ SS(\boldsymbol\beta) = \sum_{t=1}^{n}\left(Y_t - \beta_0 - \beta_1X_{1t} - \beta_2X_{2t} - \cdots - \beta_pX_{pt}\right)^2 $$</div>
-<pre><code>model = smf.ols('sr~pop75+dpi', data=savings).fit()   # 多個 X 用 + 連接
-print(model.summary())                                 # β-hat 喺 "coef" 欄</code></pre>
+<pre><code>savings = pd.read_csv('savings.csv')
+savings_model = smf.ols('sr~pop75+dpi', data=savings).fit()   # 多個 X 用 + 連接
+print(savings_model.summary())                                 # β-hat 喺 "coef" 欄</code></pre>
 <p>Slide 32 嘅 output：</p>
 <table>
 <tr><th></th><th>coef</th><th>std err</th><th>t</th><th>P&gt;|t|</th><th>[0.025</th><th>0.975]</th></tr>
@@ -279,8 +280,8 @@ print(model.summary())                                 # β-hat 喺 "coef" 欄</
 <pre><code>newdata = pd.DataFrame({'pop15': [30], 'pop75': [3], 'dpi': [2000], 'ddpi': [5]})
 newdata = pd.DataFrame({'pop15': [30, 25], 'pop75': [3, 4],
                         'dpi': [2000, 2000], 'ddpi': [5, 5]})
-predictions = model.get_prediction(newdata)   # 有 summary_frame，可出 interval
-predictions = model.predict(newdata)          # point prediction</code></pre>
+predictions = savings_model.get_prediction(newdata)   # 有 summary_frame，可出 interval
+predictions = savings_model.predict(newdata)          # point prediction</code></pre>
 <p>例：用 slide 32 model，\( \text{pop75} = 3 \)、\( \text{dpi} = 2000 \)：\( \widehat{sr} = 7.0566 + 1.305(3) - 0.0003(2000) = 7.0566 + 3.915 - 0.6 = 10.37 \)（用四捨五入後嘅 coef；多出嚟嘅 columns 如 pop15、ddpi 會被 model 忽略）。</p>
 
 <h2>8. Measuring prediction ability（slides 35–39）</h2>
@@ -299,9 +300,9 @@ predictions = model.predict(newdata)          # point prediction</code></pre>
 <div class="formula">$$ \text{Bias} = \frac1m\sum_{i=1}^{m}(\hat y_i - y_i), \qquad \text{RMSE} = \sqrt{\frac1m\sum_{i=1}^{m}(y_i-\hat y_i)^2} $$</div>
 <pre><code>savings_train = savings.iloc[:35]        # 頭 35 個國家做 training（70%）
 savings_test = savings.iloc[35:50]       # 其餘 15 個做 test（30%）
-model = smf.ols('sr~pop15+ddpi', data=savings_train).fit()
+savings_train_model = smf.ols('sr~pop15+ddpi', data=savings_train).fit()
 from sklearn.metrics import mean_squared_error
-pre_val = model.predict(savings_test)
+pre_val = savings_train_model.predict(savings_test)
 act_val = savings_test['sr']
 bias = np.mean(pre_val - act_val)        # 正 = 系統性高估；負 = 系統性低估
 rmse = np.sqrt(mean_squared_error(act_val, pre_val))
@@ -329,7 +330,7 @@ for name, m in [("small", small_model), ("big", big_model)]:
 <h2>9. Optional topics（slides 40–46）</h2>
 <h3>9.1 Interval prediction（slide 41）</h3>
 <pre><code>newdata = pd.DataFrame({'dlic': [50]})          # simple regression 例子
-predictions = model.get_prediction(newdata)
+predictions = fuel_model.get_prediction(newdata)
 prediction_summary = predictions.summary_frame(alpha=0.05)
 print(prediction_summary)
 # mean_ci_lower/upper：population mean（平均 Y）嘅 CI
@@ -359,7 +360,7 @@ print(prediction_summary)
 <h3>9.3 Is the coefficient significantly different from zero?（slides 45–46）</h3>
 <p>統計估計同 prediction 通常會附上 <b>standard error</b> 量度準確度／不確定性。</p>
 <div class="formula">$$ \hat\sigma = \sqrt{\frac{1}{n-2}\,SS(\hat a,\hat b)}, \qquad \text{S.E.}(\hat a) = \hat\sigma\sqrt{\frac1n + \frac{\bar X^2}{S_{XX}}}, \qquad \text{S.E.}(\hat b) = \hat\sigma\sqrt{\frac{1}{S_{XX}}} $$</div>
-<div class="formula">$$ S_{XX} = \sum_{t=1}^{n}(X_t-\bar X)^2, \qquad t = \frac{\hat b}{\text{S.E.}(\hat b)} \ \text{ compared with } t_{n-2,\,97.5\%} $$</div>
+<div class="formula">$$ S_{XX} = \sum_{t=1}^{n}(X_t-\bar X)^2, \qquad t = \frac{\hat b}{\text{S.E.}(\hat b)},\qquad \text{reject two-sided }H_0\text{ if } |t| &gt; t_{n-2,\,97.5\%} $$</div>
 <p>Slide 46 係 t-table（同 Module 3a 一樣，row \(\nu\)、column \(\alpha\)）。</p>
 <div class="box exam"><span class="label">⭐ Worked example 1：3 點數據 (1,2), (2,3), (3,5)</span>
 <ol>
@@ -392,7 +393,7 @@ print(prediction_summary)
 <details class="q"><summary>Q6. Simple regression，\( n = 22 \)，\( SSR = 120 \)，\( SSE = 200 \)。完成 ANOVA table 並做 F-test（\(\alpha = 0.05\)）。\(R^2\) 係幾多？</summary><p>df：Regression 1、Error 20、Total 21。\( MSR = 120 \)；\( MSE = 200/20 = 10 \)；\( F = 12 \)。\( F_{1,20,0.05} = 4.351 \) → 12 &gt; 4.351 → reject \(H_0: \beta_1 = 0\)。\( SST = 320 \)，\(R^2 = 120/320 = 0.375\)。</p></details>
 <details class="q"><summary>Q7. 點解 big model 嘅 in-sample RMSE 一定 ≤ small model，但 out-of-sample 唔一定？點樣揀？</summary><p>OLS 喺 training data 上最小化 SS；多咗 parameters 最差都可以將佢哋設 0 得返 small model，所以 in-sample error 唔會更大。但多餘 parameters 會 fit 埋 noise（overfitting），喺 unseen test data 表現可能更差。揀 model：比較 out-of-sample RMSE，或 AIC / BIC（越低越好）。</p></details>
 <details class="q"><summary>Q8. 寫 Python：用 <code>savings</code> 頭 35 行 fit sr ~ pop15 + pop75，計 test set 嘅 bias 同 RMSE。</summary><p><code>m = smf.ols('sr~pop15+pop75', data=savings.iloc[:35]).fit(); te = savings.iloc[35:50]; pred = m.predict(te); bias = np.mean(pred - te['sr']); rmse = np.sqrt(mean_squared_error(te['sr'], pred))</code></p></details>
-<details class="q"><summary>Q9. Savings output 中 pop75 coef = 1.305、\( p = 0.100 \)。用完整句子解讀，並講喺 \(\alpha = 0.05 / 0.10\) 嘅結論。</summary><p>喺 dpi 不變下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加 1.305 個百分點。\(\alpha = 0.05\)：\( p = 0.100 &gt; 0.05 \) → 唔顯著；\(\alpha = 0.10\)：\( p = 0.100 \) 啱啱喺邊界（p 唔細過 0.10），嚴格嚟講都唔 reject。</p></details>
+<details class="q"><summary>Q9. Savings output 中 pop75 coef = 1.305、\( p = 0.100 \)。用完整句子解讀，並講喺 \(\alpha = 0.05 / 0.10\) 嘅結論。</summary><p>喺 dpi 不變下，75 歲以上人口比例每增加 1 個百分點，saving rate 平均增加 1.305 個百分點。\(\alpha = 0.05\)：\( p = 0.100 &gt; 0.05 \) → 唔顯著；\(\alpha=0.10\)：顯示嘅 .100 已 rounded，不能判 exact boundary；須查 <code>savings_model.pvalues["pop75"]</code> 未 rounded 值。本頁採 \(p&lt;\alpha\) 才 reject。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
@@ -403,12 +404,12 @@ print(prediction_summary)
 <li>Fuel：\( \hat Y=-227.3091+14.0984X \)，\(R^2 = 0.489\)，slope \( t = 6.629 \)，\( F = 43.94 = t^2 \)；\( \text{dlic} = 50 \) → 477.61。</li>
 <li>Slope 解讀：X 加 1 單位，Y 平均變 \( \hat\beta \)（multiple：holding others constant）；intercept 可能無實際意義（extrapolation）。</li>
 <li>\( R^2=1-RSS/TSS \)；\( TSS = ESS + RSS \)；\( R^2 = 1 \iff RSS = 0 \)。</li>
-<li>Fail：non-linear；residuals 唔 independent（serial correlation）／唔 identical（heteroskedasticity → GARCH）／唔 normal（QQ-plot、Anderson-Darling）。</li>
+<li>Diagnostics：conditional mean 指定、variance 同 dependence 影響 estimation / inference；normality 主要支援精確小樣本 t / F tests，唔係 OLS estimation 必要條件。Residual histogram 唔證明 prediction 最優。</li>
 <li>Diagnostics：resid vs fitted（曲線 = non-linear，漏斗 = heteroscedastic）；vs index（trend = dependence）；lag plot（斜線 = autocorrelation）；QQ（直線 = normal）；histogram。</li>
 <li>Multiple regression：p 相對 n 細（\( p &gt; 10 \) 有問題）。</li>
 <li>Prediction ability：train/test（70/30）；\( \text{Bias} = \text{mean}(\text{pred} - \text{act}) \)；\( RMSE = \sqrt{MSE} \)；in-sample 大 model 必勝，out-of-sample 唔一定；AIC / BIC 越低越好。</li>
 <li>ANOVA：Regression df 1、Error df \( n - 2 \)、Total \( n - 1 \)；\( F = MSR/MSE \) vs \( F_{1,n-2,95\%} \)；\(H_0\)：所有 slopes = 0。</li>
-<li>\( \hat\sigma=\sqrt{SS/(n-2)} \)；\( SE(\hat{b}) = \hat\sigma/\sqrt{S_{XX}} \)；\( SE(\hat{a}) = \hat\sigma\sqrt{1/n+\bar X^2/S_{XX}} \)；\( t = \hat{b}/SE \) vs \( t_{n-2,97.5\%} \)。</li>
+<li>\( \hat\sigma=\sqrt{SS/(n-2)} \)；\( SE(\hat{b}) = \hat\sigma/\sqrt{S_{XX}} \)；\( SE(\hat{a}) = \hat\sigma\sqrt{1/n+\bar X^2/S_{XX}} \)；\(t=\hat b/SE\)，two-sided reject if \(|t|&gt;t_{n-2,97.5\%}\)。</li>
 </ul></div>
 
 <nav class="pager">

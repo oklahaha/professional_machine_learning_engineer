@@ -41,12 +41,12 @@
     <li>Aggregate functions 忽略 NULL；GROUP BY 要用 unique key（StudentID 而唔係 StudentName）</li>
     <li>WHERE vs HAVING（group by 之前 vs 之後；原始 attribute vs aggregated data）</li>
     <li>Execution order：FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET</li>
-    <li>Sub-query / WITH：「平均每個 major 修幾多科」兩步法（count 唔可以同一句再 average）</li>
+    <li>Sub-query / WITH：「平均每個 major 修幾多科」兩個 query blocks 可以組成一句 SQL；同一 aggregate level 不能直接 AVG(COUNT(...))</li>
   </ol>
 </div>
 
-<h2>0. 點樣跑本頁所有例子（Runnable setup）</h2>
-<p>Slide 2 建議用 <b>db-fiddle.com</b>（online playground）或者 VS Code + <b>SQLite</b>（Python 內置 <code>sqlite3</code> package；可裝 SQLite Viewer extension 睇內容）；練習可用 LeetCode database problems。以下 script 建立本頁用到的所有 tables（跟 slides 的數據）。貼入 db-fiddle（揀 SQLite）或者用下面 Python 跑：</p>
+<h2>0. 點樣跑本頁具體例子（Runnable setup 與 abstract schema 分開）</h2>
+<p>Slide 2 建議用 <b>db-fiddle.com</b>（online playground）或者 VS Code + <b>SQLite</b>（Python 內置 <code>sqlite3</code> package；可裝 SQLite Viewer extension 睇內容）；練習可用 LeetCode database problems。以下 setup 在空 database 執行一次，建立具體查詢用的 Student / Stud / Result / Module / S / R / T。不是所有 block 都可接續執行：§2 CREATE 是獨立重置例子；§7 的 slide A/B 欄、§8 的 T/W/X/Y/C、§10 Step 2 的中間表，以及 LeetCode 題目 schemas 是 abstract schema / pseudocode，未由 setup 建立。貼入 db-fiddle（揀 SQLite）或者用下面 Python 跑：</p>
 <pre><code>-- setup.sql
 CREATE TABLE Student (            -- slide 8–23
     Student_ID CHAR(4),
@@ -95,7 +95,7 @@ q("SELECT * FROM Student")</code></pre>
 <tr><th>Pros</th><th>Cons</th></tr>
 <tr><td><b>Lightweight</b>；<b>can be embedded in the application</b>（一個 file 就係一個 DB）</td><td><b>Database level locking</b> instead of row-based locking（鎖成個 DB 而唔係個別 data items）；<b>Not scalable</b>（single node）；<b>Not for remote access</b>；<b>No built-in authentication</b></td></tr>
 </table>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>Database level locking 即係 Week 3 的 lock 粒度好粗：一個人寫，全部人都要等 → concurrency 差，所以 SQLite 唔適合多用戶 OLTP。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Database level locking 即係 Week 3 的 lock 粒度好粗：同時只容許一個 writer，多 writers 競爭須串行；但 readers / writer 的並行視 journal mode，WAL 一般可同時 read/write（reader 讀 committed snapshot），不是全部人都等。高 write-concurrency OLTP 通常不適合。</p></div>
 <h3>1.2 SQL 四類語言</h3>
 <div class="box exam"><span class="label">⭐ 考試重點</span>
 <table>
@@ -117,7 +117,7 @@ q("SELECT * FROM Student")</code></pre>
 <tr><td><code>DROP TABLE [table];</code></td><td>Delete a table</td></tr>
 </table>
 <p><span class="tag exam">Exam</span><b>Commands are case-insensitive!</b>（<code>select</code> = <code>SELECT</code>）<b>Username and password are case-sensitive!</b></p>
-<h3>2.1 Data types（commonly used）</h3>
+<h3>2.1 Data types（MySQL / general fixed-precision SQL 模型；非 SQLite enforcement）</h3>
 <table>
 <tr><th>Data type</th><th>Description</th></tr>
 <tr><td><code>INT</code></td><td>Integer</td></tr>
@@ -127,8 +127,9 @@ q("SELECT * FROM Student")</code></pre>
 <tr><td><code>BLOB</code></td><td>Large binary data, e.g., image</td></tr>
 <tr><td><code>DATE</code> / <code>TIME</code></td><td>'2047-07-01' / '11:22:33'</td></tr>
 </table>
-<div class="box warn"><span class="label">⚠️ 易錯</span><p>DECIMAL(5, 2) 嘅 5 係<b>總位數</b>（包括小數），唔係整數位。所以最大係 999.99；1234.5 放唔落。DECIMAL(3, 2) 最大 9.99。</p></div>
-<h3>2.2 Create &amp; insert（slides 8–9）</h3>
+<div class="box warn"><span class="label">⚠️ 易錯</span><p>以下 precision / length 是 MySQL 等 typed model 的意義；SQLite 的 affinity 不強制 VARCHAR(n) 長度或 DECIMAL(p,s) precision / scale。DECIMAL(5, 2) 嘅 5 係<b>總位數</b>（包括小數），唔係整數位。所以最大係 999.99；1234.5 放唔落。DECIMAL(3, 2) 最大 9.99。</p></div>
+<p>SQLite 實例：<code>DECIMAL(3,2)</code> 可接受 1234.5，<code>VARCHAR(2)</code> 可接受 longtext。需要長度限制時可寫 <code>y TEXT CHECK(length(y) &lt;= 2)</code>；金額可用 integer cents + CHECK 範圍，不要把 affinity 當作固定 decimal guarantee。</p>
+<h3>2.2 Create &amp; insert（slides 8–9；獨立空 database 例子）</h3><p>已跑 §0 setup 就不要再次 CREATE Student；需另開空 database 或自行重置。</p>
 <pre><code>CREATE TABLE Student (
     Student_ID char(4),
     Name varchar(100),
@@ -180,7 +181,7 @@ SELECT * FROM Result LIMIT 2;                                -- 只要頭 2 個
 SELECT * FROM Result LIMIT 2 OFFSET 2;                       -- 跳過頭 2 個，攞第 3–4 個</code></pre>
 <p>Slide 例子：<code>LIMIT 10 OFFSET 10</code> = return the 11th to 20th records（常用嚟做分頁）。注意 <code>DESC</code> 只作用喺佢前面嗰一個 attribute——slide 20 兩個都要寫 DESC。</p>
 <p>Order of commands：<code>SELECT [DISTINCT] … FROM … WHERE … ORDER BY …</code>——ORDER BY 要放喺 WHERE 之後。</p>
-<div class="box warn"><span class="label">⚠️ 留意</span><p>Standard SQL / MySQL 冇 LIMIT 唔可以單獨用 OFFSET（slide 22 第一個例子 <code>SELECT * FROM Result OFFSET 10</code> 喺 PostgreSQL 得，喺 MySQL / SQLite 會 error）。保險寫法係 <code>LIMIT n OFFSET m</code>。</p></div>
+<div class="box warn"><span class="label">⚠️ 留意</span><p>MySQL / SQLite 不能單獨使用此 OFFSET 寫法（slide 22 第一個例子 <code>SELECT * FROM Result OFFSET 10</code> 喺 PostgreSQL 得，喺 MySQL / SQLite 會 error）。MySQL / SQLite 可用 <code>LIMIT n OFFSET m</code>；PostgreSQL 亦可單用 OFFSET；standard SQL 是 <code>OFFSET m ROWS FETCH FIRST n ROWS ONLY</code>，不是 LIMIT syntax。</p></div>
 
 <h2>5. JOIN</h2>
 <p>可以同時由多個 tables 拎資料；<b>There is (usually) a join condition!</b> Types of join：Inner Join；Left / Right (OUTER) JOIN；Full outer join；Cartesian Join；Self Join (example)；Theta join、Natural join 等等。</p>
@@ -237,7 +238,7 @@ SELECT a.ID, a.Name, b.MCode, b.Grade FROM S AS a FULL OUTER JOIN R AS b ON a.ID
 <pre><code>SELECT s.StudName, m.ModuleName, r.Grade
 FROM Stud s INNER JOIN Result r ON s.StudentID = r.StudentID
             INNER JOIN Module m ON r.ModuleCode = m.ModuleCode;</code></pre>
-<p>Just add another join statement in the FROM clause。<b>Each join action is done sequentially</b>：(Student + Result) 先，結果再 + Module。</p>
+<p>Just add another join statement in the FROM clause。概念上可逐步解釋為 (Stud + Result) 再 + Module；這不是 physical execution 保證，optimizer 可 reorder inner joins。</p>
 <h3>5.6 Self join example</h3>
 <p>Query：<b>Who has a better grade on CS1001 than student ID 101?</b>（R 表：101 CS1001 B、103 CS1002 B、104 CS1001 A）</p>
 <p>難處：WHERE clause 係逐 row 計算，唔可以跨 rows 比較。Idea：用 <b>同一個 table 兩份 copy</b>（a, b），Cartesian join 將不同 rows 帶入同一個 joined row，就可以比較。（Self join 唔係新的 join 類型，只係示範點解有時同一 SQL 要用同一 table 多次。）</p>
@@ -265,7 +266,7 @@ FROM Result;</code></pre>
 <h2>7. Aggregate query</h2>
 <p>For finding statistics：minimum, maximum, sum, average, count；配合 <b>GROUP BY</b> 同 <b>HAVING</b>。Key idea：<b>Notice the intermediate results are also tables!</b></p>
 <h3>7.1 Aggregate functions</h3>
-<p>T 的 B 欄：1, 2, 3, 2, 4, 1, 3, 4（A 欄係 1,1,1,2,2,3,3,3）。</p>
+<p>以下 aggregate 表用 slide abstract schema T(A,B)，不是 setup 的 T(Shop,Amount)；可執行版本見表後。T 的 B 欄：1, 2, 3, 2, 4, 1, 3, 4（A 欄係 1,1,1,2,2,3,3,3）。</p>
 <table>
 <tr><th>SQL</th><th>Result</th></tr>
 <tr><td><code>SELECT SUM(B) FROM T</code></td><td>20</td></tr>
@@ -327,6 +328,7 @@ SELECT COUNT(*) FROM Result GROUP BY StudentName;</code></pre>
 <p><span class="tag exam">Exam</span>GROUP BY 要用能唯一識別 entity 的 attribute（key）。Slide 30 的 S 表就有兩個 "Alice"（101、103）——如果按 Name group，佢哋會被當成同一人。</p>
 
 <h2>8. Putting it all together：Clause order vs Execution order</h2>
+<p>以下是 slide abstract schema，T/W/X/Y/C 未由 setup 建立，作 clause-order pseudocode，不能原樣跑。</p>
 <pre><code>SELECT A, B, SUM(C) AS Total
 FROM T INNER JOIN W ON T.X = W.Y
 WHERE B &gt; 10
@@ -357,16 +359,17 @@ SELECT ID FROM S EXCEPT    SELECT ID FROM R;   -- 102（喺 S 但唔喺 R）</co
 
 <h2>10. Sub-query 與 WITH</h2>
 <p>Observation：SELECT 的結果係一個 table → 可以放喺 FROM clause：</p>
-<pre><code>SELECT * FROM (SELECT * FROM Stud) AS X;   -- sub-query 必須俾佢一個 table name，否則 error</code></pre>
+<pre><code>SELECT * FROM (SELECT * FROM Stud) AS X;   -- derived-table alias：MySQL 要求；SQLite / PostgreSQL 16+ 可省略，建議一律寫以提高 portability</code></pre>
 <h3>10.1 例子：每個 major 平均修幾多科？</h3>
-<p>Expected：DS → 2，CS → 1。<b>唔可以用一句 SQL 直接做</b>——You cannot average a count in the same SQL。分兩步：</p>
+<p>Expected：DS → 2，CS → 1。<b>可以一句 SQL 完成</b>；slide 58「不能只用 one SQL statement」把 statement 與 query block 混淆。同一 aggregate level 不可直接 <code>AVG(COUNT(...))</code>，但 subquery / WITH 的兩個 query blocks 仍是一句 statement。先示範兩步：</p>
+<div class="box exam"><span class="label">⭐ 考試作答：slide 答案 vs 更正答案</span><p>Slide 58 答案：「cannot average a count in one SQL」，要分兩步。更正答案：subquery / WITH 寫成<b>一句 statement</b> 已經得；唔可以嘅只係同一層 <code>AVG(COUNT(...))</code>。作答時寫 subquery / WITH 版本，並講明「唔可以 nest aggregate，所以用兩個 query blocks」——咁兩種講法都啱。</p></div>
 <p><b>Step 1</b>：每個學生修幾多科</p>
 <pre><code>SELECT S.StudentID, S.Major, COUNT(R.ModuleCode) AS NumModule
 FROM Stud AS S LEFT JOIN Result AS R
 ON S.StudentID = R.StudentID
 GROUP BY S.StudentID, S.Major;
 -- (1, DS, 2), (3, CS, 1), (6, CS, 1)</code></pre>
-<p><b>Step 2</b>：將 Step 1 結果當 table T，每個 major 計平均：</p>
+<p><b>Step 2（abstract intermediate table，非 setup T）</b>：將 Step 1 結果當 table T，每個 major 計平均：</p>
 <pre><code>SELECT Major, AVG(NumModule) AS Avg_Num FROM T GROUP BY Major;</code></pre>
 <p><b>Combining together</b>（sub-query）：</p>
 <pre><code>SELECT Major, AVG(NumModule) AS Avg_Num
@@ -377,6 +380,11 @@ FROM (
     GROUP BY S.StudentID, S.Major
 ) AS T
 GROUP BY Major;
+-- CS 1.0 ; DS 2.0</code></pre>
+<p>另一個 single-level ratio 寫法（StudentID 須唯一識別 student；ModuleCode 計數語意同 lecture；保留零修讀者）：</p><pre><code>SELECT s.Major,
+       1.0 * COUNT(r.ModuleCode) / COUNT(DISTINCT s.StudentID) AS Avg_Num
+FROM Stud s LEFT JOIN Result r ON s.StudentID = r.StudentID
+GROUP BY s.Major;
 -- CS 1.0 ; DS 2.0</code></pre>
 <p><b>WITH statement</b>（CTE，更易讀）：</p>
 <pre><code>WITH T AS (
@@ -445,7 +453,7 @@ SELECT class FROM Courses GROUP BY class HAVING COUNT(student) &gt;= 5;</code></
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 將以下 SQL 分類為 DDL / DML / DQL / DCL：CREATE INDEX、UPDATE、SELECT、GRANT、DROP TABLE、INSERT。</summary><p>CREATE INDEX：DDL；UPDATE：DML；SELECT：DQL；GRANT：DCL；DROP TABLE：DDL；INSERT：DML。</p></details>
-<details class="q"><summary>Q2. 一個價錢欄最大值係 99999.99，應該用 DECIMAL(?, ?)？DECIMAL(4, 1) 可以存 123.45 嗎？</summary><p>DECIMAL(7, 2)（共 7 位，其中 2 位小數）。DECIMAL(4,1) 只有 1 位小數、最大 999.9，123.45 會被四捨五入成 123.5（或視乎系統報錯），唔可以準確存。</p></details>
+<details class="q"><summary>Q2. 一個價錢欄最大值係 99999.99，按 fixed-precision SQL 模型應該用 DECIMAL(?, ?)？DECIMAL(4, 1) 可以存 123.45 嗎？</summary><p>DECIMAL(7, 2)（共 7 位，其中 2 位小數）。DECIMAL(4,1) 只有 1 位小數、最大 999.9，123.45 會被四捨五入成 123.5（或視乎系統報錯），唔可以按該 scale 準確存；SQLite 不會單憑這些 declarations enforce precision / scale，不能用 SQLite 驗證以上限制。</p></details>
 <details class="q"><summary>Q3. 用 S 同 R 表，寫出 S LEFT JOIN R、S RIGHT JOIN R、S INNER JOIN R 的行數，並說明 Cartesian join 有幾多行。</summary><p>LEFT：3 行（102 Mary 配 NULL、103、101）；RIGHT：3 行（103、101、NULL 配 104）；INNER：2 行（101、103）；Cartesian：3 × 3 = 9 行。</p></details>
 <details class="q"><summary>Q4. 寫 SQL：列出喺 CS1001 成績比學生 101 差的學生 ID（用 R 表）。</summary><p><code>SELECT b.ID FROM R a, R b WHERE a.ID = 101 AND a.MCode = 'CS1001' AND b.MCode = 'CS1001' AND b.Grade &gt; a.Grade;</code> 用本頁數據結果係空（104 係 A，比 B 好）。同 slide 的 self join 一樣，只係比較方向反轉；<code>b.Grade &gt; a.Grade</code> 已排除 101 自己。</p></details>
 <details class="q"><summary>Q5. B = 5, NULL, 3, NULL, 7。COUNT(*)、COUNT(B)、SUM(B)、AVG(B) 各係幾多？</summary><p>COUNT(*) = 5；COUNT(B) = 3；SUM(B) = 15；AVG(B) = 15 / 3 = 5（NULL 被忽略，分母係 3）。</p></details>
@@ -457,14 +465,14 @@ SELECT class FROM Courses GROUP BY class HAVING COUNT(student) &gt;= 5;</code></
 
 <h2>一頁總結 Cheat sheet</h2>
 <div class="box exam"><span class="label">⭐ 考前速記</span><ul>
-<li>SQLite：lightweight、embedded；但 DB-level locking、not scalable、no remote access、no auth</li>
+<li>SQLite：lightweight、embedded；但 single writer（WAL readers 可與 writer 並行）、not scalable、no remote access、no auth</li>
 <li>DDL (CREATE/DROP) / DML (INSERT/UPDATE/DELETE) / DQL (SELECT) / DCL (GRANT)；commands case-insensitive，username/password case-sensitive</li>
-<li>DECIMAL(a,b)：a 總位數、b 小數；VARCHAR(n) 可變長；CHAR(n) 固定長</li>
+<li>固定型別模型：DECIMAL(a,b) 的 a 總位數、b 小數；VARCHAR(n) 可變長；CHAR(n) 固定長；SQLite affinity 不 enforce 這些長度 / precision 限制</li>
 <li>NULL = 不存在 / 未知；≠ ""；用 IS NULL</li>
 <li><code>CREATE INDEX idx ON t (c1, c2)</code></li>
 <li>SELECT [DISTINCT] … FROM … WHERE … ORDER BY … [DESC] LIMIT n OFFSET m；<code>&lt;&gt;</code> = not equal</li>
 <li>INNER = 兩邊 match；LEFT/RIGHT 保留一邊、另一邊 NULL；Cartesian = \( |A| \times |B| \)；Cartesian + WHERE = inner join（optimizer 會 rewrite，速度一樣）</li>
-<li>Alias：<code>Student AS s</code> 或 <code>Student s</code>；multiple joins 逐個順序做</li>
+<li>Alias：<code>Student AS s</code> 或 <code>Student s</code>；multiple inner joins 概念可逐個解釋，但 optimizer 可改 physical join order</li>
 <li>Self join：同一 table 兩個 alias，將不同 rows 放入同一 row 比較</li>
 <li>CASE WHEN … THEN … ELSE … END AS col</li>
 <li>Aggregates：SUM / COUNT / AVG / MIN / MAX；忽略 NULL（COUNT(*) 除外）</li>
@@ -472,7 +480,7 @@ SELECT class FROM Courses GROUP BY class HAVING COUNT(student) &gt;= 5;</code></
 <li>GROUP BY 用 unique key（StudentID 唔係 Name）</li>
 <li>Execution：FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET</li>
 <li>UNION / INTERSECT / EXCEPT = set（去重）；UNION ALL = multiset</li>
-<li>Sub-query 要有 table name；WITH T AS (…)；average of counts 要兩步</li>
+<li>Derived-table alias 建議寫（MySQL 要求，SQLite / PostgreSQL 16+ 可省）；WITH T AS (…)；average of counts 可用兩 query blocks 的一句 SQL，亦可 count / distinct-student-count</li>
 <li>UPDATE / DELETE 冇 WHERE = 影響全表</li>
 <li>Optimizer：先 filter 再 join</li>
 </ul></div>

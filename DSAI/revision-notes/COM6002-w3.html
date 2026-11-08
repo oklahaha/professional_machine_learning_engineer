@@ -98,7 +98,7 @@
 
 <h2>3. Index on RDBMS：B tree</h2>
 <p>Common method：<b>B tree (and its variants)</b>（Bayer et al., 1972）。不同版本概念相近，細節有別；本科講 B tree 同 B+ tree。<span class="tag exam">Exam</span>Cost complexity of search：<b>\(O(\lg n)\)</b>。</p>
-<p>以 IG 為例：\( \log_{10}(3\times10^9) = 9.38 \)（slide 數字）；用 binary log，\( \lg(3\times 10^9) \approx 31.5 \)。即係由 30 秒 linear scan 變成大約幾十步——幾乎即時。</p>
+<p>以 IG 為例：\( \log_{10}(3\times10^9) \approx 9.4771 \)（slide 12 的 9.38 是算術 erratum）；用 binary log，\( \lg(3\times 10^9) \approx 31.5 \)。即係由 30 秒 linear scan 變成大約幾十步——幾乎即時。</p>
 <h3>3.1 Structure of B tree（slide 13）</h3>
 <pre><code>                    [ 11 ]                      ← Root node
              /                 \
@@ -156,10 +156,11 @@
 <tr><td>On (module code, grade)</td><td>(COM6002, B) → R1；(COM6104, A) → R2, R3；(COM6104, B) → R4</td></tr>
 </table>
 <p><b>Yes! We can have multiple indices on the same table!</b></p>
+<div class="box exam"><span class="label">⭐ Slide 23：兩個獨立 indices 一起用（Index intersection）</span><p>Query 為 <code>ModuleCode = 'COM6104' AND Grade = 'A'</code>。Module index 得 record IDs <code>{R2,R3,R4}</code>，Grade index 得 <code>{R2,R3}</code>；取 intersection <code>{R2,R3,R4} ∩ {R2,R3} = {R2,R3}</code>，再 fetch 對應 rows（Student IDs 101101、101103）。若改查 COM6002 + A，則 <code>{R1} ∩ {R2,R3} = ∅</code>。</p><p>Composite index <code>(ModuleCode, Grade)</code> 直接定位 <code>(COM6104,A)</code>，毋須合併兩個 ID lists；兩個獨立 indexes 則可各自支援不同 predicate。是否選 index intersection / bitmap AND / index merge 視 DBMS、statistics、selectivity 與 optimizer；有兩個 indexes 不表示必用兩個，也不保證比 composite 更快。</p></div>
 <h3>5.1 The overhead of indexing</h3>
 <ul>
 <li>Index requires <b>additional space and maintenance effort</b></li>
-<li>Additional space &lt; space of records，因為 index 只存 pointers；record 內容永遠只有一份</li>
+<li>Slide 27 的「只存 pointers、一定較細」是有限模型：secondary index 至少存 keys + row references，亦可能有 included columns / page overhead；clustered index 可直接存 rows。Multiple / wide / covering indexes 的總量可超過 table，要實際量度</li>
 <li>Is the maintenance effort worth it? <b>Depends on your usage!</b> How often is your index used? Is it necessary?（每次 INSERT/UPDATE/DELETE 都要更新所有相關 index）</li>
 </ul>
 <h3>5.2 Query plans（Query: Students who get A in COM6104）</h3>
@@ -223,7 +224,7 @@
 <ul><li>T1 then T2：1000 → 1010 → <b>910</b></li><li>T2 then T1：1000 → 900 → <b>909</b></li></ul>
 <p>910 同 909 都係 correct results。</p>
 </div>
-<p>點樣確保 correct execution？<b>Two phase locking</b>（Eswaran et al., 1976）：ensure multiple transactions executing simultaneously do not corrupt shared data。Other methods：Timestamp ordering、Multi-Version Concurrency Control (MVCC)、Raft algorithm。</p>
+<p>點樣確保 correct execution？<b>Two phase locking</b>（Eswaran et al., 1976）：ensure multiple transactions executing simultaneously do not corrupt shared data。Concurrency control 的其他方法：Timestamp ordering、Multi-Version Concurrency Control (MVCC)。Slide 51 亦列 Raft，但它是 replicated-log consensus，並非可單獨取代 isolation 的 protocol。</p>
 
 <h3>8.4 Locking</h3>
 <p>Make sure no other (active) transaction has a conflict action at the same time。兩種 lock：<b>Readlock</b>（read 之前要攞）同 <b>Writelock</b>（write 之前要攞）。</p>
@@ -249,9 +250,9 @@ A（lecturer notes）：<b>No.</b> Another transaction may be done between Write
 <ul>
 <li><b>Phase 1: growing phase</b> — 只可以攞新 lock，<b>No lock is released</b></li>
 <li><b>Phase 2: shrinking phase</b> — 只可以 release lock，<b>No new lock can be obtained</b></li>
-<li>Transaction commits（之後 release locks）</li>
+<li>Basic 2PL 可在 commit 前 release locks，只保證 conflict serializability，不必然 strict / cascadeless</li>
 </ul>
-<p>即係：一旦放咗任何一個 lock，就唔可以再攞新 lock。</p>
+<p>即係：一旦放咗任何一個 lock，就唔可以再攞新 lock。<b>Strict 2PL</b> 把 X locks 留到 commit/abort；<b>Rigorous 2PL</b> 把所有 locks 留到 transaction 結束。2PL 本身不提供 durability 或 distributed atomic commit，尚需 logging / recovery 及其他 commit 機制。</p>
 </div>
 <h3>8.6 2PL example → Deadlock</h3>
 <p>T1：Read(x), Write(x), Read(y), Write(y)。T2：Read(y), Read(x), Write(x), Write(y)。</p>
@@ -270,7 +271,7 @@ A（lecturer notes）：<b>No.</b> Another transaction may be done between Write
 <li><b>A deadlock means that there is a cycle in the graph</b></li>
 <li>Slide 60 練習（lecturer notes 答案）：Yes — T3 waits for T4, T4 waits for T2, T2 waits for T3 → cycle</li>
 <li>Rollback 的用途：<b>To resolve a deadlock</b>（揀一個 transaction rollback，打破 cycle）</li>
-<li><b>Cascading rollback</b>：其他 transactions 可能已經讀咗呢個 transaction 更新的值，佢哋都要 rollback。例：T1 將 X 1000 → 1010，T2 讀 1010 再減 100 → 910；If T1 rollbacks, T2 must rollback too</li>
+<li><b>Cascading rollback</b>（basic 2PL 可發生 dirty read；strict / rigorous 2PL 不會有此例）：其他 transactions 可能已經讀咗呢個 transaction 更新的值，佢哋都要 rollback。例：T1 將 X 1000 → 1010，T2 讀 1010 再減 100 → 910；If T1 rollbacks, T2 must rollback too</li>
 </ul>
 </div>
 <div class="box note"><span class="label">🖼️ Slide 60 precedence graph</span><p>上面示範 T1 → T2（T1 等緊 T2 嘅 lock）。下面練習嘅 7 條 edges：<b>T1 → T3</b>、<b>T1 → T5</b>、<b>T5 → T2</b>、<b>T5 → T4</b>、<b>T3 → T4</b>、<b>T4 → T2</b>、<b>T2 → T3</b>。</p><p>由 T3 出發：T3 → T4 → T2 → T3，返到起點，所以有 cycle，<b>有 deadlock</b>，同 lecturer notes 答案一致。T1、T5 只有向外嘅 edges，冇 transaction 等佢哋，所以佢哋唔喺 cycle 入面。要解除 deadlock，就要 rollback T2、T3、T4 其中一個。</p></div>
@@ -318,7 +319,7 @@ Initial database: A=0 B=0 C=0 M=0 N=0 P=0 X=0 Y=0 Z=0</code></pre>
 <p>由 log 尾開始，<b>scan the log backwards</b> 搵出 incomplete 同 completed transactions。Q：When do we stop? 要確保所有 completed transactions 都搵到 → <b>scan until the starting point of the log</b>——即成個 log！（如果 log 由 30 年前開始？！）→ 需要 checkpoints。</p>
 
 <h2>10. Database checkpoints</h2>
-<div class="box exam"><span class="label">⭐ 考試重點：Blocking vs Fuzzy checkpoints</span>
+<div class="box exam"><span class="label">⭐ 考試重點：Blocking vs Fuzzy checkpoints（lecture flushed-snapshot 模型）</span><p>以下 slides 73–79 假設 checkpoint 前 updates 已 flushed，並記 running transactions；這不是所有 fuzzy checkpoint 的定義。ARIES-style fuzzy checkpoint 通常記 active transaction / dirty-page metadata，不保證所有 dirty pages 當刻寫盤；redo 起點可早於 checkpoint，須依 protocol、pageLSN、dirty-page metadata 決定。</p>
 <table>
 <tr><th></th><th>Blocking checkpoint</th><th>Fuzzy checkpoint (Non-blocking)</th></tr>
 <tr><td>做法</td><td><b>Stop all the updates</b> to the database，create a snapshot</td><td><b>Do NOT stop</b> the updates；create a snapshot <b>and keep records about what transactions are running</b></td></tr>
@@ -329,7 +330,7 @@ Initial database: A=0 B=0 C=0 M=0 N=0 P=0 X=0 Y=0 Z=0</code></pre>
 <h3>10.1 Fuzzy checkpoint example（slides 73–77）</h3>
 <p>Checkpoint 101 記錄 running：T1, T2；Checkpoint 102：T2, T3, T4；Checkpoint 103：T2, T5；之後 Failure。</p>
 <ul>
-<li>Scan backwards until Checkpoint 103；All committed transactions before Checkpoint 103 are already in the checkpoint image</li>
+<li>Scan backwards until Checkpoint 103；依 slide flushed-snapshot 假設，Checkpoint 103 前 committed transactions 已包含在 image（不是一般 fuzzy guarantee）</li>
 <li>Only need to chase further for <b>T2 and T5</b>（checkpoint 103 時仍 running）</li>
 <li>去到 checkpoint 102：要唔要追 T2 / T3 / T4？T2：Maybe yes；<b>T3: No! T4: No!</b>（佢哋喺 checkpoint 103 已經唔喺 running list，即已完成，效果喺 image 入面）</li>
 <li>T5 喺邊度開始？喺 checkpoint 102 同 103 之間（102 冇 T5，103 有）</li>
@@ -360,11 +361,11 @@ T2, B, 30
 T2 commit
 T5, X, 10
 --- crash ---</code></pre>
-<div class="box note"><span class="label">🖼️ Slides 78–79 時間線</span><p>上面 checkpoint 位置按 slide 78 嘅時間線：Checkpoint 101 喺 "T2" 同 "T1 commit" 之間；<b>Checkpoint 102 喺 "T2, X, 15" 同 "T3, Y, 5" 之間</b>；Checkpoint 103 喺 "T5, Z, 30" 之後；跟住係 T6、T6, Z, 50、T2, B, 30、T2 commit、T5, X, 10、crash。</p><p>Slide 79 嘅顏色標示：<b>紅色（undo）</b>：T5, Z, 30；T6, Z, 50；T5, X, 10。<b>綠色（redo）</b>：T2, B, 30。"T2, A, 10" 旁邊註明「We should "redo" this action as T2 is completed. However, as this action is before the checkpoint, the update is always on the harddisk and we do not need to really perform the "redo"」。"We stop here" 箭咀指住 T5 嘅開始位置。</p></div>
-<p>分析：</p>
+<div class="box note"><span class="label">🖼️ Slides 78–79 時間線</span><p>上面 checkpoint 位置按 slide 78 嘅時間線：Checkpoint 101 喺 "T2" 同 "T1 commit" 之間；<b>Checkpoint 102 喺 "T2, X, 15" 同 "T3, Y, 5" 之間</b>；Checkpoint 103 喺 "T5, Z, 30" 之後；跟住係 T6、T6, Z, 50、T2, B, 30、T2 commit、T5, X, 10、crash。</p><p>Slide 79 嘅顏色標示：<b>紅色（undo）</b>：T5, Z, 30；T6, Z, 50；T5, X, 10。<b>綠色（redo）</b>：T2, B, 30。"T2, A, 10" 旁邊註明「We should "redo" this action as T2 is completed. However, as this action is before the checkpoint, 在本 slide flushed-snapshot 模型中 update 已在 harddisk and we do not need to really perform the "redo"」。"We stop here" 箭咀指住 T5 嘅開始位置。</p></div>
+<p>以下分析只依本講 flushed-snapshot 模型（並假設有 before values）：</p>
 <ul>
 <li>T1、T3、T4 喺 checkpoint 103 前 commit → 已在 checkpoint image，唔使理</li>
-<li><b>T2</b>：checkpoint 103 後見到 "T2 commit" → committed → <b>redo</b> T2, B, 30。T2 喺 checkpoint 前的 action（T2, X, 15；T2, A, 10）本應 redo，但 <b>as this action is before the checkpoint, the update is always on the harddisk</b>，唔需要真係 redo</li>
+<li><b>T2</b>：checkpoint 103 後見到 "T2 commit" → committed → <b>redo</b> T2, B, 30。T2 喺 checkpoint 前的 action（T2, X, 15；T2, A, 10）本應 redo，但 <b>as this action is before the checkpoint, 在本 slide flushed-snapshot 模型中 update 已在 harddisk</b>，唔需要真係 redo</li>
 <li><b>T5</b>、<b>T6</b>：冇 commit → <b>undo</b>（T5, X, 10；T6, Z, 50；T5, Z, 30）。T5 喺 checkpoint 102–103 之間開始，所以要 scan 返去 T5 的 start 先可以停（slide 79 "We stop here"）</li>
 </ul>
 <p>Recovery 後（假設 undo 有 before values 可用）：\( X = 15 \)（T2），\( Y = 5 \)（T3），\( Z = 70 \)（T4），\( A = 10 \)，\( B = 30 \)。</p>
@@ -380,17 +381,17 @@ T5, X, 10
 <tr><td><b>D</b>urability</td><td>Once a transaction is committed, its effect stays in the database forever</td><td>Log + redo、checkpoints</td></tr>
 </table>
 </div>
-<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 1 File-based 的缺點正正對應 ACID：Lack of Atomic Transactions ↔ Atomicity；No Concurrency Control ↔ Isolation。Week 5 會講 OLTP 要求 ACID compliance，而 OLAP 就唔一定需要 strong consistency。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Week 1 File-based 的缺點正正對應 ACID：Lack of Atomic Transactions ↔ Atomicity；No Concurrency Control ↔ Isolation。Week 5 會講 OLTP 要求 ACID compliance，而 OLAP 常容許 ingestion / refresh delay，但同一 report 仍可能需要 consistent snapshot、多表一致性及 ACID load；strong consistency 不是 ACID 的同義詞。</p></div>
 
 <h2>自我測驗 Self-test</h2>
 <details class="q"><summary>Q1. 一個演算法成本係 \(5n^3 + 2n^2\log n + 1000\)，Big O 係乜？Knock-out tournament 有 64 個 players，要幾多 rounds、幾多 games？</summary><p>\(O(n^3)\)（只取最高次項、忽略係數）。Rounds = \( \lg 64 = 6 \)；Games = \( n - 1 = 63 \)（\(O(n)\)）。</p></details>
 <details class="q"><summary>Q2. 用 slide 17 的 B+ tree（root 13；[5|9]、[17|20]；leaves 1 3 / 5 7 / 9 11 / 13 15 / 17 19 / 21 23），寫出 range query 6–14 的步驟同 visit 了幾多個 nodes。</summary><p>6 &lt; 13 → left；5 ≤ 6 &lt; 9 → middle child → leaf [5 7]，攞 7。Sibling → [9 11]：9, 11；sibling → [13 15]：13（15 &gt; 14，停）。結果 7, 9, 11, 13。Visited：root, [5|9], [5 7], [9 11], [13 15] = 5 nodes（喺 [13 15] 已見到 15 &gt; 14，唔使再去下一個 sibling）。</p></details>
 <details class="q"><summary>Q3. B tree 同 B+ tree 有咩分別？點解 B+ tree 更適合 range query？</summary><p>B+ tree：record pointers 只喺 leaf level；non-leaf values 只係 separators（左 &lt;，右 ≥，可以唔存在於 DB）；leaf 之間有 sibling pointers。B tree 每個 node 的值都係 data，搜尋可以喺 non-leaf 停（best case \(O(1)\)）。Range query 用 B+ tree 只要搵到起點 leaf，再沿 sibling pointers 向右掃，唔使上落 traverse。兩者 search 同 update 都係 \(O(\lg n)\)，都係 balanced。</p></details>
-<details class="q"><summary>Q4. 要搵「COM6104 攞 A 的學生」，列出四個 query plan，邊個最有效率？Index 有咩代價？</summary><p>(1) 全表 scan；(2) 用 module code index 再 check grade；(3) 用 grade index 再 check module；(4) 用 composite index (module code, grade) 直接搵——最有效率，冇多餘 records。代價：額外空間（只存 pointers，比 records 細）同每次更新資料的 maintenance effort；值唔值得視乎 usage。Query optimizer 會根據 statistics 揀 plan，但複雜 query 唔好倚賴佢。</p></details>
+<details class="q"><summary>Q4. 要搵「COM6104 攞 A 的學生」，列出四個 query plan，並解釋兩個獨立 indexes 可如何合併？Index 有咩代價？</summary><p>(1) 全表 scan；(2) 用 module code index 再 check grade；(3) 用 grade index 再 check module；(4) 用 composite index (module code, grade) 直接搵，candidate rows 全是答案；亦可將 module 的 {R2,R3,R4} 與 grade 的 {R2,R3} intersect 得 {R2,R3}。實際成本與是否用 intersection 由產品 / optimizer 決定，不保證 composite 必最快。代價：額外空間（至少 keys + row references，可有 included columns / page overhead；總量不保證比 table 細）同每次更新資料的 maintenance effort；值唔值得視乎 usage。Query optimizer 會根據 statistics 揀 plan，但複雜 query 唔好倚賴佢。</p></details>
 <details class="q"><summary>Q5. 喺 2PL 下，T1 持有 Writelock(x)。T2 申請 Readlock(x)、T3 申請 Readlock(y)（冇人持有 y 的 lock），結果點？一個 transaction 放咗 lock 之後可唔可以再攞新 lock？</summary><p>T2 被拒（readlock 同 writelock conflict）→ wait 或 rollback。T3 成功。2PL 下一旦開始 release（shrinking phase）就唔可以再攞新 lock。</p></details>
-<details class="q"><summary>Q6. Wait-for graph 有 edges：T1→T2、T2→T3、T3→T1、T4→T1。有冇 deadlock？點解決？</summary><p>有，T1→T2→T3→T1 形成 cycle。解決：揀 cycle 入面一個 transaction（例如 T3）rollback、undo 佢的 actions、稍後 retry；如有其他 transaction 讀過佢寫的值，要 cascading rollback。T4 只係等緊，唔喺 cycle。</p></details>
+<details class="q"><summary>Q6. Wait-for graph 有 edges：T1→T2、T2→T3、T3→T1、T4→T1。有冇 deadlock？點解決？</summary><p>有，T1→T2→T3→T1 形成 cycle。解決：揀 cycle 入面一個 transaction（例如 T3）rollback、undo 佢的 actions、稍後 retry；若採可 dirty-read 的 basic 2PL，其他 transaction 讀過佢未 commit 的值便須 cascading rollback；strict / rigorous 2PL 不會發生此 dirty-read chain。T4 只係等緊，唔喺 cycle。</p></details>
 <details class="q"><summary>Q7. Log：T1 / T1,A,5 / T2 / T2,B,7 / T1 commit / T3 / T3,A,9 / T2,C,4 / crash。Initial 全部係 0。Recovery 後 A、B、C 係幾多？</summary><p>T1 committed → redo \( A = 5 \)。T2、T3 冇 commit → undo：\( B = 0 \)、\( C = 0 \)、A 嘅 T3 update 撤回 → \( A = 5 \)（T1 的值）。結果 \( A = 5, B = 0, C = 0 \)。</p></details>
-<details class="q"><summary>Q8. Fuzzy checkpoint 103 記錄 running：T2, T5。Scan backwards 時，喺 checkpoint 102（running: T2, T3, T4）需唔需要追 T3、T4？Worst-case recovery cost 係幾多？</summary><p>唔使追 T3、T4：佢哋喺 checkpoint 103 已唔喺 running list，即已完成並包含喺 checkpoint image。只需追 T2、T5（T2 視乎有冇見到 commit）。Worst case \(O(n)\)（scan 到第一條 log），但實際極少發生。</p></details>
+<details class="q"><summary>Q8. Fuzzy checkpoint 103 記錄 running：T2, T5。Scan backwards 時，喺 checkpoint 102（running: T2, T3, T4）需唔需要追 T3、T4？Worst-case recovery cost 係幾多？</summary><p>依 slides 的 flushed-snapshot 模型，唔使追 T3、T4：佢哋喺 checkpoint 103 已唔喺 running list，即已完成並包含喺 checkpoint image。只需追 T2、T5（T2 視乎有冇見到 commit）。Worst case \(O(n)\)（scan 到第一條 log），此結論不泛指 ARIES fuzzy checkpoint；後者還需 dirty-page metadata 決定 redo 起點。</p></details>
 <details class="q"><summary>Q9. 解釋 ACID，並說明 ATM lost-update 例子違反咗邊個 property。</summary><p>Atomicity（all-or-nothing）、Consistency（valid state → valid state）、Isolation（好似獨立執行）、Durability（commit 後永久）。ATM 例子 interleaving 令 Y 的 +100 被覆蓋，結果唔等於任何 serial execution → 違反 Isolation（亦令 Consistency 破壞：總額由 200 變 100）。</p></details>
 
 <h2>一頁總結 Cheat sheet</h2>
@@ -401,16 +402,16 @@ T5, X, 10
 <li>B tree：左細右大；值喺所有 level；best \(O(1)\)，worst \(O(\lg n)\)</li>
 <li>B+ tree：pointers 只喺 leaf；non-leaf = separators（左 &lt;，右 ≥）；sibling pointers；range query = 搵起點 + 行 siblings</li>
 <li>B/B+ tree：balanced；search &amp; update \(O(\lg n)\)（binary tree update linear）；one-dimensional</li>
-<li>Multiple / composite indices；overhead = space (pointers) + maintenance；Query plan / optimizer（用 statistics；唔好完全依賴）</li>
+<li>Multiple / composite indices；independent index intersection：COM6104 {R2,R3,R4} ∩ A {R2,R3} = {R2,R3}；COM6002 {R1} ∩ A = ∅；是否合併由 optimizer 決定，不保證勝 composite。Overhead = keys + references / included data 空間 + maintenance，大小須量度。</li>
 <li>R-tree（spatial，worst \(O(n)\)）；HNSW（vector cosine top-k，RAG）；Inverted index（full-text）</li>
 <li>Transaction = all or nothing；begin … commit</li>
 <li>Correct = equivalent to serial execution；不同 serial order 結果唔同都算正確（910 / 909）</li>
 <li>Locks：R–R OK；R–W、W–W conflict；writelock = upgraded readlock</li>
-<li>2PL：growing（只攞）→ shrinking（只放）</li>
+<li>2PL：growing（只攞）→ shrinking（只放），conflict serializable；strict 留 X locks 到 commit/abort；rigorous 留所有 locks 到結束；Raft 為 consensus，不等於 isolation</li>
 <li>Conflict → wait 或 rollback；deadlock = wait-for graph 有 cycle；cascading rollback</li>
 <li>Log-based recovery：write log before DB；log 有 start、commit、updates（before-after 或 delta）</li>
 <li>Recovery：undo incomplete, redo committed；scan backwards</li>
-<li>Blocking checkpoint（停 update）vs Fuzzy（不停，記 running transactions；worst \(O(n)\)）</li>
+<li>Blocking checkpoint（停 update）vs Fuzzy（不停；本講假設 flushed-snapshot + running transactions，ARIES 不保證全 flush；worst \(O(n)\)）</li>
 <li>ACID：Atomicity / Consistency / Isolation / Durability</li>
 </ul></div>
 

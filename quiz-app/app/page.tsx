@@ -1,19 +1,21 @@
+import aifRaw from "@/data/aif-questions.json";
 import cardsRaw from "@/data/cards.json";
 import mcqRaw from "@/data/dsai-questions.json";
 import pmleRaw from "@/data/questions.json";
 import StyleToggle from "@/components/StyleToggle";
 import Tile from "@/components/Tile";
 
-// A server component: the bank sizes are read at build time, and none of the three banks is
+// A server component: the bank sizes are read at build time, and none of the banks is
 // shipped to the browser from this page — each source loads its own data on its own route.
 const pmleCount = pmleRaw.length;
+const aifCount = aifRaw.length;
 const cardCount = cardsRaw.length;
 const mcqCount = mcqRaw.length;
 const courseCount = new Set(cardsRaw.map((c) => c.course)).size;
 
 export default function Home() {
   return (
-    <main id="main" className="mx-auto flex min-h-dvh max-w-5xl flex-col px-4 pb-16 pt-10 sm:px-6 sm:pt-20">
+    <main id="main" className="mx-auto flex min-h-dvh max-w-6xl flex-col px-4 pb-16 pt-10 sm:px-6 sm:pt-20">
       <div className="-mt-4 mb-6 flex justify-end sm:-mt-10 sm:mb-8">
         <StyleToggle />
       </div>
@@ -22,11 +24,11 @@ export default function Home() {
           Study Console
         </h1>
         <p className="mt-4 max-w-xl font-sans text-lg leading-relaxed text-paperdim">
-          Two question banks, one console. Pick what you are revising today.
+          Three question banks, one console. Pick what you are revising today.
         </p>
       </header>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Tile
           href="/pmle"
           glyph="◇"
@@ -36,6 +38,18 @@ export default function Home() {
           stats={[
             { label: "questions", value: pmleCount },
             { label: "exam sections", value: 6 },
+          ]}
+          action="Start the Exam Bank"
+        />
+        <Tile
+          href="/aif"
+          glyph="◈"
+          title="AI Practitioner"
+          subtitle="AWS certification"
+          blurb="Exam-style multiple choice for the AWS Certified AI Practitioner (AIF-C01) certification, scored by exam-guide domain."
+          stats={[
+            { label: "questions", value: aifCount },
+            { label: "exam domains", value: 5 },
           ]}
           action="Start the Exam Bank"
         />

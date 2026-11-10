@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PracticeApp from "@/components/PracticeApp";
+import PmleApp from "@/components/PmleApp";
 
 export const metadata: Metadata = {
   title: "PMLE Eval Console",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <PracticeApp />;
+  return <PmleApp />;
 }

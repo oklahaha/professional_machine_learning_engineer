@@ -1,16 +1,23 @@
 "use client";
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { questions } from "@/lib/questions";
+import type { Question } from "@/lib/questions";
 import { presentQuestion } from "@/lib/present";
-import { DOMAINS, filterByDomain } from "@/lib/domains";
+import { filterByDomain, type Domain } from "@/lib/domains";
 import DomainPanel, { type DomainStat } from "./DomainPanel";
 import { HomeLink } from "./ModeSwitch";
 import StyleToggle from "./StyleToggle";
 import QuestionCard from "./QuestionCard";
 import { parsePractice, type Answers, type Persisted } from "@/lib/practice-store";
 
-const STORAGE_KEY = "pmle-practice-v3"; // v3: answers are label arrays (multi-answer)
+/** One exam bank. PMLE and AIF-C01 each render this app with their own; nothing else differs. */
+export type Bank = {
+  questions: Question[];
+  domains: Domain[];
+  storageKey: string; // localStorage key; one per bank, so the two never see each other's answers
+  name: string; // short code in the title: "PMLE"
+  subtitle: string; // the exam's full name
+};
 
 // order-independent set equality — a question is correct iff the chosen labels
 // exactly match its answer set (handles single- and multi-answer questions).
@@ -18,14 +25,14 @@ function sameSet(a: string[], b: string[]) {
   return a.length === b.length && a.every((x) => b.includes(x));
 }
 
-function sequentialOrder(): number[] {
-  return questions.map((_, i) => i);
+function sequentialOrder(n: number): number[] {
+  return Array.from({ length: n }, (_, i) => i);
 }
 
 // Questions and options are always shuffled. An order or seed stored before that (from the old
 // "In order" mode or with option shuffle off) is replaced once; the answers are kept.
-function shuffledOrder(): number[] {
-  const a = sequentialOrder();
+function shuffledOrder(n: number): number[] {
+  const a = sequentialOrder(n);
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -40,18 +47,20 @@ function randomSeed(): number {
   return Math.floor(Math.random() * 0xffffffff) + 1;
 }
 
-function load(): Persisted | null {
+function load({ questions, domains, storageKey }: Bank): Persisted | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? parsePractice(raw, questions.length, (d) => DOMAINS.some((x) => x.id === d)) : null;
+    const raw = window.localStorage.getItem(storageKey);
+    return raw ? parsePractice(raw, questions.length, (d) => domains.some((x) => x.id === d)) : null;
   } catch {
     return null; // storage may be unavailable (private mode)
   }
 }
 
-export default function PracticeApp() {
-  const [baseOrder, setBaseOrder] = useState<number[]>(sequentialOrder);
+// `bank` must be a module-level constant (see PmleApp / AifApp): the effects below read it once.
+export default function PracticeApp({ bank }: { bank: Bank }) {
+  const { questions, domains: DOMAINS, storageKey: STORAGE_KEY } = bank;
+  const [baseOrder, setBaseOrder] = useState<number[]>(() => sequentialOrder(questions.length));
   const [rawPos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [optSeed, setOptSeed] = useState(1);
@@ -60,9 +69,9 @@ export default function PracticeApp() {
   const [pending, setPending] = useState<string[]>([]);
 
   useEffect(() => {
-    const p = load();
+    const p = load(bank);
     const keepOrder = p?.orderMode === "shuffle";
-    const ord = keepOrder ? p.order : shuffledOrder();
+    const ord = keepOrder ? p.order : shuffledOrder(questions.length);
     let domains = p?.domains ?? [];
     let start = keepOrder ? Math.min(p.pos, ord.length - 1) : 0;
 
@@ -113,7 +122,7 @@ export default function PracticeApp() {
   useEffect(() => {
     function onStorage(e: StorageEvent) {
       if (e.key !== STORAGE_KEY) return;
-      const p = load();
+      const p = load(bank);
       // Unchanged answers keep the same object: no re-render, no save, no echo back to the other tab.
       if (p) setAnswers((prev) => (JSON.stringify(prev) === JSON.stringify(p.answers) ? prev : p.answers));
     }
@@ -275,7 +284,7 @@ export default function PracticeApp() {
   function resetAll() {
     if (!window.confirm("Reset all progress and answers, and reshuffle?")) return;
     setAnswers({});
-    setBaseOrder(shuffledOrder());
+    setBaseOrder(shuffledOrder(questions.length));
     setOptSeed(randomSeed());
     setPos(0);
     setPending([]);
@@ -323,10 +332,10 @@ export default function PracticeApp() {
           <div className="mt-1.5 flex items-center gap-2.5">
             <span aria-hidden className="neon-glyph text-lg">◇</span>
             <h1 className="neon-title text-balance font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              <span translate="no">PMLE</span> Eval Console
+              <span translate="no">{bank.name}</span> Eval Console
             </h1>
           </div>
-          <p className="hud-label mt-1">Google Professional Machine Learning Engineer</p>
+          <p className="hud-label mt-1">{bank.subtitle}</p>
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:self-center">
@@ -346,6 +355,7 @@ export default function PracticeApp() {
           ) : (
             <QuestionCard
               question={view.question}
+              domain={DOMAINS.find((d) => d.id === q.domain)}
               index={pos + 1}
               total={order.length}
               selected={selectedDisplay}
@@ -365,7 +375,7 @@ export default function PracticeApp() {
           </nav>
         </main>
 
-        {/* PMLE only: below lg the rail (score, sections, coverage) comes first and the question
+        {/* Below lg the rail (score, sections, coverage) comes first and the question
             under it; the markup keeps the card first, so the skip link and reading order still
             reach it before the rail. On desktop the grid places them side by side as before. */}
         <aside className="study-rail max-lg:order-first" aria-label="Progress and filters">
@@ -407,6 +417,7 @@ export default function PracticeApp() {
           {/* coverage minimap — signature: the question bank as an eval set */}
           <Minimap
             className="md:col-start-2 md:row-start-1"
+            questions={questions}
             order={order}
             pos={pos}
             answers={answers}
@@ -444,12 +455,14 @@ function Stat({
 
 const Minimap = memo(function Minimap({
   className = "",
+  questions,
   order,
   pos,
   answers,
   onJump,
 }: {
   className?: string;
+  questions: Question[];
   order: number[];
   pos: number;
   answers: Answers;

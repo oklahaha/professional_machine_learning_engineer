@@ -12,7 +12,7 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# data/questions.json is imported at build time and baked into the bundle.
+# data/*.json is imported at build time and baked into the bundle.
 RUN npm run build
 
 # ---- runner: minimal image that serves the prebuilt app ----

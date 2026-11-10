@@ -3,10 +3,11 @@
 import { useEffect, useId, useRef } from "react";
 import type { Question } from "@/lib/questions";
 import { parseNumberedSteps, parseReferences, splitCodeBlocks, splitExplanation } from "@/lib/format";
-import { getDomain } from "@/lib/domains";
+import type { Domain } from "@/lib/domains";
 
 type Props = {
   question: Question;
+  domain?: Domain; // the question's exam-guide section, from its own bank's list
   index: number; // 1-based position within the current run
   total: number;
   selected: string[]; // labels currently selected (multi-answer aware)
@@ -113,6 +114,7 @@ function Stem({ text, id }: { text: string; id: string }) {
 
 export default function QuestionCard({
   question,
+  domain,
   index,
   total,
   selected,
@@ -126,7 +128,6 @@ export default function QuestionCard({
   const isMulti = correct.length > 1;
   const isCorrect = sameSet(selected, correct);
   const isCommunity = (question.source ?? "").startsWith("ExamTopics");
-  const domain = getDomain(question.domain);
   const references = parseReferences(question.reference);
   const explanation = splitExplanation(question.explanation ?? "");
   const stemId = useId();

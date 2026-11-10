@@ -2,6 +2,8 @@
 
 Two question sources in one app. The home page (`/`) lets you pick one:
 
+- **AIF-C01** (`/aif`) — the same quiz for the AWS Certified AI Practitioner exam
+  (`data/aif-questions.json`, extracted from `../AIF-C01/`).
 - **PMLE** (`/pmle`) — a multiple-choice quiz for the Google Professional Machine Learning Engineer
   exam. Source PDFs live in `../PMLE/`.
 - **DSAI** (`/dsai`) — an MSc in Data Science and Artificial Intelligence, from `../DSAI/`, with two

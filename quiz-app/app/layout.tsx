@@ -70,7 +70,7 @@ const trialGeistMono = localFont({
 export const metadata: Metadata = {
   title: "Study Console",
   description:
-    "Practice the Google PMLE exam bank and the MSc Data Science & AI flashcards and quizzes.",
+    "Practice the Google PMLE and AWS AIF-C01 exam banks and the MSc Data Science & AI flashcards and quizzes.",
 };
 
 export const viewport: Viewport = {

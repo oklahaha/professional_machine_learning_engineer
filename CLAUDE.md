@@ -4,16 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`quiz-app/` (Next.js App Router + TypeScript + Tailwind) serves **two unrelated question sources** that
-share a build, a theme and a Docker image — and nothing else. `/` is a home page that picks one:
+`quiz-app/` (Next.js App Router + TypeScript + Tailwind) serves **three question sources** that
+share a build, a theme and a Docker image. `/` is a home page that picks one:
 
 - **PMLE** — `/pmle`: a responsive multiple-choice quiz for the **Google Professional Machine Learning
   Engineer** exam. The PDFs in `PMLE/` are its source exam dumps — reference material, not code.
+- **AIF-C01** — `/aif`: the same quiz for the **AWS Certified AI Practitioner** exam, from
+  `AIF-C01/AIF-C01-dump.pdf`. It is the PMLE app with a different bank — see "AIF-C01" below.
 - **DSAI** — `/dsai` (a hub) with three modes over the MSc in Data Science and AI material in `DSAI/`:
   `/dsai/flashcards` — **Anki-style spaced repetition** built from `DSAI/*.csv`; `/dsai/quiz` —
   **multiple choice** built from `DSAI/*.json`; and `/dsai/notes` — **revision notes**, one page per
   lecture, built from `DSAI/revision-notes/*.html`. `/flashcards` 308-redirects to `/dsai/flashcards`.
 
+PMLE and AIF-C01 share the whole quiz UI (see below) but no data and no localStorage key.
 PMLE and DSAI share no data, no localStorage key and no components beyond `ModeSwitch` and `Tile`. A
 change to one is not expected to touch the other; if it does, that is a signal the abstraction is
 wrong, not a shortcut. Within DSAI the cards and quiz *do* share `lib/dsai.ts` (unit derivation, course
@@ -29,6 +32,8 @@ npm run build      # production build (Next.js standalone output)
 npm start          # serve the production build
 npm run extract    # regenerate the base-285 data/questions.json (guarded; see below)
 npm run validate   # structural integrity check of data/questions.json
+npm run validate:aif  # the same check for data/aif-questions.json
+npm run extract:aif   # re-extract the AIF-C01 bank from its PDF (guarded; needs pdftotext)
 npm run cards      # rebuild data/cards.json from DSAI/*.csv (safe to re-run)
 npm run mcq        # rebuild data/dsai-questions.json from DSAI/*.json (safe to re-run; validates)
 npm run notes      # rebuild data/notes.json from DSAI/revision-notes/*.html (safe to re-run; validates)
@@ -173,8 +178,34 @@ not authored by hand:
   (its bottom-bar `JumpControl` gets no `onReset`). Both ask for confirmation.
 - `components/QuestionCard.tsx` is presentational: renders the stem/options, handles select →
   check/reveal → correct-highlight + explanation.
-- `app/pmle/page.tsx` just renders `<PracticeApp />`. `app/page.tsx` is the source picker (a server
+- `app/pmle/page.tsx` just renders `<PmleApp />` (which hands the PMLE bank to `PracticeApp`). `app/page.tsx` is the source picker (a server
   component — it reads the banks' sizes at build time and ships none of them to the browser).
+
+## AIF-C01 (`/aif`)
+
+- **One app, two banks.** `PracticeApp` takes a `bank` prop (`Bank`: questions, domains, storage key,
+  title); `components/PmleApp.tsx` and `components/AifApp.tsx` are the thin client modules that import
+  a bank's JSON and render it. Keep the JSON import in those client modules — passed from a server
+  page, the whole bank would be serialised into the HTML too. Everything in the PMLE notes about the
+  UI (shuffle, deep links `?q=&s=`, multi-answer, keys) applies to both; a change to `PracticeApp`,
+  `QuestionCard` or `DomainPanel` changes both. Storage key `aif-practice-v1`.
+- **Data.** `data/aif-questions.json` — **533 questions** (24 "choose two"), same `Question` shape.
+  `scripts/extract-aif.mjs` runs `pdftotext` (clean text layer) and parses `QUESTION n` blocks. As with
+  PMLE, **the JSON is the source of truth and hand-editing it is supported**; the extractor refuses to
+  overwrite it without `--force`, and with `--force` keeps each question's `domain` by id but loses
+  any other hand edit.
+- **ids are the dump's own question numbers, so they have gaps**: the 38 HOTSPOT questions are
+  skipped (their choices and answers are images). Do not renumber — stored answers are keyed by id.
+- **Same PDF gotchas as the PMLE 339题/375题 dumps** (same shop watermark): the lone watermark `6`
+  lines are dropped wholesale, and soft-hyphen welds (`wellsuited`, `nocode`) are repaired from a
+  hand-enumerated map in the script (found as lines over 115 characters).
+- **`domain` is 1–5, the AIF-C01 exam guide's content domains** (`AIF_DOMAINS` in `lib/domains.ts`),
+  assigned by reading each question, keyed on what the correct answer turns on: Guardrails → §4 even
+  when the scenario is a prompt attack; prompt-injection *concepts* → §3 (the guide files them under
+  prompt engineering); FM metrics (ROUGE, BLEU) → §3 but classifier metrics (F1, accuracy) → §1;
+  interpretable-model choice → §4; Bedrock pricing and service identification → §2.
+- **The answers have not been reviewed against AWS docs** — they are the dump's own key. Nothing is
+  flagged `needsReview` yet; flag and add a `reviewNote` as with PMLE when one proves wrong.
 
 ## DSAI (`/dsai`)
 

@@ -60,6 +60,48 @@ export const DOMAINS: Domain[] = [
   },
 ];
 
+/**
+ * The five content domains of the AWS "Certified AI Practitioner (AIF-C01)" exam guide, with the
+ * guide's own weightings. `Question.domain` in data/aif-questions.json stores the `id`.
+ */
+export const AIF_DOMAINS: Domain[] = [
+  {
+    id: 1,
+    name: "AI & ML",
+    title: "Fundamentals of AI and ML",
+    weight: 20,
+    blurb: "Learning types, use cases, AWS AI services, the ML lifecycle, model metrics.",
+  },
+  {
+    id: 2,
+    name: "Generative AI",
+    title: "Fundamentals of Generative AI",
+    weight: 24,
+    blurb: "Tokens, embeddings, model types, capabilities and limits, Bedrock, Amazon Q, pricing.",
+  },
+  {
+    id: 3,
+    name: "Foundation models",
+    title: "Applications of Foundation Models",
+    weight: 28,
+    blurb: "Model selection, inference parameters, RAG, agents, prompting, fine-tuning, evaluation.",
+  },
+  {
+    id: 4,
+    name: "Responsible AI",
+    title: "Guidelines for Responsible AI",
+    weight: 14,
+    blurb: "Bias and fairness, Guardrails, Clarify, transparency, explainability, legal risks.",
+  },
+  {
+    id: 5,
+    name: "Security",
+    title: "Security, Compliance, and Governance for AI Solutions",
+    weight: 14,
+    blurb: "IAM, encryption, PrivateLink, Macie, CloudTrail, Audit Manager, data governance.",
+  },
+];
+
 export function getDomain(id: number): Domain | undefined {
   return DOMAINS.find((d) => d.id === id);
 }

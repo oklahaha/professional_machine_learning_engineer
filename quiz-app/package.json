@@ -7,6 +7,8 @@
     "extract": "node scripts/extract-questions.mjs",
     "cards": "node scripts/build-cards.mjs",
     "validate": "node scripts/validate-questions.mjs",
+    "validate:aif": "node scripts/validate-questions.mjs aif",
+    "extract:aif": "node scripts/extract-aif.mjs",
     "validate:cards": "node scripts/validate-cards.mjs",
     "mcq": "node scripts/build-mcq.mjs",
     "notes": "node scripts/build-notes.mjs",

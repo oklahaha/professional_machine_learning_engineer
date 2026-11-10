@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { DOMAINS, PASS_MARK, type Domain } from "@/lib/domains";
+import { PASS_MARK, type Domain } from "@/lib/domains";
 
 export type DomainStat = Domain & {
   total: number;
@@ -25,11 +25,11 @@ const barTone = (accuracy: number | null) =>
   accuracy === null ? "bg-linestrong" : accuracy >= PASS_MARK ? "bg-correct" : "bg-wrong";
 
 /**
- * The six exam-guide sections: how you score in each, and how much the real exam weights it.
+ * The exam-guide sections: how you score in each, and how much the real exam weights it.
  * Every row is also the filter — clicking a section narrows the run to it, so the readout that
  * tells you where you are weak is the control that lets you drill it.
  *
- * Collapsed on a phone (six rows would push the question below the fold), open in the desktop
+ * Collapsed on a phone (the rows would push the question below the fold), open in the desktop
  * rail; collapsed, the summary line still surfaces the weakest section.
  */
 export default function DomainPanel({ stats, selected, onToggle, onClear }: Props) {
@@ -66,7 +66,7 @@ export default function DomainPanel({ stats, selected, onToggle, onClear }: Prop
           </span>
           <span>Exam sections</span>
           <span className="hud-label">
-            {selected.length === 0 ? `all ${DOMAINS.length}` : `${selected.length} selected`}
+            {selected.length === 0 ? `all ${stats.length}` : `${selected.length} selected`}
           </span>
         </button>
 

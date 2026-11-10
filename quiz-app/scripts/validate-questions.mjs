@@ -3,13 +3,46 @@
 // Hard-fails on defects in "clean" (non-needsReview) questions; only reports
 // issues on questions already tagged needsReview (known source-PDF defects).
 //
-// Usage: node scripts/validate-questions.mjs
+// Usage: node scripts/validate-questions.mjs [aif]   (default: the PMLE bank)
 
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DATA = resolve(dirname(fileURLToPath(import.meta.url)), "..", "data", "questions.json");
+// Exam-guide section titles + the real exam's weighting, so the bank's coverage can be eyeballed
+// against what the exam actually asks. Keep in sync with lib/domains.ts.
+const BANKS = {
+  pmle: {
+    file: "questions.json",
+    min: 285,
+    contiguous: true,
+    sections: [
+      ["Architecting low-code AI solutions", 13],
+      ["Collaborating to manage data and models", 16],
+      ["Scaling prototypes into ML models", 21],
+      ["Serving and scaling models", 20],
+      ["Automating and orchestrating ML pipelines", 18],
+      ["Monitoring AI solutions", 13],
+    ],
+  },
+  // ids are the dump's own question numbers, with gaps where a HOTSPOT question was skipped
+  aif: {
+    file: "aif-questions.json",
+    min: 500,
+    contiguous: false,
+    sections: [
+      ["Fundamentals of AI and ML", 20],
+      ["Fundamentals of Generative AI", 24],
+      ["Applications of Foundation Models", 28],
+      ["Guidelines for Responsible AI", 14],
+      ["Security, Compliance, and Governance for AI Solutions", 14],
+    ],
+  },
+};
+const bank = BANKS[process.argv[2] ?? "pmle"];
+if (!bank) throw new Error(`unknown bank "${process.argv[2]}" (expected: ${Object.keys(BANKS).join(", ")})`);
+const SECTIONS = bank.sections;
+const DATA = resolve(dirname(fileURLToPath(import.meta.url)), "..", "data", bank.file);
 const q = JSON.parse(readFileSync(DATA, "utf8"));
 
 const hard = []; // failures on structurally-sound questions -> non-zero exit
@@ -63,8 +96,8 @@ for (const item of q) {
   // Every question belongs to exactly one exam-guide section. This is never exempted for
   // source-defective records: a mangled stem is still classifiable, and an unclassified
   // question would silently vanish from a domain-filtered run.
-  if (!Number.isInteger(item.domain) || item.domain < 1 || item.domain > 6)
-    hard.push(`Q${item.id}: domain must be an integer 1..6 (got ${JSON.stringify(item.domain)})`);
+  if (!Number.isInteger(item.domain) || item.domain < 1 || item.domain > SECTIONS.length)
+    hard.push(`Q${item.id}: domain must be an integer 1..${SECTIONS.length} (got ${JSON.stringify(item.domain)})`);
   // A question flagged for a judgment call must say what to check, or the ⚠ badge is a dead end.
   // (Structural flags describe themselves, and the extractor cannot write a reviewNote.)
   if (needsExplanation(item) && !item.reviewNote?.trim())
@@ -88,26 +121,16 @@ for (const item of q) {
 // dataset-level invariants
 const seq = q.map((x) => x.id);
 const contiguous = seq.every((v, i) => v === i + 1);
-if (!contiguous) hard.push(`ids not contiguous 1..${q.length}`);
-if (q.length < 285) hard.push(`only ${q.length} questions (expected >= 285)`);
+if (bank.contiguous && !contiguous) hard.push(`ids not contiguous 1..${q.length}`);
+if (q.length < bank.min) hard.push(`only ${q.length} questions (expected >= ${bank.min})`);
 
 const multi = q.filter((x) => x.answers.length > 1);
 const review = q.filter((x) => x.needsReview);
 
-console.log(`Validated ${q.length} questions.`);
+console.log(`Validated ${q.length} questions (${bank.file}).`);
 console.log(`  multi-answer: ${multi.length} [${multi.map((x) => x.id).join(", ")}]`);
 console.log(`  needsReview:  ${review.length}`);
 
-// Exam-guide section titles + the real exam's weighting, so the bank's coverage can be eyeballed
-// against what the exam actually asks. Keep in sync with lib/domains.ts.
-const SECTIONS = [
-  ["Architecting low-code AI solutions", 13],
-  ["Collaborating to manage data and models", 16],
-  ["Scaling prototypes into ML models", 21],
-  ["Serving and scaling models", 20],
-  ["Automating and orchestrating ML pipelines", 18],
-  ["Monitoring AI solutions", 13],
-];
 console.log("  domains (bank share vs real-exam weight):");
 SECTIONS.forEach(([title, weight], i) => {
   const n = q.filter((x) => x.domain === i + 1).length;

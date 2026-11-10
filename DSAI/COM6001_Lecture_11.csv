@@ -1,0 +1,50 @@
+"Which Python visualization library offers comprehensive, highly customizable static, animated or interactive plots but is complicated to use?",Matplotlib.
+"What does pandas plotting use behind the scenes, and what is it good for?","Matplotlib; it is good for quick checks but cannot do sophisticated, pretty-looking plots."
+"What is Seaborn built on, and which data structures is it closely integrated with?",It is built on top of Matplotlib and integrated closely with pandas data structures.
+Which library does the lecture name as more popular for interactive visualizations and dashboards?,Plotly.
+What does Seaborn provide on top of Matplotlib?,A high-level interface for drawing attractive and informative statistical graphics.
+"What does a Seaborn axes-level function plot onto, and what does it return?","A single Matplotlib `Axes` object, which is also its return value."
+What does a Seaborn figure-level function return?,"A Seaborn object, usually a `FacetGrid`, that manages the whole figure."
+How do you set the axis labels on the result of `sns.displot()`?,"`displot()` returns a figure-level `FacetGrid`, so use `g.set_axis_labels(""Temperature"", ""counts"")`."
+How do you set the axis labels on the result of `sns.histplot()`?,"`histplot()` returns an axes-level `Axes`, so use `ax.set_xlabel(...)` and `ax.set_ylabel(...)`."
+"Which Seaborn function plots the distribution of one numerical feature as a histogram, KDE or ECDF?","`displot()`, choosing the plot with `kind` (histogram is the default)."
+What does a KDE plot (`kind='kde'`) show?,"The estimated probability density of a continuous variable as a smooth curve, a less cluttered alternative to a histogram."
+What does an ECDF plot (`kind='ecdf'`) show?,"For each value, the proportion of data points that fall at or below it (the empirical cumulative distribution)."
+Which two parameters set the size of a Seaborn figure-level plot?,`height` and `aspect`; there is no `width` parameter.
+How is the width of a Seaborn figure-level plot determined?,width = `aspect` × `height`; `aspect` defaults to 1.0.
+"What width does `sns.displot(..., height=3, aspect=2)` produce?",6 (twice the height of 3).
+Which parameter changes the colour of the marks in a Seaborn plot?,"`color`, e.g. `color='green'`."
+How do you switch Seaborn to a white background with grid lines?,"`sns.set_theme(style=""whitegrid"")`."
+Name the other built-in Seaborn styles besides `whitegrid`.,"`darkgrid`, `ticks`, `dark` and `white`."
+What does calling `sns.set_theme()` with no arguments do?,"It switches from Matplotlib's current default look to Seaborn's default theme and style, which has the grid on."
+Which Seaborn call draws a scatter plot of two numerical features?,"`sns.relplot(data=df, x=..., y=..., kind='scatter')`."
+How do you add a categorical feature to a scatter plot as colour?,"Pass it as `hue`, e.g. `hue='TEMP_category'`."
+How did the lecture turn quarters 1–4 into category names before using them as `hue`?,"`df['quarter'].map({1:'one', 2:'two', 3:'three', 4:'four'})`."
+"Which Seaborn function is the interface for categorical plots, and how is the plot type chosen?",`catplot()`; its `kind` parameter selects the underlying axes-level function.
+Which `catplot()` kind plots the counts of one categorical feature?,`kind='count'` (`countplot()`).
+What do the categorical estimate plots `kind='point'` and `kind='bar'` show?,"An estimate (the mean by default) of the numerical feature for each category, with confidence intervals."
+What is the default `kind` of `catplot()`?,`'strip'`.
+Strip plot vs swarm plot: what is the difference?,"Both show every data point per category; a strip plot lets points overlap, a swarm plot places them so they do not overlap."
+What does a box plot (`kind='box'`) show?,"The minimum, Q1, median, Q3 and maximum, with outliers drawn as separate points."
+What does a violin plot (`kind='violin'`) show that a box plot does not?,The shape of the distribution as a curve for each category.
+What extra detail does a boxen plot (`kind='boxen'`) give over a box plot?,"More boxes at further percentiles (e.g. 25%, 50%, 75%, 95%), which describe the tails of the distribution."
+"Which parameter sets the number of boxes in a boxen plot, and what values can it take?","`k_depth`: `'full'` (all possible boxes), `'trustworthy'` (only statistically reliable ones) or an integer."
+How do you show a summary statistic of a numerical feature per category with `relplot()`?,"Put the category on x, the number on y and set `kind='line'`; each category gets one y value, the mean by default."
+How do you make `relplot()` or `catplot()` plot the sum per category instead of the mean?,Pass `estimator=sum`.
+How do you split a Seaborn figure into sub-plots by a categorical feature?,Set `col='feature'` for columns and/or `row='another feature'` for rows.
+"What does `col_wrap=2` do in `sns.displot(..., col='quarter', col_wrap=2)`?",It wraps the column sub-plots so there are at most 2 per row.
+How do you give each sub-plot its own x-axis in `displot()`?,Pass `facet_kws={'sharex': False}`.
+What does `sns.pairplot()` draw?,"Pair-wise scatter plots for every pair of numerical features (it is slow on a large DataFrame, so select columns first)."
+What does `sns.jointplot()` show?,The relationship between two numerical features together with each feature's marginal distribution.
+How do you draw a correlation heatmap of a DataFrame's numerical features?,"`sns.heatmap(df.corr(numeric_only=True), cmap='coolwarm')`."
+How do you plot two categorical features together with `catplot()`?,Put one on `x` (e.g. `kind='count'`) and the other in `hue` or `col`.
+"What is Plotly Express, and how is it usually imported?","Plotly's high-level, easy-to-use interface, imported as `import plotly.express as px`."
+What does every Plotly Express function return?,"A `plotly.graph_objects.Figure` instance, built from graph objects internally."
+Why use Plotly Express rather than `plotly.graph_objects` directly?,A figure made in one Plotly Express call could take 5 to 100 times more code with graph objects alone.
+"In `px.scatter`, which parameters encode extra variables beyond x and y?","`color`, `size` and `symbol`; `hover_name` sets the hover label."
+How do you load the gapminder sample dataset in Plotly Express?,`px.data.gapminder()` (others include `px.data.stocks()`).
+What does a sunburst chart (`px.sunburst`) show?,"Hierarchical data as concentric rings, one ring per level, with slice area encoding a value such as population."
+"Which Plotly Express function draws a polar bar chart, and which parameters set radius and direction?","`px.bar_polar`, with `r` for the value and `theta` for the direction."
+Which two kinds of location information can Plotly use to plot data over a map?,"Latitude/longitude pairs, or country codes such as ISO-3 `iso_alpha`."
+Which Plotly Express function colours countries by a value?,"`px.choropleth`, with `locations` set to the ISO-3 country codes."
+How do you animate a Plotly Express chart over time?,"Pass `animation_frame`, e.g. `animation_frame='year'`, to a function such as `px.scatter` or `px.scatter_geo`."

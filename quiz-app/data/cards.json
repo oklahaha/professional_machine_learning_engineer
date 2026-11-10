@@ -4100,6 +4100,506 @@
     "deck": "COM6001_Lecture_10"
   },
   {
+    "id": "36e03fd734e9",
+    "front": "Which Python visualization library offers comprehensive, highly customizable static, animated or interactive plots but is complicated to use?",
+    "back": "Matplotlib.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "d8af5b49011d",
+    "front": "What does pandas plotting use behind the scenes, and what is it good for?",
+    "back": "Matplotlib; it is good for quick checks but cannot do sophisticated, pretty-looking plots.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6b1b9a0dfe93",
+    "front": "What is Seaborn built on, and which data structures is it closely integrated with?",
+    "back": "It is built on top of Matplotlib and integrated closely with pandas data structures.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6cfb28864fa4",
+    "front": "Which library does the lecture name as more popular for interactive visualizations and dashboards?",
+    "back": "Plotly.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "805b274ec440",
+    "front": "What does Seaborn provide on top of Matplotlib?",
+    "back": "A high-level interface for drawing attractive and informative statistical graphics.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "9b9eeab18b35",
+    "front": "What does a Seaborn axes-level function plot onto, and what does it return?",
+    "back": "A single Matplotlib `Axes` object, which is also its return value.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "b5513408bc4b",
+    "front": "What does a Seaborn figure-level function return?",
+    "back": "A Seaborn object, usually a `FacetGrid`, that manages the whole figure.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "07b84a285ff5",
+    "front": "How do you set the axis labels on the result of `sns.displot()`?",
+    "back": "`displot()` returns a figure-level `FacetGrid`, so use `g.set_axis_labels(\"Temperature\", \"counts\")`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "99a0ae3a10d0",
+    "front": "How do you set the axis labels on the result of `sns.histplot()`?",
+    "back": "`histplot()` returns an axes-level `Axes`, so use `ax.set_xlabel(...)` and `ax.set_ylabel(...)`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "ca5cfe4a4497",
+    "front": "Which Seaborn function plots the distribution of one numerical feature as a histogram, KDE or ECDF?",
+    "back": "`displot()`, choosing the plot with `kind` (histogram is the default).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "cb9ca25d0c97",
+    "front": "What does a KDE plot (`kind='kde'`) show?",
+    "back": "The estimated probability density of a continuous variable as a smooth curve, a less cluttered alternative to a histogram.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "c111d73d22d3",
+    "front": "What does an ECDF plot (`kind='ecdf'`) show?",
+    "back": "For each value, the proportion of data points that fall at or below it (the empirical cumulative distribution).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "761c4ec891ed",
+    "front": "Which two parameters set the size of a Seaborn figure-level plot?",
+    "back": "`height` and `aspect`; there is no `width` parameter.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "eb8ca7c59a90",
+    "front": "How is the width of a Seaborn figure-level plot determined?",
+    "back": "width = `aspect` × `height`; `aspect` defaults to 1.0.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "b8e29b7425be",
+    "front": "What width does `sns.displot(..., height=3, aspect=2)` produce?",
+    "back": "6 (twice the height of 3).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e908d6a20182",
+    "front": "Which parameter changes the colour of the marks in a Seaborn plot?",
+    "back": "`color`, e.g. `color='green'`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "dfe2904550b0",
+    "front": "How do you switch Seaborn to a white background with grid lines?",
+    "back": "`sns.set_theme(style=\"whitegrid\")`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "1bb454580283",
+    "front": "Name the other built-in Seaborn styles besides `whitegrid`.",
+    "back": "`darkgrid`, `ticks`, `dark` and `white`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e88c3adbbdad",
+    "front": "What does calling `sns.set_theme()` with no arguments do?",
+    "back": "It switches from Matplotlib's current default look to Seaborn's default theme and style, which has the grid on.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "a8accb9309fe",
+    "front": "Which Seaborn call draws a scatter plot of two numerical features?",
+    "back": "`sns.relplot(data=df, x=..., y=..., kind='scatter')`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "7c0c86e0c825",
+    "front": "How do you add a categorical feature to a scatter plot as colour?",
+    "back": "Pass it as `hue`, e.g. `hue='TEMP_category'`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "3ee6b966614d",
+    "front": "How did the lecture turn quarters 1–4 into category names before using them as `hue`?",
+    "back": "`df['quarter'].map({1:'one', 2:'two', 3:'three', 4:'four'})`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "c45fa5845ef1",
+    "front": "Which Seaborn function is the interface for categorical plots, and how is the plot type chosen?",
+    "back": "`catplot()`; its `kind` parameter selects the underlying axes-level function.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "035217b871f3",
+    "front": "Which `catplot()` kind plots the counts of one categorical feature?",
+    "back": "`kind='count'` (`countplot()`).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "a53bf50089cf",
+    "front": "What do the categorical estimate plots `kind='point'` and `kind='bar'` show?",
+    "back": "An estimate (the mean by default) of the numerical feature for each category, with confidence intervals.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "ea4e236ec1ef",
+    "front": "What is the default `kind` of `catplot()`?",
+    "back": "`'strip'`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "bb87ebd4eb3f",
+    "front": "Strip plot vs swarm plot: what is the difference?",
+    "back": "Both show every data point per category; a strip plot lets points overlap, a swarm plot places them so they do not overlap.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "b66ed7df63af",
+    "front": "What does a box plot (`kind='box'`) show?",
+    "back": "The minimum, Q1, median, Q3 and maximum, with outliers drawn as separate points.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "edbc65ed9380",
+    "front": "What does a violin plot (`kind='violin'`) show that a box plot does not?",
+    "back": "The shape of the distribution as a curve for each category.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "460d26b9b8d6",
+    "front": "What extra detail does a boxen plot (`kind='boxen'`) give over a box plot?",
+    "back": "More boxes at further percentiles (e.g. 25%, 50%, 75%, 95%), which describe the tails of the distribution.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "db4907483f0f",
+    "front": "Which parameter sets the number of boxes in a boxen plot, and what values can it take?",
+    "back": "`k_depth`: `'full'` (all possible boxes), `'trustworthy'` (only statistically reliable ones) or an integer.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "3a7492bb69d5",
+    "front": "How do you show a summary statistic of a numerical feature per category with `relplot()`?",
+    "back": "Put the category on x, the number on y and set `kind='line'`; each category gets one y value, the mean by default.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "da446430eedf",
+    "front": "How do you make `relplot()` or `catplot()` plot the sum per category instead of the mean?",
+    "back": "Pass `estimator=sum`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "58836f79001b",
+    "front": "How do you split a Seaborn figure into sub-plots by a categorical feature?",
+    "back": "Set `col='feature'` for columns and/or `row='another feature'` for rows.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "ca30dfebafec",
+    "front": "What does `col_wrap=2` do in `sns.displot(..., col='quarter', col_wrap=2)`?",
+    "back": "It wraps the column sub-plots so there are at most 2 per row.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "5d82dbf667cd",
+    "front": "How do you give each sub-plot its own x-axis in `displot()`?",
+    "back": "Pass `facet_kws={'sharex': False}`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "2aa512c0ef71",
+    "front": "What does `sns.pairplot()` draw?",
+    "back": "Pair-wise scatter plots for every pair of numerical features (it is slow on a large DataFrame, so select columns first).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "1e13ddcbb175",
+    "front": "What does `sns.jointplot()` show?",
+    "back": "The relationship between two numerical features together with each feature's marginal distribution.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "7b4942e2c1b8",
+    "front": "How do you draw a correlation heatmap of a DataFrame's numerical features?",
+    "back": "`sns.heatmap(df.corr(numeric_only=True), cmap='coolwarm')`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "9c438bb12c1d",
+    "front": "How do you plot two categorical features together with `catplot()`?",
+    "back": "Put one on `x` (e.g. `kind='count'`) and the other in `hue` or `col`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6a034f362764",
+    "front": "What is Plotly Express, and how is it usually imported?",
+    "back": "Plotly's high-level, easy-to-use interface, imported as `import plotly.express as px`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "5246ebb1a085",
+    "front": "What does every Plotly Express function return?",
+    "back": "A `plotly.graph_objects.Figure` instance, built from graph objects internally.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "ad35474cfc67",
+    "front": "Why use Plotly Express rather than `plotly.graph_objects` directly?",
+    "back": "A figure made in one Plotly Express call could take 5 to 100 times more code with graph objects alone.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "da1185ebde45",
+    "front": "In `px.scatter`, which parameters encode extra variables beyond x and y?",
+    "back": "`color`, `size` and `symbol`; `hover_name` sets the hover label.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "85a052cada46",
+    "front": "How do you load the gapminder sample dataset in Plotly Express?",
+    "back": "`px.data.gapminder()` (others include `px.data.stocks()`).",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "665ff569dc67",
+    "front": "What does a sunburst chart (`px.sunburst`) show?",
+    "back": "Hierarchical data as concentric rings, one ring per level, with slice area encoding a value such as population.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "f99d14052060",
+    "front": "Which Plotly Express function draws a polar bar chart, and which parameters set radius and direction?",
+    "back": "`px.bar_polar`, with `r` for the value and `theta` for the direction.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6ef956a319e3",
+    "front": "Which two kinds of location information can Plotly use to plot data over a map?",
+    "back": "Latitude/longitude pairs, or country codes such as ISO-3 `iso_alpha`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "94f4846c3acb",
+    "front": "Which Plotly Express function colours countries by a value?",
+    "back": "`px.choropleth`, with `locations` set to the ISO-3 country codes.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "4af68096f07d",
+    "front": "How do you animate a Plotly Express chart over time?",
+    "back": "Pass `animation_frame`, e.g. `animation_frame='year'`, to a function such as `px.scatter` or `px.scatter_geo`.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "topic": "",
+    "tag": "COM6001::Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
     "id": "7e4e6b9457df",
     "front": "What is the primary write inefficiency associated with file-based data management?",
     "back": "The entire file must be re-written even when making a tiny update.",

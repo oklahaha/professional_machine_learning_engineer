@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 11 Data Visualization: seaborn &amp; Plotly Express</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w11">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 11</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 11 · Source: Lecture11-data_visualization.html（Jupyter notebook HTML export，80 code cells、30 張 seaborn 圖）· Lecturer: Dr. Aileen Hou</p>
+<h1>Data Visualization: seaborn &amp; Plotly Express</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>分清 <b>Matplotlib / Pandas / Seaborn / Plotly</b> 四個 visualization libraries 嘅定位。</li>
+    <li>Seaborn 三大 <mark class="k">figure-level</mark> functions：<code>relplot()</code>（relational）、<code>displot()</code>（distributions）、<code>catplot()</code>（categorical），同佢哋下面嘅 axes-level functions。</li>
+    <li>按 <b>feature 類型同數量</b>揀圖：一個 numerical → histogram / KDE / ECDF / box；一個 categorical → count plot；兩個 numerical → scatter / heatmap；numerical + categorical → bar / point / strip / swarm / box / violin / boxen；兩個 categorical → count + hue / col。</li>
+    <li>用 <code>hue</code>、<code>col</code>、<code>row</code> 加多啲 categorical features；用 <code>size</code>，或者 numeric 嘅 <code>hue</code>（seaborn，漸變色）/ <code>color</code>（Plotly）加多啲 numerical features；<code>height</code> × <code>aspect</code> 控制大小。</li>
+    <li>多個 numerical features：<code>pairplot()</code>、<code>jointplot()</code>、<code>heatmap()</code>。</li>
+    <li><mark class="k">Plotly Express</mark>（<code>import plotly.express as px</code>）：interactive scatter / line、sunburst、polar bar、maps（choropleth、density map、scatter_geo）、<code>animation_frame</code> 做 animated charts。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><b>由圖認出用咗咩 features</b>：x、y、hue（顏色分類）、size（點大細）、col / row（sub-plots）、animation_frame（時間軸）。</li>
+    <li><b>為 dataset 建議合適嘅圖</b>：scatter → 所有點 / 兩個 numerical 關係；line → trends；bar → 比較 categories；displot → 單一 numerical 分佈；box → min / max / median / quartiles / outliers；catplot → categorical vs numerical。</li>
+    <li><code>catplot(kind=…)</code> 嘅 kinds 同用途：<code>count</code>、<code>bar</code> / <code>point</code>（summary statistic + CI）、<code>strip</code>（default，會重疊）/ <code>swarm</code>（唔重疊）、<code>box</code> / <code>violin</code> / <code>boxen</code>（distribution）。</li>
+    <li>Figure-level（<code>displot</code>，回傳 <code>FacetGrid</code>，用 <code>g.set_axis_labels()</code>）vs axes-level（<code>histplot</code>，回傳 <code>Axes</code>，用 <code>ax.set_xlabel()</code>）。</li>
+    <li>Plotly Express 套件名 <code>plotly.express</code>（<code>px</code>）；<code>px.scatter(df, x=, y=, color=, size=, symbol=, hover_name=, animation_frame=)</code> 每個參數 encode 咩 feature。</li>
+  </ol>
+</div>
+
+<div class="box note"><span class="label">📄 講義性質</span><p>Notebook 開頭講明：<b>“you are not required to master all the syntaxes, but rather to understand the key concepts and usage.”</b> 目標係：(1) <b>be able to tell what features are used in a provided plot</b>；(2) <b>be able to suggest a suitable plot for a given dataset</b>；(3) 喺 group project 用得好。所以溫書重點係「<b>邊類圖配邊類 data、每個參數代表咩</b>」，唔使死記每個 function 嘅全部參數。標明 <i>optional knowledge</i> 嘅部分（figure-level vs axes-level、boxen plots）本頁冇標 Exam。</p></div>
+
+<div class="box note"><span class="label">🖼️ 圖片內容</span><p>Export 入面 seaborn 嘅圖係 PNG（本頁有描述睇得到嘅重點）；<b>Plotly 嘅 interactive 圖喺 HTML export 入面冇 render 出嚟</b>（只有 code），所以 Plotly 部分只能按 code 解釋，冇描述圖嘅實際樣子。Datasets（<code>./Datasets/week_11/</code>）唔喺 folder 入面，本頁 code 要有 data 先行到。</p></div>
+
+<h2>0. Data preparation</h2>
+<pre><code>import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+path = './Datasets/week_11/'
+air_quality = pd.read_pickle(path + 'air_quality.pkl')   # 同 Week 10 一樣嘅北京空氣質素 data（27 columns）
+iris_flower = pd.read_csv(path + 'iris.csv')            # sepal.length, sepal.width, petal.length, petal.width, variety</code></pre>
+<p><code>air_quality</code> 就係之前幾星期清理完、做完 feature engineering 嘅 dataset：numerical features 例如 <code>PM2.5</code>、<code>TEMP</code>（溫度）、<code>PRES</code>（氣壓）、<code>DEWP</code>（露點）、<code>RAIN</code>、<code>WSPM</code>（風速）；categorical features 例如 <code>wd</code>（wind direction）、<code>station</code>、<code>quarter</code>、<code>PM2.5_cat</code>、<code>TEMP_category</code>（<a href="COM6001-w7.html">Week 7</a> binning 整出嚟，Very Cold → Very Hot）。用 <code>read_pickle</code> 會保留 <code>category</code> dtype，呢點對畫圖有影響（見 §4 Q1）。</p>
+
+<h2>1. Visualization libraries 概覽</h2>
+<table>
+<tr><th>Library</th><th>特點</th><th>適合</th></tr>
+<tr><td><b>Matplotlib</b></td><td>Comprehensive；static、animated 或 interactive plots；highly customizable，但寫法 complicated</td><td>要逐樣微調嘅圖；其他 library 嘅底層</td></tr>
+<tr><td><b>Pandas</b>（<code>df.plot()</code>）</td><td>Behind the scenes 用 Matplotlib；good for quick checks；畫唔到 sophisticated、靚嘅圖</td><td>EDA 時快速睇一眼</td></tr>
+<tr><td><b>Seaborn</b>（Statistical Data Visualization）</td><td>Build on top of Matplotlib，同 Pandas data structures 緊密整合；pretty、informative</td><td>統計圖：分佈、類別比較、相關</td></tr>
+<tr><td><b>Plotly</b></td><td>Interactive visualizations / dashboard</td><td>可 hover、zoom、animation 嘅圖</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>四者係「由低層到高層」：Matplotlib 好似畫布同畫筆，乜都畫到但要自己逐筆畫；Seaborn 係「統計圖模板」，俾 DataFrame 同 column 名佢就自動計 mean、CI、分佈；Plotly 就係「會郁、可以互動」嘅圖。Seaborn 底層仍然係 Matplotlib，所以 <code>plt.figure(figsize=…)</code> 呢類 Matplotlib 指令都可以同 seaborn 一齊用（§6 heatmap 就係咁）。</p></div>
+
+<h2>2. Seaborn：figure-level vs axes-level，同揀圖原則</h2>
+<p>Seaborn 係 Python data visualization library，based on matplotlib，提供 high-level interface 畫 <b>attractive and informative statistical graphics</b>。用法：<code>import seaborn as sns</code>，然後 <code>sns.xxxplot()</code>。</p>
+<p>Seaborn functions 分兩層（<i>optional knowledge</i>）：</p>
+<ul>
+  <li><b>Axes-level functions</b>：將 data 畫落一個 <code>matplotlib.pyplot.Axes</code> object，return 值就係嗰個 Axes。</li>
+  <li><b>Figure-level functions</b>：透過一個 seaborn object（通常係 <code>FacetGrid</code>）管理成個 figure。每個 module 有一個 figure-level function，作為佢下面各個 axes-level functions 嘅統一 interface。</li>
+</ul>
+<table>
+<tr><th>Figure-level（module）</th><th>對應 axes-level functions</th></tr>
+<tr><td><code>relplot()</code>（relational）</td><td><code>scatterplot</code>、<code>lineplot</code></td></tr>
+<tr><td><code>displot()</code>（distributions）</td><td><code>histplot</code>、<code>kdeplot</code>、<code>ecdfplot</code>、<code>rugplot</code></td></tr>
+<tr><td><code>catplot()</code>（categorical）</td><td><code>stripplot</code>、<code>swarmplot</code>、<code>boxplot</code>、<code>violinplot</code>、<code>pointplot</code>、<code>barplot</code></td></tr>
+</table>
+<p>（上表係 notebook 第一張圖 “Plotting functions” 嘅內容。）Figure-level function 用 <code>kind=</code> 揀用邊個 axes-level function，例如 <code>sns.catplot(..., kind='box')</code> ≈ <code>sns.boxplot(...)</code>，但前者仲可以用 <code>col</code> / <code>row</code> 開 sub-plots。</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點：按 feature 類型揀圖（slide 原文整理）</span>
+<table>
+<tr><th>情況</th><th>目的</th><th>圖 / function</th></tr>
+<tr><td>1 個 numerical</td><td>睇分佈</td><td>Histogram、KDE plot：<code>displot()</code>；Boxplot：<code>catplot(kind='box')</code></td></tr>
+<tr><td>1 個 categorical</td><td>睇各類別數量</td><td>Bar (count) plot：<code>catplot(kind='count')</code></td></tr>
+<tr><td>2 個 numerical</td><td>關係 / 相關</td><td>Scatter：<code>relplot()</code> / <code>pairplot()</code> / <code>jointplot()</code>；Correlation：<code>heatmap()</code></td></tr>
+<tr><td>1 numerical + 1 categorical</td><td>每個類別嘅分佈 / summary</td><td>Distribution：<code>displot()</code>（加 <code>hue</code>/<code>col</code>）；Visualization：<code>catplot(kind='bar'/'box'/'boxen'/'strip'/'swarm'/'violin')</code>；Summary statistic（每組一點）：<code>lineplot()</code> / <code>relplot(kind='line')</code></td></tr>
+<tr><td>2 個 categorical</td><td>交叉數量</td><td><code>catplot(kind='count')</code>，一個放 x，另一個放 <code>hue</code> 或 <code>col</code></td></tr>
+</table></div>
+
+<h2>3. 一個 numerical feature：displot() / histplot()</h2>
+<h3>3.1 Figure-level vs axes-level 嘅 return type（optional）</h3>
+<p>兩者畫出嚟差唔多，但 return 嘅 object 唔同，所以改 axis labels、title、legend 嘅 method 唔同：</p>
+<pre><code># Figure-level：displot() 回傳 FacetGrid
+g = sns.displot(air_quality, x='TEMP')
+g.set_axis_labels("Temperature", "counts")   # FacetGrid 用 set_axis_labels()
+
+# Axes-level：histplot() 回傳 matplotlib Axes
+ax = sns.histplot(air_quality, x='TEMP')
+ax.set_xlabel('temperature')                  # Axes 用 set_xlabel() / set_ylabel()
+ax.set_ylabel('counts')</code></pre>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p><code>g.set_xlabel()</code> 喺 FacetGrid 上面係冇嘅（會 <code>AttributeError</code>）；<code>ax.set_axis_labels()</code> 喺 Axes 上面都冇。記法：<b>figure-level → <code>set_axis_labels</code>；axes-level → <code>set_xlabel</code> / <code>set_ylabel</code></b>。Notebook output 見到 <code>&lt;seaborn.axisgrid.FacetGrid at 0x…&gt;</code> 就知係 figure-level；見到 <code>&lt;Axes: &gt;</code> 或 <code>Text(0, 0.5, 'counts')</code> 就係 axes-level。</p></div>
+
+<h3>3.2 <code>kind</code>：hist（default）、kde、ecdf</h3>
+<ul>
+  <li><code>kind='hist'</code>（default）：histogram，每個 bin 嘅 counts。</li>
+  <li><code>kind='kde'</code>：<mark class="k">KDE plot</mark>（Kernel Density Estimation）—— 將 continuous variable 嘅 probability density function 畫成一條平滑曲線；比 histogram 冇咁亂，通常更易睇。（Notebook 寫成 <code>kind = 'ked'</code>，係 typo，正確係 <code>'kde'</code>。）</li>
+  <li><code>kind='ecdf'</code>：<mark class="k">ECDF</mark>（Empirical Cumulative Distribution Function）—— 每個值 \(x\) 對應「\(\le x\) 嘅 data points 佔幾多比例」。</li>
+</ul>
+<div class="formula">$$ \hat{F}_n(x) = \frac{\#\{\, i : x_i \le x \,\}}{n} $$</div>
+<pre><code>sns.displot(air_quality, x='TEMP', kind='kde')    # 平滑 density 曲線
+sns.displot(air_quality, x='TEMP', kind='ecdf')   # cumulative distribution，由 0 升到 1</code></pre>
+<div class="box tip"><span class="label">💡 小例子：ECDF</span><p>Data = 2, 5, 5, 8（\(n = 4\)）。\(\hat{F}(1) = 0\)，\(\hat{F}(2) = 1/4\)，\(\hat{F}(5) = 3/4\)（2、5、5 三個 \(\le 5\)），\(\hat{F}(8) = 1\)。ECDF 係階梯形，永遠唔會跌；中位數就係 ECDF 過 0.5 嘅位置。好處係<b>唔使揀 bin 寬度</b>（histogram 要揀）亦唔使揀 bandwidth（KDE 要揀）。</p></div>
+
+<h3>3.3 調整圖嘅 style</h3>
+<ul>
+  <li><b>大小</b>：用 <code>height</code> 同 <code>aspect</code>；<b>冇 <code>width</code> 呢個參數</b>，\(\text{width} = \text{aspect} \times \text{height}\)，default <code>aspect = 1.0</code>。</li>
+  <li><b>顏色</b>：<code>color='green'</code>。</li>
+  <li><b>Theme</b>：<code>sns.set_theme()</code> 轉做 seaborn default theme（有 grid，較 fashionable）；可指定 style，例如 <code>sns.set_theme(style="whitegrid")</code>，其他：<code>"darkgrid"</code>、<code>"ticks"</code>、<code>"dark"</code>、<code>"white"</code>。<code>sns.set_theme(font_scale=1)</code> 調字體大細。</li>
+</ul>
+<pre><code>sns.displot(air_quality, x='TEMP', height=3, aspect=2, color='green')   # 高 3、闊 = 2 × 3 = 6
+sns.set_theme()                     # 之後所有圖都用 seaborn default theme</code></pre>
+<p><span class="tag exam">Exam</span> 留意 <code>set_theme()</code> 係<b>全局設定</b>，會影響之後所有圖，唔係淨係下一張。</p>
+
+<h2>4. 兩個 numerical features：scatter plot + hue</h2>
+<pre><code>sns.relplot(data=air_quality, x='TEMP', y='PRES', kind='scatter')
+# 加一個 categorical feature 做顏色
+sns.relplot(data=air_quality, x='TEMP', y='PRES', hue='TEMP_category', kind='scatter')</code></pre>
+<p>TEMP vs PRES 嘅 scatter 由左上斜落右下：溫度越高，氣壓越低。加 <code>hue='TEMP_category'</code> 之後，五個顏色（Very Cold 藍、Cold 橙、Warm 綠、Hot 紅、Very Hot 紫）沿 x 軸分成五條直帶 —— 當然啦，因為 <code>TEMP_category</code> 本身就係由 TEMP binning 出嚟，所以每個類別剛好對應一段 TEMP 範圍。</p>
+<div class="box warn"><span class="label">⚠️ Notebook 原文有誤</span><p>Notebook 喺 TEMP vs PRES scatter 下面寫 “<i>Strong inverse relationship between temperature and <b>wind speed</b></i>”。但圖嘅 y 軸係 <code>PRES</code>（<b>pressure</b>），唔係 wind speed（<code>WSPM</code>）。同一份 notebook 後面嘅 correlation matrix 都證明：TEMP–PRES \(r = -0.82\)（strong inverse），TEMP–WSPM 只係 \(r = 0.015\)（幾乎無關）。正確講法：<b>temperature 同 pressure 有強烈反向關係</b>。</p></div>
+
+<h3>Q1：用 hue 顯示 quarters —— numerical vs categorical hue</h3>
+<pre><code># 第一次：quarter 係 int（1, 2, 3, 4）
+sns.relplot(data=air_quality, x='TEMP', y='PRES', hue='quarter', kind='scatter')
+
+# 將 1, 2, 3, 4 map 做 'one', 'two', 'three', 'four'（Week 9 嘅 map）
+air_quality['quarter'] = air_quality['quarter'].map(arg={1:'one', 2:'two', 3:'three', 4:'four'})
+sns.relplot(data=air_quality, x='TEMP', y='PRES', hue='quarter', kind='scatter')</code></pre>
+<p>兩張圖嘅分別：quarter 係<b>數字</b>時，seaborn 當佢係 numeric hue，用一條<b>由淺到深嘅 sequential palette</b>（1 最淺粉紅、4 最深紫黑），好難分清邊點屬邊個 quarter；map 做<b>字串</b>之後，seaborn 當佢係 categorical，用<b>對比鮮明嘅 qualitative palette</b>（one 藍、two 橙、three 綠、four 紅），一眼睇得出 Q1（冬）喺左上（低溫高壓）、Q3（夏）喺右下。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：hue 嘅顏色規則</span><p>Hue column 係 <b>numeric</b> → 連續漸變色（暗示大小次序）；係 <b>categorical / string</b> → 每類一個獨立顏色。如果 category 只係用數字做 code（例如 quarter 1–4、station ID），想每類一個明顯顏色，就要先轉做 string 或 <code>category</code> dtype。Notebook 原文將呢個現象講成「Pandas will recognise the categorical values to be either rankable or not rankable」—— 實際上係 <b>seaborn</b> 按 hue 嘅 dtype 揀 palette：numeric 用 sequential，非 numeric 用 qualitative。</p></div>
+
+<h2>5. Categorical features：catplot()</h2>
+<p><code>catplot()</code> 係畫 categorical plots 嘅 interface，用 <code>kind</code> 揀底層 axes-level function，顯示一個 numerical 同一個或多個 categorical variables 嘅關係。慣例：<b>categorical feature 放 x 軸，numerical feature 放 y 軸</b>（掉轉放就變橫向圖）。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：catplot 嘅 kinds</span>
+<table>
+<tr><th>類別</th><th><code>kind=</code></th><th>Axes-level</th><th>顯示咩</th></tr>
+<tr><td>一個 categorical</td><td><code>'count'</code></td><td><code>countplot()</code></td><td>每個類別有幾多 rows</td></tr>
+<tr><td rowspan="2">Categorical estimate（summary statistics）</td><td><code>'point'</code></td><td><code>pointplot()</code></td><td>每類嘅估計值（點）+ confidence interval</td></tr>
+<tr><td><code>'bar'</code></td><td><code>barplot()</code></td><td>每類嘅 mean（或其他 estimator）+ confidence interval</td></tr>
+<tr><td rowspan="2">Categorical scatterplots</td><td><code>'strip'</code>（<b>default</b>）</td><td><code>stripplot()</code></td><td>所有 individual points，<b>可能重疊</b></td></tr>
+<tr><td><code>'swarm'</code></td><td><code>swarmplot()</code></td><td>所有 individual points，<b>唔重疊</b>（散開排）</td></tr>
+<tr><td rowspan="3">Categorical distribution</td><td><code>'box'</code></td><td><code>boxplot()</code></td><td>Q1、median、Q3、whiskers、outliers</td></tr>
+<tr><td><code>'violin'</code></td><td><code>violinplot()</code></td><td>分佈曲線（KDE 形狀）</td></tr>
+<tr><td><code>'boxen'</code></td><td><code>boxenplot()</code></td><td>更多 percentiles，睇 tails</td></tr>
+</table></div>
+
+<h3>5.1 單一 categorical feature：count plot</h3>
+<pre><code>chart = sns.catplot(data=air_quality, x='PM2.5_cat', kind='count', height=4, aspect=2)
+chart.set_xticklabels(rotation=45)    # x 軸 label 太長就打斜</code></pre>
+
+<h3>5.2 Summary statistic plots：relplot(kind='line') / catplot(kind='bar')</h3>
+<p>想睇「每個類別嘅 numerical feature 嘅某個 summary statistic（例如 mean、median）」：categorical 放 x、numerical 放 y，<code>kind='line'</code> 或 <code>'bar'</code>，咁每個 x category 只得<b>一個 y 值</b> = 該類嘅 statistic（<b>default 係 mean</b>），可以用 <code>estimator=</code> 改。</p>
+<pre><code>sns.set_theme(font_scale=1)
+sns.relplot(data=air_quality, x='wd', y='PM2.5', kind='line')                  # 每個風向嘅 PM2.5 mean
+sns.relplot(data=air_quality, x='quarter', y='RAIN', kind='line', estimator=sum) # 改計 sum：每季總雨量
+
+air_quality['wd'] = air_quality['wd'].str[0]      # 'NNE' → 'N'：16 個風向簡化成 N/E/S/W
+chart = sns.catplot(data=air_quality, x='wd', y='PM2.5', kind='bar')   # x = categorical，y = numerical 嘅 summary
+chart.set_xticklabels(rotation=45)</code></pre>
+<p>Line plot 個圖顯示：N、W 風時 PM2.5 mean 約 69–70，E 風約 105，S 風約 91，線旁邊有淺色帶 = <b>confidence interval</b>。即係東風、南風時污染較嚴重（北京東南面係工業區 / 平原，西北風帶嚟較乾淨空氣）。</p>
+<div class="box link"><span class="label">🔗 連繫 Week 10</span><p><code>catplot(x='wd', y='PM2.5', kind='bar')</code> 嘅 bar 高度其實就係 <code>air_quality.groupby('wd')['PM2.5'].mean()</code>；<code>estimator=sum</code> 就等於 <code>.sum()</code>。即係 <a href="COM6001-w10.html">Week 10 groupby</a> 嘅結果畫成圖，再加 error bar。</p></div>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>(1) Line plot 會用直線連住相鄰 categories，暗示佢哋之間有次序 / 連續變化。<code>wd</code> 係 <b>nominal</b>（N、W、E、S 冇大小次序），x 軸次序只係 data 出現次序，所以 line 嘅升跌形狀冇意義 —— 比較 nominal 類別用 <b>bar</b> 較合適；line 適合有次序嘅 x（quarter、month、年份）。(2) Notebook 嘅 line plot 已經只見 N/W/E/S，即係 <code>.str[0]</code> 嗰格喺佢之前執行咗（notebook 有 out-of-order execution），照次序重跑嘅話會見到 16 個風向。</p></div>
+
+<h3>5.3 Strip plots vs swarm plots（categorical scatterplots）</h3>
+<pre><code>sns.catplot(data=iris_flower, y='sepal.length', x='variety', kind='swarm', hue='variety', aspect=1)
+sns.catplot(data=air_quality, kind='strip', x='PM2.5', y='PM2.5_cat', height=4, aspect=2)   # strip 係 default kind</code></pre>
+<ul>
+  <li><b>Swarm</b>：每個點都畫出嚟，自動左右推開<b>避免重疊</b>，睇到每類嘅分佈形狀同點數。適合細 data（iris 150 rows）；data 太大（air_quality 九萬幾行）會好慢兼排唔落。</li>
+  <li><b>Strip</b>：點沿軸排，加少少 jitter，但<b>可能重疊</b>；大 data 都畫到。</li>
+</ul>
+
+<h3>5.4 Box、violin、boxen plots（statistical summaries）</h3>
+<pre><code>sns.catplot(data=air_quality, x='PM2.5', kind='box', aspect=1)     # 只有一個 numerical feature 都得</code></pre>
+<p>呢張 box plot 顯示 PM2.5 嚴重 <b>right-skewed</b>：box（Q1 至 Q3）大約 20–115，median 約 60，右邊 whisker 去到約 255，之後有大量 outlier 圓點一路去到 800+。</p>
+<div class="box warn"><span class="label">⚠️ Box plot 嘅 whiskers 唔一定係 min / max</span><p>Notebook 寫 boxplot 顯示 “min, Q1, median, Q3, and max”。更準確：seaborn / matplotlib default 嘅 whisker 只伸到<b>最遠一個仍喺 \(1.5 \times \text{IQR}\) 範圍內嘅點</b>，超出範圍嘅點逐個畫做 <b>outliers</b>。所以有 outliers 時，whisker 末端<b>唔係</b> max（上面例子：whisker 約 255，max 約 820）；真正嘅 max / min 係最遠嗰粒 outlier（冇 outlier 時先等於 whisker 末端）。</p>
+<div class="formula">$$ \text{IQR} = Q_3 - Q_1,\qquad \text{upper fence} = Q_3 + 1.5\,\text{IQR},\qquad \text{lower fence} = Q_1 - 1.5\,\text{IQR} $$</div>
+<p>例：\(Q_1 = 20\)、\(Q_3 = 115\) → IQR = 95 → upper fence = 115 + 142.5 = 257.5，同圖中 whisker 約 255 吻合（whisker 停喺 fence 以內最大嘅實際數據點）。呢個就係 <a href="COM6001-w7.html">Week 7 outliers</a> 嘅 IQR method。</p></div>
+
+<h3>Q2：一張圖顯示五個溫度類別嘅 PM2.5 min、max、median、outliers</h3>
+<pre><code># 答案：box plot，categorical 放一條軸、numerical 放另一條軸
+sns.catplot(data=air_quality, y='TEMP_category', x='PM2.5', kind='box', aspect=1.5)</code></pre>
+<p>圖中五個橫向 box（Very Cold 喺頂，Very Hot 喺底）：Very Cold 嘅 box 最闊、whisker 最長（到約 350），outliers 去到 800+；越熱 box 越窄、whisker 越短（Hot / Very Hot 約 210）。即係<b>天氣越冷，PM2.5 越高、越波動</b>（冬天燒煤取暖 + 逆溫層）。</p>
+<pre><code>sns.catplot(data=air_quality, y='TEMP_category', x='PM2.5', kind='violin', aspect=1.5)
+sns.catplot(data=air_quality, y='TEMP_category', x='PM2.5', kind='boxen', k_depth=3, height=4, aspect=1.5)</code></pre>
+<ul>
+  <li><b>Violin</b>：每類畫一個左右對稱嘅 KDE 曲線（形似小提琴），睇到分佈形狀（例如 bimodal），box plot 睇唔到。</li>
+  <li><b>Boxen</b>（<i>optional</i>）：一層層 boxes 代表唔同 percentiles（25%、50%、75%、95%…），比 box plot 更詳細咁顯示 <b>tails</b>，適合大 data。<code>k_depth</code> 控制層數：<code>'full'</code>（畫晒所有可能 boxes）、<code>'trustworthy'</code>（只畫統計上可靠嘅 boxes）、或整數（例如 <code>k_depth=3</code> → notebook 話會畫 5 個 boxes）。</li>
+</ul>
+<div class="box tip"><span class="label">💡 點揀 box / violin / boxen？</span><p>要<b>數字化嘅 summary（median、quartiles、outliers）</b>→ box；要睇<b>分佈形狀</b>（幾個峰、偏向邊）→ violin；data 好大、想睇<b>尾部細節</b>而唔想幾千粒 outliers 擠埋一齊 → boxen。</p></div>
+
+<h3>5.5 用 col 同 row 開 sub-plots</h3>
+<p>一個 numerical feature 嘅分佈配多過一個 categorical feature：<code>col='feature A'</code> 按 A 開<b>直行</b> sub-plots；<code>row='feature B'</code> 按 B 開<b>橫行</b> sub-plots。</p>
+<pre><code>g = sns.displot(data=air_quality, x='PM2.5', col='quarter', height=3, col_wrap=2)   # 4 個 quarter，每行 2 張
+g.set_axis_labels("PM2.5")
+
+# col × row 格網：每格 = 一個 (wd, quarter) 組合；sharex=False 令每格都顯示自己嘅 x 軸
+sns.displot(data=air_quality, x='PM2.5', col='wd', row='quarter', facet_kws={'sharex': False})</code></pre>
+<p><code>col_wrap=2</code>：每行最多 2 張，超出就換行（只可配 <code>col</code>，唔可以同 <code>row</code> 一齊用）。4 個 wd × 4 個 quarter = 16 格。</p>
+<div class="box exam"><span class="label">⭐ 考試重點：「加多一個 feature」嘅方法</span><ul>
+  <li>加 <b>categorical</b> feature：<code>hue</code>（同一張圖不同顏色）、<code>col</code> / <code>row</code>（分開 sub-plots）。</li>
+  <li>加 <b>numerical</b> feature：scatter plot 嘅 <code>size</code>（點大細），或者顏色漸變 —— seaborn 用 numeric 嘅 <code>hue='TEMP'</code>，Plotly 先用 <code>color='TEMP'</code>。Seaborn 嘅 <code>color=</code> 只收一個固定顏色（例如 <code>'green'</code>），<code>color='TEMP'</code> 會出 invalid colour error。</li>
+  <li>睇圖反推：有 legend 列出類別 → hue；有幾格標題如 <code>quarter = 1</code> → col / row；點有大有細 → size。</li>
+</ul></div>
+
+<h2>6. 多過兩個 numerical features：pairplot、jointplot、heatmap</h2>
+<h3>6.1 pairplot()</h3>
+<p><code>pairplot()</code> 為所有 numerical features 兩兩畫 scatter plots（對角線畫每個 feature 自己嘅分佈）。<code>sns.pairplot(data=air_quality)</code> 會為成個 dataset 嘅 numerical columns 畫，notebook 叫你<b>唔好跑</b>（太多 columns，好耗時）—— 先揀幾個 columns：</p>
+<pre><code>sns.pairplot(data=air_quality[['TEMP', 'PRES', 'WSPM']])                       # 3 × 3 格
+sns.pairplot(data=air_quality[['PM2.5', 'TEMP', 'WSPM', 'wd']], hue='wd')     # 3 numerical + 1 categorical 做 hue</code></pre>
+<p>\(k\) 個 numerical features → \(k \times k\) 格，其中 \(k\) 格對角線（分佈）、\(k(k-1)\) 格 scatter（上下三角互為鏡像，即 \(k(k-1)/2\) 對唔同組合）。例：3 個 features → 9 格、3 對組合；air_quality 有約 19 個 numerical columns → 361 格，所以咁慢。</p>
+
+<h3>Q3：用 season 做 hue</h3>
+<p>先由 month 整 <code>season</code>：Spring 3、4、5；Summer 6、7、8；Autumn 9、10、11；Winter 12、1、2。Notebook 答案 cell 用咗 <code>get_season</code> 但冇定義，以下係完整寫法：</p>
+<pre><code>def get_season(m):
+    if m in (3, 4, 5):   return 'Spring'
+    if m in (6, 7, 8):   return 'Summer'
+    if m in (9, 10, 11): return 'Autumn'
+    return 'Winter'                       # 12, 1, 2
+
+air_quality['season'] = air_quality['month'].map(get_season)
+# 或者用 dict（notebook §4.7 嘅寫法）：
+# air_quality['season'] = air_quality['month'].map({12:'Winter', 1:'Winter', 2:'Winter', 3:'Spring', ...})
+
+sns.pairplot(data=air_quality[['PM2.5', 'TEMP', 'WSPM', 'season']], hue='season')</code></pre>
+<p>加咗 hue 之後，對角線由 histogram 變成每個 season 一條 KDE 曲線（TEMP 嗰格最清楚：Winter 峰喺約 0°C，Summer 峰喺約 27°C，Spring / Autumn 喺中間重疊）。</p>
+<div class="box exam"><span class="label">⭐ Observations（notebook 結論）</span><ul>
+  <li>Highest PM2.5 levels are observed in <b>winters</b>；lowest in <b>summers</b>。</li>
+  <li>The higher the <b>wind speed</b>, the lower the PM2.5 levels and vice versa（PM2.5 vs WSPM 格：風速高時 PM2.5 點全部貼近 0）。</li>
+</ul></div>
+
+<h3>6.2 jointplot()</h3>
+<p><code>jointplot()</code>：中間係兩個 numerical features 嘅 scatter plot，上方同右方加埋各自嘅 <b>marginal distributions</b>。</p>
+<pre><code>sns.jointplot(data=iris_flower, x='petal.width', y='petal.length', hue='variety')</code></pre>
+<div class="box tip"><span class="label">💡 pairplot vs jointplot</span><p>pairplot = 「全部 features 兩兩睇一次」，用嚟<b>初步掃描</b>；jointplot = 「專注一對 features」，同時睇關係 + 兩邊各自分佈。</p></div>
+
+<h3>6.3 heatmap()：correlation matrix</h3>
+<pre><code>air_quality.corr(numeric_only=True)          # Week 9：Pearson correlation matrix，非數值 columns 要排除
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 6))                   # heatmap 係 axes-level，用 matplotlib 設大小
+sns.heatmap(air_quality.corr(numeric_only=True), cmap='coolwarm')   # 紅 = 正相關，藍 = 負相關</code></pre>
+<p>Correlation table 有 19 × 19 個數，好難逐個睇；heatmap 用顏色一眼睇出 high correlations（<b>“High correlations are easier to be found by visualization”</b>）。</p>
+<table>
+<tr><th>Notebook observation</th><th>Correlation（由 output table）</th><th>原因</th></tr>
+<tr><td>PM2.5 &amp; PM10、SO2、NO2、CO 正相關</td><td>PM10 0.88、CO 0.79、NO2 0.69、SO2 0.47</td><td>全部都係 <b>combustion</b>（燃燒）產生</td></tr>
+<tr><td>TEMP &amp; DEWP 正相關</td><td>0.82</td><td>同 weather conditions 有關</td></tr>
+<tr><td>DEWP、PRES、TEMP、O3 之間有 inverse relationships</td><td>TEMP–PRES −0.82、DEWP–PRES −0.76、O3–PRES −0.44</td><td>高溫 → 低壓；陽光 / 高溫 → 多 O3</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 讀 heatmap 要小心</span><p>(1) 對角線永遠係 1（自己同自己）。(2) <code>time_until_2022_days</code> 同 <code>time_until_2022_weeks</code> 嘅 correlation = 1.000，同 <code>year</code> 係 −0.97：佢哋係由同一個日期<b>計出嚟嘅 redundant features</b>，高相關係必然，唔係有趣發現。(3) Correlation 只量度<b>線性</b>關係，亦唔代表因果（PM2.5 同 CO 高相關係因為同源，唔係 CO 製造 PM2.5）。(4) <code>year</code>、<code>month</code>、<code>hour</code> 呢類 time codes 嘅 Pearson correlation 意義有限。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Redundant / 高相關 features → <a href="COM6004-ch2.html">COM6004 Chapter 2</a> 嘅 feature subset selection（redundant features）；scatter、box、histogram、heatmap 嘅原則 → <a href="COM6004-ch3.html">COM6004 Chapter 3 Data Exploration &amp; Visualization</a>；box plot、quartiles、IQR → <a href="COM6005-m1.html">COM6005 Module 1</a>；correlation coefficient → <a href="COM6001-w9.html">Week 9</a> 同 <a href="COM6005-m4.html">COM6005 Linear Regression</a>。</p></div>
+
+<h2>7. 兩個或以上 categorical features</h2>
+<p>做法：一個放 x，其他放 <code>hue</code> 或 <code>col</code>。</p>
+<pre><code># 每個 TEMP_category 一組 bars，每組入面按 PM2.5_cat 分顏色
+sns.catplot(data=air_quality, x='TEMP_category', kind='count', hue='PM2.5_cat', aspect=2, legend=True)
+
+# 每個 TEMP_category 一張 sub-plot，每張入面 x = PM2.5_cat
+g = sns.catplot(data=air_quality, x='PM2.5_cat', kind='count', col='TEMP_category', col_wrap=3, height=4)
+g.tick_params(axis='x', rotation=45)</code></pre>
+<div class="box tip"><span class="label">💡 hue 定 col？</span><p><b>hue</b> 將組別放埋同一張圖，方便<b>直接比較</b>同一 x 位置嘅唔同組；類別多（例如 &gt; 6 個）就會好擠。<b>col</b> 每組一張圖，清楚但要左右對照。兩個 categorical 嘅 count plot 本質上就係 <code>pd.crosstab(df['TEMP_category'], df['PM2.5_cat'])</code> 或 Week 10 pivot table（<code>aggfunc='count'</code>）畫成圖。</p></div>
+
+<h2>8. Plotly Express：interactive &amp; animated plots</h2>
+<p><b>Plotly</b> 係 Python graphing library，整 interactive、publication-quality graphs。底層 module 係 <code>plotly.graph_objects</code>（a.k.a. <code>go</code>）。<mark class="k">Plotly Express</mark>（<code>plotly.express</code>，通常 <code>import plotly.express as px</code>）係易用嘅 high-level interface，一個 function call 就整到成個 figure；佢內部用 graph objects，return 一個 <code>plotly.graph_objects.Figure</code>。</p>
+<p>點解建議用 <code>px</code> 而唔係 <code>go</code>：任何 Plotly Express 一句做到嘅圖，用 graph objects 寫要多 <b>5 至 100 倍</b>嘅 code。</p>
+
+<h3>8.1 Advantages</h3>
+<ul>
+  <li>用好少 code 畫晒成個 dataset；顏色按類別（例如 iris 嘅 variety）自動分配。</li>
+  <li>x / y 軸 annotation 同 legend 自動生成。</li>
+  <li>Interactive：hover 睇數值、zoom、pan、點 legend 隱藏 / 顯示某類。</li>
+</ul>
+<pre><code>import plotly.express as px
+data_iris = pd.read_csv(path + 'iris.csv')
+fig = px.scatter(data_iris, x='sepal.length', y='sepal.width', color='variety', width=800, height=500)
+fig.show()                     # Plotly 要 fig.show() 先顯示</code></pre>
+<div class="box warn"><span class="label">⚠️ 澄清</span><p>Notebook 話「above scatter plot cannot mark the color with variety automatically. We need to use plotly express」。其實 seaborn 都可以：<code>sns.relplot(data=data_iris, x='sepal.length', y='sepal.width', hue='variety')</code>（§4 就用 hue 分色）。Plotly 真正嘅優勢係 <b>interactivity</b>（hover / zoom）同 <b>animation</b>，唔係「識自動分色」。另外留意兩者參數名唔同：seaborn 用 <code>hue=</code>，Plotly 用 <code>color=</code>；seaborn 大小用 <code>height</code> + <code>aspect</code>，Plotly 用 <code>width</code> + <code>height</code>（pixels）。</p></div>
+
+<h3>8.2 Built-in datasets</h3>
+<p><code>px.data.dataset_name()</code> 攞 classic datasets：</p>
+<pre><code>df = px.data.gapminder()     # 1704 rows：country, continent, year, lifeExp, pop, gdpPercap, iso_alpha, iso_num
+df.sample(200).head()        # 隨機抽 200 行再睇頭 5 行（Week 9 sampling）
+df_stock = px.data.stocks()  # date + GOOG, AAPL, AMZN, FB, NFLX, MSFT（以 2018-01-01 = 1.0 標準化嘅股價）
+df_stock.date.max(), df_stock.date.min()     # ('2019-12-30', '2018-01-01')：兩年 weekly data</code></pre>
+
+<h3>8.3 Scatter 同 line plots</h3>
+<p><code>px.scatter</code> 由 DataFrame 整 interactive scatter，可以將 columns map 去 <b>x、y、color、size、symbol</b>，一張圖 encode 多個 variables。常用 options：<code>hover_name</code>（hover 標題）、<code>size</code> / <code>size_max</code>（點大小）、<code>color</code>（categorical 或 continuous）、<code>width</code> / <code>height</code>；最後 <code>fig.show()</code>。</p>
+<pre><code>data = df.query('year==2002')                  # 只揀 2002 年（142 個國家）
+fig = px.scatter(data, x="gdpPercap", y="lifeExp", size="pop",
+                 color='continent', hover_name="country", size_max=60)
+fig.show()      # hover 會顯示所有用到嘅 features，包括 size
+
+df_stock['date'] = pd.to_datetime(df_stock['date'])   # 字串轉 datetime，x 軸先會係時間軸
+fig = px.line(df_stock, x="date", y=["GOOG", "AAPL", "AMZN", "FB", "MSFT"],
+              title='Stock Prices of Major Tech Companies')   # y 傳 list → 每隻股票一條線
+fig.show()</code></pre>
+<div class="box exam"><span class="label">⭐ 考試重點：讀 gapminder bubble chart</span><p>呢張 2002 年 scatter 一次 encode 咗 <b>5 個 features</b>：x = <code>gdpPercap</code>（numerical）、y = <code>lifeExp</code>（numerical）、size = <code>pop</code>（numerical）、color = <code>continent</code>（categorical）、hover = <code>country</code>（identifier）。考試「tell what features are used」就係要咁拆。</p></div>
+
+<h3>Q4：What are the options?</h3>
+<pre><code>fig = px.scatter(data_iris, x='_a_', y='_b_', color='_c_',
+                 size='_d_', symbol='_e_', width=800, height=500)
+___f___</code></pre>
+<p>參考答案（notebook 冇俾，以下係一個合理答案）：a / b = 兩個 numerical features（例如 <code>'sepal.length'</code>、<code>'sepal.width'</code>）；c = categorical（<code>'variety'</code>）；d = 第三個 numerical feature 做點大小（例如 <code>'petal.length'</code>）；e = categorical，決定點嘅形狀（例如 <code>'variety'</code>）；f = <code>fig.show()</code>。注意 <code>size</code> 一定要 numerical（而且唔可以係負數），<code>symbol</code> 應該係 categorical。</p>
+
+<h3>8.4 Sunburst：hierarchical data</h3>
+<p><mark class="k">Sunburst chart</mark> 用同心圓顯示 hierarchical data：<b>每一圈 = 一個 hierarchy level</b>，每塊扇形面積 encode 一個 quantitative value（例如 population）。適合睇 <b>part-to-whole</b> 關係同 drill down；<code>px.sunburst</code> 自動做 aggregation、hover info 同 coloring。</p>
+<pre><code>import numpy as np
+fig = px.sunburst(df, path=['continent', 'country', 'year'], values='pop',   # 內圈 continent → country → 外圈 year
+                  color='lifeExp', hover_data=['iso_alpha'],
+                  color_continuous_scale='Twilight',
+                  color_continuous_midpoint=np.average(df['lifeExp'], weights=df['pop']))  # 顏色中點 = 人口加權平均壽命
+fig.show()</code></pre>
+<p><code>path</code> 由外到內嘅<b>次序</b>就係 hierarchy（大 → 細）；上一層嘅大小 = 下層 values 自動加總（同 groupby sum 一樣）。用加權平均做 midpoint，顏色就表示「高於定低於世界人口加權平均壽命」。</p>
+
+<h3>8.5 Polar bar chart</h3>
+<pre><code>direction_order = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
+means = air_quality.groupby('wd', as_index=False)['PM2.5'].mean()   # 16 個風向嘅 PM2.5 mean（as_index=False → wd 留做 column）
+
+fig = px.bar(means, x='wd', y='PM2.5')        # 普通 bar：x 按字母排（E, ENE, ESE, N…），方向感全失
+fig.show()
+
+fig = px.bar_polar(means, r='PM2.5', theta='wd',          # r = 長度，theta = 角度（方向）
+                   color='PM2.5', category_orders={'wd': direction_order},
+                   title='Mean PM2.5 by wind direction')
+fig.show()</code></pre>
+<p>Means table：ESE 107.0、E 106.8、ENE 101.4、SE 100.8 最高；NNW 47.2、NW 47.4、WNW 55.1 最低。Polar bar 將風向放返去指南針位置，一眼見到<b>東 / 東南風污染最高、西北風最乾淨</b>。<code>category_orders</code> 確保方向按順時針排，而唔係字母排。</p>
+<div class="box tip"><span class="label">💡 點解 polar 適合風向？</span><p>風向係 <b>circular</b> 數據：NNW 同 N 喺現實中係相鄰，但普通 bar chart 會將佢哋放喺兩端。Polar chart 保留咗「方向」呢個幾何意義。</p></div>
+
+<h3>8.6 Visualization over maps</h3>
+<p>只要 dataset 有 geolocation 或地名，Plotly 就可以畫地圖。Geolocation 可以係：(1) <b>latitude + longitude</b>（地球上嘅精確點）；(2) <b>ISO alpha country codes</b>（例如 HKG、JPN）。</p>
+<pre><code>wdi = pd.read_csv(path + 'world_development_indicators.csv')
+wdi = wdi[wdi['is_region'] == 0]          # 移除 region（例如 "East Asia"）rows，只留國家
+# ⚠️ notebook 原文寫成 wid = wdi[...]，之後又用 wdi → 實際上冇移除 regions
+
+fig = px.choropleth(wdi, locations='Country Code',          # ISO-3 codes
+                    color='gdp_per_capita_usd', hover_name='country_name',
+                    color_continuous_scale='Viridis',
+                    range_color=(wdi['gdp_per_capita_usd'].min(), wdi['gdp_per_capita_usd'].quantile(0.95)),
+                    labels={'gdp_per_capita_usd': 'GDP per capita (USD)'},
+                    title='GDP per Capita (USD) by Country')
+fig.show()</code></pre>
+<ul>
+  <li><mark class="k">Choropleth</mark>：按國家 / 地區填色，顏色深淺 = 數值大小。</li>
+  <li><code>range_color</code> 上限用 95th percentile：少數極富國家（outliers）唔會將顏色範圍拉闊，令其他國家全部擠喺同一個顏色 —— 同 <a href="COM6001-w8.html">Week 8</a> outliers 影響 scaling 係同一道理。</li>
+</ul>
+<pre><code>eq_data = pd.read_csv(path + 'earthquakes.csv')       # Date, Latitude, Longitude, Magnitude
+fig = px.density_map(eq_data, lat='Latitude', lon='Longitude', z='Magnitude',
+                     radius=5, center=dict(lat=0, lon=180), zoom=0)   # 中心設喺太平洋（經度 180）
+fig.show()</code></pre>
+<p><code>density_map</code> 畫熱度圖：附近地震越多 / magnitude 越大，顏色越熱。地震集中喺太平洋周邊（Ring of Fire），所以 center 揀 lon = 180。</p>
+<p><b>Q5（思考題）：地震同 gapminder data，喺地圖上可以 visualize 咩？</b>參考答案：地震 data → 用 lat / lon 畫每次地震位置，magnitude 做 size / color，或者畫 density；按年份做 animation。Gapminder → 用 <code>iso_alpha</code> 做 choropleth 顯示 lifeExp、gdpPercap 或 pop，或者 <code>scatter_geo</code> 用 pop 做泡泡大小，再按 year 做 animation（即 §8.7）。</p>
+
+<h3>8.7 Animated charts</h3>
+<p>加 <code>animation_frame='某 column'</code>，Plotly 就會按嗰個 column 嘅每個值出一格（frame），下面有播放掣同 slider。通常係時間（year），亦可以係 layer（season）。</p>
+<pre><code>air_quality = pd.read_pickle(path + 'air_quality.pkl')
+air_quality['wd'] = air_quality['wd'].map(lambda x: x[0])      # 同 .str[0] 效果一樣
+air_quality['season'] = air_quality['month'].map({1:'Winter', 2:'Winter', 3:'Spring', 4:'Spring',
+                                                  5:'Spring', 6:'Summer', 7:'Summer', 8:'Summer',
+                                                  9:'Autumn', 10:'Autumn', 11:'Autumn', 12:'Winter'})
+fig = px.scatter(air_quality, x='TEMP', y='WSPM', animation_frame='season',
+                 color='wd', size='PM2.5', hover_name='station', width=800, height=600)
+fig.show()
+
+df = px.data.gapminder()
+fig = px.scatter_geo(df, locations="iso_alpha", color="continent",     # 今次用 iso_alpha 做 geo-info
+                     hover_name="country", size="pop", animation_frame="year")
+fig.show()</code></pre>
+<p>地震 magnitude 隨年份變化：</p>
+<pre><code>eq_data = pd.read_csv(path + 'earthquakes_datefixed.csv')     # 人手修正咗 Date column 嘅錯誤
+eq_data['Date'] = pd.to_datetime(eq_data['Date'], format="%m/%d/%Y", errors='raise')   # Week 7 datetime
+eq_data['Year'] = eq_data['Date'].dt.year
+eq_data['mag3'] = (eq_data["Magnitude"] - eq_data["Magnitude"].mean())**2 * 2
+fig = px.scatter_geo(eq_data, lat='Latitude', lon='Longitude', hover_name="Date",
+                     size="mag3", size_max=40, color='Magnitude', animation_frame="Year")
+fig.show()</code></pre>
+<div class="box warn"><span class="label">⚠️ <code>mag3</code> 唔係 normalization，而且有缺陷</span><p>Notebook comment 話 “normalize and amplify the differences in magnitude”。但 \(2(x - \bar{x})^2\) 係<b>平方離差</b>：佢放大咗同 mean 嘅距離，卻<b>失去方向</b>。由 output 反推 mean 約 5.88（Magnitude 5.8 → mag3 ≈ 0.0136，6.0 → 0.0276，6.2 → 0.2016）。問題：一個<b>細過</b> mean 嘅地震（例如 5.5）會得到 \(2(5.5-5.88)^2 \approx 0.29\)，比 6.2 級嘅 0.20 仲大，泡泡反而更大。如果想大地震 = 大泡泡兼放大差距，應該用單調遞增嘅 transform，例如 \((x - x_{\min})^2\)、Min-Max scaling 後再平方，或者 \(10^{x}\)（magnitude 本身係 log scale）。呢度圖仍然用 <code>color='Magnitude'</code> 正確顯示大小，size 嘅意義就要小心解讀。</p></div>
+
+<h3>Q6：Gapminder animated plot</h3>
+<p>要求：按年份 animate；GDP per capita；life expectancy；population 做 marker size；continent；country（只喺 hover）。參考答案：</p>
+<pre><code>fig = px.scatter(df, x='gdpPercap', y='lifeExp',
+                 animation_frame='year',      # 按年份動
+                 size='pop',                  # 人口 → 泡泡大小
+                 color='continent',           # 洲 → 顏色
+                 hover_name='country',        # 國家只喺 hover 顯示
+                 size_max=60,
+                 log_x=True)                  # 選用：GDP 極度 skewed，log 軸較易睇
+fig.show()</code></pre>
+<p><code>log_x=True</code> 唔係題目要求，但 gdpPercap 由幾百到幾萬，唔用 log 軸大部分國家會擠埋左邊。亦可加 <code>animation_group='country'</code>（令同一國家喺 frames 之間平滑移動）同固定 <code>range_y</code>（避免軸每格跳動）。</p>
+
+<h2>9. Summary：揀圖同加 features</h2>
+<div class="box exam"><span class="label">⭐ Notebook Summary</span>
+<p><b>Basic plotting — know the plot function names for different purposes：</b></p>
+<table>
+<tr><th>目的</th><th>圖</th></tr>
+<tr><td>顯示所有點</td><td><b>scatter</b></td></tr>
+<tr><td>顯示 trends（隨時間 / 有序 x）</td><td><b>line</b></td></tr>
+<tr><td>比較 categories</td><td><b>bar</b></td></tr>
+<tr><td>單一 numerical feature 嘅分佈</td><td><b>displot</b>（hist / kde / ecdf）</td></tr>
+<tr><td>Key statistics（min、max、median、quartiles）同 outliers</td><td><b>boxplot</b></td></tr>
+<tr><td>Categorical 同 numerical features 嘅關係</td><td><b>catplot</b></td></tr>
+</table>
+<p><b>插入更多 features：</b>categorical → <code>hue</code> / <code>col</code> / <code>row</code>；numerical → scatter 嘅 <code>size</code>，或者顏色漸變（seaborn <code>hue</code>、Plotly <code>color</code>）。</p>
+<p><b>Interactive &amp; animated：</b>用 <code>plotly.express</code>（要識 package 名）；知道 scatter plot 各參數用咗咩 features；識用 <code>animation_frame</code> 按時間或 layers 做 animated plots（group project 有用）。</p></div>
+
+<div class="box tip"><span class="label">💡 Group project 小貼士</span><p>每張圖問自己三條問題：(1) 我想回答咩問題（分佈？比較？關係？趨勢？組成？）；(2) 涉及幾多個 features、各係 numerical 定 categorical；(3) 讀者要比較嘅嘢係咪放喺同一條軸 / 同一張圖。之後先揀 function。Interactive 圖適合 notebook / dashboard 展示；報告 PDF 入面 Plotly 會變 static，要記得 export 圖片（<code>fig.write_image()</code> 需要額外安裝 kaleido）。</p></div>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. Seaborn 三個 figure-level functions 係乜？各自下面有咩 axes-level functions？</summary><p><code>relplot</code>（relational）→ <code>scatterplot</code>、<code>lineplot</code>；<code>displot</code>（distributions）→ <code>histplot</code>、<code>kdeplot</code>、<code>ecdfplot</code>、<code>rugplot</code>；<code>catplot</code>（categorical）→ <code>stripplot</code>、<code>swarmplot</code>、<code>boxplot</code>、<code>violinplot</code>、<code>pointplot</code>、<code>barplot</code>。Figure-level 用 <code>kind=</code> 揀，回傳 <code>FacetGrid</code>，可以用 <code>col</code> / <code>row</code>。</p></details>
+<details class="q"><summary>Q2. <code>g = sns.displot(df, x='TEMP')</code> 同 <code>ax = sns.histplot(df, x='TEMP')</code>，分別點樣將 x 軸 label 改做 “Temperature”？</summary><p><code>g.set_axis_labels("Temperature")</code>（FacetGrid）；<code>ax.set_xlabel("Temperature")</code>（matplotlib Axes）。displot 係 figure-level，histplot 係 axes-level。</p></details>
+<details class="q"><summary>Q3. 想要一張闊 9、高 3 嘅 displot，參數點寫？</summary><p><code>sns.displot(df, x='TEMP', height=3, aspect=3)</code>。Seaborn 冇 <code>width</code> 參數；width = aspect × height = 3 × 3 = 9。</p></details>
+<details class="q"><summary>Q4. 用 <code>hue='quarter'</code>（int 1–4）畫 scatter，顏色由淺粉紅漸變到深紫，好難分。點解？點改？</summary><p>Seaborn 見 hue 係 numeric，就用 sequential（連續漸變）palette。Quarter 其實係 category，應該先轉成 string / category：<code>df['quarter'] = df['quarter'].map({1:'one', 2:'two', 3:'three', 4:'four'})</code>（或 <code>.astype(str)</code>），咁 seaborn 就用 qualitative palette，每季一個明顯顏色。</p></details>
+<details class="q"><summary>Q5. 為以下情況建議圖同 seaborn / plotly statement：(a) 五個 TEMP_category 嘅 PM2.5 median、quartiles 同 outliers；(b) 每個 station 有幾多 records；(c) 每月平均 PM2.5 嘅趨勢；(d) TEMP、PRES、DEWP、WSPM 兩兩關係。</summary><p>(a) Box plot：<code>sns.catplot(data=df, x='TEMP_category', y='PM2.5', kind='box')</code>。(b) Count plot：<code>sns.catplot(data=df, x='station', kind='count')</code>。(c) Line（summary statistic，default mean）：<code>sns.relplot(data=df, x='month', y='PM2.5', kind='line')</code>。(d) Pairplot：<code>sns.pairplot(df[['TEMP','PRES','DEWP','WSPM']])</code>，或者 correlation heatmap <code>sns.heatmap(df[[…]].corr(), cmap='coolwarm')</code>。</p></details>
+<details class="q"><summary>Q6. Strip plot 同 swarm plot 有咩分別？air_quality（約 9.6 萬行）應該揀邊個？</summary><p>兩者都畫每個 individual data point。Strip（catplot 嘅 default kind）點可以重疊；swarm 自動推開點，唔重疊。Swarm 喺大 data 會極慢而且排唔落，所以 air_quality 用 strip（或者乾脆用 box / violin / boxen 睇分佈）；swarm 適合細 data 例如 iris。</p></details>
+<details class="q"><summary>Q7. 一個 box plot：\(Q_1 = 30\)、median = 55、\(Q_3 = 90\)，最大值 = 400。Whisker 上端最多去到邊？400 會點顯示？</summary><p>IQR = 90 − 30 = 60；upper fence = 90 + 1.5 × 60 = 180。上 whisker 去到 ≤ 180 嘅最大實際數據點；400 &gt; 180，所以畫成獨立 outlier 點。即係 whisker 末端唔等於 max。</p></details>
+<details class="q"><summary>Q8. 讀以下 statement，講出圖入面用咗咩 features、各以咩方式顯示：<code>px.scatter(data, x="gdpPercap", y="lifeExp", size="pop", color='continent', hover_name="country", animation_frame="year")</code></summary><p>x 軸 = GDP per capita；y 軸 = life expectancy；泡泡大小 = population；顏色 = continent（categorical，每洲一色）；滑鼠 hover 標題 = country；animation（slider / 播放）= year，每年一個 frame。共 6 個 features。</p></details>
+<details class="q"><summary>Q9. Notebook 話 TEMP vs PRES scatter 顯示 “strong inverse relationship between temperature and wind speed”。呢句有咩問題？</summary><p>圖嘅 y 軸係 PRES（pressure），唔係 wind speed。Correlation matrix：TEMP–PRES = −0.82（strong inverse），TEMP–WSPM = 0.015（幾乎無關）。正確結論係 temperature 同 pressure 強烈反向相關。</p></details>
+<details class="q"><summary>Q10. 點解要用 <code>px.bar_polar</code> 而唔係 <code>px.bar</code> 顯示 16 個風向嘅平均 PM2.5？<code>category_orders</code> 有咩用？</summary><p>風向係 circular data：普通 bar 會按字母排（E、ENE、ESE、N…），相鄰方向被拆散，睇唔到空間 pattern。Polar bar 用 <code>theta='wd'</code> 放返指南針位置、<code>r='PM2.5'</code> 做長度，一眼睇到東 / 東南風最污染、西北風最乾淨。<code>category_orders={'wd': direction_order}</code> 確保方向按 N → NNE → … → NNW 順時針排。</p></details>
+<details class="q"><summary>Q11. 由 month 整 season（Spring 3–5、Summer 6–8、Autumn 9–11、Winter 12–2），然後用 season 做 hue 畫 PM2.5、TEMP、WSPM 嘅 pairplot。</summary><p><code>season_map = {12:'Winter', 1:'Winter', 2:'Winter', 3:'Spring', 4:'Spring', 5:'Spring', 6:'Summer', 7:'Summer', 8:'Summer', 9:'Autumn', 10:'Autumn', 11:'Autumn'}</code>；<code>df['season'] = df['month'].map(season_map)</code>；<code>sns.pairplot(df[['PM2.5','TEMP','WSPM','season']], hue='season')</code>。注意 hue column 要包含喺傳入嘅 DataFrame 入面。結論：冬天 PM2.5 最高、夏天最低；風速越高 PM2.5 越低。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+  <li>考試要求：識<b>睇圖講出用咗咩 features</b>、識<b>為 dataset 建議合適嘅圖</b>；唔使死記 syntax。</li>
+  <li>Libraries：Matplotlib（底層、customizable、complicated）/ Pandas（用 Matplotlib，quick check）/ Seaborn（build on Matplotlib + Pandas，統計圖，pretty &amp; informative）/ Plotly（interactive、dashboard）。</li>
+  <li>Seaborn figure-level：<code>relplot</code>（scatter、line）、<code>displot</code>（hist、kde、ecdf、rug）、<code>catplot</code>（strip、swarm、box、violin、boxen、point、bar、count）；用 <code>kind=</code> 揀。</li>
+  <li>Figure-level → <code>FacetGrid</code> → <code>g.set_axis_labels()</code>；axes-level → <code>Axes</code> → <code>ax.set_xlabel()</code>。</li>
+  <li><code>height</code> × <code>aspect</code> = width（冇 width 參數，aspect default 1）；<code>color='green'</code>（固定一個顏色，唔係 map column）；<code>sns.set_theme(style="whitegrid"/"darkgrid"/"ticks"/"dark"/"white")</code> 係全局。</li>
+  <li>1 numerical：hist / <b>kde</b>（平滑 density）/ <b>ecdf</b>（\(\le x\) 嘅比例）/ box。1 categorical：count。</li>
+  <li>2 numerical：scatter（<code>relplot</code>）、<code>pairplot</code>（全部兩兩，對角線 = 分佈）、<code>jointplot</code>（一對 + marginal distributions）、<code>heatmap(df.corr(numeric_only=True), cmap='coolwarm')</code>。</li>
+  <li>Num + cat：<b>bar / point</b> = summary（default mean + CI，<code>estimator=sum</code> 可改）；<b>strip</b>（default，重疊）/ <b>swarm</b>（唔重疊，細 data）；<b>box</b>（quartiles + 1.5 IQR whiskers + outliers）/ <b>violin</b>（分佈形狀）/ <b>boxen</b>（多 percentiles、tails，<code>k_depth</code>）。</li>
+  <li>2 categorical：count plot，一個 x，另一個 <code>hue</code> 或 <code>col</code>。</li>
+  <li>加 features：categorical → <code>hue</code> / <code>col</code> / <code>row</code>（<code>col_wrap</code>、<code>facet_kws={'sharex': False}</code>）；numerical → <code>size</code> 或 numeric <code>hue</code>（seaborn）/ <code>color</code>（Plotly）。</li>
+  <li>Hue 係 numeric → sequential 漸變；string / category → 每類一色 → 數字 code 要先 <code>map</code> 成文字。</li>
+  <li>Line 連接 categories 會暗示次序：nominal 類別（wd）用 bar；有序 x（月、年）先用 line。</li>
+  <li>Heatmap 結論：PM2.5 同 PM10 / CO / NO2 / SO2 正相關（combustion）；TEMP–DEWP +0.82；TEMP–PRES −0.82。Redundant derived features（days vs weeks = 1.0）唔係發現。Correlation ≠ causation。</li>
+  <li>Plotly Express：<code>import plotly.express as px</code>；比 <code>graph_objects</code> 少 5–100 倍 code；return <code>go.Figure</code>；<code>fig.show()</code>。</li>
+  <li><code>px.scatter(x, y, color, size, symbol, hover_name, size_max, width, height, animation_frame)</code>；<code>px.line(y=[list])</code> 多條線。</li>
+  <li><code>px.sunburst(path=[大→細], values=)</code>：hierarchical、part-to-whole；<code>px.bar_polar(r=, theta=, category_orders=)</code>：方向 / circular data。</li>
+  <li>Maps：lat + lon 或 ISO alpha codes；<code>px.choropleth(locations=, color=)</code>、<code>px.density_map(lat, lon, z)</code>、<code>px.scatter_geo(locations= 或 lat/lon, size, animation_frame)</code>。</li>
+  <li>Animated：<code>animation_frame='year'</code>（或 season 等 layers）。Gapminder 經典：x = gdpPercap、y = lifeExp、size = pop、color = continent、hover_name = country。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w10.html">← Week 10 groupby &amp; pivot tables</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

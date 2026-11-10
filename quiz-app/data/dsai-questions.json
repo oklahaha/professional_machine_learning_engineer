@@ -6204,6 +6204,666 @@
     "deck": "COM6001_Lecture_10"
   },
   {
+    "id": "8b37abfaa0f0",
+    "question": "You run `g = sns.displot(air_quality, x='TEMP')`. Which call relabels its axes?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`g.set_xlabel('Temperature')`",
+        "explanation": "`set_xlabel()` is a method of a Matplotlib `Axes`, which is what `histplot()` returns, not `displot()`."
+      },
+      {
+        "label": "B",
+        "text": "`g.set_axis_labels('Temperature', 'counts')`",
+        "explanation": "Correct. `displot()` is figure-level and returns a `FacetGrid`, whose `set_axis_labels()` sets both labels."
+      },
+      {
+        "label": "C",
+        "text": "`plt.xlabel` passed as an argument to `displot()`",
+        "explanation": "Labels are set on the returned object, not passed as a function argument."
+      },
+      {
+        "label": "D",
+        "text": "`g.columns = ['Temperature']`",
+        "explanation": "That renames DataFrame columns; `g` is a `FacetGrid`, not a DataFrame."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Work out whether `displot()` is figure-level or axes-level.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e2c2d2acc93a",
+    "question": "Which statement about Seaborn's `histplot()` is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It returns a `FacetGrid` that manages the whole figure",
+        "explanation": "That is what figure-level functions such as `displot()` return."
+      },
+      {
+        "label": "B",
+        "text": "It can only draw a KDE curve",
+        "explanation": "`histplot()` draws a histogram; a KDE is `displot(kind='kde')`."
+      },
+      {
+        "label": "C",
+        "text": "It returns a Matplotlib `Axes`, so labels are set with `ax.set_xlabel()`",
+        "explanation": "Correct. Axes-level functions draw onto one `Axes` and return it."
+      },
+      {
+        "label": "D",
+        "text": "It needs `kind='hist'` or it draws nothing",
+        "explanation": "`histplot()` always draws a histogram; `kind` belongs to the figure-level `displot()`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about what an axes-level function returns.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6f0917ad611e",
+    "question": "You want the proportion of hours with temperature at or below each value. Which call fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`sns.displot(air_quality, x='TEMP', kind='kde')`",
+        "explanation": "A KDE shows a smooth density curve, not a cumulative proportion."
+      },
+      {
+        "label": "B",
+        "text": "`sns.catplot(data=air_quality, x='TEMP', kind='count')`",
+        "explanation": "A count plot counts categories; temperature is a continuous number."
+      },
+      {
+        "label": "C",
+        "text": "`sns.relplot(data=air_quality, x='TEMP', y='PRES')`",
+        "explanation": "That is a scatter plot of two numerical features."
+      },
+      {
+        "label": "D",
+        "text": "`sns.displot(air_quality, x='TEMP', kind='ecdf')`",
+        "explanation": "Correct. An ECDF plots, for each value, the proportion of points at or below it."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Look for the cumulative view of a distribution.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "8a1bc587f359",
+    "question": "`sns.displot(air_quality, x='TEMP', height=3, aspect=2)` produces a figure of what width?",
+    "options": [
+      {
+        "label": "A",
+        "text": "6",
+        "explanation": "Correct. Width = `aspect` × `height` = 2 × 3."
+      },
+      {
+        "label": "B",
+        "text": "3",
+        "explanation": "That is the height; with `aspect=2` the width is twice that."
+      },
+      {
+        "label": "C",
+        "text": "1.5",
+        "explanation": "That divides height by aspect; width multiplies them."
+      },
+      {
+        "label": "D",
+        "text": "2",
+        "explanation": "That is the `aspect` ratio itself, not the width."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Width is not passed directly; it is derived.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "2abeefeaa885",
+    "question": "A classmate writes `sns.displot(df, x='TEMP', width=8)`. What is wrong?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`width` must be given in pixels",
+        "explanation": "Units are not the issue; the parameter does not exist."
+      },
+      {
+        "label": "B",
+        "text": "There is no `width` parameter; size is set with `height` and `aspect`",
+        "explanation": "Correct. The lecture stresses there is no `width`; width = `aspect` × `height`."
+      },
+      {
+        "label": "C",
+        "text": "`width` only works together with `kind='kde'`",
+        "explanation": "No `kind` adds a `width` parameter."
+      },
+      {
+        "label": "D",
+        "text": "`width` must be set through `sns.set_theme()`",
+        "explanation": "`set_theme()` sets the style, such as `whitegrid`, not the figure size."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Check which size parameters Seaborn figure-level functions accept.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "3f8ef2aed179",
+    "question": "Which call gives every subsequent Seaborn plot a white background with grid lines?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`sns.displot(df, x='TEMP', color='white')`",
+        "explanation": "`color` changes the colour of the marks in one plot, not the background style."
+      },
+      {
+        "label": "B",
+        "text": "`sns.set_theme(style='ticks')`",
+        "explanation": "`ticks` is a different style without the white grid."
+      },
+      {
+        "label": "C",
+        "text": "`sns.set_theme(style='whitegrid')`",
+        "explanation": "Correct. `set_theme()` sets the theme for all later plots, and `whitegrid` is the white background with a grid."
+      },
+      {
+        "label": "D",
+        "text": "`sns.relplot(df, kind='whitegrid')`",
+        "explanation": "`whitegrid` is a style, not a plot kind."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Look for the function that changes the global look.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "74619aa0a11f",
+    "question": "You have two numerical features, `TEMP` and `PRES`, and want to see how they relate point by point. Which plot is the most suitable?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A count plot",
+        "explanation": "A count plot counts the categories of one categorical feature."
+      },
+      {
+        "label": "B",
+        "text": "A box plot of `TEMP`",
+        "explanation": "A box plot summarises one numerical feature's distribution, not a relationship."
+      },
+      {
+        "label": "C",
+        "text": "A sunburst chart",
+        "explanation": "Sunburst charts show hierarchical part-to-whole data."
+      },
+      {
+        "label": "D",
+        "text": "A scatter plot with `sns.relplot(..., kind='scatter')`",
+        "explanation": "Correct. Two numerical features are shown as a scatter plot, one point per row."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Each row should become one mark positioned by both values.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "7ecfc39dd77b",
+    "question": "How do you colour the points of `sns.relplot(data=air_quality, x='TEMP', y='PRES', kind='scatter')` by quarter?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Add `hue='quarter'`",
+        "explanation": "Correct. `hue` maps a categorical feature to point colour."
+      },
+      {
+        "label": "B",
+        "text": "Add `color='quarter'`",
+        "explanation": "`color` sets one fixed colour for all marks; it does not map a feature."
+      },
+      {
+        "label": "C",
+        "text": "Add `col='quarter'`",
+        "explanation": "`col` splits the figure into one sub-plot per quarter rather than colouring points."
+      },
+      {
+        "label": "D",
+        "text": "Add `size='quarter'`",
+        "explanation": "`size` maps a feature to marker size, not colour."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Seaborn has a parameter that maps a feature to colour.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "d46928b8d68e",
+    "question": "A box plot of PM2.5 by temperature category shows which statistics for each category?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The mean with a confidence interval",
+        "explanation": "That is what a bar or point plot shows."
+      },
+      {
+        "label": "B",
+        "text": "The minimum, Q1, median, Q3 and maximum, with outliers as separate points",
+        "explanation": "Correct. A box plot shows those key statistics and the outliers."
+      },
+      {
+        "label": "C",
+        "text": "Every individual data point without overlap",
+        "explanation": "That describes a swarm plot."
+      },
+      {
+        "label": "D",
+        "text": "The count of rows in each category",
+        "explanation": "That is a count plot."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Recall the five numbers a box and its whiskers mark.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "c5ff2a30263f",
+    "question": "You want every sepal length for each iris variety shown as its own dot, with no dots overlapping. Which `catplot()` kind fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`kind='strip'`",
+        "explanation": "A strip plot shows every point but lets them overlap."
+      },
+      {
+        "label": "B",
+        "text": "`kind='box'`",
+        "explanation": "A box plot summarises the distribution rather than showing every point."
+      },
+      {
+        "label": "C",
+        "text": "`kind='swarm'`",
+        "explanation": "Correct. A swarm plot positions individual points so they do not overlap."
+      },
+      {
+        "label": "D",
+        "text": "`kind='bar'`",
+        "explanation": "A bar plot shows one estimate per category, not individual points."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Two kinds show every point; only one avoids overlap.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "534478234fe7",
+    "question": "If you call `sns.catplot(data=df, x='PM2.5', y='PM2.5_cat')` without a `kind`, what is drawn?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A box plot",
+        "explanation": "A box plot requires `kind='box'`."
+      },
+      {
+        "label": "B",
+        "text": "A bar plot of means",
+        "explanation": "A bar plot requires `kind='bar'`."
+      },
+      {
+        "label": "C",
+        "text": "A count plot",
+        "explanation": "A count plot requires `kind='count'`."
+      },
+      {
+        "label": "D",
+        "text": "A strip plot",
+        "explanation": "Correct. `'strip'` is the default `kind` of `catplot()`."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Every `kind` parameter has a default.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "9019ea1efadc",
+    "question": "Compared with a box plot, what does a violin plot add for each category?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The shape of the distribution, drawn as a curve",
+        "explanation": "Correct. A violin plot shows the distribution curve of each category."
+      },
+      {
+        "label": "B",
+        "text": "The count of rows per category",
+        "explanation": "Counts belong to a count plot."
+      },
+      {
+        "label": "C",
+        "text": "A confidence interval around the mean",
+        "explanation": "That is shown by bar and point plots."
+      },
+      {
+        "label": "D",
+        "text": "A separate sub-plot per category",
+        "explanation": "Sub-plots come from `col` or `row`, not from the plot kind."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about the shape of the data.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e0bac648b3c1",
+    "question": "Which plot shows extra boxes at further percentiles such as 95%, giving more detail about the tails than a box plot?",
+    "options": [
+      {
+        "label": "A",
+        "text": "A strip plot",
+        "explanation": "A strip plot shows raw points, not percentile boxes."
+      },
+      {
+        "label": "B",
+        "text": "A KDE plot",
+        "explanation": "A KDE plot draws a smooth density curve."
+      },
+      {
+        "label": "C",
+        "text": "A boxen plot (`kind='boxen'`)",
+        "explanation": "Correct. A boxen plot draws boxes for more percentiles, and `k_depth` controls how many."
+      },
+      {
+        "label": "D",
+        "text": "A count plot",
+        "explanation": "A count plot shows category counts."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Its name sounds like a box plot.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "3d0a9b7fb9e2",
+    "question": "What does `sns.relplot(data=air_quality, x='quarter', y='RAIN', kind='line', estimator=sum)` plot for each quarter?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The mean rainfall",
+        "explanation": "The mean is the default, but `estimator=sum` replaces it."
+      },
+      {
+        "label": "B",
+        "text": "The total rainfall",
+        "explanation": "Correct. With `kind='line'` each category gets one y value, and `estimator=sum` makes it the sum."
+      },
+      {
+        "label": "C",
+        "text": "Every hourly rainfall value as a dot",
+        "explanation": "That would be a scatter or strip plot, not a line with an estimator."
+      },
+      {
+        "label": "D",
+        "text": "The number of rainy hours",
+        "explanation": "Counting rows is a count plot; this sums the `RAIN` values."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "`estimator` replaces the default summary statistic.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e5501b6f4b08",
+    "question": "Which call draws one histogram of PM2.5 per quarter, arranged two sub-plots per row?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`sns.displot(data=air_quality, x='PM2.5', hue='quarter', aspect=2)`",
+        "explanation": "`hue` overlays the quarters in one plot by colour; `aspect` only changes the shape."
+      },
+      {
+        "label": "B",
+        "text": "`sns.displot(data=air_quality, x='PM2.5', row='quarter', height=2)`",
+        "explanation": "`row` stacks the sub-plots one per row, not two per row."
+      },
+      {
+        "label": "C",
+        "text": "`sns.pairplot(data=air_quality[['PM2.5', 'quarter']])`",
+        "explanation": "A pairplot draws pair-wise scatter plots of numerical features."
+      },
+      {
+        "label": "D",
+        "text": "`sns.displot(data=air_quality, x='PM2.5', col='quarter', col_wrap=2)`",
+        "explanation": "Correct. `col` makes one sub-plot per quarter and `col_wrap=2` wraps them two per row."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Sub-plots come from a facet parameter, and another limits how many fit on a row.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "4f932d36b649",
+    "question": "You want to see a scatter plot of `petal.width` against `petal.length` together with each feature's own distribution along the edges. Which function fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`sns.jointplot()`",
+        "explanation": "Correct. A joint plot shows the relationship between two numerical features plus their marginal distributions."
+      },
+      {
+        "label": "B",
+        "text": "`sns.heatmap()`",
+        "explanation": "A heatmap shows a matrix of values such as correlations."
+      },
+      {
+        "label": "C",
+        "text": "`sns.pairplot()`",
+        "explanation": "A pairplot shows scatter plots for every pair of features, not one pair with marginals."
+      },
+      {
+        "label": "D",
+        "text": "`sns.catplot(kind='violin')`",
+        "explanation": "A violin plot shows a numerical distribution per category."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The edge plots are called marginal distributions.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "371a7c33c43a",
+    "question": "In the air-quality correlation matrix, `TEMP` and `PRES` have a correlation of −0.82. What does a heatmap of this matrix make easy to see?",
+    "options": [
+      {
+        "label": "A",
+        "text": "That temperature and pressure are unrelated",
+        "explanation": "A coefficient near 0 would mean no linear relationship; −0.82 is strong."
+      },
+      {
+        "label": "B",
+        "text": "That higher temperature causes higher pressure",
+        "explanation": "The sign is negative, and correlation does not show causation."
+      },
+      {
+        "label": "C",
+        "text": "A strong inverse relationship: higher temperature goes with lower pressure",
+        "explanation": "Correct. The lecture notes that strong correlations are easier to find by visualization, such as `sns.heatmap(df.corr(numeric_only=True))`."
+      },
+      {
+        "label": "D",
+        "text": "That pressure has many missing values",
+        "explanation": "A correlation coefficient says nothing about missing values."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "A negative coefficient close to −1 has a meaning.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "6ea7e2ca54d2",
+    "question": "Which call shows how the counts of `PM2.5_cat` differ across temperature categories in a single chart?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`sns.relplot(data=air_quality, x='TEMP_category', y='PM2.5_cat', kind='line')`",
+        "explanation": "A line plot needs a numerical y to summarise; both features here are categorical."
+      },
+      {
+        "label": "B",
+        "text": "`sns.catplot(data=air_quality, x='TEMP_category', kind='count', hue='PM2.5_cat')`",
+        "explanation": "Correct. Two categorical features go one on `x` and the other in `hue`."
+      },
+      {
+        "label": "C",
+        "text": "`sns.heatmap(air_quality.corr(numeric_only=True))`",
+        "explanation": "Correlations are computed only between numerical features."
+      },
+      {
+        "label": "D",
+        "text": "`sns.jointplot(data=air_quality, x='TEMP_category', y='PM2.5_cat')`",
+        "explanation": "A joint plot is for two numerical features."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Two categorical features: one on the axis, one as colour.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "e6d17c3c2d7d",
+    "question": "Why does the lecture recommend `plotly.express` over building figures with `plotly.graph_objects` alone?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Plotly Express returns a Matplotlib `Axes`",
+        "explanation": "Every Plotly Express function returns a `plotly.graph_objects.Figure`."
+      },
+      {
+        "label": "B",
+        "text": "Graph objects cannot make interactive charts",
+        "explanation": "Plotly Express uses graph objects internally, so graph objects can make the same figures."
+      },
+      {
+        "label": "C",
+        "text": "Plotly Express is a separate package that must be installed on its own",
+        "explanation": "Plotly Express is a built-in part of the `plotly` library."
+      },
+      {
+        "label": "D",
+        "text": "The same figure can take 5 to 100 times more code with graph objects",
+        "explanation": "Correct. Plotly Express makes a whole figure in one function call."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Compare the amount of code each needs.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
+    "id": "ab78b67744e2",
+    "question": "In `px.scatter(data, x='gdpPercap', y='lifeExp', size='pop', color='continent', hover_name='country', animation_frame='year')`, what does `animation_frame` do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It plays the chart as an animation with one frame per year",
+        "explanation": "Correct. `animation_frame` makes an animated plot over the values of the given feature."
+      },
+      {
+        "label": "B",
+        "text": "It sets marker size by year",
+        "explanation": "Marker size is set by `size`, here population."
+      },
+      {
+        "label": "C",
+        "text": "It shows the year when hovering over a point",
+        "explanation": "Hover labels come from `hover_name` or `hover_data`."
+      },
+      {
+        "label": "D",
+        "text": "It draws one sub-plot per year side by side",
+        "explanation": "That would be faceting; an animation shows the years one after another."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about what changes from one frame to the next.",
+    "course": "COM6001",
+    "unit": "Lecture_11",
+    "deck": "COM6001_Lecture_11"
+  },
+  {
     "id": "1074ccc54b14",
     "question": "What primary limitation of file-based data management systems is resolved by introducing a Database Management System (DBMS)?",
     "options": [

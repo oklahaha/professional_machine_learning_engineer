@@ -1,0 +1,46 @@
+"What kind of database system is MongoDB, and what are its key traits?","A document-based NoSQL database, founded in 2007, with a dynamic schema, easy horizontal scalability (add more nodes) and ease of use in programming."
+"Which consistency model did MongoDB's initial design follow, and has that changed?","BASE instead of ACID; ACID can now be achieved by certain configurations, with overheads."
+What is the programming compatibility advantage of MongoDB over an RDBMS?,"An RDBMS requires learning an additional language, SQL, whereas MongoDB is used directly from the programming language."
+"Across programming languages, what differs and what stays the same when using MongoDB?","The syntax differs a bit in each language, but the same query framework (find, projection, aggregate, sort, update) is used in all of them, e.g. from Python, Node.js, Java or Go."
+"How does MongoDB store a student and their module grades, compared with an RDBMS?","As one consolidated document with a hierarchical structure (grades nested under Results), instead of separate student and result tables."
+Give the MongoDB containment hierarchy from top to bottom.,Multiple databases; a database contains collections; a collection contains documents; a document contains fields.
+"Map the RDBMS terms database, table, record (row) and attribute (column) to MongoDB.","Database → database, table → collection, record (row) → document, attribute (column) → field."
+What does dynamic schema allow within a single collection?,"Documents with different sets of fields, and different data types for the same field (e.g. a student ID as `101101` in one and `s101102` in another)."
+In what format is MongoDB document data defined?,BSON format.
+What is embedding in MongoDB data design?,Storing the related data inside a document.
+What is referencing in MongoDB data design?,Using an ID to point to one or more other documents.
+Rule of thumb: what child data should be embedded?,"Data primarily viewed in the context of the parent, and relatively small with a bounded size."
+Which relationships and performance need favour embedding?,"One-to-one, and one-to-many where the child data belongs exclusively to the parent; and needing fast reads without joins."
+Rule of thumb: which child data and relationships favour referencing?,"Data viewed independently of the parent, many-to-many relationships, and child data shared across multiple parents."
+"What size of child data favours referencing, and why?","Large or unbounded child data, because the maximum size of a document in MongoDB is 16MB."
+What technique does MongoDB use for indexing?,B+ trees.
+What is the trade-off of adding an index in MongoDB?,"Faster search time, at the cost of additional storage and index maintenance."
+How does a regular (non-sparse) MongoDB index treat a document with no value for the index field?,"It indexes it under a ""null"" key; the document itself is unchanged."
+What is the effect of making a MongoDB index unique?,It rejects duplicated values on the index field.
+"What do ascending and descending indexes have in common, and what search time do they give?","Both use a B+ tree, reducing searching time to $O(\lg n)$."
+"What does a `2dsphere` index support, and what structure is it related to?",Multi-dimensional search; reference structure: the R-tree.
+"What does a `text` index support, and how is it built?","Text search, using a specific index structure unlike that for numeric data."
+"What field identifies every MongoDB document, and what is guaranteed about it?",`_id`: generated automatically by the system and guaranteed to be unique (in a sharded collection, only per shard unless `_id` is the shard key).
+What data type and size is the default `_id`?,"A BSON `ObjectId`, a 12-byte identifier; it is presented like a string but is not a string."
+What are the three parts of an `ObjectId`?,First 4 bytes: timestamp; next 5 bytes: random value; last 3 bytes: an incrementing counter. The timestamp makes them naturally sorted chronologically.
+"Is the `_id` field optional, and can you set it yourself?","It is mandatory on every document, but you can set it yourself with other types, e.g. a string or number."
+"What is sharding in MongoDB, and what is a shard?",Partitioning and distributing data across multiple nodes (horizontal fragmentation); a node holding partial data is a shard.
+What two choices configure sharding?,A shard key (e.g. creation datetime) and a sharding strategy; the resulting partitioning is deterministic.
+How does hashed sharding distribute documents?,Based on the hash values of the shard key values.
+How does ranged sharding distribute documents?,Each chunk is assigned to handle a range of shard key values.
+"For instant messages, which sharding method suits distributing the storage load across machines?",Hashed sharding.
+"For instant messages, which sharding method suits fetching a user's messages in a given month?","Ranged sharding, by (account, datetime)."
+"What does a replica set provide, and which consensus algorithm is it similar to?","Redundancy and increased data availability, giving fault tolerance against losing a single server; it is similar to Raft."
+What is the heartbeat in a replica set?,Nodes ping each other to see if they are still alive.
+"By default, how is workload shared in a replica set?","It is not shared: requests always go to the primary node, and secondaries are for backup and recovery (reads can be configured to use a secondary, e.g. the nearest one)."
+What happens when the primary node fails?,The replica set elects a new primary.
+"What is write concern, and what trade-off does it control?",The level of acknowledgment requested from MongoDB for write operations; a trade-off between latency and durability.
+What does write concern `{ w: 1 }` (the slide's stated default) do?,"Returns immediately after the primary successfully applies the write; fastest latency, but data can be lost if the primary fails before replicating."
+"What does `{ w: ""majority"" }` do?",Returns only after the write is applied to the majority of data-bearing members; highest durability (survives automatic failover) but higher write latency.
+What does `{ j: true }` ensure?,The write is in the on-disk journal file before acknowledgment is sent.
+What is the journal in MongoDB?,"A write-ahead log that lets MongoDB recover state after a crash, even if the data file has not been flushed yet."
+What is the best-practice write concern for mission-critical data?,Combine `w: majority` with `j: true`.
+What does read concern control?,The consistency and isolation properties of the data read.
+What does read concern `local` (the default) do?,"Returns data from the current member's state, which may not yet reflect writes from other members; fastest."
+What does read concern `majority` do?,"Returns data acknowledged by a majority of replica set members, guaranteeing the read data is durable."
+"In a sharded MongoDB architecture, what do the router and config server do?",The router accepts queries and redistributes the workload to the appropriate shards; the config server stores metadata and configuration settings for the cluster.

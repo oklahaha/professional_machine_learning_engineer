@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Week 12 Big Data Frameworks &amp; Ethics</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-w12">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Week 12</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Week 12 · Source: Lecture12- Big Data Framework.pdf（31 頁；slide 編號由 21 跳到 30，slides 22–29 唔喺 PDF 入面）· Lecturer: Dr. Aileen Hou</p>
+<h1>Big Data Frameworks &amp; Ethics</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>認識 CPU、Memory (RAM)、Storage (SSD)、Network、GPU 嘅角色同速度差距，明白點解 data 大咗之後 bottleneck 由 <b>CPU compute</b> 變成 <b>storage / network I/O</b>。</li>
+    <li>判斷幾時用一部電腦就夠、幾時要用 <mark class="k">distributed computing</mark>（file 遠大過 memory，或者 process 好複雜，例如 DNN training）。</li>
+    <li>分清 <b>distributed computing</b>（每個 CPU 有自己 memory，經 network 連接）同 <b>parallel computing</b>（多個 CPU 共用同一個 memory）。</li>
+    <li>Distributed data processing 嘅 4 大 challenges：Partitioning、Communication overhead、Fault tolerance、Consistency &amp; reproducibility。</li>
+    <li>Big data system 4 個 main components；<b>Hadoop vs Spark</b> 嘅主要分別（memory 用法）。</li>
+    <li>Data ethics：<b>5 Cs</b>、distributed computing 特有嘅 ethical concerns、(Gen)AI 喺 development / usage 階段嘅 ethical challenges 同 mitigation。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><b>Data &gt; RAM 時發生乜事</b>（program 要將 data 讀入 memory）：OS swapping / paging，CPU 喺度 I/O wait，真正用嚟計數嘅時間好少 → 考慮 distributed。</li>
+    <li><b>Distributed vs Parallel</b>：own memory + network vs shared memory（slide 14 in-class exercise：C、D、E 正確）。</li>
+    <li><b>4 key challenges</b>＋每個 platform 點處理（data skew、send only summaries、redo failed part、controlled order）。</li>
+    <li><b>Hadoop vs Spark</b>：Hadoop 將 intermediate results 寫落 disk；Spark 盡量 keep in memory → 通常更快。</li>
+    <li><b>5 Cs</b>（Consent、Clarity、Consistency、Control、Consequences）同 distributed / GenAI ethical issues。</li>
+  </ol>
+</div>
+
+<div class="box note"><span class="label">📅 Important dates（slide 1）</span>
+<ul>
+<li><b>Exam：08 Dec 2026（Tuesday）19:00–21:00，Main Campus A403</b>（Revision.pdf 寫 A403/404，以最新通知為準）。</li>
+<li>Presentations：Session 1 24 Nov 18:30–21:30 @SM1108；Session 2 25 Nov 15:00–18:00 @SM1108；Session 3 26 Nov 19:00–21:00 @<b>SM1102</b>（同原定唔同）。只可以出席自己嗰場。</li>
+<li>Face-to-face consultation：19 Nov 10:00–12:00（N419）；01 Dec 12:30–15:30（SM1108）；<b>要預約</b>，冇人約就取消。Online consultation 隨時預約。</li>
+</ul>
+<p>考試格式同溫習範圍見 <a href="COM6001-revision.html">Final Exam Revision Guide</a>。</p></div>
+
+<h2>1. How big is your data?（slides 3–5）</h2>
+<p>Slide 3 用四條問題引入「速度感」：CPU 計 1+1 要幾耐？喺 calendar 搵一個 appointment 要幾快？由 SSD load 你最鍾意嘅歌要幾多秒？一分鐘可以由 Netflix download 幾多 data？Slides 冇俾答案，重點係感受唔同 hardware 嘅速度可以差好多個數量級。</p>
+
+<h3>In-class exercise：hardware 配對（slide 4）</h3>
+<table>
+<tr><th>Hardware</th><th>Function（答案）</th></tr>
+<tr><td>CPU</td><td>Brain of the computer</td></tr>
+<tr><td>Memory (RAM)</td><td>Short term quick data storage</td></tr>
+<tr><td>Solid State Drive (SSD)</td><td>Long term safe data storage</td></tr>
+<tr><td>Network</td><td>Connection between computers</td></tr>
+<tr><td>GPU</td><td>Massively parallel processor for computations</td></tr>
+</table>
+<p class="missing">Slide 4 冇印答案；上表係按 slide 列出嘅描述逐一配對（每個描述只對應一個 component）。</p>
+
+<h3>規格數字點讀（slide 5）</h3>
+<table>
+<tr><th>Spec</th><th>意思</th></tr>
+<tr><td>CPU 2.5 GHz（64-bit）</td><td>每秒 \(2.5 \times 10^9\) 個 operations；slide 假設每個 cycle 一個 operation、每個 operation 處理 8 bytes（簡化估算） → \(2.5 \times 10^9 \times 8 = 2 \times 10^{10}\) bytes/s</td></tr>
+<tr><td>Memory (RAM) 16 GB</td><td>可存 \(16 \times 10^9\) bytes</td></tr>
+<tr><td>Storage (SSD / magnetic disk) 1 TB</td><td>可存 \(1 \times 10^{12}\) bytes</td></tr>
+<tr><td>Network 1 Gbps</td><td>每秒 download \(1 \times 10^9\) <b>bits</b>（= \(1.25 \times 10^8\) bytes ≈ 125 MB/s）</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>Network 用 <b>b</b>its per second（Gbps），storage / memory 用 <b>B</b>ytes。1 byte = 8 bits，所以 1 Gbps 只係 125 MB/s，唔係 1 GB/s。</p></div>
+
+<h2>2. CPU、RAM、SSD、Network 嘅速度差距（slides 6–8）</h2>
+<p><span class="tag exam">Exam</span> Slide 6（key）：<b>CPU is fast, storage is slow</b>。CPU 以 nanoseconds 運作；RAM 慢啲但仍然夠快；SSD 比 RAM 慢好多。</p>
+<table>
+<tr><th>情況</th><th>發生乜事</th><th>結果</th></tr>
+<tr><td>Data fits in RAM</td><td>CPU 由 RAM 讀 data，連續計算</td><td>High utilization、fast processing</td></tr>
+<tr><td>Data larger than RAM（program 要將 data 放入 memory）</td><td>OS 開始喺 RAM 同 SSD 之間 <mark class="k">swapping / paging</mark>；CPU 經常等 data 搬運（<mark class="k">I/O wait</mark>）</td><td>真正用嚟 computation 嘅時間少好多</td></tr>
+</table>
+
+<p>Slide 8 嘅圖（network delay）列出相對速度：</p>
+<table>
+<tr><th>Component</th><th>相對速度（slide 8 圖）</th></tr>
+<tr><td>CPU（fastest）</td><td>比 memory 快 200 倍</td></tr>
+<tr><td>Memory</td><td>比 SSD 快 15 倍</td></tr>
+<tr><td>SSD</td><td>比 network 快 20 倍</td></tr>
+<tr><td>Network（slowest）</td><td>—</td></tr>
+</table>
+<p>即係由 network 攞同一份 data，比喺自己 storage / memory 處理慢好多。照圖嘅倍數乘埋，CPU 大約比 network 快 \(200 \times 15 \times 20 = 60{,}000\) 倍（只係由圖嘅數字推算嘅數量級）。</p>
+
+<div class="box exam"><span class="label">⭐ 考試重點</span>
+<ul>
+<li>速度排名：<b>CPU &gt; Memory &gt; SSD &gt; Network</b>。</li>
+<li>Data 大過 RAM → swapping / paging → CPU I/O wait → 慢。</li>
+<li>Key message（slide 7）：<b>When data gets large, bottlenecks shift from CPU compute to network and storage I/O.</b></li>
+</ul></div>
+
+<h2>3. Case study I：你部電腦夠唔夠快？（slide 7）</h2>
+<p>情境：每日 6000 篇新聞 × 200 bytes = 1.2 million bytes；CPU 2.5 GHz、8 GB RAM。任務：live character count。</p>
+<div class="formula">$$ \text{CPU throughput} = 2.5 \times 10^9 \times 8 = 20 \times 10^9 \text{ bytes/s} $$</div>
+<div class="formula">$$ \text{Time} = \frac{1.2 \times 10^6}{20 \times 10^9} = 6 \times 10^{-5}\ \text{s} $$</div>
+<p>1.2 MB 完全放得落 RAM，計算時間只係 \(6 \times 10^{-5}\) 秒（0.06 ms）。</p>
+<div class="box warn"><span class="label">⚠️ Slide 寫法</span><p>Slide 寫「Time needed: 1.2e6 / 20e9 = 0.006%」。\(1.2 \times 10^6 / (20 \times 10^9) = 6 \times 10^{-5}\)，即 <b>\(6 \times 10^{-5}\) 秒</b>，等於一秒嘅 0.006%。考試寫答案時請寫單位「秒」，唔好只寫百分比。</p></div>
+<p><b>Reality</b>：data 要先 fetch。RAM latency 約 100 ns（幾百個 CPU cycles）；SSD latency 更高（microseconds）。所以 runtime 通常由 <b>data access</b> 主導，唔係由 arithmetic 主導。</p>
+
+<h2>4. Case study II &amp; III：not-so-big vs big data（slides 9–11）</h2>
+<p><b>Case II（slide 9）</b>：4 GB 新聞 data、8 GB memory、1 × 2.5 GHz CPU，任務係 filter 所有關於 China 嘅新聞。Option 1：喺自己電腦用 Python program；Option 2：切開 data 分俾 12 個同事處理。</p>
+<p>4 GB &lt; 8 GB RAM，成份 data 放得落 memory，所以 <b>Option 1（一部電腦）就得</b>；分俾 12 個人反而要額外搬 data（network 最慢）同協調。</p>
+
+<p><span class="tag exam">Exam</span> <b>Key consideration：I/O bottleneck（slide 10，key）</b>：I/O 係 bottleneck，將 data 由 SSD 搬去 memory 會燒晒 CPU 嘅時間。<b>It is a good idea to go distributed if your file is much larger than your memory.</b></p>
+<p class="missing">Slide 10 嘅圖標住「SSD — 8 GB」同「MEMORY — 10 MB」，圖旁邊冇額外文字解釋呢兩個數字；看來係示意 data 遠大過 memory 嘅情況。</p>
+
+<p><b>Case III（slide 11）</b>：data 由 4 GB 增加到 200 GB，用同一個 Python program，一陣之後電腦冇反應。點解？</p>
+<ol type="A">
+<li>It took too long to move data across the network</li>
+<li>The CPU couldn't load data quickly from memory</li>
+<li>The memory couldn't load data quickly from storage</li>
+<li>The CPU simply couldn't handle the larger data set</li>
+<li>The storage couldn't load data quickly from the network</li>
+<li>The CPU is too busy moving data around, no room for data analysis.</li>
+</ol>
+<div class="box exam"><span class="label">⭐ 參考答案（slide 冇印答案）</span>
+<p><b>C</b> 最貼合 slide 6 嘅解釋：200 GB 遠大過 8 GB RAM，memory 要不停由 storage（SSD）搬 data 入嚟（swapping / paging），CPU 大部分時間喺 I/O wait。</p>
+<ul>
+<li>A、E 錯：成個 program 喺一部電腦行，冇經 network。</li>
+<li>B 錯：CPU 由 RAM 讀 data 係快嘅；問題係 RAM 放唔落。</li>
+<li>D 錯：CPU 處理能力冇問題（Case I 證明 CPU 好快）。</li>
+<li>F 同 slide 10「Moving data from SSD to memory burns out your CPU's time」嘅講法相近；如果題目係 multiple-select，F 可能都被接受。但準確講 CPU 係喺度<b>等</b> data（I/O wait），唔係「忙住計」。</li>
+</ul></div>
+
+<h2>5. 點解唔一直用一部電腦？（slide 12）</h2>
+<p><span class="tag exam">Exam</span> Data 增長時會撞到 4 種 limits：</p>
+<table>
+<tr><th>Limit</th><th>意思</th></tr>
+<tr><td><b>Storage limit</b></td><td>Dataset 一隻 disk 放唔落</td></tr>
+<tr><td><b>Memory limit</b></td><td>Data load 唔入 RAM</td></tr>
+<tr><td><b>Time limit</b></td><td>Processing 太耐</td></tr>
+<tr><td><b>Reliability limit</b></td><td>一部機壞咗，成個 job 停晒</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Distributed computing 幾時需要？</span>
+<ul>
+<li><b>有 big data 要處理</b>：例如由 200 GB data 抽出所有 China-related news。</li>
+<li><b>Data 唔算大，但 process 好 sophisticated</b>：例如 train 一個有 millions of parameters 嘅 DNN。</li>
+</ul>
+<p>Revision.pdf 問法：「When to use one PC or a group of PC?」→ data 放得落 memory 而 process 簡單：一部 PC；data 遠大過 memory，或者 process 好重：一組 PC（distributed）。</p></div>
+
+<h2>6. Distributed vs Parallel computing（slides 13–14）</h2>
+<p>Slide 13（key）用圖比較兩者：</p>
+<table>
+<tr><th></th><th>Distributed computing</th><th>Parallel computing（OpenMP / OpenCL）</th></tr>
+<tr><td>Memory</td><td><b>每個 CPU 有自己嘅 memory</b></td><td><b>多個 CPU 共用同一個 memory</b></td></tr>
+<tr><td>連接</td><td>每部 machine 經 <b>network</b> 連去其他 machines</td><td>喺同一部機入面</td></tr>
+<tr><td>圖示</td><td>3 組「CPU + MEMORY」，用箭咀互相連接</td><td>1 個 MEMORY，3 個 CPU 都連住佢</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ In-class exercise（slide 14）：Mark the statements that are true</span>
+<ul>
+<li>A. Distributed computing assumes multiple CPUs share a single source of memory — <b>False</b>（呢個係 parallel）。</li>
+<li>B. Parallel computing is another way of saying distributed computing — <b>False</b>（兩者唔同）。</li>
+<li>C. In general, parallel computing implies multiple CPUs share the same memory — <b>True</b>。</li>
+<li>D. With distributed computing, each CPU has its own memory — <b>True</b>。</li>
+<li>E. In distributed computing, each machine is connected to the other machines across a network — <b>True</b>。</li>
+</ul>
+<p>答案：<b>C、D、E</b>（按 slide 13 嘅圖推斷；slide 冇印答案）。</p></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>COM6002 <a href="COM6002-w6.html">Week 6 Distributed Database Systems</a> 講 scale up vs scale out、fragmentation、replication、CAP；<a href="COM6002-w8.html">Week 8 MongoDB</a> 嘅 sharding / replica set 就係 distributed storage 嘅實例。</p></div>
+
+<h2>7. Big Data Eco-System：4 個 key challenges（slides 15–19）</h2>
+<p>Big data 嘅典型工作：有大量 records、logs、news、blogs、videos，要 <b>summarize</b> 結果（sorting、counting、searching、filtering…）。分散去多部機做，就會有以下 4 個 challenges（每張都係 key slide）：</p>
+<table>
+<tr><th>Challenge</th><th>要考慮嘅問題</th><th>Platforms 點做</th><th>Examples</th></tr>
+<tr><td><b>#1 Partitioning</b></td><td>按 rows？time？user？region？切；partitions 平唔平衡？會唔會有一部機多好多工作（<mark class="k">data skew</mark>）？Partition 得差 → performance 跌</td><td>將 data 切成好多細 chunks，送去好多部機</td><td>Hadoop MapReduce、Spark、BigQuery、Snowflake</td></tr>
+<tr><td><b>#2 Communication overhead</b></td><td>經 network 搬 data；synchronize intermediate results；coordinate task completion。太多 communication 會抵銷速度增益</td><td>盡量喺 data 所在地處理，只送較細嘅 summaries</td><td>MapReduce（combine step）、Spark（keeps data in memory）、cloud warehouses（smart query planning）</td></tr>
+<tr><td><b>#3 Fault tolerance</b></td><td>Distributed systems 入面 failure 係正常事；要偵測 failed tasks、重跑 lost work、由 partial progress recover。目標：部分 nodes 壞咗系統都繼續</td><td>偵測 failure，自動<b>只重做失敗嗰部分</b></td><td>MapReduce、Spark、AWS / GCP / Azure managed services</td></tr>
+<tr><td><b>#4 Consistency &amp; reproducibility</b></td><td>風險：execution order 唔同、duplicate processing、漏咗 late-arriving data。要小心設計先有 reliable、repeatable outputs</td><td>用 controlled order 行 tasks、track progress、allow safe restart</td><td>Spark / MapReduce（processing）、Airflow / Prefect（pipeline scheduling）、Kafka-based systems（continuous data）</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>想像 12 個同事幫你 filter 新聞：(1) 點分工先公平（有人分到多十倍就要等佢）；(2) 每個人做完只交「結果」而唔係成疊報紙返嚟；(3) 有人病咗，只將佢嗰份重新分配；(4) 確保冇人重複做同一份、冇漏咗遲到嘅報紙，再做一次結果都一樣。</p></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Data skew 係 <b>Partitioning</b> 嘅問題；「send only smaller summaries」係解決 <b>Communication overhead</b>；「redo only the failed part」係 <b>Fault tolerance</b>；「controlled order、safe restart」係 <b>Consistency &amp; reproducibility</b>。MC 題好可能俾一個描述叫你配對 challenge。</p></div>
+
+<h2>8. Main components、Hadoop vs Spark（slides 20–21）</h2>
+<p><span class="tag exam">Exam</span> Big data system 嘅 4 個 main components（slide 20，key）：</p>
+<ol>
+<li><b>The common utilities</b></li>
+<li><b>Data storage</b></li>
+<li><b>Job scheduler</b></li>
+<li><b>Data processing</b></li>
+</ol>
+<p class="missing">Slide 20 只用 icon 列出呢 4 個名，冇逐個解釋。一般理解：common utilities 係各部分共用嘅 libraries / tools；data storage 負責將 data 分散儲存喺多部機；job scheduler 負責分配同協調 tasks 同 resources；data processing 負責實際計算。以 Hadoop 為例，分別對應 Hadoop Common、HDFS、YARN、MapReduce（呢個對應係課外補充，slide 冇寫）。</p>
+
+<div class="box exam"><span class="label">⭐ Hadoop vs Spark</span>
+<table>
+<tr><th></th><th>Hadoop</th><th>Spark</th></tr>
+<tr><td>年代</td><td>較舊，但仍有好多公司用</td><td>較新</td></tr>
+<tr><td>Intermediate results</td><td><b>寫落 disk</b></td><td><b>盡量 keep in memory</b></td></tr>
+<tr><td>速度</td><td>較慢（disk I/O 多）</td><td>好多 use cases 更快</td></tr>
+</table>
+<p>兩者都係 big data storage 同 data analysis 嘅 major frameworks。<b>主要分別係點用 memory。</b></p></div>
+<div class="box tip"><span class="label">💡 點解 memory 決定速度</span><p>返去 §2：memory 比 SSD 快約 15 倍。Hadoop 每一步做完都將中間結果寫落 disk，下一步再讀返；Spark 將中間結果留喺 RAM，省咗好多 disk I/O，所以同一個多步驟 job 通常快好多。</p></div>
+
+<h3>Trade-offs（slide 21）</h3>
+<table>
+<tr><th>Benefits</th><th>Costs</th></tr>
+<tr><td>Larger-than-memory processing</td><td>More system complexity</td></tr>
+<tr><td>Faster runtime（for large workloads）</td><td>More debugging difficulty</td></tr>
+<tr><td>Better reliability at scale</td><td>Higher infrastructure / operation cost</td></tr>
+</table>
+<div class="box note"><span class="label">📝 Not required for exam</span><p>Slide 21 嘅 Rule of Thumb 明確寫 <i>not required for exam</i>：Historical / batch big data → Spark（或 Hadoop legacy）；Real-time streams → Kafka + Flink / Spark Streaming；SQL-first analytics → Warehouse 或 Trino / Presto；Need less ops → Managed cloud platforms。</p></div>
+
+<h2>9. Ethics when building data products：5 Cs（slides 30–32）</h2>
+<p>我哋要嘅唔只係有用、或者商業上可行嘅 product，而係<b>用 data 合乎道德同負責任</b>嘅 product。<b>The Five C's</b> 係五個 framing guidelines。</p>
+<div class="box exam"><span class="label">⭐ 5 Cs（slide 32，key）</span>
+<table>
+<tr><th>C</th><th>意思</th></tr>
+<tr><td><b>Consent</b></td><td>就「收集咩 data、點用」達成協議，建立 trust</td></tr>
+<tr><td><b>Clarity</b></td><td>清楚知道自己 consent 緊乜</td></tr>
+<tr><td><b>Consistency</b></td><td>Trust 需要長期一致（今日承諾點用，聽日都係咁用）</td></tr>
+<tr><td><b>Control (and transparency)</b></td><td>User 可唔可以控制 service 點用佢嘅 data？</td></tr>
+<tr><td><b>Consequences (and harms)</b></td><td>收集嘅 data 會唔會對個人或群體造成傷害？</td></tr>
+</table></div>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Consent 係「有冇同意」；Clarity 係「同意嘅內容係咪清楚」。例如一份 50 頁、用法律術語寫嘅 privacy policy，就算 user 撳咗「同意」（有 Consent），都欠 Clarity。</p></div>
+
+<h2>10. Distributed computing 嘅 ethical concerns（slide 33）</h2>
+<p><span class="tag exam">Exam</span> Revision.pdf 列明要識「Special ethic issues with distributed computing」：</p>
+<table>
+<tr><th>Concern</th><th>具體問題</th></tr>
+<tr><td><b>Data Privacy</b></td><td><b>Increased exposure</b>：data 分散喺多個 nodes 儲存同處理，較易被未授權存取或 breach。<b>Data sharing</b>：cluster 可能涉及多個 entities，誰可以接觸 sensitive information 成疑問。</td></tr>
+<tr><td><b>Data Security</b></td><td><b>Complexity of security</b>：clustered system 架構較複雜，會帶來 standalone system 冇嘅 vulnerabilities。<b>Inter-node communication</b>：nodes 之間傳送嘅 data 如果冇保護好，可能被截取或竄改。</td></tr>
+<tr><td><b>Accountability &amp; Responsibility</b></td><td><b>Distributed responsibility</b>：出事時難以確定邊個負責。<b>Lack of oversight</b>：分散嘅特性可能令 data handling 缺乏足夠監督。</td></tr>
+<tr><td><b>Bias &amp; Fairness</b></td><td><b>Data aggregation effects</b>：data sources 唔具代表性時，clustering / aggregation 會放大 bias。<b>Algorithmic bias</b>：clustered environment 用嘅 algorithms 可能延續或加劇既有 bias。</td></tr>
+</table>
+
+<h2>11. (Gen)AI 嘅 ethical challenges（slides 34–36）</h2>
+<p>Big Data 同 Generative AI 嘅力量<b>並唔中立</b>，ethical challenges 出現喺成個 lifecycle。</p>
+<p class="missing">Slide 34 主要係一張由 eWeek 引用嘅 data ethics 圖片（文字擷取只得 image source URL），圖入面嘅內容冇擷取到。</p>
+<table>
+<tr><th>Stage</th><th>Challenge</th><th>重點</th></tr>
+<tr><td rowspan="4"><b>Development &amp; design</b>（slide 35）</td><td>Bias and Fairness</td><td>AI 由舊 data 學；舊 data 有 bias 就會複製甚至放大（hiring、lending、policing）。真正問題唔係「有冇 bias」而係「<b>點樣 biased</b>」</td></tr>
+<tr><td>Data Source &amp; Permission</td><td>Training data 由邊度嚟？當事人有冇俾 permission？（scraping websites、用 artists 作品冇問過）— 好多 AI models 嘅 root problem</td></tr>
+<tr><td>The "Black Box"</td><td>Deep neural networks 太複雜，連 creators 都解釋唔到點做決定 → 點樣 check、fix、challenge？</td></tr>
+<tr><td>Unequal Resources and Access</td><td>Train 大 model 好貴，只有少數有錢公司負擔到 → 權力集中，細 players 難以加入</td></tr>
+<tr><td rowspan="6"><b>Usage</b>（slide 36）</td><td>Privacy Erosion &amp; Surveillance</td><td>AI 將零碎 data 拼埋，推斷好私人嘅資料；公司或政府可大規模監察</td></tr>
+<tr><td>Accountability &amp; Liability</td><td>AI 出錯造成傷害（自動駕駛撞車、錯誤醫療診斷），邊個負責？builder、user 定公司？</td></tr>
+<tr><td>Environmental Impact</td><td>Train 大 model 用大量電 → carbon footprint</td></tr>
+<tr><td>Over-reliance &amp; Automation Bias</td><td>AI 好有自信咁答，user 唔再查證、唔用 critical thinking → 醫療、法律可出大錯</td></tr>
+<tr><td>Intellectual Property（Cheating &amp; Plagiarism）</td><td>將 AI 生成嘅文字、code、圖當自己作品 = cheating；AI 作品誰擁有？</td></tr>
+<tr><td>Malicious Use</td><td>用 GenAI 寫 phishing emails、整假 social media profiles、寫 harmful code</td></tr>
+</table>
+
+<h2>12. Mitigation plans（slides 37–38）</h2>
+<p>單靠技術方案唔夠，ethical practice 需要 multi-faceted approach：</p>
+<table>
+<tr><th>類別</th><th>方法</th></tr>
+<tr><td><b>Technical mitigations</b></td><td><b>Explainable AI (XAI)</b>：令 model decisions 更 interpretable。<b>Bias auditing</b>：deployment 前做 fairness tests 同 metrics（例如 disaggregated error analysis，即按 group 分開睇 error rate）。<b>Differential privacy</b>：正式嘅數學 framework：限制加入或移除任何一個人嘅 data 對結果嘅影響，從而限制可以推斷到單一個人嘅資料（係 bound，唔係完全唔洩露）。<b>Provenance tracking</b>：model cards、datasheets for datasets，記錄 model 同 data 嘅來源、用途同 limitations。</td></tr>
+<tr><td><b>Governance &amp; process</b></td><td><b>Ethics review boards</b>（類似 research 嘅 IRB）；<b>Red teaming</b>：release 前主動嘗試「搞爛」系統或搵出 harmful uses；<b>Clear lines of accountability</b>。</td></tr>
+<tr><td><b>The human factor</b></td><td><b>Diverse teams</b>：同質團隊易有盲點；<b>Ethics education</b>：唔係 soft skill，而係 core engineering requirement。</td></tr>
+</table>
+<p>Slide 38 嘅 references：HSUHK GenAI guidelines、library 建議嘅 citation styles、department 嘅 AI guidelines and principles、Hong Kong government AI principles。</p>
+<div class="box tip"><span class="label">💡 答 long question 嘅框架</span><p>如果題目俾一個情境（例如「公司用 cluster 分析顧客 data 並用 GenAI 寫推廣 email」）叫你講 ethical issues：(1) 用 5 Cs 檢查 data 收集；(2) 指出 distributed 特有問題（privacy exposure、inter-node security、accountability）；(3) 指出 GenAI 問題（bias、black box、over-reliance、IP）；(4) 每個問題配一個 mitigation（differential privacy、bias auditing、XAI、red teaming、accountability）。</p></div>
+
+<h2>13. Summary（slide 39）</h2>
+<ul>
+<li>When to use Big Data Framework?</li>
+<li>Distributed vs parallel computing</li>
+<li>Key challenges and main components of a big-data framework</li>
+<li>Spark vs Hadoop</li>
+<li>Ethics with data、distributed systems、GenAI</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 一部 2.5 GHz 64-bit CPU 每秒最多處理幾多 bytes？處理 1.2 MB 要幾耐？</summary><p>\(2.5 \times 10^9 \times 8 = 2 \times 10^{10}\) bytes/s。時間 = \(1.2 \times 10^6 / (2 \times 10^{10}) = 6 \times 10^{-5}\) 秒（0.06 ms）。但現實中 runtime 主要由 data access（RAM latency ≈ 100 ns、SSD 更慢）決定。</p></details>
+<details class="q"><summary>Q2. 將 CPU、SSD、Network、Memory 由快到慢排列。</summary><p>CPU &gt; Memory &gt; SSD &gt; Network（slide 8：CPU 比 memory 快 200×，memory 比 SSD 快 15×，SSD 比 network 快 20×）。</p></details>
+<details class="q"><summary>Q3. 8 GB RAM 嘅電腦處理 4 GB data 同 200 GB data，分別應該點做？點解？</summary><p>4 GB：放得落 RAM，用一部電腦 Python 處理就得；分散反而多咗 network 搬運同協調成本。200 GB：遠大過 RAM，會 swapping / paging，CPU 長期 I/O wait（Case III 答案 C）→ 應該 go distributed。</p></details>
+<details class="q"><summary>Q4. Data 唔大，但點解有時都要用 distributed computing？</summary><p>當 process 好 sophisticated，例如 train 一個有 millions of parameters 嘅 deep neural network，計算量大（time limit），所以都需要 distributed computing。</p></details>
+<details class="q"><summary>Q5. Distributed computing 同 parallel computing 喺 memory 上有乜分別？</summary><p>Distributed：每個 CPU 有自己 memory，machines 經 network 連接。Parallel（OpenMP / OpenCL）：多個 CPU 共用同一個 memory。Slide 14 正確嘅 statements 係 C、D、E。</p></details>
+<details class="q"><summary>Q6. 「一部機分到嘅 data 多過其他機好多倍，結果大家都要等佢」屬於邊個 challenge？Platforms 點處理？</summary><p>Challenge #1 Partitioning（data skew）。Platforms 將 data 切成好多細 chunks 分俾好多部機（Hadoop MapReduce、Spark、BigQuery、Snowflake）。</p></details>
+<details class="q"><summary>Q7. Spark 點解通常比 Hadoop 快？</summary><p>Hadoop 將 intermediate results 寫落 disk；Spark 盡量將 data 留喺 memory。Memory 比 disk / SSD 快好多，所以多步驟 job 嘅 I/O 少好多。</p></details>
+<details class="q"><summary>Q8. 列出 big data system 嘅 4 個 main components。</summary><p>The common utilities、Data storage、Job scheduler、Data processing。</p></details>
+<details class="q"><summary>Q9. 一個 app 喺 user 同意後收集位置 data，一年後改咗用途賣俾廣告商而冇通知。違反咗 5 Cs 邊幾個？</summary><p>主要係 <b>Consistency</b>（用途前後唔一致）同 <b>Consent / Clarity</b>（user 冇同意新用途，亦唔清楚）；user 冇得揀亦違反 <b>Control (and transparency)</b>；位置 data 可能被濫用，涉及 <b>Consequences (and harms)</b>。</p></details>
+<details class="q"><summary>Q10. 舉兩個 distributed computing 特有嘅 ethical concerns，同兩個 GenAI usage stage 嘅 challenges。</summary><p>Distributed：Data privacy（多 nodes → increased exposure、data sharing）、Data security（inter-node communication 可被截取）、Accountability（distributed responsibility）、Bias（aggregation effects）。GenAI usage：privacy erosion &amp; surveillance、accountability &amp; liability、environmental impact、over-reliance / automation bias、IP / plagiarism、malicious use。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>CPU = brain；Memory = short-term quick storage；SSD = long-term safe storage；Network = connection；GPU = massively parallel processor。</li>
+<li>2.5 GHz × 8 bytes = \(2 \times 10^{10}\) bytes/s（假設每 cycle 一個 8-byte operation）；1 Gbps = \(10^9\) bits/s（÷8 = 125 MB/s）。</li>
+<li>速度：CPU (200×) &gt; Memory (15×) &gt; SSD (20×) &gt; Network。</li>
+<li>Data &gt; RAM → swapping / paging → I/O wait；bottleneck 由 CPU 轉去 storage / network I/O。</li>
+<li>File 遠大過 memory → go distributed；或者 process 好複雜（DNN）。4 limits：storage、memory、time、reliability。</li>
+<li>Distributed：own memory + network；Parallel：shared memory。</li>
+<li>4 challenges：Partitioning（data skew）、Communication overhead（send summaries）、Fault tolerance（redo failed part）、Consistency &amp; reproducibility（controlled order、safe restart）。</li>
+<li>4 components：common utilities、data storage、job scheduler、data processing。</li>
+<li>Hadoop 寫 disk；Spark keep in memory → 更快。</li>
+<li>Benefits：larger-than-memory、faster、reliable；Costs：complexity、debugging、cost。</li>
+<li>5 Cs：Consent、Clarity、Consistency、Control、Consequences。</li>
+<li>Distributed ethics：privacy、security、accountability、bias &amp; fairness。</li>
+<li>GenAI：design（bias、data permission、black box、unequal access）；usage（privacy、liability、environment、over-reliance、IP、malicious use）。Mitigation：XAI、bias auditing、differential privacy、model cards、ethics board、red teaming、diverse teams。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w11.html">← Week 11 Data Visualization</a>
+  <a href="COM6001-revision.html">Final Exam Revision Guide →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,622 @@
+[
+  {
+    "question": "A 64-bit CPU runs at 2.5 GHz. Assuming, as the lecture does, one 8-byte operation per cycle, how many bytes can it process per second?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$2.5 \\times 10^9$ bytes",
+        "Explanation": "That counts operations, not bytes; each 64-bit operation handles 8 bytes."
+      },
+      {
+        "label": "B",
+        "text": "$20 \\times 10^9$ bytes",
+        "Explanation": "Correct. $2.5 \\times 10^9$ operations per second $\\times$ 8 bytes per operation."
+      },
+      {
+        "label": "C",
+        "text": "$0.3125 \\times 10^9$ bytes",
+        "Explanation": "That divides by 8 instead of multiplying; a 64-bit operation processes 8 bytes."
+      },
+      {
+        "label": "D",
+        "text": "$160 \\times 10^9$ bytes",
+        "Explanation": "That multiplies by 64 bits as if they were bytes; 64 bits is 8 bytes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Convert the 64-bit word size into bytes first.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A machine has a 1 Gbps network connection. Roughly how many megabytes can it download per second?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1000 MB",
+        "Explanation": "1 Gbps is $10^9$ bits, not bytes, so the byte figure is eight times smaller."
+      },
+      {
+        "label": "B",
+        "text": "8000 MB",
+        "Explanation": "Bits must be divided by 8 to get bytes, not multiplied."
+      },
+      {
+        "label": "C",
+        "text": "1 MB",
+        "Explanation": "$10^9$ bits is far more than one megabyte."
+      },
+      {
+        "label": "D",
+        "text": "125 MB",
+        "Explanation": "Correct. $10^9$ bits per second $\\div 8 = 1.25 \\times 10^8$ bytes $= 125$ MB per second."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "The lowercase b in Gbps matters.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A 2.5 GHz 64-bit CPU must character-count 6000 news articles of 200 bytes each. Assuming one 8-byte operation per cycle and ignoring data access, how long does the computation take?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$6 \\times 10^{-5}$ s",
+        "Explanation": "Correct. $1.2 \\times 10^6$ bytes $\\div (20 \\times 10^9)$ bytes per second."
+      },
+      {
+        "label": "B",
+        "text": "$4.8 \\times 10^{-4}$ s",
+        "Explanation": "That uses $2.5 \\times 10^9$ bytes per second, forgetting the 8 bytes per operation."
+      },
+      {
+        "label": "C",
+        "text": "6 s",
+        "Explanation": "Far too slow; the CPU processes billions of bytes per second."
+      },
+      {
+        "label": "D",
+        "text": "$1.2 \\times 10^{-3}$ s",
+        "Explanation": "This does not follow from $1.2 \\times 10^6 / (20 \\times 10^9)$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Total bytes first, then divide by the CPU's byte throughput.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "In case study I, the computation itself takes a tiny fraction of a second. Why is the real runtime often much longer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The CPU slows down when processing text",
+        "Explanation": "Nothing in the case says the CPU's speed depends on the data type."
+      },
+      {
+        "label": "B",
+        "text": "1.2 MB does not fit in 8 GB of RAM",
+        "Explanation": "1.2 MB fits easily in 8 GB of RAM."
+      },
+      {
+        "label": "C",
+        "text": "Data must be fetched first, and memory and SSD latency dominate over arithmetic",
+        "Explanation": "Correct. RAM latency is ~100 ns (hundreds of CPU cycles) and SSD latency is microseconds, so data access dominates."
+      },
+      {
+        "label": "D",
+        "text": "A 64-bit CPU can only process one article per second",
+        "Explanation": "The CPU processes about $20 \\times 10^9$ bytes per second, far more than one article."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about what has to happen before the CPU can compute on a byte.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Your 8 GB laptop (swap enabled) runs a Python script that loads a dataset much larger than its RAM into memory. What mainly happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The CPU runs at full utilization, so the job finishes quickly",
+        "Explanation": "Full, continuous utilization happens when the data fits in RAM."
+      },
+      {
+        "label": "B",
+        "text": "The data is automatically split across other machines",
+        "Explanation": "A single laptop does not distribute work by itself; that needs a distributed framework."
+      },
+      {
+        "label": "C",
+        "text": "The OS swaps/pages data between RAM and SSD and the CPU spends much of its time in I/O wait",
+        "Explanation": "Correct. Holding more data than RAM forces swapping, so little time goes to actual computation."
+      },
+      {
+        "label": "D",
+        "text": "The network becomes the bottleneck because data is downloaded repeatedly",
+        "Explanation": "The script reads local data; the problem here is RAM vs SSD, not the network."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Compare the data size with RAM, and ask where the overflow must live.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Which ordering of where data is accessed from, fastest to slowest, matches the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "RAM, then SSD, then the network",
+        "Explanation": "Correct. RAM is slower than the CPU but fast, SSD is much slower than RAM, and network fetches are slower still."
+      },
+      {
+        "label": "B",
+        "text": "SSD, then RAM, then the network",
+        "Explanation": "The SSD is much slower than RAM."
+      },
+      {
+        "label": "C",
+        "text": "The network, then RAM, then SSD",
+        "Explanation": "Getting data from the network is much slower than from local storage and memory."
+      },
+      {
+        "label": "D",
+        "text": "RAM, then the network, then SSD",
+        "Explanation": "The network is slower than local storage, not faster."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The lecture says the network is slower than both local storage and memory.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A 4 GB news file must be filtered on a laptop with 8 GB of RAM. When does the lecture say going distributed becomes a good idea?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Whenever the data is larger than 1 GB",
+        "Explanation": "There is no fixed size; the comparison is with the machine's memory."
+      },
+      {
+        "label": "B",
+        "text": "Only when the CPU is slower than 2.5 GHz",
+        "Explanation": "CPU speed is not the deciding factor; I/O is the bottleneck."
+      },
+      {
+        "label": "C",
+        "text": "Never; distribution is only for neural networks",
+        "Explanation": "Big data that exceeds memory is the first reason to go distributed."
+      },
+      {
+        "label": "D",
+        "text": "When the file is much larger than your memory",
+        "Explanation": "Correct. Then moving data from SSD to memory burns out the CPU's time."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare the file with the machine's memory.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A team wants to train a deep neural network with millions of parameters on a dataset that fits comfortably in RAM. Is distributed computing justified?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No, distributed computing is only for data larger than memory",
+        "Explanation": "Data size is not the only trigger for distribution."
+      },
+      {
+        "label": "B",
+        "text": "Yes, because a sophisticated process can need distributed computing even with not-so-big data",
+        "Explanation": "Correct. The lecture gives training a DNN with millions of parameters as exactly this case."
+      },
+      {
+        "label": "C",
+        "text": "No, because neural networks cannot be distributed",
+        "Explanation": "The lecture gives DNN training as a use for distributed computing."
+      },
+      {
+        "label": "D",
+        "text": "Yes, but only to store the data safely",
+        "Explanation": "Storage is not the issue when the data fits in RAM; the computation is."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The lecture names two separate reasons to distribute.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Which statement best describes distributed computing as opposed to parallel computing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each CPU has its own memory and machines are connected across a network",
+        "Explanation": "Correct. Parallel computing, in general, has multiple CPUs sharing the same memory."
+      },
+      {
+        "label": "B",
+        "text": "Multiple CPUs share a single source of memory",
+        "Explanation": "That describes parallel computing."
+      },
+      {
+        "label": "C",
+        "text": "It is another name for parallel computing",
+        "Explanation": "They differ in how memory is organised."
+      },
+      {
+        "label": "D",
+        "text": "It always runs inside a single machine",
+        "Explanation": "Distributed computing connects multiple machines across a network."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Think about who owns the memory.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Data is split by region, so one machine gets far more records than the others and the whole job waits for it. Which key challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fault tolerance",
+        "Explanation": "No machine failed; one is simply overloaded."
+      },
+      {
+        "label": "B",
+        "text": "Consistency & reproducibility",
+        "Explanation": "Output reliability is not the issue; the work is unevenly spread."
+      },
+      {
+        "label": "C",
+        "text": "Partitioning (data skew)",
+        "Explanation": "Correct. Unbalanced partitions give one machine much more work, and performance drops."
+      },
+      {
+        "label": "D",
+        "text": "Ethics review",
+        "Explanation": "That is a governance process, not a distributed processing challenge."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Ask whether the work was split evenly.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Why does the MapReduce combine step help performance?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It writes every record to disk twice for safety",
+        "Explanation": "That adds I/O rather than saving it."
+      },
+      {
+        "label": "B",
+        "text": "It sends smaller summaries instead of raw data, reducing communication overhead",
+        "Explanation": "Correct. Platforms process data where it is stored and send only smaller summaries."
+      },
+      {
+        "label": "C",
+        "text": "It reruns failed tasks automatically",
+        "Explanation": "That is fault tolerance, not the purpose of combining."
+      },
+      {
+        "label": "D",
+        "text": "It fixes the execution order of tasks",
+        "Explanation": "That addresses consistency, not network traffic."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Think about what crosses the network.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Splitting a job across many machines made it slower than running it on one. Which challenge most likely cancelled the gains?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reliability limit",
+        "Explanation": "That is a limit of a single machine, which distribution helps overcome."
+      },
+      {
+        "label": "B",
+        "text": "Storage limit",
+        "Explanation": "Distribution relieves storage limits rather than causing slowdowns."
+      },
+      {
+        "label": "C",
+        "text": "Differential privacy",
+        "Explanation": "That is a privacy technique, not a performance problem."
+      },
+      {
+        "label": "D",
+        "text": "Communication overhead",
+        "Explanation": "Correct. Moving data, synchronizing intermediate results and coordinating completion can cancel the speed gains."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Consider what distributed machines must do that one machine does not.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "One node crashes halfway through a large distributed job. What does a platform like Spark or MapReduce do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Restarts the whole job from the beginning",
+        "Explanation": "Platforms aim to redo only the failed part, not everything."
+      },
+      {
+        "label": "B",
+        "text": "Stops the job, since one failure stops everything",
+        "Explanation": "That is the reliability limit of a single machine, which distribution is meant to avoid."
+      },
+      {
+        "label": "C",
+        "text": "Ignores the lost results",
+        "Explanation": "Lost work is re-run, not dropped."
+      },
+      {
+        "label": "D",
+        "text": "Detects the failure and automatically redoes only the failed part",
+        "Explanation": "Correct. Fault tolerance means the system continues even when some nodes fail."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "In distributed systems, failures are normal.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A distributed pipeline produces different totals on reruns because some records are processed twice and late data is missed. Which challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Partitioning",
+        "Explanation": "Partitioning is about how evenly data is split, not repeatable output."
+      },
+      {
+        "label": "B",
+        "text": "Consistency & reproducibility",
+        "Explanation": "Correct. Duplicate processing, varying execution order and late-arriving data threaten repeatable outputs."
+      },
+      {
+        "label": "C",
+        "text": "Communication overhead",
+        "Explanation": "That slows a job down but does not by itself change its results."
+      },
+      {
+        "label": "D",
+        "text": "Unequal resources and access",
+        "Explanation": "That is a GenAI ethics concern, not a processing challenge."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The problem is the outputs, not the speed.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "What is the major difference between Hadoop and Spark?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Hadoop is newer than Spark",
+        "Explanation": "Hadoop is the older system."
+      },
+      {
+        "label": "B",
+        "text": "Spark cannot store data, only Hadoop can",
+        "Explanation": "The difference the lecture stresses is memory use during processing."
+      },
+      {
+        "label": "C",
+        "text": "Hadoop writes intermediate results to disk, while Spark keeps data in memory whenever possible",
+        "Explanation": "Correct. That is why Spark is faster for many use cases."
+      },
+      {
+        "label": "D",
+        "text": "Spark is only for real-time streams",
+        "Explanation": "Spark handles historical/batch big data too."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Where do intermediate results live?",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Which of these is NOT one of the four main components of a big data system?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Model cards",
+        "Explanation": "Correct. Model cards are a provenance-tracking tool for AI ethics, not a big data system component."
+      },
+      {
+        "label": "B",
+        "text": "Job scheduler",
+        "Explanation": "This is one of the four components."
+      },
+      {
+        "label": "C",
+        "text": "Data storage",
+        "Explanation": "This is one of the four components."
+      },
+      {
+        "label": "D",
+        "text": "Data processing",
+        "Explanation": "This is one of the four components, alongside common utilities."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The four are utilities, storage, scheduling and processing.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A fitness app shares users' location data with partners without telling them. Which of the 5 Cs is most directly violated?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Consent",
+        "Explanation": "Correct. Consent builds trust through agreement about what data is collected and how it will be used."
+      },
+      {
+        "label": "B",
+        "text": "Consistency",
+        "Explanation": "Consistency is about behaving the same way over time, which is not the main issue here."
+      },
+      {
+        "label": "C",
+        "text": "Clarity",
+        "Explanation": "Clarity is about how clearly the terms are stated, but here no agreement was sought at all."
+      },
+      {
+        "label": "D",
+        "text": "Capacity",
+        "Explanation": "Capacity is not one of the 5 Cs."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Did users agree to this use?",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Data travelling between cluster nodes is intercepted and altered. Which ethical concern of distributed computing does this illustrate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Bias and fairness",
+        "Explanation": "That is about biased data or algorithms, not tampering in transit."
+      },
+      {
+        "label": "B",
+        "text": "Accountability and responsibility",
+        "Explanation": "Unclear blame may follow, but the event itself is a security failure."
+      },
+      {
+        "label": "C",
+        "text": "Environmental impact",
+        "Explanation": "That is a GenAI usage concern about energy use."
+      },
+      {
+        "label": "D",
+        "text": "Data security: inter-node communication",
+        "Explanation": "Correct. Data transmitted between nodes may be intercepted or tampered with if not properly secured."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Focus on the data in transit.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "Doctors accept an AI's confident diagnosis without checking it. Which usage-stage challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Black box",
+        "Explanation": "The black box is about not being able to explain the model, a design-stage issue."
+      },
+      {
+        "label": "B",
+        "text": "Over-reliance and automation bias",
+        "Explanation": "Correct. Users trust the confident answer and stop using their own critical thinking."
+      },
+      {
+        "label": "C",
+        "text": "Malicious use",
+        "Explanation": "Nobody is using the AI to cause harm on purpose."
+      },
+      {
+        "label": "D",
+        "text": "Unequal resources and access",
+        "Explanation": "That is about who can afford to train big models."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "The problem is the users' trust, not the model's design.",
+    "course": "COM6001",
+    "week": "12"
+  },
+  {
+    "question": "A team wants to publish statistics from user data while limiting what they reveal about any single individual. Which mitigation fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Red teaming",
+        "Explanation": "Red teaming tries to break the system before release; it does not protect individuals in published data."
+      },
+      {
+        "label": "B",
+        "text": "Diverse teams",
+        "Explanation": "Diverse teams catch blind spots but do not mathematically protect data."
+      },
+      {
+        "label": "C",
+        "text": "Differential privacy",
+        "Explanation": "Correct. It is a formal, mathematical framework that bounds how much the output can change when any one person's data is added or removed, limiting what can be learned about that person."
+      },
+      {
+        "label": "D",
+        "text": "Explainable AI",
+        "Explanation": "XAI makes model decisions interpretable; it does not hide individuals' data."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Look for the formal, mathematical framework.",
+    "course": "COM6001",
+    "week": "12"
+  }
+]

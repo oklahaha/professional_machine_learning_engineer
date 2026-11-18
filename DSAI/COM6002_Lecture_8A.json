@@ -1,0 +1,653 @@
+[
+  {
+    "question": "A blog stores each post with a list of tags; the tags are small, few, and only ever shown on that post. How should the tags be modelled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embed them in the post document",
+        "Explanation": "Small, bounded child data viewed in the context of its parent is the case for embedding, and it gives fast reads without joins."
+      },
+      {
+        "label": "B",
+        "text": "Reference them from a separate collection by ID",
+        "Explanation": "Referencing suits data viewed independently or shared across parents, which these tags are not."
+      },
+      {
+        "label": "C",
+        "text": "Store each tag as its own database",
+        "Explanation": "A database is the top-level container, far too coarse for a post's tags."
+      },
+      {
+        "label": "D",
+        "text": "Shard the tags by hashed tag name",
+        "Explanation": "Sharding distributes a collection across nodes; it does not decide how child data relates to a parent."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Ask how the tags are viewed and how large they can grow.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Students and modules have a many-to-many relationship, and modules are browsed on their own. How should modules relate to students?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embed every module inside each student document",
+        "Explanation": "This duplicates shared data across parents, the opposite of the guideline for many-to-many data."
+      },
+      {
+        "label": "B",
+        "text": "Reference modules by ID",
+        "Explanation": "Many-to-many data, shared across parents and viewed independently, is the case for referencing."
+      },
+      {
+        "label": "C",
+        "text": "Embed every student inside each module document",
+        "Explanation": "This still duplicates shared data and could grow without bound."
+      },
+      {
+        "label": "D",
+        "text": "Keep both in one document per university",
+        "Explanation": "Such a document would be unbounded and soon hit the 16MB limit."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Consider who else needs the module data.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "An IoT device document would accumulate sensor readings indefinitely. Why should the readings be referenced rather than embedded?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embedded fields cannot hold numbers",
+        "Explanation": "Fields can hold numbers; the data type is not the issue."
+      },
+      {
+        "label": "B",
+        "text": "Referencing gives faster reads than embedding",
+        "Explanation": "Embedding is the choice for fast reads without joins; referencing needs extra lookups."
+      },
+      {
+        "label": "C",
+        "text": "The child data is unbounded, and a document has a maximum size of 16MB",
+        "Explanation": "Large or unbounded child data is the case for referencing because of the 16MB document limit."
+      },
+      {
+        "label": "D",
+        "text": "Indexes only work on referenced documents",
+        "Explanation": "Indexes work on any field of a collection, embedded or not."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Think about what happens to the document's size over time.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Which statement about MongoDB's dynamic schema is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "All documents in a collection must share the same fields",
+        "Explanation": "This describes a fixed schema like an RDBMS table, not MongoDB."
+      },
+      {
+        "label": "B",
+        "text": "A field must keep the same data type across a collection",
+        "Explanation": "The lecture shows a student ID stored as a number in one document and a string in another."
+      },
+      {
+        "label": "C",
+        "text": "A schema must be declared before inserting documents",
+        "Explanation": "No schema declaration is needed with a dynamic schema."
+      },
+      {
+        "label": "D",
+        "text": "Documents with different sets of fields can be kept in the same collection",
+        "Explanation": "Dynamic schema allows different sets of fields and different data types in one collection."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Compare Amy's and Bob's documents in the lecture.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Which mapping from RDBMS to MongoDB terminology is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Row → document, column → field",
+        "Explanation": "A record (row) maps to a document and an attribute (column) maps to a field."
+      },
+      {
+        "label": "B",
+        "text": "Table → document, row → field",
+        "Explanation": "A table maps to a collection, not a document."
+      },
+      {
+        "label": "C",
+        "text": "Database → collection, table → database",
+        "Explanation": "A database maps to a database, and a table to a collection."
+      },
+      {
+        "label": "D",
+        "text": "Column → collection, row → field",
+        "Explanation": "A column maps to a field and a row to a document."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Line up the levels from largest container to smallest unit.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A collection has a unique index on `email`. What happens when a document with an existing email is inserted?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both documents are stored and the index keeps one",
+        "Explanation": "A unique index does not silently keep duplicates."
+      },
+      {
+        "label": "B",
+        "text": "The insert is rejected",
+        "Explanation": "A unique index rejects duplicated values on the index field."
+      },
+      {
+        "label": "C",
+        "text": "The new document's email is set to null",
+        "Explanation": "Null is how a missing index value is treated, not how duplicates are handled."
+      },
+      {
+        "label": "D",
+        "text": "The old document is overwritten",
+        "Explanation": "A unique index rejects the duplicate rather than replacing anything."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Recall what unique means for an index.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A document has no value for a field covered by a regular (non-sparse) index. How does the index treat it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The document is rejected",
+        "Explanation": "Only a unique index rejects, and then for duplicates, not for a missing value."
+      },
+      {
+        "label": "B",
+        "text": "The document is left out of the collection",
+        "Explanation": "The document is still stored in the collection."
+      },
+      {
+        "label": "C",
+        "text": "The field is indexed under a \"null\" key",
+        "Explanation": "The index records a null key for the missing value; the stored document itself is unchanged."
+      },
+      {
+        "label": "D",
+        "text": "A random value is generated for the field",
+        "Explanation": "Values are generated automatically only for `_id`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "There is a specific placeholder value for a missing index field.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A food delivery app must find restaurants near a user's location. Which index type fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ascending index",
+        "Explanation": "A one-dimensional B+ tree index does not support multi-dimensional search."
+      },
+      {
+        "label": "B",
+        "text": "`text` index",
+        "Explanation": "A text index supports text search, not location search."
+      },
+      {
+        "label": "C",
+        "text": "Unique index",
+        "Explanation": "Uniqueness rejects duplicates; it does not support spatial search."
+      },
+      {
+        "label": "D",
+        "text": "`2dsphere` index",
+        "Explanation": "`2dsphere` supports multi-dimensional search, with the R-tree as its reference structure."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Location has more than one dimension.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "What is the cost of adding an index in MongoDB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Additional storage and index maintenance",
+        "Explanation": "Indexing improves search time at the cost of additional storage and index maintenance."
+      },
+      {
+        "label": "B",
+        "text": "Searches become $O(n)$",
+        "Explanation": "An ascending or descending B+ tree index reduces search time to $O(\\lg n)$."
+      },
+      {
+        "label": "C",
+        "text": "Documents lose their `_id` field",
+        "Explanation": "Every document must keep `_id`; indexing does not affect that."
+      },
+      {
+        "label": "D",
+        "text": "The schema becomes fixed",
+        "Explanation": "Indexing does not change MongoDB's dynamic schema."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Faster search is not free.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Why can documents sorted by their default `_id` be read in roughly the order they were created?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The `_id` is a string of the insertion date",
+        "Explanation": "An `ObjectId` is presented like a string but is not a string."
+      },
+      {
+        "label": "B",
+        "text": "The first 4 bytes of the `ObjectId` are a timestamp",
+        "Explanation": "Starting with a timestamp makes `ObjectId` values naturally sorted chronologically."
+      },
+      {
+        "label": "C",
+        "text": "The `_id` is a hash of the document's content",
+        "Explanation": "A content hash would scatter documents rather than order them by time."
+      },
+      {
+        "label": "D",
+        "text": "The last 3 bytes are random",
+        "Explanation": "The last 3 bytes are an incrementing counter; the random value is the middle 5 bytes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Look at what the `ObjectId` begins with.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A developer wants to use the student ID string `\"s101102\"` as the document's identifier. Is this allowed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No, `_id` must always be a system-generated `ObjectId`",
+        "Explanation": "The system generates one by default, but you can set `_id` yourself."
+      },
+      {
+        "label": "B",
+        "text": "No, `_id` must be a number",
+        "Explanation": "Strings are allowed as well as numbers."
+      },
+      {
+        "label": "C",
+        "text": "Yes, `_id` can be set yourself with other types such as a string",
+        "Explanation": "`_id` is mandatory but may be set manually with other types, e.g. string or number."
+      },
+      {
+        "label": "D",
+        "text": "Yes, and then the document needs no `_id` field",
+        "Explanation": "Every document in MongoDB must have the `_id` field."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "`_id` is mandatory, but who must create it?",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "An instant messaging service only wants to spread its message storage evenly across machines. Which sharding strategy fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ranged sharding by message datetime",
+        "Explanation": "Ranged sharding suits fetching a range of key values, such as one month, rather than spreading the load."
+      },
+      {
+        "label": "B",
+        "text": "No sharding, with a larger replica set",
+        "Explanation": "Replicas hold copies of the same data, so they do not spread storage load."
+      },
+      {
+        "label": "C",
+        "text": "Embedding all messages in one document",
+        "Explanation": "This would hit the 16MB document limit and not use multiple machines."
+      },
+      {
+        "label": "D",
+        "text": "Hashed sharding",
+        "Explanation": "Hashing the shard key spreads documents across shards, which suits distributing the storage load."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Which strategy scatters neighbouring key values?",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Users often fetch all their messages for a chosen month. Which sharding setup suits this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ranged sharding by (account, datetime)",
+        "Explanation": "Ranges keep one account's messages for a month adjacent, in one or a few neighbouring chunks, so the router queries only the shards holding that range."
+      },
+      {
+        "label": "B",
+        "text": "Hashed sharding by message datetime",
+        "Explanation": "Hashing scatters consecutive times across shards, so a month's query hits many."
+      },
+      {
+        "label": "C",
+        "text": "Hashed sharding by a random value",
+        "Explanation": "A random key ignores both the account and the time the query uses."
+      },
+      {
+        "label": "D",
+        "text": "Ranged sharding by message length",
+        "Explanation": "Message length is unrelated to the account and month being queried."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Keep together what is read together.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "Which statement about sharding in MongoDB is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each shard holds a full copy of the data",
+        "Explanation": "That describes replication; a shard holds partial data."
+      },
+      {
+        "label": "B",
+        "text": "Partitioning is random, so a document's shard cannot be known",
+        "Explanation": "The partitioning method is deterministic."
+      },
+      {
+        "label": "C",
+        "text": "It is horizontal fragmentation configured by a shard key and a sharding strategy",
+        "Explanation": "Sharding partitions documents across nodes, configured by choosing a shard key and a strategy."
+      },
+      {
+        "label": "D",
+        "text": "It splits each document's fields across nodes",
+        "Explanation": "Sharding is horizontal fragmentation: it distributes whole documents across shards."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Is the data copied, or divided?",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "In a replica set with default settings, where do read and write requests go?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Spread evenly across all nodes",
+        "Explanation": "The workload is not shared between nodes by default."
+      },
+      {
+        "label": "B",
+        "text": "Always to the primary node",
+        "Explanation": "By default requests always go to the primary; secondaries are for backup and recovery."
+      },
+      {
+        "label": "C",
+        "text": "To the nearest secondary",
+        "Explanation": "Reading from the nearest secondary is possible only if configured."
+      },
+      {
+        "label": "D",
+        "text": "To whichever node answers the heartbeat first",
+        "Explanation": "The heartbeat checks whether nodes are alive; it does not route requests."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "Secondaries have a different default role.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "The primary node of a replica set fails. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The replica set stops accepting requests permanently",
+        "Explanation": "Replication exists for availability, so the set recovers."
+      },
+      {
+        "label": "B",
+        "text": "All secondaries become primaries",
+        "Explanation": "There is a single primary at a time."
+      },
+      {
+        "label": "C",
+        "text": "The data is resharded across the secondaries",
+        "Explanation": "Sharding is a separate mechanism from replication."
+      },
+      {
+        "label": "D",
+        "text": "A new primary is elected",
+        "Explanation": "The replica set elects a new primary when the primary fails."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Think of how Raft handles a leader failure.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A game logs player clicks for analytics; speed matters most and losing a few events is acceptable. Which write concern fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`{ w: 1 }`",
+        "Explanation": "Acknowledging once the primary applies the write gives the fastest latency; the risk of loss on failover is acceptable here."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: \"majority\" }`",
+        "Explanation": "Waiting for a majority adds network replication latency that this workload does not need."
+      },
+      {
+        "label": "C",
+        "text": "`{ w: \"majority\", j: true }`",
+        "Explanation": "This is the best practice for mission-critical data and adds waiting for replication and the journal, which click logs do not need."
+      },
+      {
+        "label": "D",
+        "text": "`{ j: true }` only",
+        "Explanation": "Waiting for the on-disk journal adds latency without being needed here."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "Latency or durability: which does this workload value?",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A bank records payments and must not lose any acknowledged write, even across a crash or failover. Which setting is recommended?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`{ w: 1 }`",
+        "Explanation": "Primary-only acknowledgement (the slide's default) can lose data if the primary fails before replicating."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: 1, j: false }`",
+        "Explanation": "This gives neither majority replication nor journal persistence."
+      },
+      {
+        "label": "C",
+        "text": "`{ w: \"majority\", j: true }`",
+        "Explanation": "Combining majority acknowledgment with the on-disk journal is the best practice for mission-critical data."
+      },
+      {
+        "label": "D",
+        "text": "Read concern `local`",
+        "Explanation": "Read concern controls reads, not the durability of writes."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hints": "Combine survival across nodes with survival on disk.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "With `{ w: 1 }`, the primary acknowledges a write and then fails before replicating it. What can happen?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The write is guaranteed to survive",
+        "Explanation": "Only majority acknowledgment guarantees survival of an automatic failover."
+      },
+      {
+        "label": "B",
+        "text": "The write is lost during failover",
+        "Explanation": "This is the stated risk of `{ w: 1 }`."
+      },
+      {
+        "label": "C",
+        "text": "The client waits until a secondary confirms",
+        "Explanation": "`{ w: 1 }` returns right after the primary applies the write."
+      },
+      {
+        "label": "D",
+        "text": "The write is recovered from the router",
+        "Explanation": "The router redistributes queries; it does not store writes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hints": "When did the client get its acknowledgment?",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "A report must only show data that will not be rolled back, even if it is a little slower. Which read concern fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`local`",
+        "Explanation": "`local` returns the current member's state, which may not reflect writes elsewhere and is not guaranteed durable."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: 1 }`",
+        "Explanation": "This is a write concern, not a read concern."
+      },
+      {
+        "label": "C",
+        "text": "`{ j: true }`",
+        "Explanation": "This is a write concern about the journal, not a read setting."
+      },
+      {
+        "label": "D",
+        "text": "`majority`",
+        "Explanation": "`majority` returns data acknowledged by a majority of members, guaranteeing it is durable."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hints": "Durable data is data most members have acknowledged.",
+    "course": "COM6002",
+    "week": "8A"
+  },
+  {
+    "question": "In a sharded MongoDB cluster, which component stores the cluster's metadata and configuration settings?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Config server",
+        "Explanation": "The config server stores metadata and configuration settings for the cluster."
+      },
+      {
+        "label": "B",
+        "text": "Router",
+        "Explanation": "The router accepts queries and redistributes the workload to the appropriate shards."
+      },
+      {
+        "label": "C",
+        "text": "Secondary node",
+        "Explanation": "A secondary holds a copy of data for backup and recovery."
+      },
+      {
+        "label": "D",
+        "text": "Journal",
+        "Explanation": "The journal is a write-ahead log for crash recovery."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hints": "The name says what it holds.",
+    "course": "COM6002",
+    "week": "8A"
+  }
+]

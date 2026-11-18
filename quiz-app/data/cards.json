@@ -4600,6 +4600,456 @@
     "deck": "COM6001_Lecture_11"
   },
   {
+    "id": "2cad6ec7d375",
+    "front": "In the hardware matching exercise, which component is the \"brain of the computer\"?",
+    "back": "The CPU.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "30f8762fc797",
+    "front": "Which hardware component provides short-term, quick data storage?",
+    "back": "Memory (RAM).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "b125bdcf3fc5",
+    "front": "Which hardware component provides long-term, safe data storage?",
+    "back": "Storage, e.g. a Solid State Drive (SSD).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "4805cda0d8fa",
+    "front": "What is the role of the network in the hardware matching exercise?",
+    "back": "The connection between computers.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "aedb178c74f5",
+    "front": "What is a GPU described as?",
+    "back": "A massively parallel processor for computations.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2269aaaa0677",
+    "front": "How many bytes per second can a 2.5 GHz 64-bit CPU process (lecture estimate)?",
+    "back": "$2.5 \\times 10^9 \\times 8 = 20 \\times 10^9$ bytes per second, assuming one 8-byte operation per cycle.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "29d05a97377d",
+    "front": "How many bytes can 16 GB of RAM and a 1 TB SSD store?",
+    "back": "$16 \\times 10^9$ bytes and $1 \\times 10^{12}$ bytes.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "b47c11aafdeb",
+    "front": "What does a 1 Gbps network connection mean?",
+    "back": "It can download $1 \\times 10^9$ bits per second (bits, not bytes).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "25c43ed05a5e",
+    "front": "Order CPU, RAM and SSD from fastest to slowest.",
+    "back": "CPU (works in nanoseconds) > RAM (slower but still fast enough) > SSD (much slower than RAM).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "0b7252ed97c7",
+    "front": "What happens when a program holds more data in memory than the RAM?",
+    "back": "The OS starts swapping/paging between RAM and SSD, the CPU frequently waits for data movement (I/O wait), and much less time is spent on actual computation.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "bf4cfe27ab2a",
+    "front": "Case study I: at one 8-byte operation per cycle",
+    "back": "how long does a 2.5 GHz 64-bit CPU need to character-count 6000 articles of 200 bytes each?",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "$6000 \\times 200 = 1.2 \\times 10^6$ bytes, so $1.2 \\times 10^6 / (20 \\times 10^9) = 6 \\times 10^{-5}$ s, i.e. 0.006% of a second.",
+    "tag": "COM6001::Lecture_12::$6000 \\times 200 = 1.2 \\times 10^6$ bytes, so $1.2 \\times 10^6 / (20 \\times 10^9) = 6 \\times 10^{-5}$ s, i.e. 0.006% of a second.",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "7ab7e72b6537",
+    "front": "In reality, what usually dominates runtime: arithmetic or data access?",
+    "back": "Data access: data must be fetched first (RAM latency ~100 ns, SSD latency in microseconds).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "c2f6ccbec370",
+    "front": "Key message of case study I: where does the bottleneck move when data gets large?",
+    "back": "From CPU compute to network and storage I/O.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "c32fb9c056e6",
+    "front": "How does fetching data over the network compare with reading it from local storage and memory?",
+    "back": "Getting the same amount of data from the network is much slower than processing it from your storage and memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "6fa9ccc1b61a",
+    "front": "What is the key bottleneck consideration in case study II?",
+    "back": "I/O: moving data from SSD to memory burns out your CPU's time.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "267820eeb0f8",
+    "front": "When is it a good idea to go distributed, according to case study II?",
+    "back": "When your file is much larger than your memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "b1d8ca9743b1",
+    "front": "Case study III: the data grows from 4 GB to 200 GB on the same 8 GB machine. What goes wrong?",
+    "back": "The data no longer fits in RAM, so the machine keeps moving data between storage and memory and the CPU spends its time waiting instead of analysing; the computer stops responding.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "f27fca84599e",
+    "front": "Name the four limits we hit as data grows on one computer.",
+    "back": "Storage limit, memory limit, time limit and reliability limit.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2243280a6da5",
+    "front": "What are the two situations in which distributed computing is needed?",
+    "back": "(1) You have big data to process (e.g. extract China-related news from 200 GB); (2) the data is not so big but the process is sophisticated (e.g. training a DNN with millions of parameters).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2f449aeedc83",
+    "front": "In distributed computing, how are memory and machines organised?",
+    "back": "Each CPU has its own memory, and each machine is connected to the other machines across a network.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "647cff4386cd",
+    "front": "In parallel computing, how is memory organised?",
+    "back": "In general, multiple CPUs share the same memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "0a7ad2c498eb",
+    "front": "Key challenge #1, partitioning: what questions must be answered?",
+    "back": "Split by rows, time, user or region? Are partitions balanced? Does one machine get much more work (data skew)?",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "88e756ad8a59",
+    "front": "How do platforms handle partitioning?",
+    "back": "They break data into many small chunks and send the chunks to many machines (e.g. Hadoop MapReduce, Spark, BigQuery, Snowflake).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "d7f612b61e38",
+    "front": "Key challenge #2, communication overhead: what causes it?",
+    "back": "Moving data across the network, synchronizing intermediate results and coordinating task completion; too much of it can cancel the speed gains.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "1173e18b42d1",
+    "front": "How do platforms reduce communication overhead?",
+    "back": "They try to process data where it is stored and send only smaller summaries (e.g. MapReduce combine step, Spark keeping data in memory, smart query planning in cloud warehouses).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "7176d24ce205",
+    "front": "Key challenge #3, fault tolerance: what mechanisms are needed?",
+    "back": "Detecting failed tasks, re-running lost work and recovering from partial progress, so the system continues even when some nodes fail.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "05c667a7cc5b",
+    "front": "How do platforms provide fault tolerance?",
+    "back": "They detect the failure and automatically redo only the failed part.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "4f640c98b72b",
+    "front": "Key challenge #4, consistency & reproducibility: what are the risks in distributed runs?",
+    "back": "Different execution order, duplicate processing and missing late-arriving data.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "a12c9b32382b",
+    "front": "How do platforms ensure consistency and reproducibility?",
+    "back": "They run tasks in a controlled order, track progress and allow safe restart (e.g. Spark/MapReduce, Airflow/Prefect for scheduling, Kafka-based systems for continuous data).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "8865fea58579",
+    "front": "What are the four main components of a big data system?",
+    "back": "Common utilities, data storage, job scheduler and data processing.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "1d484f321f76",
+    "front": "What is the major difference between Hadoop and Spark?",
+    "back": "How they use memory: Hadoop writes intermediate results to disk, whereas Spark keeps data in memory whenever possible, which makes it faster for many use cases.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "d33235609393",
+    "front": "What are the benefits of a distributed big data framework?",
+    "back": "Larger-than-memory processing, faster runtime for large workloads and better reliability at scale.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "8340572a243b",
+    "front": "What are the costs of a distributed big data framework?",
+    "back": "More system complexity, more debugging difficulty and higher infrastructure/operation cost.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2dff19a957be",
+    "front": "What are the Five C's of data ethics?",
+    "back": "Consent, Clarity, Consistency, Control (and transparency) and Consequences (and harms).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "07ca872fb013",
+    "front": "What does Consequences mean in the 5 Cs?",
+    "back": "Whether the data being collected could cause harm to an individual or a group.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "a2ec39d44e99",
+    "front": "Name the four ethical concerns specific to distributed computing.",
+    "back": "Data privacy, data security, accountability and responsibility, and bias and fairness.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "be3f55043074",
+    "front": "Name the four (Gen)AI ethical challenges in the development and design stage.",
+    "back": "Bias and fairness; data source and permission; the \"black box\"; unequal resources and access.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "4672580e3d2d",
+    "front": "What is the \"black box\" problem?",
+    "back": "Big AI models are so complex that even their creators cannot fully explain their decisions, so it is hard to check, fix or challenge them.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "5fe467e9721d",
+    "front": "Name the six (Gen)AI ethical challenges in the usage stage.",
+    "back": "Privacy erosion and surveillance; accountability and liability; environmental impact; over-reliance and automation bias (trusting confident AI answers unchecked); intellectual property (cheating, plagiarism); malicious use.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "22fd9047a502",
+    "front": "Name the four technical mitigations for AI ethics.",
+    "back": "Explainable AI (XAI), bias auditing, differential privacy and provenance tracking.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "608b32f5eee2",
+    "front": "What is differential privacy?",
+    "back": "A formal, mathematical framework that bounds how much results can change when one person's data is added or removed, limiting what can be learned about any single individual.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "8a1ba24558cb",
+    "front": "What tools does provenance tracking use?",
+    "back": "\"Model cards\" and \"datasheets for datasets\", documenting the creation, use and limitations of models and data.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2381adde8b89",
+    "front": "Name the three governance and process mitigations for AI ethics.",
+    "back": "Ethics review boards (like an IRB for research), red teaming and clear lines of accountability.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "8189a6b0201a",
+    "front": "What is red teaming?",
+    "back": "Actively trying to \"break\" your system or find harmful uses of it before it is released.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "8439d8a1e785",
+    "front": "What are the two human-factor mitigations for AI ethics?",
+    "back": "Diverse teams (homogeneous teams miss blind spots) and ethics education (a core engineering requirement, not a soft skill).",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "topic": "",
+    "tag": "COM6001::Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
     "id": "7e4e6b9457df",
     "front": "What is the primary write inefficiency associated with file-based data management?",
     "back": "The entire file must be re-written even when making a tiny update.",
@@ -7998,6 +8448,466 @@
     "topic": "",
     "tag": "COM6002::Lecture_7",
     "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "b2b934b19195",
+    "front": "What kind of database system is MongoDB, and what are its key traits?",
+    "back": "A document-based NoSQL database, founded in 2007, with a dynamic schema, easy horizontal scalability (add more nodes) and ease of use in programming.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "74732d8b5ef8",
+    "front": "Which consistency model did MongoDB's initial design follow, and has that changed?",
+    "back": "BASE instead of ACID; ACID can now be achieved by certain configurations, with overheads.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "df205ee44959",
+    "front": "What is the programming compatibility advantage of MongoDB over an RDBMS?",
+    "back": "An RDBMS requires learning an additional language, SQL, whereas MongoDB is used directly from the programming language.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "0eb9700317c5",
+    "front": "Across programming languages, what differs and what stays the same when using MongoDB?",
+    "back": "The syntax differs a bit in each language, but the same query framework (find, projection, aggregate, sort, update) is used in all of them, e.g. from Python, Node.js, Java or Go.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "287c1b925e8b",
+    "front": "How does MongoDB store a student and their module grades, compared with an RDBMS?",
+    "back": "As one consolidated document with a hierarchical structure (grades nested under Results), instead of separate student and result tables.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "43374136ee29",
+    "front": "Give the MongoDB containment hierarchy from top to bottom.",
+    "back": "Multiple databases; a database contains collections; a collection contains documents; a document contains fields.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "33da7806dca5",
+    "front": "Map the RDBMS terms database, table, record (row) and attribute (column) to MongoDB.",
+    "back": "Database → database, table → collection, record (row) → document, attribute (column) → field.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "febd20d3c811",
+    "front": "What does dynamic schema allow within a single collection?",
+    "back": "Documents with different sets of fields, and different data types for the same field (e.g. a student ID as `101101` in one and `s101102` in another).",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "18dacefdb955",
+    "front": "In what format is MongoDB document data defined?",
+    "back": "BSON format.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "c0d332296911",
+    "front": "What is embedding in MongoDB data design?",
+    "back": "Storing the related data inside a document.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "a0e32cbe3424",
+    "front": "What is referencing in MongoDB data design?",
+    "back": "Using an ID to point to one or more other documents.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "748cf1e28899",
+    "front": "Rule of thumb: what child data should be embedded?",
+    "back": "Data primarily viewed in the context of the parent, and relatively small with a bounded size.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "87154bb46c48",
+    "front": "Which relationships and performance need favour embedding?",
+    "back": "One-to-one, and one-to-many where the child data belongs exclusively to the parent; and needing fast reads without joins.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "1be88bb0b8ec",
+    "front": "Rule of thumb: which child data and relationships favour referencing?",
+    "back": "Data viewed independently of the parent, many-to-many relationships, and child data shared across multiple parents.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "5600b7501a59",
+    "front": "What size of child data favours referencing, and why?",
+    "back": "Large or unbounded child data, because the maximum size of a document in MongoDB is 16MB.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "332daf90ee73",
+    "front": "What technique does MongoDB use for indexing?",
+    "back": "B+ trees.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "3ea4f9cc6ca8",
+    "front": "What is the trade-off of adding an index in MongoDB?",
+    "back": "Faster search time, at the cost of additional storage and index maintenance.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "c220a54e60a3",
+    "front": "How does a regular (non-sparse) MongoDB index treat a document with no value for the index field?",
+    "back": "It indexes it under a \"null\" key; the document itself is unchanged.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "710a1b1f7f00",
+    "front": "What is the effect of making a MongoDB index unique?",
+    "back": "It rejects duplicated values on the index field.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "8fbc992d9994",
+    "front": "What do ascending and descending indexes have in common, and what search time do they give?",
+    "back": "Both use a B+ tree, reducing searching time to $O(\\lg n)$.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "e2b581648377",
+    "front": "What does a `2dsphere` index support, and what structure is it related to?",
+    "back": "Multi-dimensional search; reference structure: the R-tree.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "4b7b960b2c8e",
+    "front": "What does a `text` index support, and how is it built?",
+    "back": "Text search, using a specific index structure unlike that for numeric data.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "ef8620122050",
+    "front": "What field identifies every MongoDB document, and what is guaranteed about it?",
+    "back": "`_id`: generated automatically by the system and guaranteed to be unique (in a sharded collection",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "only per shard unless `_id` is the shard key).",
+    "tag": "COM6002::Lecture_8A::only per shard unless `_id` is the shard key).",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "7fd1fc49b6cb",
+    "front": "What data type and size is the default `_id`?",
+    "back": "A BSON `ObjectId`, a 12-byte identifier; it is presented like a string but is not a string.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "39c42eecf6e5",
+    "front": "What are the three parts of an `ObjectId`?",
+    "back": "First 4 bytes: timestamp; next 5 bytes: random value; last 3 bytes: an incrementing counter. The timestamp makes them naturally sorted chronologically.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "e479dbf40d5f",
+    "front": "Is the `_id` field optional, and can you set it yourself?",
+    "back": "It is mandatory on every document, but you can set it yourself with other types, e.g. a string or number.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "25154fcc3ced",
+    "front": "What is sharding in MongoDB, and what is a shard?",
+    "back": "Partitioning and distributing data across multiple nodes (horizontal fragmentation); a node holding partial data is a shard.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "e0978c1bd892",
+    "front": "What two choices configure sharding?",
+    "back": "A shard key (e.g. creation datetime) and a sharding strategy; the resulting partitioning is deterministic.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "d94918a4a466",
+    "front": "How does hashed sharding distribute documents?",
+    "back": "Based on the hash values of the shard key values.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "57b9bc9ac572",
+    "front": "How does ranged sharding distribute documents?",
+    "back": "Each chunk is assigned to handle a range of shard key values.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "c77cc81a1e7a",
+    "front": "For instant messages, which sharding method suits distributing the storage load across machines?",
+    "back": "Hashed sharding.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "216c71eab5c4",
+    "front": "For instant messages, which sharding method suits fetching a user's messages in a given month?",
+    "back": "Ranged sharding, by (account, datetime).",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "452250a5b6d6",
+    "front": "What does a replica set provide, and which consensus algorithm is it similar to?",
+    "back": "Redundancy and increased data availability, giving fault tolerance against losing a single server; it is similar to Raft.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "5a7ac252dee6",
+    "front": "What is the heartbeat in a replica set?",
+    "back": "Nodes ping each other to see if they are still alive.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "a67db71f6bd5",
+    "front": "By default, how is workload shared in a replica set?",
+    "back": "It is not shared: requests always go to the primary node, and secondaries are for backup and recovery (reads can be configured to use a secondary, e.g. the nearest one).",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "623b7698d7b2",
+    "front": "What happens when the primary node fails?",
+    "back": "The replica set elects a new primary.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "841e89c868a2",
+    "front": "What is write concern, and what trade-off does it control?",
+    "back": "The level of acknowledgment requested from MongoDB for write operations; a trade-off between latency and durability.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "3e902fb736b9",
+    "front": "What does write concern `{ w: 1 }` (the slide's stated default) do?",
+    "back": "Returns immediately after the primary successfully applies the write; fastest latency, but data can be lost if the primary fails before replicating.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "fcb621e70e43",
+    "front": "What does `{ w: \"majority\" }` do?",
+    "back": "Returns only after the write is applied to the majority of data-bearing members; highest durability (survives automatic failover) but higher write latency.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "b9c315f0d37f",
+    "front": "What does `{ j: true }` ensure?",
+    "back": "The write is in the on-disk journal file before acknowledgment is sent.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "16f192aa886d",
+    "front": "What is the journal in MongoDB?",
+    "back": "A write-ahead log that lets MongoDB recover state after a crash, even if the data file has not been flushed yet.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "d6c49d780898",
+    "front": "What is the best-practice write concern for mission-critical data?",
+    "back": "Combine `w: majority` with `j: true`.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "d07c7b8795e2",
+    "front": "What does read concern control?",
+    "back": "The consistency and isolation properties of the data read.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "782a966d4434",
+    "front": "What does read concern `local` (the default) do?",
+    "back": "Returns data from the current member's state, which may not yet reflect writes from other members; fastest.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "500899be086e",
+    "front": "What does read concern `majority` do?",
+    "back": "Returns data acknowledged by a majority of replica set members, guaranteeing the read data is durable.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "5db80ceba006",
+    "front": "In a sharded MongoDB architecture, what do the router and config server do?",
+    "back": "The router accepts queries and redistributes the workload to the appropriate shards; the config server stores metadata and configuration settings for the cluster.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "topic": "",
+    "tag": "COM6002::Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
   },
   {
     "id": "770efabd252e",

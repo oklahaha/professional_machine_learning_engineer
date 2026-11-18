@@ -6864,6 +6864,666 @@
     "deck": "COM6001_Lecture_11"
   },
   {
+    "id": "b190840b0cdc",
+    "question": "A 64-bit CPU runs at 2.5 GHz. Assuming, as the lecture does, one 8-byte operation per cycle, how many bytes can it process per second?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$2.5 \\times 10^9$ bytes",
+        "explanation": "That counts operations, not bytes; each 64-bit operation handles 8 bytes."
+      },
+      {
+        "label": "B",
+        "text": "$20 \\times 10^9$ bytes",
+        "explanation": "Correct. $2.5 \\times 10^9$ operations per second $\\times$ 8 bytes per operation."
+      },
+      {
+        "label": "C",
+        "text": "$0.3125 \\times 10^9$ bytes",
+        "explanation": "That divides by 8 instead of multiplying; a 64-bit operation processes 8 bytes."
+      },
+      {
+        "label": "D",
+        "text": "$160 \\times 10^9$ bytes",
+        "explanation": "That multiplies by 64 bits as if they were bytes; 64 bits is 8 bytes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Convert the 64-bit word size into bytes first.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "631a42f6f075",
+    "question": "A machine has a 1 Gbps network connection. Roughly how many megabytes can it download per second?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1000 MB",
+        "explanation": "1 Gbps is $10^9$ bits, not bytes, so the byte figure is eight times smaller."
+      },
+      {
+        "label": "B",
+        "text": "8000 MB",
+        "explanation": "Bits must be divided by 8 to get bytes, not multiplied."
+      },
+      {
+        "label": "C",
+        "text": "1 MB",
+        "explanation": "$10^9$ bits is far more than one megabyte."
+      },
+      {
+        "label": "D",
+        "text": "125 MB",
+        "explanation": "Correct. $10^9$ bits per second $\\div 8 = 1.25 \\times 10^8$ bytes $= 125$ MB per second."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "The lowercase b in Gbps matters.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "b97e74769496",
+    "question": "A 2.5 GHz 64-bit CPU must character-count 6000 news articles of 200 bytes each. Assuming one 8-byte operation per cycle and ignoring data access, how long does the computation take?",
+    "options": [
+      {
+        "label": "A",
+        "text": "$6 \\times 10^{-5}$ s",
+        "explanation": "Correct. $1.2 \\times 10^6$ bytes $\\div (20 \\times 10^9)$ bytes per second."
+      },
+      {
+        "label": "B",
+        "text": "$4.8 \\times 10^{-4}$ s",
+        "explanation": "That uses $2.5 \\times 10^9$ bytes per second, forgetting the 8 bytes per operation."
+      },
+      {
+        "label": "C",
+        "text": "6 s",
+        "explanation": "Far too slow; the CPU processes billions of bytes per second."
+      },
+      {
+        "label": "D",
+        "text": "$1.2 \\times 10^{-3}$ s",
+        "explanation": "This does not follow from $1.2 \\times 10^6 / (20 \\times 10^9)$."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Total bytes first, then divide by the CPU's byte throughput.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "4ab1b1e88233",
+    "question": "In case study I, the computation itself takes a tiny fraction of a second. Why is the real runtime often much longer?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The CPU slows down when processing text",
+        "explanation": "Nothing in the case says the CPU's speed depends on the data type."
+      },
+      {
+        "label": "B",
+        "text": "1.2 MB does not fit in 8 GB of RAM",
+        "explanation": "1.2 MB fits easily in 8 GB of RAM."
+      },
+      {
+        "label": "C",
+        "text": "Data must be fetched first, and memory and SSD latency dominate over arithmetic",
+        "explanation": "Correct. RAM latency is ~100 ns (hundreds of CPU cycles) and SSD latency is microseconds, so data access dominates."
+      },
+      {
+        "label": "D",
+        "text": "A 64-bit CPU can only process one article per second",
+        "explanation": "The CPU processes about $20 \\times 10^9$ bytes per second, far more than one article."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about what has to happen before the CPU can compute on a byte.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "7e493de99ccb",
+    "question": "Your 8 GB laptop (swap enabled) runs a Python script that loads a dataset much larger than its RAM into memory. What mainly happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The CPU runs at full utilization, so the job finishes quickly",
+        "explanation": "Full, continuous utilization happens when the data fits in RAM."
+      },
+      {
+        "label": "B",
+        "text": "The data is automatically split across other machines",
+        "explanation": "A single laptop does not distribute work by itself; that needs a distributed framework."
+      },
+      {
+        "label": "C",
+        "text": "The OS swaps/pages data between RAM and SSD and the CPU spends much of its time in I/O wait",
+        "explanation": "Correct. Holding more data than RAM forces swapping, so little time goes to actual computation."
+      },
+      {
+        "label": "D",
+        "text": "The network becomes the bottleneck because data is downloaded repeatedly",
+        "explanation": "The script reads local data; the problem here is RAM vs SSD, not the network."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Compare the data size with RAM, and ask where the overflow must live.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "d883877e8a07",
+    "question": "Which ordering of where data is accessed from, fastest to slowest, matches the lecture?",
+    "options": [
+      {
+        "label": "A",
+        "text": "RAM, then SSD, then the network",
+        "explanation": "Correct. RAM is slower than the CPU but fast, SSD is much slower than RAM, and network fetches are slower still."
+      },
+      {
+        "label": "B",
+        "text": "SSD, then RAM, then the network",
+        "explanation": "The SSD is much slower than RAM."
+      },
+      {
+        "label": "C",
+        "text": "The network, then RAM, then SSD",
+        "explanation": "Getting data from the network is much slower than from local storage and memory."
+      },
+      {
+        "label": "D",
+        "text": "RAM, then the network, then SSD",
+        "explanation": "The network is slower than local storage, not faster."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The lecture says the network is slower than both local storage and memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "beb8329f3c12",
+    "question": "A 4 GB news file must be filtered on a laptop with 8 GB of RAM. When does the lecture say going distributed becomes a good idea?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Whenever the data is larger than 1 GB",
+        "explanation": "There is no fixed size; the comparison is with the machine's memory."
+      },
+      {
+        "label": "B",
+        "text": "Only when the CPU is slower than 2.5 GHz",
+        "explanation": "CPU speed is not the deciding factor; I/O is the bottleneck."
+      },
+      {
+        "label": "C",
+        "text": "Never; distribution is only for neural networks",
+        "explanation": "Big data that exceeds memory is the first reason to go distributed."
+      },
+      {
+        "label": "D",
+        "text": "When the file is much larger than your memory",
+        "explanation": "Correct. Then moving data from SSD to memory burns out the CPU's time."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Compare the file with the machine's memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "d56710165571",
+    "question": "A team wants to train a deep neural network with millions of parameters on a dataset that fits comfortably in RAM. Is distributed computing justified?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No, distributed computing is only for data larger than memory",
+        "explanation": "Data size is not the only trigger for distribution."
+      },
+      {
+        "label": "B",
+        "text": "Yes, because a sophisticated process can need distributed computing even with not-so-big data",
+        "explanation": "Correct. The lecture gives training a DNN with millions of parameters as exactly this case."
+      },
+      {
+        "label": "C",
+        "text": "No, because neural networks cannot be distributed",
+        "explanation": "The lecture gives DNN training as a use for distributed computing."
+      },
+      {
+        "label": "D",
+        "text": "Yes, but only to store the data safely",
+        "explanation": "Storage is not the issue when the data fits in RAM; the computation is."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The lecture names two separate reasons to distribute.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "6e847c294d26",
+    "question": "Which statement best describes distributed computing as opposed to parallel computing?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each CPU has its own memory and machines are connected across a network",
+        "explanation": "Correct. Parallel computing, in general, has multiple CPUs sharing the same memory."
+      },
+      {
+        "label": "B",
+        "text": "Multiple CPUs share a single source of memory",
+        "explanation": "That describes parallel computing."
+      },
+      {
+        "label": "C",
+        "text": "It is another name for parallel computing",
+        "explanation": "They differ in how memory is organised."
+      },
+      {
+        "label": "D",
+        "text": "It always runs inside a single machine",
+        "explanation": "Distributed computing connects multiple machines across a network."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Think about who owns the memory.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "b7b940bdcda8",
+    "question": "Data is split by region, so one machine gets far more records than the others and the whole job waits for it. Which key challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fault tolerance",
+        "explanation": "No machine failed; one is simply overloaded."
+      },
+      {
+        "label": "B",
+        "text": "Consistency & reproducibility",
+        "explanation": "Output reliability is not the issue; the work is unevenly spread."
+      },
+      {
+        "label": "C",
+        "text": "Partitioning (data skew)",
+        "explanation": "Correct. Unbalanced partitions give one machine much more work, and performance drops."
+      },
+      {
+        "label": "D",
+        "text": "Ethics review",
+        "explanation": "That is a governance process, not a distributed processing challenge."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Ask whether the work was split evenly.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "1c5f19524a9f",
+    "question": "Why does the MapReduce combine step help performance?",
+    "options": [
+      {
+        "label": "A",
+        "text": "It writes every record to disk twice for safety",
+        "explanation": "That adds I/O rather than saving it."
+      },
+      {
+        "label": "B",
+        "text": "It sends smaller summaries instead of raw data, reducing communication overhead",
+        "explanation": "Correct. Platforms process data where it is stored and send only smaller summaries."
+      },
+      {
+        "label": "C",
+        "text": "It reruns failed tasks automatically",
+        "explanation": "That is fault tolerance, not the purpose of combining."
+      },
+      {
+        "label": "D",
+        "text": "It fixes the execution order of tasks",
+        "explanation": "That addresses consistency, not network traffic."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Think about what crosses the network.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "a242aeab25aa",
+    "question": "Splitting a job across many machines made it slower than running it on one. Which challenge most likely cancelled the gains?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Reliability limit",
+        "explanation": "That is a limit of a single machine, which distribution helps overcome."
+      },
+      {
+        "label": "B",
+        "text": "Storage limit",
+        "explanation": "Distribution relieves storage limits rather than causing slowdowns."
+      },
+      {
+        "label": "C",
+        "text": "Differential privacy",
+        "explanation": "That is a privacy technique, not a performance problem."
+      },
+      {
+        "label": "D",
+        "text": "Communication overhead",
+        "explanation": "Correct. Moving data, synchronizing intermediate results and coordinating completion can cancel the speed gains."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Consider what distributed machines must do that one machine does not.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "14cc9a377a86",
+    "question": "One node crashes halfway through a large distributed job. What does a platform like Spark or MapReduce do?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Restarts the whole job from the beginning",
+        "explanation": "Platforms aim to redo only the failed part, not everything."
+      },
+      {
+        "label": "B",
+        "text": "Stops the job, since one failure stops everything",
+        "explanation": "That is the reliability limit of a single machine, which distribution is meant to avoid."
+      },
+      {
+        "label": "C",
+        "text": "Ignores the lost results",
+        "explanation": "Lost work is re-run, not dropped."
+      },
+      {
+        "label": "D",
+        "text": "Detects the failure and automatically redoes only the failed part",
+        "explanation": "Correct. Fault tolerance means the system continues even when some nodes fail."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "In distributed systems, failures are normal.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "2935c8ef5835",
+    "question": "A distributed pipeline produces different totals on reruns because some records are processed twice and late data is missed. Which challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Partitioning",
+        "explanation": "Partitioning is about how evenly data is split, not repeatable output."
+      },
+      {
+        "label": "B",
+        "text": "Consistency & reproducibility",
+        "explanation": "Correct. Duplicate processing, varying execution order and late-arriving data threaten repeatable outputs."
+      },
+      {
+        "label": "C",
+        "text": "Communication overhead",
+        "explanation": "That slows a job down but does not by itself change its results."
+      },
+      {
+        "label": "D",
+        "text": "Unequal resources and access",
+        "explanation": "That is a GenAI ethics concern, not a processing challenge."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The problem is the outputs, not the speed.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "1d484f321f76",
+    "question": "What is the major difference between Hadoop and Spark?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Hadoop is newer than Spark",
+        "explanation": "Hadoop is the older system."
+      },
+      {
+        "label": "B",
+        "text": "Spark cannot store data, only Hadoop can",
+        "explanation": "The difference the lecture stresses is memory use during processing."
+      },
+      {
+        "label": "C",
+        "text": "Hadoop writes intermediate results to disk, while Spark keeps data in memory whenever possible",
+        "explanation": "Correct. That is why Spark is faster for many use cases."
+      },
+      {
+        "label": "D",
+        "text": "Spark is only for real-time streams",
+        "explanation": "Spark handles historical/batch big data too."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Where do intermediate results live?",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "1e60a074c4e3",
+    "question": "Which of these is NOT one of the four main components of a big data system?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Model cards",
+        "explanation": "Correct. Model cards are a provenance-tracking tool for AI ethics, not a big data system component."
+      },
+      {
+        "label": "B",
+        "text": "Job scheduler",
+        "explanation": "This is one of the four components."
+      },
+      {
+        "label": "C",
+        "text": "Data storage",
+        "explanation": "This is one of the four components."
+      },
+      {
+        "label": "D",
+        "text": "Data processing",
+        "explanation": "This is one of the four components, alongside common utilities."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The four are utilities, storage, scheduling and processing.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "3a9ad761d309",
+    "question": "A fitness app shares users' location data with partners without telling them. Which of the 5 Cs is most directly violated?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Consent",
+        "explanation": "Correct. Consent builds trust through agreement about what data is collected and how it will be used."
+      },
+      {
+        "label": "B",
+        "text": "Consistency",
+        "explanation": "Consistency is about behaving the same way over time, which is not the main issue here."
+      },
+      {
+        "label": "C",
+        "text": "Clarity",
+        "explanation": "Clarity is about how clearly the terms are stated, but here no agreement was sought at all."
+      },
+      {
+        "label": "D",
+        "text": "Capacity",
+        "explanation": "Capacity is not one of the 5 Cs."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Did users agree to this use?",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "80fbb59baec0",
+    "question": "Data travelling between cluster nodes is intercepted and altered. Which ethical concern of distributed computing does this illustrate?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Bias and fairness",
+        "explanation": "That is about biased data or algorithms, not tampering in transit."
+      },
+      {
+        "label": "B",
+        "text": "Accountability and responsibility",
+        "explanation": "Unclear blame may follow, but the event itself is a security failure."
+      },
+      {
+        "label": "C",
+        "text": "Environmental impact",
+        "explanation": "That is a GenAI usage concern about energy use."
+      },
+      {
+        "label": "D",
+        "text": "Data security: inter-node communication",
+        "explanation": "Correct. Data transmitted between nodes may be intercepted or tampered with if not properly secured."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Focus on the data in transit.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "e27ecdc177ab",
+    "question": "Doctors accept an AI's confident diagnosis without checking it. Which usage-stage challenge is this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Black box",
+        "explanation": "The black box is about not being able to explain the model, a design-stage issue."
+      },
+      {
+        "label": "B",
+        "text": "Over-reliance and automation bias",
+        "explanation": "Correct. Users trust the confident answer and stop using their own critical thinking."
+      },
+      {
+        "label": "C",
+        "text": "Malicious use",
+        "explanation": "Nobody is using the AI to cause harm on purpose."
+      },
+      {
+        "label": "D",
+        "text": "Unequal resources and access",
+        "explanation": "That is about who can afford to train big models."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "The problem is the users' trust, not the model's design.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
+    "id": "85882ad6c14d",
+    "question": "A team wants to publish statistics from user data while limiting what they reveal about any single individual. Which mitigation fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Red teaming",
+        "explanation": "Red teaming tries to break the system before release; it does not protect individuals in published data."
+      },
+      {
+        "label": "B",
+        "text": "Diverse teams",
+        "explanation": "Diverse teams catch blind spots but do not mathematically protect data."
+      },
+      {
+        "label": "C",
+        "text": "Differential privacy",
+        "explanation": "Correct. It is a formal, mathematical framework that bounds how much the output can change when any one person's data is added or removed, limiting what can be learned about that person."
+      },
+      {
+        "label": "D",
+        "text": "Explainable AI",
+        "explanation": "XAI makes model decisions interpretable; it does not hide individuals' data."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Look for the formal, mathematical framework.",
+    "course": "COM6001",
+    "unit": "Lecture_12",
+    "deck": "COM6001_Lecture_12"
+  },
+  {
     "id": "1074ccc54b14",
     "question": "What primary limitation of file-based data management systems is resolved by introducing a Database Management System (DBMS)?",
     "options": [
@@ -12043,6 +12703,699 @@
     "course": "COM6002",
     "unit": "Lecture_7",
     "deck": "COM6002_Lecture_7"
+  },
+  {
+    "id": "0d4de9087d77",
+    "question": "A blog stores each post with a list of tags; the tags are small, few, and only ever shown on that post. How should the tags be modelled?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embed them in the post document",
+        "explanation": "Small, bounded child data viewed in the context of its parent is the case for embedding, and it gives fast reads without joins."
+      },
+      {
+        "label": "B",
+        "text": "Reference them from a separate collection by ID",
+        "explanation": "Referencing suits data viewed independently or shared across parents, which these tags are not."
+      },
+      {
+        "label": "C",
+        "text": "Store each tag as its own database",
+        "explanation": "A database is the top-level container, far too coarse for a post's tags."
+      },
+      {
+        "label": "D",
+        "text": "Shard the tags by hashed tag name",
+        "explanation": "Sharding distributes a collection across nodes; it does not decide how child data relates to a parent."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Ask how the tags are viewed and how large they can grow.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "e7fb3266d510",
+    "question": "Students and modules have a many-to-many relationship, and modules are browsed on their own. How should modules relate to students?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embed every module inside each student document",
+        "explanation": "This duplicates shared data across parents, the opposite of the guideline for many-to-many data."
+      },
+      {
+        "label": "B",
+        "text": "Reference modules by ID",
+        "explanation": "Many-to-many data, shared across parents and viewed independently, is the case for referencing."
+      },
+      {
+        "label": "C",
+        "text": "Embed every student inside each module document",
+        "explanation": "This still duplicates shared data and could grow without bound."
+      },
+      {
+        "label": "D",
+        "text": "Keep both in one document per university",
+        "explanation": "Such a document would be unbounded and soon hit the 16MB limit."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Consider who else needs the module data.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "e0a65e0751fe",
+    "question": "An IoT device document would accumulate sensor readings indefinitely. Why should the readings be referenced rather than embedded?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Embedded fields cannot hold numbers",
+        "explanation": "Fields can hold numbers; the data type is not the issue."
+      },
+      {
+        "label": "B",
+        "text": "Referencing gives faster reads than embedding",
+        "explanation": "Embedding is the choice for fast reads without joins; referencing needs extra lookups."
+      },
+      {
+        "label": "C",
+        "text": "The child data is unbounded, and a document has a maximum size of 16MB",
+        "explanation": "Large or unbounded child data is the case for referencing because of the 16MB document limit."
+      },
+      {
+        "label": "D",
+        "text": "Indexes only work on referenced documents",
+        "explanation": "Indexes work on any field of a collection, embedded or not."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Think about what happens to the document's size over time.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "8ed3b6b23e49",
+    "question": "Which statement about MongoDB's dynamic schema is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "All documents in a collection must share the same fields",
+        "explanation": "This describes a fixed schema like an RDBMS table, not MongoDB."
+      },
+      {
+        "label": "B",
+        "text": "A field must keep the same data type across a collection",
+        "explanation": "The lecture shows a student ID stored as a number in one document and a string in another."
+      },
+      {
+        "label": "C",
+        "text": "A schema must be declared before inserting documents",
+        "explanation": "No schema declaration is needed with a dynamic schema."
+      },
+      {
+        "label": "D",
+        "text": "Documents with different sets of fields can be kept in the same collection",
+        "explanation": "Dynamic schema allows different sets of fields and different data types in one collection."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Compare Amy's and Bob's documents in the lecture.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "5506c07ef364",
+    "question": "Which mapping from RDBMS to MongoDB terminology is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Row → document, column → field",
+        "explanation": "A record (row) maps to a document and an attribute (column) maps to a field."
+      },
+      {
+        "label": "B",
+        "text": "Table → document, row → field",
+        "explanation": "A table maps to a collection, not a document."
+      },
+      {
+        "label": "C",
+        "text": "Database → collection, table → database",
+        "explanation": "A database maps to a database, and a table to a collection."
+      },
+      {
+        "label": "D",
+        "text": "Column → collection, row → field",
+        "explanation": "A column maps to a field and a row to a document."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Line up the levels from largest container to smallest unit.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "2ad253d8dc48",
+    "question": "A collection has a unique index on `email`. What happens when a document with an existing email is inserted?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Both documents are stored and the index keeps one",
+        "explanation": "A unique index does not silently keep duplicates."
+      },
+      {
+        "label": "B",
+        "text": "The insert is rejected",
+        "explanation": "A unique index rejects duplicated values on the index field."
+      },
+      {
+        "label": "C",
+        "text": "The new document's email is set to null",
+        "explanation": "Null is how a missing index value is treated, not how duplicates are handled."
+      },
+      {
+        "label": "D",
+        "text": "The old document is overwritten",
+        "explanation": "A unique index rejects the duplicate rather than replacing anything."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Recall what unique means for an index.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "32ac3325f17e",
+    "question": "A document has no value for a field covered by a regular (non-sparse) index. How does the index treat it?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The document is rejected",
+        "explanation": "Only a unique index rejects, and then for duplicates, not for a missing value."
+      },
+      {
+        "label": "B",
+        "text": "The document is left out of the collection",
+        "explanation": "The document is still stored in the collection."
+      },
+      {
+        "label": "C",
+        "text": "The field is indexed under a \"null\" key",
+        "explanation": "The index records a null key for the missing value; the stored document itself is unchanged."
+      },
+      {
+        "label": "D",
+        "text": "A random value is generated for the field",
+        "explanation": "Values are generated automatically only for `_id`."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "There is a specific placeholder value for a missing index field.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "c0f2e96b2fec",
+    "question": "A food delivery app must find restaurants near a user's location. Which index type fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ascending index",
+        "explanation": "A one-dimensional B+ tree index does not support multi-dimensional search."
+      },
+      {
+        "label": "B",
+        "text": "`text` index",
+        "explanation": "A text index supports text search, not location search."
+      },
+      {
+        "label": "C",
+        "text": "Unique index",
+        "explanation": "Uniqueness rejects duplicates; it does not support spatial search."
+      },
+      {
+        "label": "D",
+        "text": "`2dsphere` index",
+        "explanation": "`2dsphere` supports multi-dimensional search, with the R-tree as its reference structure."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Location has more than one dimension.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "355237a720d6",
+    "question": "What is the cost of adding an index in MongoDB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Additional storage and index maintenance",
+        "explanation": "Indexing improves search time at the cost of additional storage and index maintenance."
+      },
+      {
+        "label": "B",
+        "text": "Searches become $O(n)$",
+        "explanation": "An ascending or descending B+ tree index reduces search time to $O(\\lg n)$."
+      },
+      {
+        "label": "C",
+        "text": "Documents lose their `_id` field",
+        "explanation": "Every document must keep `_id`; indexing does not affect that."
+      },
+      {
+        "label": "D",
+        "text": "The schema becomes fixed",
+        "explanation": "Indexing does not change MongoDB's dynamic schema."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Faster search is not free.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "d7d705d6a514",
+    "question": "Why can documents sorted by their default `_id` be read in roughly the order they were created?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The `_id` is a string of the insertion date",
+        "explanation": "An `ObjectId` is presented like a string but is not a string."
+      },
+      {
+        "label": "B",
+        "text": "The first 4 bytes of the `ObjectId` are a timestamp",
+        "explanation": "Starting with a timestamp makes `ObjectId` values naturally sorted chronologically."
+      },
+      {
+        "label": "C",
+        "text": "The `_id` is a hash of the document's content",
+        "explanation": "A content hash would scatter documents rather than order them by time."
+      },
+      {
+        "label": "D",
+        "text": "The last 3 bytes are random",
+        "explanation": "The last 3 bytes are an incrementing counter; the random value is the middle 5 bytes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Look at what the `ObjectId` begins with.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "8142049271ca",
+    "question": "A developer wants to use the student ID string `\"s101102\"` as the document's identifier. Is this allowed?",
+    "options": [
+      {
+        "label": "A",
+        "text": "No, `_id` must always be a system-generated `ObjectId`",
+        "explanation": "The system generates one by default, but you can set `_id` yourself."
+      },
+      {
+        "label": "B",
+        "text": "No, `_id` must be a number",
+        "explanation": "Strings are allowed as well as numbers."
+      },
+      {
+        "label": "C",
+        "text": "Yes, `_id` can be set yourself with other types such as a string",
+        "explanation": "`_id` is mandatory but may be set manually with other types, e.g. string or number."
+      },
+      {
+        "label": "D",
+        "text": "Yes, and then the document needs no `_id` field",
+        "explanation": "Every document in MongoDB must have the `_id` field."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "`_id` is mandatory, but who must create it?",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "607d9aad97f9",
+    "question": "An instant messaging service only wants to spread its message storage evenly across machines. Which sharding strategy fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ranged sharding by message datetime",
+        "explanation": "Ranged sharding suits fetching a range of key values, such as one month, rather than spreading the load."
+      },
+      {
+        "label": "B",
+        "text": "No sharding, with a larger replica set",
+        "explanation": "Replicas hold copies of the same data, so they do not spread storage load."
+      },
+      {
+        "label": "C",
+        "text": "Embedding all messages in one document",
+        "explanation": "This would hit the 16MB document limit and not use multiple machines."
+      },
+      {
+        "label": "D",
+        "text": "Hashed sharding",
+        "explanation": "Hashing the shard key spreads documents across shards, which suits distributing the storage load."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Which strategy scatters neighbouring key values?",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "25de12228267",
+    "question": "Users often fetch all their messages for a chosen month. Which sharding setup suits this?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Ranged sharding by (account, datetime)",
+        "explanation": "Ranges keep one account's messages for a month adjacent, in one or a few neighbouring chunks, so the router queries only the shards holding that range."
+      },
+      {
+        "label": "B",
+        "text": "Hashed sharding by message datetime",
+        "explanation": "Hashing scatters consecutive times across shards, so a month's query hits many."
+      },
+      {
+        "label": "C",
+        "text": "Hashed sharding by a random value",
+        "explanation": "A random key ignores both the account and the time the query uses."
+      },
+      {
+        "label": "D",
+        "text": "Ranged sharding by message length",
+        "explanation": "Message length is unrelated to the account and month being queried."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Keep together what is read together.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "c4876225889a",
+    "question": "Which statement about sharding in MongoDB is correct?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Each shard holds a full copy of the data",
+        "explanation": "That describes replication; a shard holds partial data."
+      },
+      {
+        "label": "B",
+        "text": "Partitioning is random, so a document's shard cannot be known",
+        "explanation": "The partitioning method is deterministic."
+      },
+      {
+        "label": "C",
+        "text": "It is horizontal fragmentation configured by a shard key and a sharding strategy",
+        "explanation": "Sharding partitions documents across nodes, configured by choosing a shard key and a strategy."
+      },
+      {
+        "label": "D",
+        "text": "It splits each document's fields across nodes",
+        "explanation": "Sharding is horizontal fragmentation: it distributes whole documents across shards."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Is the data copied, or divided?",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "1e9bb1cf1f29",
+    "question": "In a replica set with default settings, where do read and write requests go?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Spread evenly across all nodes",
+        "explanation": "The workload is not shared between nodes by default."
+      },
+      {
+        "label": "B",
+        "text": "Always to the primary node",
+        "explanation": "By default requests always go to the primary; secondaries are for backup and recovery."
+      },
+      {
+        "label": "C",
+        "text": "To the nearest secondary",
+        "explanation": "Reading from the nearest secondary is possible only if configured."
+      },
+      {
+        "label": "D",
+        "text": "To whichever node answers the heartbeat first",
+        "explanation": "The heartbeat checks whether nodes are alive; it does not route requests."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "Secondaries have a different default role.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "5656288a0bbe",
+    "question": "The primary node of a replica set fails. What happens?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The replica set stops accepting requests permanently",
+        "explanation": "Replication exists for availability, so the set recovers."
+      },
+      {
+        "label": "B",
+        "text": "All secondaries become primaries",
+        "explanation": "There is a single primary at a time."
+      },
+      {
+        "label": "C",
+        "text": "The data is resharded across the secondaries",
+        "explanation": "Sharding is a separate mechanism from replication."
+      },
+      {
+        "label": "D",
+        "text": "A new primary is elected",
+        "explanation": "The replica set elects a new primary when the primary fails."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Think of how Raft handles a leader failure.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "4b2f7630d42c",
+    "question": "A game logs player clicks for analytics; speed matters most and losing a few events is acceptable. Which write concern fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`{ w: 1 }`",
+        "explanation": "Acknowledging once the primary applies the write gives the fastest latency; the risk of loss on failover is acceptable here."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: \"majority\" }`",
+        "explanation": "Waiting for a majority adds network replication latency that this workload does not need."
+      },
+      {
+        "label": "C",
+        "text": "`{ w: \"majority\", j: true }`",
+        "explanation": "This is the best practice for mission-critical data and adds waiting for replication and the journal, which click logs do not need."
+      },
+      {
+        "label": "D",
+        "text": "`{ j: true }` only",
+        "explanation": "Waiting for the on-disk journal adds latency without being needed here."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "Latency or durability: which does this workload value?",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "19d5d58084ca",
+    "question": "A bank records payments and must not lose any acknowledged write, even across a crash or failover. Which setting is recommended?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`{ w: 1 }`",
+        "explanation": "Primary-only acknowledgement (the slide's default) can lose data if the primary fails before replicating."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: 1, j: false }`",
+        "explanation": "This gives neither majority replication nor journal persistence."
+      },
+      {
+        "label": "C",
+        "text": "`{ w: \"majority\", j: true }`",
+        "explanation": "Combining majority acknowledgment with the on-disk journal is the best practice for mission-critical data."
+      },
+      {
+        "label": "D",
+        "text": "Read concern `local`",
+        "explanation": "Read concern controls reads, not the durability of writes."
+      }
+    ],
+    "answers": [
+      "C"
+    ],
+    "hint": "Combine survival across nodes with survival on disk.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "99b11a5cc1b6",
+    "question": "With `{ w: 1 }`, the primary acknowledges a write and then fails before replicating it. What can happen?",
+    "options": [
+      {
+        "label": "A",
+        "text": "The write is guaranteed to survive",
+        "explanation": "Only majority acknowledgment guarantees survival of an automatic failover."
+      },
+      {
+        "label": "B",
+        "text": "The write is lost during failover",
+        "explanation": "This is the stated risk of `{ w: 1 }`."
+      },
+      {
+        "label": "C",
+        "text": "The client waits until a secondary confirms",
+        "explanation": "`{ w: 1 }` returns right after the primary applies the write."
+      },
+      {
+        "label": "D",
+        "text": "The write is recovered from the router",
+        "explanation": "The router redistributes queries; it does not store writes."
+      }
+    ],
+    "answers": [
+      "B"
+    ],
+    "hint": "When did the client get its acknowledgment?",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "3558eedc5a57",
+    "question": "A report must only show data that will not be rolled back, even if it is a little slower. Which read concern fits?",
+    "options": [
+      {
+        "label": "A",
+        "text": "`local`",
+        "explanation": "`local` returns the current member's state, which may not reflect writes elsewhere and is not guaranteed durable."
+      },
+      {
+        "label": "B",
+        "text": "`{ w: 1 }`",
+        "explanation": "This is a write concern, not a read concern."
+      },
+      {
+        "label": "C",
+        "text": "`{ j: true }`",
+        "explanation": "This is a write concern about the journal, not a read setting."
+      },
+      {
+        "label": "D",
+        "text": "`majority`",
+        "explanation": "`majority` returns data acknowledged by a majority of members, guaranteeing it is durable."
+      }
+    ],
+    "answers": [
+      "D"
+    ],
+    "hint": "Durable data is data most members have acknowledged.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
+  },
+  {
+    "id": "b303f944126a",
+    "question": "In a sharded MongoDB cluster, which component stores the cluster's metadata and configuration settings?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Config server",
+        "explanation": "The config server stores metadata and configuration settings for the cluster."
+      },
+      {
+        "label": "B",
+        "text": "Router",
+        "explanation": "The router accepts queries and redistributes the workload to the appropriate shards."
+      },
+      {
+        "label": "C",
+        "text": "Secondary node",
+        "explanation": "A secondary holds a copy of data for backup and recovery."
+      },
+      {
+        "label": "D",
+        "text": "Journal",
+        "explanation": "The journal is a write-ahead log for crash recovery."
+      }
+    ],
+    "answers": [
+      "A"
+    ],
+    "hint": "The name says what it holds.",
+    "course": "COM6002",
+    "unit": "Lecture_8A",
+    "deck": "COM6002_Lecture_8A"
   },
   {
     "id": "6cc82ee6420a",

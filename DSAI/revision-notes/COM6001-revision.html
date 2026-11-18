@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6001 · Final Exam Revision Guide</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6001-revision">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6001 Computing with Big Data › Final Exam Revision</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6001 · Final Exam Revision · Source: Week_12/Revision.pdf（12 slides，lecturer 嘅溫習清單）· Lecturer: Dr. Aileen Hou</p>
+<h1>Final Exam Revision Guide</h1>
+
+<div class="overview">
+  <h3>🎯 點用呢頁</h3>
+  <ul>
+    <li>呢頁跟 Revision.pdf 嘅次序，逐項列出 lecturer 點名要識嘅<b>概念</b>同 <b>how-to statements</b>，每項附 code 同連去對應 week 嘅詳細筆記。</li>
+    <li>Lecturer 建議：<b>遮住答案，喺紙上寫 code</b>。所以每段 code 都可以當練習：先遮住自己寫，再對答案。</li>
+    <li>所有 code 用同一個細 DataFrame <code>df</code>（§0），可以由上到下照住行。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li><b>Selection</b>：<code>loc</code>（label，頭尾都包）vs <code>iloc</code>（position，包頭唔包尾）、條件篩選用 <code>&amp;</code> / <code>|</code> 加括號、2-D selection。</li>
+    <li><b>Missing values &amp; outliers</b>：<code>isna().sum()</code>、<code>dropna(thresh=x)</code>、<code>fillna()</code>；IQR bounds、count outliers、cap。</li>
+    <li><b>map / apply / agg</b> 分別、<code>axis=0</code> vs <code>axis=1</code>；<b>groupby vs pivot_table</b>，由結果反推 statement、讀 trend。</li>
+    <li><b>merge vs concat</b>（認得 inner / outer / axis 嘅結果）；<code>cut</code> / <code>qcut</code>；encoding 揀 one-hot 定 ordinal；scaling 三種 pros / cons。</li>
+    <li><b>Big data &amp; ethics</b>：hardware 速度、一部 vs 一組 PC、distributed vs parallel、4 challenges、Hadoop vs Spark、5 Cs。</li>
+  </ol>
+</div>
+
+<div class="box exam"><span class="label">⭐ Final exam 資料（slide 1）</span>
+<table>
+<tr><th>項目</th><th>內容</th></tr>
+<tr><td>格式</td><td><b>15 MC + 4 Long questions</b>（paper-based、close-book，見 <a href="COM6001-w2.html">Week 2</a>）</td></tr>
+<tr><td>範圍</td><td><b>Lesson 1 – 12</b></td></tr>
+<tr><td>時間</td><td><b>08 Dec 2026（Tuesday）19:00–21:00</b></td></tr>
+<tr><td>地點</td><td>A403/404（Lecture 12 slide 1 寫 Main Campus A403）</td></tr>
+<tr><td>Consultation</td><td>01 Dec 12:30–15:30（SM1108），<b>要預約</b></td></tr>
+</table>
+<p><b>Lecturer 嘅溫習提示</b>：(1) the vocab list；(2) 所有 notebooks 入面嘅 in-class 同 homework questions；(3) 遮住答案，喺紙上寫 code；(4) 呢份 summary；(5) 試下寫出 revision slides 入面 how-to questions 嘅 statements。</p>
+<p><b>寫唔出完整 code，就寫低 logic steps 攞 part marks。</b></p></div>
+<div class="box note"><span class="label">📝 未有嘅材料</span><p>「Vocab list」唔喺呢個 folder 入面；如果 Moodle 有，記得一齊溫。</p></div>
+
+<h2>0. 練習用 DataFrame</h2>
+<p>下面所有例子都用呢個 <code>df</code>。佢故意包含 duplicated row（index 1 同 3）、missing values、outlier（age 120）、前後有空格同大細楷唔一致嘅 names。</p>
+<pre><code>import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    'name':   ['  Amy ', 'bob', 'Carl', 'bob', 'Dan', 'Eve'],
+    'dept':   ['IT', 'HR', 'IT', 'HR', 'Sales', 'IT'],
+    'level':  ['junior', 'senior', 'mid', 'senior', 'senior', 'junior'],
+    'age':    [25, 32, np.nan, 32, 45, 120],
+    'salary': [30000, 42000, 38000, 42000, np.nan, 50000],
+    'date':   ['2026-01-15', '2026-03-02', '2026-04-20', '2026-03-02', '2026-07-09', '2026-11-30'],
+})</code></pre>
+
+<h2>1. INTRO：Data、data types、Big Data（slide 2）</h2>
+<p>詳見 <a href="COM6001-w1.html">Week 1</a>。</p>
+<table>
+<tr><th>概念</th><th>要識嘅嘢</th></tr>
+<tr><td>Data / attributes</td><td>Data = objects（rows）＋ attributes（columns / features）。DIKW：Data → Information → Knowledge → Wisdom。</td></tr>
+<tr><td>Data types</td><td><b>Numerical</b>（discrete / continuous）；<b>Categorical</b>：<b>Nominal</b>（冇次序，例如 eye color、zip code）、<b>Ordinal</b>（有次序，例如 good / fair / bad）</td></tr>
+<tr><td>Numerical → categorical</td><td>Binning：<code>pd.cut()</code>（自己俾 edges）、<code>pd.qcut()</code>（按 quantile 分，每組數量差唔多）</td></tr>
+<tr><td>Categorical → numerical</td><td>Encoding：nominal 用 one-hot（或 binary）；ordinal 用 ordinal encoding</td></tr>
+<tr><td>Data analytics</td><td>有價值嘅 insights 要 actionable、幫到做決定</td></tr>
+<tr><td>Big data 5 Vs</td><td><b>Volume</b>（量大）、<b>Velocity</b>（速度 / stream / real-time）、<b>Variety</b>（structured、text、image、graph…）、<b>Veracity</b>（準確 / 可信）、<b>Value</b>（價值）</td></tr>
+<tr><td>Data science process</td><td>CRISP-DM：Business Understanding → Data Understanding → Data Preparation → Modeling → Evaluation → Deployment（iterative）</td></tr>
+</table>
+<div class="box warn"><span class="label">⚠️ 常見陷阱</span><p>Zip code、student ID 雖然係數字，但係 <b>nominal</b>（計平均冇意義）。俾一個 scenario 問「邊個 V」：real-time fraud detection → Velocity；data 有錯、來源唔可靠 → Veracity。</p></div>
+
+<h2>2. PYTHON BASICS（slides 3–4）</h2>
+<p>詳見 <a href="COM6001-w2.html">Week 2</a>、<a href="COM6001-w3.html">Week 3</a>。Slide 3 寫明：<b>概念同 coding 都要識</b>。</p>
+<h3>2.1 Python characteristics</h3>
+<ul>
+<li><b>Indentation matters</b>：用縮排表示 code block（if / for / def 之後）。</li>
+<li><b>Case sensitive</b>：<code>Name</code> 同 <code>name</code> 係兩個唔同變數；<code>True</code> 唔可以寫 <code>true</code>。</li>
+<li><b>No compile</b>：interpreted language，逐行執行。</li>
+<li>Source code：Jupyter / IPython notebook（<code>.ipynb</code>）或 <code>.py</code>。</li>
+</ul>
+
+<h3>2.2 Basic data types、string methods、slicing</h3>
+<pre><code>a = 3          # int
+b = 3.0        # float
+c = 'Hello'    # str
+d = True       # bool
+type(b)        # float
+int('7') + float('1.5')   # 8.5 —— type conversion
+
+s = 'Data Science'
+s.upper()      # 'DATA SCIENCE'
+s.lower()      # 'data science'
+s.strip()      # 去頭尾空格
+s.replace('Data', 'Big Data')
+s.split(' ')   # ['Data', 'Science']
+
+# slicing [a:b:c]：a = start（包括）、b = stop（唔包括）、c = step
+s[0:4]         # 'Data'（index 0,1,2,3）
+s[::2]         # 'Dt cec'（每隔一個）
+s[::-1]        # 倒轉
+s[-7:]         # 'Science'</code></pre>
+<div class="box exam"><span class="label">⭐ Slicing</span><p><code>[a:b:c]</code>：a = start index（<b>inclusive</b>），b = stop index（<b>exclusive</b>），c = step。省略 a = 由頭；省略 b = 到尾；c 負數 = 倒序。</p></div>
+
+<h3>2.3 Data structures：list、tuple、set、dict</h3>
+<table>
+<tr><th></th><th>寫法</th><th>Ordered?</th><th>Mutable?</th><th>Duplicates?</th><th>點讀</th></tr>
+<tr><td><b>list</b></td><td><code>[1, 2, 2]</code></td><td>✔</td><td>✔</td><td>✔</td><td><code>x[0]</code></td></tr>
+<tr><td><b>tuple</b></td><td><code>(1, 2, 2)</code></td><td>✔</td><td>✘</td><td>✔</td><td><code>x[0]</code></td></tr>
+<tr><td><b>set</b></td><td><code>{1, 2}</code></td><td>✘</td><td>✔（但 element 要 immutable）</td><td>✘（自動去重）</td><td>唔可以用 index；用 <code>in</code></td></tr>
+<tr><td><b>dict</b></td><td><code>{'a': 1}</code></td><td>保留 insertion order</td><td>✔</td><td>key 唔可以重複</td><td><code>x['a']</code></td></tr>
+</table>
+<pre><code>scores = [70, 85]
+scores.append(90)              # list 加 element
+scores[0] = 75                 # update
+t = (1, 2)                     # t[0] = 9 → TypeError（tuple immutable）
+s = {1, 2, 2, 3}               # {1, 2, 3}
+s.add(4)
+student = {'name': 'Amy', 'results': {'COM6001': 'A', 'COM6002': 'B'}}
+student['name']                    # 'Amy'
+student['results']['COM6002']      # 'B'  —— embedded structure
+student['results']['COM6004'] = 'A'   # 加 / update 一個 key
+student.keys(); student.values(); student.items()
+empty_set = set()              # 注意：{} 係空 dict，唔係空 set</code></pre>
+
+<h3>2.4 If、loops</h3>
+<pre><code>prices = {'apple': 5, 'banana': 3, 'cherry': 12}
+
+total = 0                       # accumulator 要喺 loop 之前 initialize
+expensive = []                  # 用 append 整 list，都要先整個空 list
+for fruit, price in prices.items():   # loop dict：.items() 攞 key + value
+    total += price
+    if price &gt; 4:
+        expensive.append(fruit)
+    elif price == 3:
+        print(fruit, 'is cheap')
+    else:
+        pass
+print(total, expensive)         # 20 ['apple', 'cherry']
+
+for i, v in enumerate((10, 20, 30)):   # loop tuple，同時攞 index
+    print(i, v)
+
+n = 0
+while n &lt; 3:                    # while loop：iterator 喺 loop 前 initialize，loop 入面更新
+    n += 1</code></pre>
+<div class="box warn"><span class="label">⚠️ 常見錯誤</span><p>將 <code>total = 0</code> 或 <code>result = []</code> 放咗入 loop 入面 → 每個 iteration 都被重設。Loop dict 時直接 <code>for k in d</code> 只會攞到 keys。</p></div>
+
+<h3>2.5 Function 同 lambda</h3>
+<pre><code>def bmi(weight, height=1.7):    # def + function name + (args)：weight 必要，height 有 default（optional）
+    """計 BMI"""                  # docstring（optional）
+    return weight / height ** 2  # return（optional；冇 return 就回傳 None）
+
+bmi(68)                 # 用 default height
+bmi(68, height=1.8)     # keyword argument
+
+square = lambda x: x ** 2              # lambda args: expression（一行、冇 return 字）
+square(4)                              # 16
+grade = lambda m: 'Pass' if m &gt;= 50 else 'Fail'
+sorted(['bob', 'Amy', 'carl'], key=lambda s: s.lower())</code></pre>
+<div class="box exam"><span class="label">⭐ Function 必要 / optional 部分</span><p>必要：<code>def</code>、function name、括號、冒號、縮排嘅 body。Optional：parameters、default values、docstring、<code>return</code>。Lambda：<code>lambda 輸入: 一個 expression</code>，自動 return expression 嘅值。</p></div>
+
+<h2>3. PANDAS：Import、export、combining、selection（slide 5）</h2>
+<p>詳見 <a href="COM6001-w4.html">Week 4</a>、<a href="COM6001-w5.html">Week 5</a>。</p>
+<h3>3.1 Structured vs semi-structured；loading / exporting</h3>
+<table>
+<tr><th>Format</th><th>類型</th><th>Use case</th></tr>
+<tr><td>CSV、Excel</td><td>Structured（rows × columns 表格）</td><td>表格數據、spreadsheet</td></tr>
+<tr><td>JSON、XML</td><td>Semi-structured（有 tags / keys、可以 nested）</td><td>Web API、config、層級資料</td></tr>
+</table>
+<pre><code>df1 = pd.read_csv('data.csv', dtype={'zip': str})   # load 時指定 dtypes
+df2 = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+df.to_csv('out.csv', index=False)   # text、人睇得明、任何軟件開到，但 dtypes 唔保留（datetime / category 變返 str）
+df.to_pickle('out.pkl')             # binary、只限 Python、保留 dtypes 同 index
+pd.read_pickle('out.pkl')
+
+pd.DataFrame({'a': [1, 2], 'b': ['x', 'y']})       # 用 dict 整 DataFrame：key = column name</code></pre>
+<div class="box exam"><span class="label">⭐ CSV vs pickle</span><p>CSV：plain text、human-readable、跨平台；但 load 返要重新 parse，dtypes 會冇咗。Pickle：Python binary format，保留所有 dtypes（例如 <code>category</code>、datetime），讀寫快；但人睇唔明、只限 Python、唔好 load 唔信任嘅 pickle file。</p></div>
+
+<h3>3.2 merge vs concat</h3>
+<pre><code>a = pd.DataFrame({'id': [1, 2, 3], 'name': ['Amy', 'Bob', 'Carl']})
+b = pd.DataFrame({'id': [2, 3, 4], 'score': [80, 90, 70]})
+
+pd.merge(a, b)                      # default how='inner'，自動用共同 column 'id' → id 2, 3（2 rows）
+pd.merge(a, b, how='outer')         # id 1–4（4 rows），冇嘅位填 NaN
+pd.merge(a, b, how='left')          # 保留 a 全部：id 1, 2, 3
+pd.merge(a, b, on='id', how='right')   # 保留 b 全部：id 2, 3, 4
+
+c = pd.DataFrame({'id': [5], 'name': ['Dan']})
+pd.concat([a, c])                   # axis=0：上下疊 → 4 rows；index 會係 0,1,2,0（可加 ignore_index=True）
+pd.concat([a, b], axis=1)           # 左右並排，按 index 對齊，唔理 'id' 內容</code></pre>
+<div class="box exam"><span class="label">⭐ 點認 merge / concat 結果</span>
+<ul>
+<li><b>Merge</b>：兩表有共同 column，其他 columns 按共同 column <b>重新對齊</b>；inner 只留兩邊都有嘅 key，outer 留晒（有 NaN），left / right 留一邊。</li>
+<li><b>Concat</b>：columns（或 index）相同，<b>唔會重新排</b>，只係直接疊埋。<code>axis=0</code>（default）上下疊，<code>axis=1</code> 左右並排；<code>join='outer'</code>（default）唔一致嘅 columns 填 NaN，<code>join='inner'</code> 只留共同 columns。</li>
+<li>見到 index 重複（0,1,2,0）→ 多數係 concat；見到同一個 key 嘅資料拼埋喺同一行 → merge。</li>
+</ul></div>
+
+<h3>3.3 Attributes vs methods、selection、sorting</h3>
+<pre><code>df.shape; df.columns; df.index; df.dtypes     # attributes：冇括號
+df.head(); df.info(); df.describe()           # methods：有括號
+
+df['age']                       # 一個 column → Series
+df[['name', 'age']]             # 幾個 columns → DataFrame（雙括號）
+df.loc[1:3]                     # label 1 至 3（包括 3）→ 3 rows
+df.iloc[1:3]                    # position 1、2（唔包 3）→ 2 rows
+df.loc[df['age'] &gt; 30]                              # 條件
+df[(df['dept'] == 'IT') &amp; (df['age'] &lt; 50)]         # 多條件：&amp; / |，每個條件加括號
+df[df['dept'].isin(['IT', 'HR'])]
+df.loc[df['age'] &gt; 30, ['name', 'salary']]          # 2-D：揀 rows + columns
+df.iloc[0:2, 1:3]                                   # 2-D by position
+
+df.sort_values('salary', ascending=False)
+df.sort_values(['dept', 'age'])
+df.nlargest(2, 'salary')        # salary 最高 2 個
+df.nsmallest(2, 'age')</code></pre>
+<div class="box exam"><span class="label">⭐ loc vs iloc 結尾</span><p><code>df.loc[m:n]</code> 用 label，<b>m 同 n 都包括</b>；<code>df.iloc[m:n]</code> 用 integer position，<b>包 m 唔包 n</b>（同 Python slicing 一樣）。條件組合唔可以用 <code>and</code> / <code>or</code>，要用 <code>&amp;</code> / <code>|</code> 同括號。</p></div>
+
+<h2>4. DATA CLEANING（slides 6–7）</h2>
+<p>詳見 <a href="COM6001-w6.html">Week 6</a>、<a href="COM6001-w7.html">Week 7</a>、<a href="COM6001-w8.html">Week 8</a>。Why data cleaning：garbage in, garbage out；錯誤、重複、缺失、極端值會令分析同 model 出錯。</p>
+<h3>4.1 Unnecessary data</h3>
+<pre><code>df.duplicated()                 # 每行 True / False；第二次出現先係 True → index 3 係 True
+df.duplicated().sum()           # 1
+df = df.drop_duplicates()       # 刪重複 rows（保留第一次出現）
+df.drop(columns=['level'])      # 刪 columns（亦可 df.drop('level', axis=1)）
+
+# One-to-one mapping（兩個 columns 其實係同一樣資訊？）
+df[['name', 'dept']].value_counts()      # 每個組合出現幾多次
+df['name'].nunique(), df['dept'].nunique()
+# 如果組合數 == 每個 column 各自嘅 nunique，就係 one-to-one → 其中一個 column 冇額外資訊，可以刪
+
+# Constant column
+df['dept'].nunique() == 1               # True 即係只有一個值
+df.nunique()[df.nunique() == 1]         # 搵出所有 constant columns</code></pre>
+
+<h3>4.2 Missing data</h3>
+<pre><code>df.isna()                       # 每格 True / False（notna() 相反）
+df.isna().sum()                 # 每個 column 有幾多 NaN
+df.isna().sum(axis=1)           # 每行有幾多 NaN
+df[df.isna().sum(axis=1) &gt;= 1]  # 有至少 1 個 NaN 嘅 rows
+df.dropna()                     # 有任何 NaN 就刪成行
+df.dropna(thresh=5)             # 保留「最少有 5 個 non-NaN 值」嘅 rows
+df.dropna(axis=1)               # 刪有 NaN 嘅 columns
+
+df['salary'].fillna(0)                          # constant
+df['age'].fillna(df['age'].median())            # 有大 outliers（age 120）→ 用 median
+df['salary'].fillna(df['salary'].mean())        # 冇大 outliers → mean 都得</code></pre>
+<div class="box exam"><span class="label">⭐ Missing values 重點</span>
+<ul>
+<li><b>唔好寫 <code>df['age'] == np.nan</code></b>：NaN 唔等於任何嘢（包括自己），結果永遠 False；要用 <code>isna()</code>。</li>
+<li><code>dropna(thresh=x)</code>：x = 每行最少要有幾多個<b>非 missing</b> 值先保留（唔係「最多幾多個 NaN」）。</li>
+<li>Impute 策略：constant；statistics（mean：冇大 outliers；median：有大 outliers）；models（features 之間有 correlation 先有用）。Sklearn imputer 嘅 coding 唔使識。</li>
+</ul></div>
+
+<h3>4.3 Outliers</h3>
+<pre><code>df.describe()                        # numeric columns：count, mean, std, min, 25%, 50%, 75%, max
+df.describe(include='object')        # 非數值 columns：count, unique, top（最常見）, freq
+                                     #（pandas 3 將 strings 改為 str dtype，用 exclude='number' 最穩陣）
+df['dept'].mode()[0]                 # 最常見嘅值（mode() 回傳 Series）
+df['dept'].value_counts().idxmax()   # 同上
+
+Q1 = df['age'].quantile(0.25)
+Q3 = df['age'].quantile(0.75)
+IQR = Q3 - Q1
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+n_out = ((df['age'] &lt; lower) | (df['age'] &gt; upper)).sum()   # outliers 數目
+df['age_capped'] = df['age'].clip(lower, upper)              # cap：細過 lower 變 lower，大過 upper 變 upper</code></pre>
+<div class="formula">$$ \text{IQR} = Q_3 - Q_1,\quad \text{lower} = Q_1 - 1.5 \times \text{IQR},\quad \text{upper} = Q_3 + 1.5 \times \text{IQR} $$</div>
+<p>Five-number summary = min、\(Q_1\)（25%）、median（50%）、\(Q_3\)（75%）、max。</p>
+<div class="box tip"><span class="label">💡 用 §0 個 df 計一次（drop_duplicates 之後）</span><p>age = 25, 32, NaN, 45, 120（NaN 唔計）。pandas 用 linear interpolation：\(Q_1 = 30.25\)、\(Q_3 = 63.75\)、IQR = 33.5；upper = 63.75 + 50.25 = 114。所以 120 係 outlier（1 個），cap 之後變 114。</p></div>
+
+<h3>4.4 Cleaning texts</h3>
+<pre><code>df['name'] = df['name'].str.strip()        # 去頭尾空格
+df['name'] = df['name'].str.title()        # 統一大細楷（亦有 .str.lower() / .str.upper()）
+df[df['name'].str.contains('a', case=False)]   # 包含某字串嘅 rows
+df['name'].str[:3]                         # 每格頭 3 個字元（.str + slicing）
+df['name'].str.replace('Amy', 'Amie')</code></pre>
+<div class="box warn"><span class="label">⚠️ 唔好漏 .str</span><p><code>df['name'].strip()</code> 會出 AttributeError：Series 冇 <code>strip()</code>；要經 string accessor <code>.str</code> 先可以對成個 column 用 string method 或 slicing。Regular expression 唔考。</p></div>
+
+<h2>5. FEATURE TRANSFORMATION（slide 8）</h2>
+<p>詳見 <a href="COM6001-w7.html">Week 7</a>、<a href="COM6001-w8.html">Week 8</a>。</p>
+<h3>5.1 Datetime</h3>
+<pre><code>df['date'] = pd.to_datetime(df['date'])   # 點解：str 唔可以計時間差、揀月份、按時間 filter / sort
+df['year'] = df['date'].dt.year            # .dt accessor
+df['month'] = df['date'].dt.month
+df['quarter'] = df['date'].dt.quarter
+df['date'].dt.day_name()                   # 'Thursday' ...
+df[df['date'] &gt;= '2026-04-01']             # 按時間 filter
+df[df['date'].between('2026-03-01', '2026-06-30')]
+df[df['date'].dt.month == 3]</code></pre>
+
+<h3>5.2 Scaling（coding 唔使識）</h3>
+<p><b>Why scaling</b>：features 嘅單位 / 範圍唔同（例如 salary 幾萬、age 幾十），distance-based methods（例如 K-means、KNN）會被大數值 feature 主導。</p>
+<table>
+<tr><th></th><th>Standard scaling</th><th>Min-max scaling</th><th>Robust scaling</th></tr>
+<tr><td>公式</td><td>\( \frac{x - \text{mean}}{\text{std}} \)</td><td>\( \frac{x - \min}{\max - \min} \)</td><td>\( \frac{x - Q_2}{Q_3 - Q_1} \)</td></tr>
+<tr><td>結果</td><td>mean 0、std 1</td><td>training data 喺 [0, 1]</td><td>median 0、IQR 1</td></tr>
+<tr><td>Pros</td><td>常用；保留 distribution 形狀</td><td>固定 range，易理解</td><td><b>Robust to outliers</b></td></tr>
+<tr><td>Cons</td><td>mean / std 受 outliers 影響；唔會令 data 變 Normal</td><td><b>對 outliers 最敏感</b>（一個極端值會將其他值擠埋一齊）</td><td>Range 唔固定，唔保證喺 [0, 1]</td></tr>
+</table>
+
+<h3>5.3 Encoding（syntax 唔使識，要識揀）</h3>
+<table>
+<tr><th>Variable</th><th>例子</th><th>Encoding</th></tr>
+<tr><td><b>Nominal</b>（names，唔可以排序）</td><td>dept、color、city</td><td><b>One-hot</b>（或 binary）encoding：每個類別一個 0/1 column</td></tr>
+<tr><td><b>Ordinal</b>（可以排序）</td><td>junior &lt; mid &lt; senior；Good &lt; Moderate &lt; Unhealthy</td><td><b>Ordinal</b> encoding：按次序變 0, 1, 2…</td></tr>
+</table>
+<pre><code>pd.get_dummies(df['dept'])     # one-hot 示意（考試唔要求寫 encoder syntax）</code></pre>
+<div class="box warn"><span class="label">⚠️ 點解 nominal 唔用 ordinal encoding</span><p>將 IT=0、HR=1、Sales=2 會令 model 以為 Sales &gt; HR &gt; IT、而且 Sales 同 IT 嘅「距離」係 HR 同 IT 嘅兩倍，製造咗唔存在嘅次序。</p></div>
+
+<h3>5.4 Binning：cut vs qcut</h3>
+<pre><code>df['age_group'] = pd.cut(df['age'], bins=[0, 30, 60, 150],
+                         labels=['young', 'middle', 'senior'])   # 自己俾 edges；(0, 30], (30, 60], (60, 150]
+df['salary_band'] = pd.qcut(df['salary'], q=2, labels=['low', 'high'])   # 按 quantile 分，每組數量差唔多</code></pre>
+<div class="box exam"><span class="label">⭐ cut vs qcut</span><p><code>pd.cut</code>：俾 <b>edges</b>（或者 bins 數 → 等寬），每個 bin 嘅 range 固定，數量可以好唔平均；default 係 right-inclusive（包右唔包左）。<code>pd.qcut</code>：俾 <b>quantiles 數 q</b>，每個 bin 數量差唔多，但 range 唔等寬。labels 數目 = bins 數目（= edges 數 − 1）。</p></div>
+<div class="box warn"><span class="label">⚠️ Revision slide 寫法</span><p>Slide 8 寫 <code>df.cut()</code> / <code>df.qcut()</code>，但 pandas 入面佢哋係 <b>top-level functions</b>：<code>pd.cut(series, ...)</code>、<code>pd.qcut(series, ...)</code>；DataFrame 冇 <code>.cut()</code> method。考試寫 <code>pd.cut</code>。</p></div>
+
+<h2>6. EDA：map、apply、agg、dtypes（slide 9）</h2>
+<p>詳見 <a href="COM6001-w9.html">Week 9</a>。</p>
+<table>
+<tr><th></th><th><code>map()</code></th><th><code>apply()</code></th><th><code>agg()</code></th></tr>
+<tr><td>Caller</td><td>Series（<code>df['col'].map()</code>）</td><td>Series 或 DataFrame</td><td>Series 或 DataFrame（亦可接 groupby）</td></tr>
+<tr><td>Mapping</td><td><b>one-to-one</b>（element-wise）</td><td>one-to-one，或 row / column → one value</td><td>row / column → one value</td></tr>
+<tr><td>Axis?</td><td>冇得揀 axis</td><td>DataFrame 可揀 <code>axis=0</code> / <code>1</code></td><td>—</td></tr>
+<tr><td>Aggregating function（mean / max）？</td><td><b>唔可以</b></td><td>可以（但比直接 <code>df.mean()</code> 慢）</td><td>可以；<b>唔同 column 用唔同 function</b></td></tr>
+</table>
+<pre><code># map：update values（dict 或 function）
+df['dept_full'] = df['dept'].map({'IT': 'Information Technology', 'HR': 'Human Resources'})
+#   dict 冇嘅 key（Sales）會變 NaN！
+df['initial'] = df['name'].map(lambda s: s[0])          # slice string
+
+# apply on DataFrame
+df[['age', 'salary']].apply(lambda col: col.max() - col.min())        # axis=0（default）：逐個 column
+df[['age', 'salary']].apply(lambda row: row.isna().sum(), axis=1)     # axis=1：逐行
+
+# apply 按條件整新 feature（axis=1，每次攞一行 x）
+df['flag'] = df.apply(lambda x: 'OK' if (x['age'] &gt; 30) and (x['dept'] == 'HR') else 'not OK', axis=1)
+
+# agg：唔同 columns 用唔同 functions
+def value_range(s):
+    return s.max() - s.min()
+df.agg({'age': ['mean', 'max'], 'salary': ['median', value_range]})
+#   built-in function 名用 '' 包住；user-defined function 直接寫名，唔加 ''</code></pre>
+<div class="box exam"><span class="label">⭐ axis 記法</span><p><code>axis=0</code>：每次拎<b>一個 column</b> 出嚟做 function，行勻所有 columns → 結果每個 column 一個值。<code>axis=1</code>：每次拎<b>一行</b>，行勻所有 rows → 每行一個值。用 <code>df.apply</code> 整新 feature 一定要 <code>axis=1</code>。</p></div>
+<div class="box warn"><span class="label">⚠️ Revision slide 例子要改兩處</span><p>Slide 9 嘅例子 <code>df.apply(lambda x: "OK" if x[col1] &gt; 10 &amp; x[col2] == 5 else "not OK")</code>：</p>
+<ol>
+<li><b>漏咗 <code>axis=1</code></b>：冇 axis=1，x 係一個 column（Series），<code>x[col1]</code> 會用 column name 去搵 row label → KeyError。</li>
+<li><b><code>&amp;</code> 嘅優先次序高過 <code>&gt;</code> / <code>==</code></b>：<code>x[col1] &gt; 10 &amp; x[col2] == 5</code> 會被解讀成 <code>x[col1] &gt; (10 &amp; x[col2]) == 5</code>。逐行 apply 時 <code>x[col1]</code> 係單一值，用 <code>and</code>；或者每個條件加括號 <code>(x[col1] &gt; 10) &amp; (x[col2] == 5)</code>。</li>
+</ol>
+<p>正確：<code>df.apply(lambda x: "OK" if (x[col1] &gt; 10) and (x[col2] == 5) else "not OK", axis=1)</code></p></div>
+
+<pre><code># mode() 輸出
+df['dept'].mode()        # Series（可能有多個並列 modes）→ 用 [0] 攞第一個
+df.mode()                # DataFrame：每個 column 嘅 modes，行數 = 最多並列 modes 嘅數目
+
+# 揀 dtypes
+df.describe(include='number')         # 或 include='object' / exclude='number'
+df.mean(numeric_only=True)            # sum()、mean() 等用 numeric_only=True
+df.select_dtypes(exclude='number').nunique()    # 其他 functions：先 select_dtypes</code></pre>
+
+<h2>7. EDA：groupby、pivot table、sampling、correlation（slide 10）</h2>
+<p>詳見 <a href="COM6001-w9.html">Week 9</a>、<a href="COM6001-w10.html">Week 10</a>。</p>
+<pre><code>df.groupby('dept')['salary'].mean()                 # 每個 dept 平均 salary（Series）
+df.groupby('dept').agg({'salary': 'mean', 'age': 'max'})
+df.groupby(['dept', 'level'])['salary'].count()     # 兩層 groupby → MultiIndex
+
+df.pivot_table(values='salary', index='dept', columns='level', aggfunc='mean')
+pd.pivot_table(df, values='salary', index='dept', aggfunc='sum', margins=True)   # margins=True 加 'All' 總計</code></pre>
+<table>
+<tr><th></th><th><code>groupby</code></th><th><code>pivot_table</code></th></tr>
+<tr><td>Caller</td><td><code>df.groupby(...)</code>，之後要接 aggregation（<code>.mean()</code>、<code>.agg()</code>…）</td><td><code>df.pivot_table(...)</code> 或 <code>pd.pivot_table(df, ...)</code></td></tr>
+<tr><td>主要 options</td><td><code>by</code>（column 或 list）、之後揀 column 同 function</td><td><code>values</code>、<code>index</code>、<code>columns</code>、<code>aggfunc</code>（default <code>'mean'</code>）、<code>margins</code>、<code>fill_value</code></td></tr>
+<tr><td>輸出樣</td><td>Groups 喺 index（多個 keys → MultiIndex），通常係長形</td><td><b>二維表</b>：一個 key 喺 rows、另一個喺 columns；可以有 row / column 總計（All）</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 常見題型</span>
+<ul>
+<li><b>由結果反推 statement</b>：睇 index 係乜（groupby key / pivot index）、columns 係乜（pivot columns）、數值係 mean / sum / count。見到 categories 同時喺行同列、或者有 <code>All</code> → pivot table。</li>
+<li><b>讀 trend</b>：寫完整句子，例如用 §0 個 df（drop_duplicates 後）：「HR 嘅平均 salary 最高（42,000），IT 次之（約 39,333）」，指出最高 / 最低、隨時間上升 / 下降。</li>
+<li><b>點解 sampling 唔用頭 200 個</b>：data 通常有次序（按時間、station、類別排），頭 200 行唔代表整體 → bias。用 <code>df.sample(n=200, random_state=42)</code> 隨機抽。</li>
+</ul></div>
+
+<pre><code>df.select_dtypes('number').corr()      # 先揀 numerical columns（或 df.corr(numeric_only=True)）
+df['age'].corr(df['salary'])</code></pre>
+<div class="box exam"><span class="label">⭐ Correlation 解讀</span>
+<ul>
+<li>範圍 −1 至 1。正數：一個變大另一個傾向變大（positively correlated / 正比傾向）；負數：一個變大另一個傾向變細（negatively correlated）；接近 0：冇 <b>linear</b> 關係。</li>
+<li>|r| 越接近 1 越 highly correlated。Correlation ≠ causation。</li>
+<li>Highly correlated 可以點用：用 model impute missing values（用相關 feature 預測）；dimension reduction（刪一個 / 合併，減少 redundancy）；用嚟做 prediction。</li>
+</ul></div>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Pivot table / groupby ↔ COM6002 SQL <code>GROUP BY</code> 同 Power BI OLAP；correlation ↔ COM6005 regression；dimension reduction ↔ COM6005 Module 7 PCA。</p></div>
+
+<h2>8. VISUALIZATION（slide 11）</h2>
+<p>詳見 <a href="COM6001-w11.html">Week 11</a>。考 high level（揀圖、認圖、讀圖），唔考詳細 coding。</p>
+<pre><code>import seaborn as sns
+import plotly.express as px
+import matplotlib.pyplot as plt</code></pre>
+<table>
+<tr><th>Features</th><th>圖</th></tr>
+<tr><td>1 個 numerical</td><td>Histogram、KDE、ECDF、box plot → 睇 <b>distribution</b></td></tr>
+<tr><td>1 個 categorical</td><td>Count plot（bar of counts）→ 睇<b>數量</b></td></tr>
+<tr><td>2 個 numerical</td><td>Scatter plot、line plot（時間）</td></tr>
+<tr><td>Numerical + categorical</td><td>Bar、point、strip、swarm、box、violin、boxen</td></tr>
+<tr><td>2 個 categorical</td><td>Count plot + <code>hue</code> / <code>col</code></td></tr>
+<tr><td>多個 numerical</td><td>Pairplot、jointplot、<b>heatmap（最適合睇 correlation matrix）</b></td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ 認圖 → 參數</span><p>Categorical columns 可以控制 <code>hue</code>（顏色）、<code>col</code> / <code>row</code>（subplots）；numerical 可以加落 <code>size</code>（點大細）或者 numeric <code>hue</code>（漸變色）。俾一張圖：講出 plot type、x / y、hue / size / col 用咗邊個 feature，再寫 insight（例如「夏季 PM2.5 較低」、「兩個變數正相關」）。</p></div>
+<div class="box note"><span class="label">📝 Gen AI coding partners 嘅 modes</span><p class="missing">Slide 11 列「How to use Gen AI coding partners (their modes)」，但呢個 folder 嘅 lecture 材料冇講 modes 嘅內容（<a href="COM6001-w2.html">Week 2</a> 只講 GenAI 喺 beginner / intermediate / project 階段嘅 dos &amp; don'ts）。如果堂上 demo 過（例如 coding assistant 嘅 chat / ask、edit、agent 等 modes），請對返堂上筆記；呢度唔估 lecturer 嘅答案。</p></div>
+
+<h2>9. BIG DATA AND ETHICS（slide 12）</h2>
+<p>詳見 <a href="COM6001-w12.html">Week 12</a>。</p>
+<div class="box exam"><span class="label">⭐ 要識</span>
+<ul>
+<li><b>Hardware 速度</b>：CPU &gt; Memory (RAM) &gt; SSD &gt; Network（200× / 15× / 20×）。CPU = brain、RAM = short-term quick storage、SSD = long-term safe storage、Network = connection、GPU = massively parallel processor。</li>
+<li><b>一部 vs 一組 PC</b>：data 放得落 RAM → 一部；file 遠大過 memory（swapping、I/O wait）或 process 好複雜（DNN）→ distributed。</li>
+<li><b>Distributed vs parallel</b>：每個 CPU 有自己 memory、經 network 連接 vs 多個 CPU 共用 memory。</li>
+<li><b>4 challenges</b>：Partitioning（data skew）、Communication overhead、Fault tolerance、Consistency &amp; reproducibility。</li>
+<li><b>4 components</b>：common utilities、data storage、job scheduler、data processing。</li>
+<li><b>Spark vs Hadoop</b>：Hadoop 將 intermediate results 寫 disk；Spark keep in memory → 更快。</li>
+<li><b>5 Cs</b>：Consent、Clarity、Consistency、Control (and transparency)、Consequences (and harms)。</li>
+<li>Distributed computing ethics：privacy、security、accountability、bias &amp; fairness。GenAI ethics：bias、data permission、black box、unequal access；privacy、liability、environment、over-reliance、IP、malicious use。</li>
+</ul></div>
+
+<h2>10. 考試策略</h2>
+<ul>
+<li><b>MC（15 題）</b>：多數考概念分辨：loc / iloc 結尾、map / apply / agg、merge / concat、cut / qcut、nominal / ordinal、scaling 對 outliers、5 Vs、5 Cs、distributed / parallel、Hadoop / Spark。</li>
+<li><b>Long questions（4 題）</b>：預期係「俾 dataset 描述 / output，寫 statements」、「讀 groupby / pivot / plot 結果寫 insight」、「解釋點解要做某步 cleaning」。寫 code 時：先寫 import 同變數名、每步一行、加簡單註解；寫唔出就寫 logic steps。</li>
+<li>Syntax 細節最易失分：<code>.str</code>、<code>.dt</code>、<code>axis=1</code>、雙括號 <code>[['a','b']]</code>、條件加括號、<code>pd.cut</code> 唔係 <code>df.cut</code>、built-in function 名加引號。</li>
+</ul>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. <code>s = 'Computing'</code>，<code>s[1:7:2]</code> 同 <code>s[-3:]</code> 係乜？</summary><p><code>s[1:7:2]</code> 攞 index 1、3、5 → <code>'opt'</code>（o、p、t）。<code>s[-3:]</code> → <code>'ing'</code>。Start 包括、stop 唔包括。</p></details>
+<details class="q"><summary>Q2. <code>df.loc[2:4]</code> 同 <code>df.iloc[2:4]</code> 分別有幾多行（index 係 0–9 嘅 RangeIndex）？</summary><p><code>loc[2:4]</code>：labels 2、3、4 → 3 行。<code>iloc[2:4]</code>：positions 2、3 → 2 行。</p></details>
+<details class="q"><summary>Q3. 寫 statement：揀出 IT dept 而 salary 大過 35000 嘅員工嘅 name 同 salary。</summary><p><code>df.loc[(df['dept'] == 'IT') &amp; (df['salary'] &gt; 35000), ['name', 'salary']]</code></p></details>
+<details class="q"><summary>Q4. 表 A 有 id 1, 2, 3；表 B 有 id 2, 3, 4。<code>pd.merge(A, B)</code>、<code>pd.merge(A, B, how='outer')</code>、<code>pd.concat([A, B])</code> 各有幾多行？</summary><p>Merge default inner → 2 行（id 2、3）。Outer → 4 行（id 1–4，冇 match 嘅位 NaN）。Concat（axis=0）→ 6 行，直接上下疊，index 0,1,2,0,1,2。</p></details>
+<details class="q"><summary>Q5. 一個 DataFrame 有 6 個 columns。<code>df.dropna(thresh=4)</code> 會刪走邊啲 rows？</summary><p>刪走非 missing 值少過 4 個嘅 rows，即係有 3 個或以上 NaN 嘅 rows。</p></details>
+<details class="q"><summary>Q6. 寫 code 計 <code>price</code> 嘅 IQR outlier 數目，然後 cap 佢哋。</summary><p><pre><code>Q1 = df['price'].quantile(0.25); Q3 = df['price'].quantile(0.75)
+IQR = Q3 - Q1
+lower, upper = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
+n = ((df['price'] &lt; lower) | (df['price'] &gt; upper)).sum()
+df['price'] = df['price'].clip(lower, upper)</code></pre></p></details>
+<details class="q"><summary>Q7. 「T-shirt size（S, M, L, XL）」同「country」分別用咩 encoding？點解？</summary><p>Size 係 ordinal（有次序）→ ordinal encoding（S=0、M=1、L=2、XL=3）。Country 係 nominal（冇次序）→ one-hot（或 binary）encoding，避免製造假次序。</p></details>
+<details class="q"><summary>Q8. 有大量 outliers 嘅 feature 應該用邊種 scaling？Min-max 有乜問題？</summary><p>Robust scaling（用 median 同 IQR，唔受 outliers 拉動）。Min-max 用 min / max，一個極端值會將其他正常值擠埋喺好窄嘅範圍，對 outliers 最敏感。</p></details>
+<details class="q"><summary>Q9. 用 <code>apply</code> 整新 column <code>status</code>：如果 <code>age</code> &gt; 40 而且 <code>salary</code> &lt; 45000 就係 'review'，否則 'ok'。</summary><p><code>df['status'] = df.apply(lambda x: 'review' if (x['age'] &gt; 40) and (x['salary'] &lt; 45000) else 'ok', axis=1)</code>。記得 <code>axis=1</code>。</p></details>
+<details class="q"><summary>Q10. 用 <code>agg</code>：<code>age</code> 顯示 mean 同 max，<code>salary</code> 顯示 sum 同自定義 function <code>value_range</code>。</summary><p><code>df.agg({'age': ['mean', 'max'], 'salary': ['sum', value_range]})</code>。Built-in 用引號；user-defined function 直接寫名。</p></details>
+<details class="q"><summary>Q11. 一個結果嘅 rows 係 dept（HR、IT、Sales、All），columns 係 level（junior、mid、senior、All），值係平均 salary。係 groupby 定 pivot table？寫出 statement。</summary><p>Pivot table（二維、有 All 總計）：<code>df.pivot_table(values='salary', index='dept', columns='level', aggfunc='mean', margins=True)</code></p></details>
+<details class="q"><summary>Q12. 點解唔用頭 200 行做 sample？</summary><p>Data 多數有排序（時間、地點、類別），頭 200 行可能只代表某段時間或某一組，有 bias；應該用 <code>df.sample(n=200, random_state=...)</code> 隨機抽樣。</p></details>
+<details class="q"><summary>Q13. 一部 8 GB RAM 嘅電腦處理 200 GB log file 冇反應，原因？應該點做？</summary><p>Data 遠大過 RAM，OS 要不停 swapping / paging，memory 來唔切由 storage load data，CPU 大部分時間喺 I/O wait。應該用 distributed computing（例如 Spark），將 data partition 去多部機處理。</p></details>
+<details class="q"><summary>Q14. 解釋 5 Cs 入面嘅 Consent 同 Control。</summary><p>Consent：就收集咩 data、點用達成協議，建立 trust。Control (and transparency)：user 可以控制 service 點用佢嘅 data。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>Nominal（冇次序）→ one-hot；Ordinal（有次序）→ ordinal encoding。5 Vs：Volume、Velocity、Variety、Veracity、Value。</li>
+<li>Python：indentation、case sensitive、interpreted。<code>[a:b:c]</code> 包 a 唔包 b。list <code>[]</code> mutable；tuple <code>()</code> immutable；set 冇次序冇重複；dict key–value。Accumulator 喺 loop 前 initialize。</li>
+<li><code>def f(x, y=1): return ...</code>；<code>lambda x: expr</code>。</li>
+<li>CSV = text、冇 dtypes；pickle = binary、保留 dtypes。<code>merge</code> default inner、按共同 column 對齊；<code>concat</code> 直接疊，<code>axis=0</code> 上下、<code>axis=1</code> 左右。</li>
+<li>Attributes 冇括號（<code>shape</code>、<code>columns</code>、<code>index</code>）；methods 有括號。<code>loc</code> 包尾、<code>iloc</code> 唔包尾；條件用 <code>&amp;</code> / <code>|</code> + 括號。</li>
+<li><code>duplicated()</code> / <code>drop_duplicates()</code> / <code>drop(columns=)</code>；<code>nunique()==1</code> → constant。</li>
+<li><code>isna().sum()</code>；唔好 <code>== np.nan</code>；<code>dropna(thresh=x)</code> 最少 x 個非 NaN；<code>fillna(median)</code> 有 outliers 時用。</li>
+<li>IQR：\(Q_1 - 1.5\,\text{IQR}\)、\(Q_3 + 1.5\,\text{IQR}\)；<code>clip(lower, upper)</code> cap。<code>describe(include='object')</code> → top / freq。</li>
+<li><code>.str.strip() / .lower() / .contains() / .str[:3]</code>；<code>pd.to_datetime</code> + <code>.dt.year / .month / .quarter</code>。</li>
+<li>Scaling：Standard（mean/std）、Min-max（最怕 outliers，[0,1]）、Robust（median/IQR，抗 outliers）。<code>pd.cut</code>（edges）vs <code>pd.qcut</code>（quantiles）。</li>
+<li><code>map</code>：Series、one-to-one、冇 axis、唔可以 aggregate；<code>apply</code>：axis=0 逐 column、axis=1 逐行；<code>agg</code>：唔同 column 唔同 function，built-in 加引號。</li>
+<li><code>numeric_only=True</code>、<code>describe(include=)</code>、<code>select_dtypes()</code>。<code>mode()</code> 回傳 Series / DataFrame。</li>
+<li>groupby（長形、要接 aggregation）vs pivot_table（二維、margins）。Random sample 避免 bias。<code>corr()</code> 只計 numerical；r 正 / 負 / 近 0。</li>
+<li>Heatmap → corr；hist → distribution；count plot → categorical 數量；hue / col / size 加 features。</li>
+<li>Big data：CPU &gt; RAM &gt; SSD &gt; Network；data &gt; RAM → distributed；distributed（own memory）vs parallel（shared）；4 challenges；Hadoop disk vs Spark memory；5 Cs。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6001-w12.html">← Week 12 Big Data Frameworks &amp; Ethics</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+"In the hardware matching exercise, which component is the ""brain of the computer""?",The CPU.
+"Which hardware component provides short-term, quick data storage?",Memory (RAM).
+"Which hardware component provides long-term, safe data storage?","Storage, e.g. a Solid State Drive (SSD)."
+What is the role of the network in the hardware matching exercise?,The connection between computers.
+What is a GPU described as?,A massively parallel processor for computations.
+How many bytes per second can a 2.5 GHz 64-bit CPU process (lecture estimate)?,"$2.5 \times 10^9 \times 8 = 20 \times 10^9$ bytes per second, assuming one 8-byte operation per cycle."
+How many bytes can 16 GB of RAM and a 1 TB SSD store?,$16 \times 10^9$ bytes and $1 \times 10^{12}$ bytes.
+What does a 1 Gbps network connection mean?,"It can download $1 \times 10^9$ bits per second (bits, not bytes)."
+"Order CPU, RAM and SSD from fastest to slowest.",CPU (works in nanoseconds) > RAM (slower but still fast enough) > SSD (much slower than RAM).
+What happens when a program holds more data in memory than the RAM?,"The OS starts swapping/paging between RAM and SSD, the CPU frequently waits for data movement (I/O wait), and much less time is spent on actual computation."
+Case study I: at one 8-byte operation per cycle, how long does a 2.5 GHz 64-bit CPU need to character-count 6000 articles of 200 bytes each?,"$6000 \times 200 = 1.2 \times 10^6$ bytes, so $1.2 \times 10^6 / (20 \times 10^9) = 6 \times 10^{-5}$ s, i.e. 0.006% of a second."
+"In reality, what usually dominates runtime: arithmetic or data access?","Data access: data must be fetched first (RAM latency ~100 ns, SSD latency in microseconds)."
+Key message of case study I: where does the bottleneck move when data gets large?,From CPU compute to network and storage I/O.
+How does fetching data over the network compare with reading it from local storage and memory?,Getting the same amount of data from the network is much slower than processing it from your storage and memory.
+What is the key bottleneck consideration in case study II?,I/O: moving data from SSD to memory burns out your CPU's time.
+"When is it a good idea to go distributed, according to case study II?",When your file is much larger than your memory.
+Case study III: the data grows from 4 GB to 200 GB on the same 8 GB machine. What goes wrong?,"The data no longer fits in RAM, so the machine keeps moving data between storage and memory and the CPU spends its time waiting instead of analysing; the computer stops responding."
+Name the four limits we hit as data grows on one computer.,"Storage limit, memory limit, time limit and reliability limit."
+What are the two situations in which distributed computing is needed?,(1) You have big data to process (e.g. extract China-related news from 200 GB); (2) the data is not so big but the process is sophisticated (e.g. training a DNN with millions of parameters).
+"In distributed computing, how are memory and machines organised?","Each CPU has its own memory, and each machine is connected to the other machines across a network."
+"In parallel computing, how is memory organised?","In general, multiple CPUs share the same memory."
+"Key challenge #1, partitioning: what questions must be answered?","Split by rows, time, user or region? Are partitions balanced? Does one machine get much more work (data skew)?"
+How do platforms handle partitioning?,"They break data into many small chunks and send the chunks to many machines (e.g. Hadoop MapReduce, Spark, BigQuery, Snowflake)."
+"Key challenge #2, communication overhead: what causes it?","Moving data across the network, synchronizing intermediate results and coordinating task completion; too much of it can cancel the speed gains."
+How do platforms reduce communication overhead?,"They try to process data where it is stored and send only smaller summaries (e.g. MapReduce combine step, Spark keeping data in memory, smart query planning in cloud warehouses)."
+"Key challenge #3, fault tolerance: what mechanisms are needed?","Detecting failed tasks, re-running lost work and recovering from partial progress, so the system continues even when some nodes fail."
+How do platforms provide fault tolerance?,They detect the failure and automatically redo only the failed part.
+"Key challenge #4, consistency & reproducibility: what are the risks in distributed runs?","Different execution order, duplicate processing and missing late-arriving data."
+How do platforms ensure consistency and reproducibility?,"They run tasks in a controlled order, track progress and allow safe restart (e.g. Spark/MapReduce, Airflow/Prefect for scheduling, Kafka-based systems for continuous data)."
+What are the four main components of a big data system?,"Common utilities, data storage, job scheduler and data processing."
+What is the major difference between Hadoop and Spark?,"How they use memory: Hadoop writes intermediate results to disk, whereas Spark keeps data in memory whenever possible, which makes it faster for many use cases."
+What are the benefits of a distributed big data framework?,"Larger-than-memory processing, faster runtime for large workloads and better reliability at scale."
+What are the costs of a distributed big data framework?,"More system complexity, more debugging difficulty and higher infrastructure/operation cost."
+What are the Five C's of data ethics?,"Consent, Clarity, Consistency, Control (and transparency) and Consequences (and harms)."
+What does Consequences mean in the 5 Cs?,Whether the data being collected could cause harm to an individual or a group.
+Name the four ethical concerns specific to distributed computing.,"Data privacy, data security, accountability and responsibility, and bias and fairness."
+Name the four (Gen)AI ethical challenges in the development and design stage.,"Bias and fairness; data source and permission; the ""black box""; unequal resources and access."
+"What is the ""black box"" problem?","Big AI models are so complex that even their creators cannot fully explain their decisions, so it is hard to check, fix or challenge them."
+Name the six (Gen)AI ethical challenges in the usage stage.,"Privacy erosion and surveillance; accountability and liability; environmental impact; over-reliance and automation bias (trusting confident AI answers unchecked); intellectual property (cheating, plagiarism); malicious use."
+Name the four technical mitigations for AI ethics.,"Explainable AI (XAI), bias auditing, differential privacy and provenance tracking."
+What is differential privacy?,"A formal, mathematical framework that bounds how much results can change when one person's data is added or removed, limiting what can be learned about any single individual."
+What tools does provenance tracking use?,"""Model cards"" and ""datasheets for datasets"", documenting the creation, use and limitations of models and data."
+Name the three governance and process mitigations for AI ethics.,"Ethics review boards (like an IRB for research), red teaming and clear lines of accountability."
+What is red teaming?,"Actively trying to ""break"" your system or find harmful uses of it before it is released."
+What are the two human-factor mitigations for AI ethics?,"Diverse teams (homogeneous teams miss blind spots) and ethics education (a core engineering requirement, not a soft skill)."

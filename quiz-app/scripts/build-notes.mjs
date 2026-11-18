@@ -39,7 +39,12 @@ const text = (html) => decode(html.replace(/<[^>]+>/g, "")).replace(/\s+/g, " ")
 
 const files = readdirSync(DIR)
   .filter((f) => /^[A-Z]+\d+-[a-z0-9]+\.html$/i.test(f))
-  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  // A course's exam revision guide (COM6001-revision) closes its course instead of sorting before w1.
+  .sort((a, b) => {
+    const [ca, cb] = [a.split("-")[0], b.split("-")[0]];
+    const last = (f) => Number(/-revision\.html$/i.test(f));
+    return ca === cb && last(a) !== last(b) ? last(a) - last(b) : a.localeCompare(b, undefined, { numeric: true });
+  });
 
 if (files.length === 0) {
   console.error(`FAILED — no COURSE-unit.html pages in ${DIR}`);

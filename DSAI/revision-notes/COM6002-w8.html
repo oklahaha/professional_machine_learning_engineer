@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COM6002 · Week 8 MongoDB</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script defer src="../assets/app.js"></script>
+</head>
+<body data-page="COM6002-w8">
+<header class="topbar">
+  <a class="home" href="../index.html">📚 DSAI Revision</a>
+  <span class="crumb">COM6002 Big Data Management › Week 8</span>
+  <span class="spacer"></span>
+  <button id="examToggle" aria-pressed="false" title="只顯示考試重點">⭐ Exam-only</button>
+  <button id="doneToggle" aria-pressed="false">標記為已溫習</button>
+  <button id="themeToggle" title="深色/淺色">◐</button>
+</header>
+<div class="layout">
+<nav class="toc"><h4>目錄</h4><ol></ol></nav>
+<main>
+<p class="meta">COM6002 · Week 8 · Source: 8a-MongoDB.pptx（28 slides）＋ 8b-MongoDB_codes.pptx（72 slides，標明 <b>[Not required in the exam]</b>）</p>
+<h1>MongoDB: Document Database</h1>
+
+<div class="overview">
+  <h3>🎯 本講重點 (Learning outcomes)</h3>
+  <ul>
+    <li>MongoDB 係 document-based NoSQL database：dynamic schema、BASE（可設定達到 ACID）、horizontal scalability、programming friendly。</li>
+    <li>Terminology：Database → Collection → Document → Field（對應 RDBMS 嘅 Database → Table → Row → Column）。</li>
+    <li>Design decision：<mark class="k">Embedding vs Referencing</mark> 同 rules of thumb；16 MB document limit。</li>
+    <li>Indexing（B+ tree、2dsphere、text、unique）同 <code>_id</code>（12-byte ObjectId）。</li>
+    <li>Distributed：<mark class="k">Sharding</mark>（hashed vs ranged）、<mark class="k">Replica set</mark>（primary / secondary、heartbeat、election）、write concern、read concern、architecture（router、config servers、shards）。</li>
+    <li>8b（唔考）：JSON / BSON、pymongo CRUD、projection、query operators、aggregation pipeline（<code>$match</code>、<code>$group</code>、<code>$lookup</code>、<code>$unwind</code>…）。</li>
+  </ul>
+  <h3>⭐ 考試必溫 Top-5</h3>
+  <ol>
+    <li>RDBMS vs MongoDB terminology 對照，同 dynamic schema 嘅意思。</li>
+    <li><b>Embed vs reference</b> 嘅 rules of thumb（一對一 / 一對多專屬 → embed；多對多 / 共用 / 無上限 → reference）。</li>
+    <li><b>Hashed vs ranged sharding</b>，同 slide 19 IM messages 例子點揀。</li>
+    <li><b>Replica set</b>：default 所有 reads / writes 去 primary；secondaries 做 backup &amp; recovery；primary 壞咗就 elect 新 primary。</li>
+    <li><b>Write concern</b>（<code>w:1</code>、<code>w:"majority"</code>、<code>j:true</code>）＝ latency vs durability trade-off；<b>read concern</b>（local vs majority）。</li>
+  </ol>
+</div>
+
+<div class="box note"><span class="label">📝 考試範圍</span><p>8b-MongoDB_codes.pptx slide 1 寫明 <b>[Not required in the exam]</b>，所以本頁第 9–14 節（JSON、pymongo、aggregation）冇 Exam 標記，係 lab / project 用嘅參考。考試集中喺 8a 嘅概念。</p></div>
+
+<h2>1. MongoDB 係乜（8a slides 2–5）</h2>
+<ul>
+<li>A <b>document-based</b> database system，2007 年成立；db-engines.com ranking 嘅 <b>Top-1 NoSQL database</b>。</li>
+<li><b>Dynamic schema</b>：同一個 collection 入面嘅 documents 可以有唔同 fields 同 data types。</li>
+<li>Initial design 跟 <mark class="k">BASE</mark> 而唔係 ACID；而家可以透過某些 configurations 做到 ACID（但有 overheads）。</li>
+<li>易加 nodes / machines：<b>horizontal scalability</b>（scale out）。</li>
+<li><b>Easy to use (in programming)</b>。</li>
+</ul>
+<p>Slide 3 用流程圖比較：</p>
+<table>
+<tr><th>RDBMS</th><th>MongoDB</th></tr>
+<tr><td>Python → SQL（SELECT）→ Parse the result → Use the data objects（要多學一種語言 SQL）</td><td>Python → Data objects（直接攞到 objects）</td></tr>
+</table>
+<p class="missing">Slide 3 嘅 sample code 係截圖：用 <code>MongoClient</code> 連 database，<code>DataFrame(list(db.HSU.COM6002.find()))</code> 直接變成 DataFrame。</p>
+<p>支援好多語言：Python、Node.js、C / C++ / C#、Go、Java、PHP、Ruby、Rust、Scala、Swift…。每種語言 syntax 稍有唔同，但用<b>同一套 query framework</b>：Find、Projection、Aggregate、Sort、Update。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p><a href="COM6002-w7.html">Week 7</a> 講 NoSQL 全景（graph、column、wide-column、key-value、search、vector），document store 就係今章。BASE vs ACID 見 <a href="COM6002-w6.html">Week 6</a> CAP / BASE。COM6001 <a href="COM6001-w4.html">Week 4</a> 嘅 JSON（semi-structured data）同 <code>pd.DataFrame(list_of_dicts)</code> 就係 MongoDB query 結果變 DataFrame 嘅方法。</p></div>
+
+<h2>2. Data model 同 terminology（slides 6–9）</h2>
+<p>RDBMS 要將學生資料拆兩個 tables（Student：ID、Name、Major；Result：ID、Module Code、Grade），MongoDB 可以將佢哋 <b>consolidate</b> 成一個 document，支援 <b>hierarchical structure</b>：</p>
+<pre><code>{
+  "Student ID": 101101,
+  "Name": "Amy",
+  "Major": "BBA",
+  "Results": { "COM2006": "B", "COM2103": "A" }
+}</code></pre>
+<p>MongoDB 可以有多個 databases；一個 database 有多個 collections；一個 collection 有多個 documents；一個 document 有多個 fields。</p>
+<div class="box exam"><span class="label">⭐ Terminology comparison（slide 8）</span>
+<table>
+<tr><th>RDBMS</th><th>MongoDB</th></tr>
+<tr><td>Database</td><td>Database</td></tr>
+<tr><td>Table</td><td><b>Collection</b></td></tr>
+<tr><td>Record (Row)</td><td><b>Document</b></td></tr>
+<tr><td>Attribute (Column)</td><td><b>Field</b></td></tr>
+</table></div>
+<p><span class="tag exam">Exam</span> <b>Dynamic schema（slide 9）</b>：以下兩個 documents 可以放喺同一個 collection：</p>
+<pre><code>{ "Student ID": 101101,    "Name": "Amy", "Major": "BBA", "Results": { "COM2006": "B", "COM2103": "A" } }
+{ "Student ID": "s101102", "Name": "Bob", "Parents": ["Mary"], "Brothers": ["John"] }</code></pre>
+<p>兩個分別：(1) Student ID 嘅 <b>data type 唔同</b>（number vs string）；(2) <b>fields 嘅集合唔同</b>。Document data 用 <b>BSON</b> format 定義（8b 講）。</p>
+<div class="box warn"><span class="label">⚠️ 易混淆</span><p>Dynamic schema 唔等於「冇 schema」：application 仍然要知道 fields 點用。好處係 agile（改結構唔使 <code>ALTER TABLE</code>），代價係 data quality 要靠 application 控制（例如 ID 有時係 number 有時係 string，query 時要小心）。</p></div>
+
+<h2>3. Design decision：Embedding vs Referencing（slides 10–11）</h2>
+<table>
+<tr><th>Embedding</th><th>Referencing</th></tr>
+<tr><td>將 data 放<b>入</b> document 入面（Amy 嘅 Results 直接 nested）</td><td>用一個 <b>ID 指向</b>其他 document(s)（Amy 一個 document；每科成績各自一個 document，用 Student ID 101101 連返）</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Rules of thumb（slide 11，based on practice rather than theory）</span>
+<table>
+<tr><th>When to embed?</th><th>When to reference?</th></tr>
+<tr><td>Child data 主要喺 parent 嘅 context 入面睇</td><td>Child data 會獨立於 parent 被睇</td></tr>
+<tr><td>Child data 比較細、size 有上限（bounded）</td><td>Child data 好大或者無上限（unbounded）</td></tr>
+<tr><td>One-to-one relationship</td><td>Many-to-many relationship</td></tr>
+<tr><td>One-to-many，而 child data 專屬於 parent</td><td>Child data 被多個 parents 共用</td></tr>
+<tr><td>需要 fast reads（唔使 join）</td><td>—</td></tr>
+</table>
+<p>MongoDB 一個 document 最大 <b>16 MB</b>，所以 unbounded child data（例如一個 user 嘅所有 messages）唔應該 embed。</p></div>
+<div class="box tip"><span class="label">💡 例子</span><p>學生 + 地址（一對一、細）→ embed。學生 + 成績（一對多、專屬、有上限）→ embed 得。學生 + 科目（many-to-many，科目資料畀好多學生共用）→ reference。Blog post + comments（可以無限增長）→ reference。</p></div>
+
+<h2>4. Indexing 同 _id（slides 12–15）</h2>
+<ul>
+<li><span class="tag exam">Exam</span> Indexing 用 <b>B+ tree</b>；改善 search time，代價係<b>額外 storage 同 index maintenance</b>。</li>
+<li>Document 冇 index field 嘅值 → 一般（non-sparse）index 會用 <b>null</b> key 記錄（document 本身唔變；sparse index 就會跳過呢啲 documents）。</li>
+<li>可以設為 <b>unique</b>：reject index field 上嘅重複值。</li>
+</ul>
+<table>
+<tr><th>Index type</th><th>用途</th></tr>
+<tr><td><code>1</code>（asc）Ascending / <code>-1</code>（desc）Descending</td><td>兩者都用 B+ tree，searching time 降到 \(O(\lg n)\)</td></tr>
+<tr><td><code>2dsphere</code></td><td>Multi-dimensional search（地理位置）；reference：R-tree</td></tr>
+<tr><td><code>text</code></td><td>Text search；有專門 index structure，同 numeric data 唔同</td></tr>
+</table>
+<p class="missing">Slide 12 嘅圖係 MongoDB Compass 建立 index 嘅截圖；slide 13 右邊係揀 index type 嘅 dropdown（1 (asc)、-1 (desc)、2dsphere、text）。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>B+ tree、\(O(\lg n)\)、index 嘅 overhead 同 <a href="COM6002-w3.html">Week 3 RDBMS indexing</a> 一樣（8b slide 19 嘅 revision questions：點解要 index？要幾多個？有冇 overhead？）。Text index ↔ <a href="COM6002-w7.html">Week 7</a> Elasticsearch inverted index。</p></div>
+
+<p><span class="tag exam">Exam</span> <b>Identifying document（slides 14–15）</b>：每個 document 都有 system generated ID，field 名係 <code>_id</code>，自動產生、保證 unique（sharded collection 如果 <code>_id</code> 唔係 shard key，只保證每個 shard 內 unique）。</p>
+<table>
+<tr><th>_id 特點</th><th>內容</th></tr>
+<tr><td>Data type</td><td><b>BSON ObjectId</b>，12-byte identifier；<b>睇落似 string，但唔係 string</b></td></tr>
+<tr><td>Composition</td><td>頭 4 bytes：<b>timestamp</b>；之後 5 bytes：<b>random value</b>；最後 3 bytes：<b>incrementing counter</b></td></tr>
+<tr><td>排序</td><td>因為開頭係 timestamp，<b>naturally sorted chronologically</b></td></tr>
+<tr><td>Mandatory</td><td>每個 object 都必須有 <code>_id</code>；可以自己設其他 type（string / number）</td></tr>
+</table>
+
+<h2>5. Sharding（slides 16–19）</h2>
+<p><span class="tag exam">Exam</span> <mark class="k">Sharding</mark>：將 data partition 同分散到多個 nodes；持有部分 data 嘅 node 叫 <b>shard</b>。Partitioning method 係 <b>deterministic</b>，可以設定：揀 <b>shard key</b>（例如 creation datetime）同 <b>sharding strategy</b>。屬於 <b>horizontal fragmentation</b>（按 documents / rows 切）。</p>
+<table>
+<tr><th></th><th>Hashed sharding</th><th>Ranged sharding</th></tr>
+<tr><td>方法</td><td>按 shard key 值嘅 <b>hash value</b> 分配 documents</td><td>每個 chunk 負責一段 <b>shard key 值嘅 range</b></td></tr>
+<tr><td>Slide 圖</td><td>{x: 25}、{x: 26}、{x: 27} 經 hash function 後分去唔同 chunks（相鄰值唔會喺同一 chunk）</td><td>相鄰嘅 key 值喺同一 chunk</td></tr>
+<tr><td>好處</td><td>分佈平均，<b>storage / write load 分散</b></td><td><b>Range query</b> 快（只需讀少數 chunks）</td></tr>
+<tr><td>壞處</td><td>Range query 要問晒所有 shards</td><td>Key 單調遞增（例如時間）時，新 data 集中喺最後一個 chunk → hotspot</td></tr>
+</table>
+<div class="box exam"><span class="label">⭐ Discussion（slide 19）：邊種 sharding 好？</span>
+<p>情境：instant messaging software 嘅 messages；shard key fields：account ID、message datetime。</p>
+<ul>
+<li><b>Goal 1：將 storage load 分散到多部機</b> → <b>Hashed sharding</b>。</li>
+<li><b>Goal 2：fetch 用戶指定月份嘅 data</b> → <b>Ranged sharding</b>，by <b>(account, datetime)</b>：同一 account 同一段時間嘅 messages 排埋一齊，喺一個或幾個相鄰 chunks，router 只需問持有嗰段 range 嘅 shards。</li>
+</ul></div>
+<p class="missing">Slide 17、18 嘅圖：hashed 圖顯示 {x: 25}、{x: 26}、{x: 27} 經 Hash Function 分去 Chunk 1–4 唔同位置；ranged 圖（slide 18）為 chunks 對應 key ranges 嘅示意圖，冇額外文字。</p>
+<div class="box link"><span class="label">🔗 跨科連繫</span><p>Sharding ＝ <a href="COM6002-w6.html">Week 6</a> horizontal fragmentation；COM6001 <a href="COM6001-w12.html">Week 12</a> big data challenge #1 Partitioning（data skew = hotspot）。</p></div>
+
+<h2>6. Replica set（slides 20–22）</h2>
+<p><span class="tag exam">Exam</span> <b>Replication</b> 提供 redundancy、提高 data availability；類似 <b>Raft consensus</b>。不同 database servers 有多份 copies，可以 tolerate 單一 server 嘅損失。<b>Heartbeat</b>：nodes 互相 ping，睇對方仲在唔在生。</p>
+<ul>
+<li><b>Workload 唔會喺 replica set 嘅 nodes 之間分擔</b>（default setting）：reads 同 writes <b>always 去 primary</b>。</li>
+<li>Reads 可以設定去 secondary（例如 <b>nearest secondary</b>）。</li>
+<li><b>Secondary nodes 用嚟 backup 同 recovery</b>。</li>
+<li>Primary 將 writes replicate 去 secondaries；視乎設定，可能<b>唔會等 replication 完成</b>先回覆 client（即 write concern）。</li>
+<li><b>Node failure（slide 22）</b>：primary 壞咗就 <b>elect 一個新 primary</b>。</li>
+</ul>
+<p class="missing">Slide 21 圖：Client Application → Driver；Writes 同 Reads 都去 Primary；Primary 以 Replication 箭咀連去兩個 Secondary。Slide 20、22 嘅 heartbeat / election 圖冇額外文字。</p>
+<div class="box warn"><span class="label">⚠️ 易混淆：Sharding vs Replica set</span>
+<table>
+<tr><th></th><th>Sharding</th><th>Replica set</th></tr>
+<tr><td>目的</td><td><b>Scalability</b>：分散 data 同 workload</td><td><b>Availability / fault tolerance</b>：多份 copies</td></tr>
+<tr><td>每個 node 有</td><td>部分 data</td><td>全部 data（同一份嘅 copy）</td></tr>
+<tr><td>分擔 workload？</td><td>✔</td><td>✘（default 全部去 primary）</td></tr>
+</table>
+<p>實際系統兩者一齊用：每個 shard 本身係一個 replica set（slide 28）。</p></div>
+<div class="box note"><span class="label">📝 補充（同 Week 6 一致）</span><p>Election 需要 voting members 嘅 majority；primary 如果聯絡唔到 majority 會 step down。所以 minority 嗰邊唔會繼續做 primary 接受 writes。</p></div>
+
+<h2>7. Write concern 同 read concern（slides 23–27）</h2>
+<p><span class="tag exam">Exam</span> <b>Write concern</b>：要求 MongoDB 對 write operations 俾幾多程度嘅 acknowledgement。本質係 <b>latency vs durability</b> 嘅 trade-off。格式：<code>{ w: &lt;value&gt;, j: &lt;boolean&gt;, wtimeout: &lt;number&gt; }</code>。</p>
+<div class="box exam"><span class="label">⭐ 三種 write concern</span>
+<table>
+<tr><th>Setting</th><th>Behaviour</th><th>Pros</th><th>Cons / Risk</th></tr>
+<tr><td><code>{ w: 1 }</code><br>Primary acknowledgment only（slide 寫 default）</td><td>Primary 成功 apply write 就即刻回覆</td><td><b>最快</b> write latency</td><td>Primary 喺 replicate 之前壞咗 → failover 時 data 可能 lost</td></tr>
+<tr><td><code>{ w: "majority" }</code><br>Quorum-level durability</td><td>要 majority 嘅 data-bearing members（primary + 足夠 secondaries）apply 咗先回覆</td><td><b>最高 durability</b>：data 保證 survive automatic failover</td><td>要等 network replication → write latency 較高</td></tr>
+<tr><td><code>{ j: true }</code><br>Disk persistence</td><td>寫入 on-disk <b>journal</b> 先 acknowledge</td><td>Crash 後可 recover（journal = write-ahead log，data file 未 flush 都救得返）</td><td>要等 disk write</td></tr>
+</table>
+<p><b>Best practice：mission-critical data 用 <code>w: "majority"</code> + <code>j: true</code>。</b></p></div>
+<div class="box warn"><span class="label">⚠️ Default 版本差異</span><p>Slide 24 話 <code>w: 1</code> 係 default setting，考試跟 slide 答。實際上 MongoDB 5.0 起，大部分 replica set 嘅 implicit default write concern 已改為 <code>w: "majority"</code>（有 arbiter 等特殊配置先例外）。</p></div>
+
+<p><b>Read concern（slide 27）</b>：控制讀取 data 嘅 consistency 同 isolation。</p>
+<table>
+<tr><th>Setting</th><th>意思</th></tr>
+<tr><td><code>local</code>（default）</td><td>回傳當前 member 嘅 state；可能未反映其他 members 嘅 writes；<b>最快</b></td></tr>
+<tr><td><code>majority</code></td><td>只回傳已被 majority members acknowledge 嘅 data；保證讀到嘅 data 係 <b>durable</b>（唔會因 failover 被 roll back）</td></tr>
+</table>
+<div class="box tip"><span class="label">💡 直覺理解</span><p>Write concern 問「寫完要等幾多人確認先話完成？」；read concern 問「讀嘅時候只睇幾多人確認咗嘅版本？」。等得越多越安全，但越慢。</p></div>
+
+<h2>8. Architecture（slide 28）</h2>
+<table>
+<tr><th>Component</th><th>角色</th></tr>
+<tr><td><b>Router</b>（<code>mongos</code>）</td><td>Server instance；接收 query，將 workload 再分配去適當嘅 shards。可以有 1 個或以上（通常喺 app server 旁）</td></tr>
+<tr><td><b>Config Server</b>（replica set）</td><td>儲存 cluster 嘅 metadata 同 configuration settings（例如邊個 chunk 喺邊個 shard）</td></tr>
+<tr><td><b>Shard</b>（replica set）</td><td>儲存部分 data；2 個或以上，每個 shard 本身係 replica set</td></tr>
+</table>
+<p>Slide 圖：App Server 上嘅 Routers（mongos）↔ Config Servers（replica set）；Routers 連去 2 個或以上 Shards（各自係 replica set）。</p>
+
+<h2>9. JSON 同 BSON（8b slides 2–12，唔考）</h2>
+<ul>
+<li>MongoDB 用 <b>BSON</b> = binary encoded JSON。JSON 原本用嚟喺 text 表示 JavaScript object，而家係 open standard，跨平台、human-readable、易學、好流行（例如 Binance API 回傳 JSON）。</li>
+<li>JSON 似 Python dict 但唔同：<b>key 同 string 一定要用雙引號</b>（單引號唔得）。</li>
+<li>Data types：string、number、object <code>{...}</code>、array <code>[...]</code>、boolean（<code>true</code> / <code>false</code>，case-sensitive）、<code>null</code>（Python 嘅 <code>None</code>）。</li>
+<li>JSON 唔支援 datetime（可以用 Unix timestamp 等方法）。</li>
+<li>BSON vs JSON：JSON 只有 text；BSON 可以有 binary data（例如 image）、有 MongoDB 專用 types；但 16 MB document limit，唔建議喺 database 存大 binary data。</li>
+</ul>
+<pre><code>import json
+data = {"price": 0.6, "volume": 10, "hold": [9202, 107.3]}
+text = json.dumps(data)              # dict → JSON string
+obj = json.loads('{ "name": "Wong Wai Kit", "age": 18 }')   # JSON string → dict
+obj["name"]                          # 'Wong Wai Kit'</code></pre>
+<p>Slide 9 問題：<code>{"my name": ["Hello", "Kitty"], "neighbor": {"name": "Bob"}}</code> 入面 <code>my name</code> 係 <b>array</b>、<code>neighbor</code> 係 <b>object</b>；而 <code>{"my name": "[ \"Hello\", \"Kitty\" ]", ...}</code> 用 escape character <code>\"</code>，佢哋只係<b>一條 string</b>，睇落似 array / object 但唔係。</p>
+<p>Pickle vs JSON（slide 25）：Pickle 可以存更多種 Python objects，但檔案人睇唔明、只限 Python；<code>bson.Binary</code> 係 MongoDB 喺 Python 嘅 binary wrapper。</p>
+
+<h2>10. MongoDB products 同連接（8b slides 13–24，唔考）</h2>
+<ul>
+<li><b>MongoDB Atlas</b>：cloud database（有免費版，storage 有限、shared hardware）；<b>Community Edition</b>：裝喺自己電腦；<b>Compass</b>：GUI，可以睇 database 同做 CRUD（Create、Read、Update、Delete）、建立 index。</li>
+<li>Shell 同 Python 指令好相似：Shell <code>db.COM6002.insertOne({...})</code> ↔ Python <code>mongo.HSU.COM6002.insert_one({...})</code>（回傳 <code>InsertOneResult</code>）。</li>
+</ul>
+<pre><code># pip install pymongo
+from pymongo import MongoClient
+mongo = MongoClient("mongodb://XXX:YYY@server")   # XXX = username、YYY = password、@ 之後係 server 位置
+mongo = MongoClient()                             # 本機、冇 username / password
+
+mongo.get_database('testing').create_collection('test_collection')   # optional：database / collection 唔存在會自動建立
+
+col = mongo.HSU.COM6002                           # database HSU、collection COM6002
+col.insert_one({"name": "Wong Wai Kit", "age": 18})
+col.insert_one({"_id": 1, "name": "Wong Wai Kit", "age": 18})   # 自訂 _id；重複 _id 會 error
+col.insert_many([{"name": "Wong Wai Kit", "age": 18}, {"name": "Chris Wong", "age": 108}])</code></pre>
+<ul>
+<li><b>自動建立 database 好唔好？</b>方便，但如果 database / collection 名串錯字，code 照行唔會報錯，只會靜靜雞寫去一個新 database。</li>
+<li><code>col.insert_one({"name": ..., "date": set([1,2,3])})</code> 會 error：Python <code>set</code> 唔可以 serialize 做 BSON。</li>
+<li><b>insert_one vs insert_many</b>：大量 documents 用 <code>insert_many</code>，一次 call 送晒，少好多 network round trips。</li>
+<li>Insert 嘅 return value：<code>result.acknowledged</code>、<code>result.inserted_id</code>（insert_many 係 <code>result.inserted_ids</code>）。</li>
+</ul>
+
+<h2>11. Query：find、projection、operators（8b slides 28–39，唔考）</h2>
+<pre><code>for x in col.find():              # 好似 SELECT *；find_one 最多回傳一個
+    print(x)
+
+# SELECT age FROM COM6002 WHERE name = "Wong Wai Kit"
+col.find({"name": "Wong Wai Kit"}, {"_id": 0, "age": 1})   # (query object, projection object)</code></pre>
+<p><b>Projection 規則（slide 30）</b>：</p>
+<ul>
+<li><code>_id</code> 一定會出現，除非明確寫 <code>"_id": 0</code>。</li>
+<li>一組非 _id fields 設 1 → 只顯示呢啲（加 _id）。</li>
+<li>一組非 _id fields 設 0 → 只排除呢啲。</li>
+<li>非 _id fields 有啲 0 有啲 1 → <b>Error</b>。</li>
+</ul>
+<table>
+<tr><th>Slide 31 projection（data：name、age、sex）</th><th>結果 fields</th></tr>
+<tr><td><code>{"age": 0, "sex": 0}</code></td><td>_id, name</td></tr>
+<tr><td><code>{"age": 1, "_id": 1}</code></td><td>_id, age</td></tr>
+<tr><td><code>{"age": 1, "_id": 0}</code></td><td>age</td></tr>
+<tr><td><code>{"age": 1, "sex": 0}</code></td><td>Error（1 同 0 混用）</td></tr>
+<tr><td><code>{"age": 1, "id": 1}</code>（注意係 <code>id</code> 唔係 <code>_id</code>）</td><td>_id, age（<code>id</code> field 唔存在，所以冇顯示）</td></tr>
+</table>
+<pre><code>col.find({"name": "Wong Wai Kit"})                  # 只 match top-level name；{"person": {"name": ...}} 唔會 match
+col.find({"person.name": "Wong Wai Kit"})           # dot notation：nested field
+col.find({"person": {"name": "Wong Wai Kit"}})      # 成個 embedded document 要完全一樣（fields 同次序），多一個 field 都唔 match
+
+col.find({"age": {"$lt": 20}})                      # operators：$eq $gt $gte $in $lt $lte $ne $nin
+col.find({"age": {"$in": [18, 20]}})
+
+from bson import Regex
+col.find({"name": Regex(".*a.*")})                  # name 包含 "a"（regex，self-study）
+
+col.find().sort("age", 1)                           # 1 = ascending，-1 = descending
+col.find({}, {"name": 1, "_id": 0, "age": 1}).sort({"age": -1}).skip(6).limit(3)   # 第 7–9 個 records
+
+my_list = list(col.find())                          # Cursor → list
+from pandas import DataFrame
+df = DataFrame(list(col.find()))                    # Cursor → DataFrame</code></pre>
+<div class="box tip"><span class="label">💡 Performance（slides 40–42）</span><p>Chain 嘅寫法唔代表執行次序。<code>find().sort().skip(6).limit(3)</code> 唔係「攞晒所有 documents → project → sort…」，而係（如果有 age index）用 age 嘅 descending index → skip 6 → 攞 3 個 → 只取 name、age → 回傳。比較 <code>list(col.find())</code> 再喺 Python sort 同 slice：database 做嘅版本快得多，因為只傳 3 個 documents。兩個版本結果都唔一定一樣：Python 版冇 projection（會有晒所有 fields），而且冇 <code>age</code> field 嘅 records 處理方法唔同（Python lambda 當佢 0，MongoDB 當 null）。<b>Rule of thumb：盡量叫 database 做處理，只攞最少嘅 data 返嚟。</b></p></div>
+
+<h2>12. Delete 同 update（8b slides 43–47，唔考）</h2>
+<pre><code>col.delete_one({"name": "Wong Wai Kit"})
+col.delete_many({"name": "Wong Wai Kit"})
+col.delete_many({})              # ⚠️ 刪晒成個 collection 嘅 documents
+col.drop()                       # ⚠️ 刪 collection 本身
+
+col.update_one({"name": "Wong Wai Kit"}, {"$set": {"new attribute": "new value"}})   # (query, update action)
+col.update_many({}, {"$inc": {"age": 1}})
+col.update_one({"name": "F"}, {"$set": {"age": 25}}, upsert=True)   # 搵唔到就 insert</code></pre>
+<table>
+<tr><th>Update action</th><th>作用</th></tr>
+<tr><td><code>$set</code></td><td>設定 field 嘅值</td></tr>
+<tr><td><code>$unset</code></td><td>移除 field</td></tr>
+<tr><td><code>$rename</code></td><td>改 field 名</td></tr>
+<tr><td><code>$inc</code></td><td>將 field 加指定數量；upsert 時會由 0 開始加</td></tr>
+</table>
+
+<h2>13. Aggregation pipeline（8b slides 48–59，唔考）</h2>
+<p><code>find</code> 只限一個 collection、冇 join。多 collection 或 aggregate query 用 <b>aggregation</b>：一個 <b>pipeline</b>，由多個 <b>stages</b> 組成，上一個 stage 嘅輸出係下一個嘅輸入。</p>
+<table>
+<tr><th>Stage</th><th>作用</th><th>SQL 對應</th></tr>
+<tr><td><code>$match</code></td><td>Filtering conditions</td><td>WHERE（喺 group 之後用就似 HAVING）</td></tr>
+<tr><td><code>$group</code></td><td>分組同計 aggregate statistics</td><td>GROUP BY</td></tr>
+<tr><td><code>$lookup</code></td><td>連去另一個 collection 攞資料</td><td><b>LEFT (OUTER) JOIN</b>（唔係 INNER JOIN）</td></tr>
+<tr><td><code>$unwind</code></td><td>將 array 拆成多個 documents；常同 <code>$lookup</code> 一齊用</td><td>—</td></tr>
+<tr><td><code>$sort</code></td><td>排序</td><td>ORDER BY</td></tr>
+<tr><td><code>$project</code></td><td>揀 fields</td><td>SELECT 嘅 projection list</td></tr>
+</table>
+<pre><code>result = col.aggregate([
+    {"$match": {"profile.Role": {"$ne": "Teacher"}}},        # 1. 唔要 Teacher
+    {"$group": {"_id": "$age", "num": {"$count": {}}}},      # 2. 按 age 分組數人數
+    {"$match": {"num": {"$gt": 1}}},                         # 3. 只留多過 1 人嘅 age（似 HAVING）
+    {"$sort": {"num": -1, "_id": -1}},                       # 4. 人數多到少，再按 age 大到細
+])</code></pre>
+<ul>
+<li><code>$lookup</code>：<code>{from, localField, foreignField, as}</code>；<b>結果係 list，就算只有一個 match</b>；冇 match 嘅 document 仍然保留（as field 係空 list）。</li>
+<li><code>$unwind: "$items"</code>：<code>{"_id": 1, "items": ["apple", "banana"]}</code> → 兩個 documents，<code>items</code> 分別係 "apple"、"banana"。</li>
+<li><code>$group</code>：group-by 條件一定放喺 <code>_id</code>；accumulators：<code>$sum</code>、<code>$count</code>、<code>$avg</code>、<code>$min</code>、<code>$max</code>。<code>"_id": None</code> = 全部 documents 一組（例如計總 salary）。</li>
+<li><b>$ 符號</b>：<code>"$product"</code> 指 field <code>product</code> 嘅值；<code>"product"</code> 只係 string literal。定義 document 結構 / 普通 find query 嘅 field 名唔使 $（例如 <code>find({"status": "active"})</code>）。</li>
+</ul>
+<pre><code># slide 56：orders 按 product 計總 quantity
+db.orders.aggregate([{ "$group": { "_id": "$product", "totalQuantity": { "$sum": "$quantity" } } }])
+# → { "_id": "Apple", "totalQuantity": 17 }, { "_id": "Banana", "totalQuantity": 9 }, { "_id": "Orange", "totalQuantity": 8 }</code></pre>
+
+<h2>14. Class participation exercise 參考答案（8b slides 60–72，唔考）</h2>
+<p>Atlas 設定步驟：開免費 account → 建 database → 拎 connection string（UI 唔會顯示密碼）→ 設 username / password → <b>whitelist client IP address</b>（slide 66：allow all IP 方便但唔安全）→ 用 Compass 或 Python 測試連線。交功課前可以刪走 login info。</p>
+<p>Data（slide 69）：database <code>HSU</code>，collections <code>products</code>（Apple、Banana、Carrot、Milk、Cheese）同 <code>sales</code>（5 records）。以下答案已用 slide 69 嘅 data 驗證過。</p>
+<pre><code>db = mongo.HSU
+# Task 5 Query 1：Dairy products 嘅 name、price、stock
+db.products.find({"category": "Dairy"}, {"_id": 0, "name": 1, "price": 1, "stock": 1})   # Milk、Cheese
+# Task 5 Query 2：productId 1 嘅 sales 嘅 quantity、date
+db.sales.find({"productId": 1}, {"_id": 0, "quantity": 1, "date": 1})                  # 10 / 2023-10-01、7 / 2023-10-03
+
+# Task 6 Query 1：每個 product 嘅總 sales quantity
+db.sales.aggregate([{"$group": {"_id": "$productId", "totalQuantity": {"$sum": "$quantity"}}}])
+#   → 1: 17、2: 5、3: 20、4: 15
+# Task 6 Query 2：再加 product name
+db.sales.aggregate([
+    {"$group": {"_id": "$productId", "totalQuantity": {"$sum": "$quantity"}}},
+    {"$lookup": {"from": "products", "localField": "_id", "foreignField": "_id", "as": "product"}},
+    {"$unwind": "$product"},
+    {"$project": {"totalQuantity": 1, "name": "$product.name"}},
+])
+
+# More queries
+db.products.find({"stock": {"$gt": 100}}).sort("stock", -1)                     # Carrot 200、Banana 150
+db.products.aggregate([{"$group": {"_id": None, "avgPrice": {"$avg": "$price"}}}])   # 0.9
+db.sales.aggregate([{"$group": {"_id": "$date", "numOrders": {"$sum": 1}}}])     # 每個 date 1 張
+
+# Total revenue（quantity × price）
+db.sales.aggregate([
+    {"$lookup": {"from": "products", "localField": "productId", "foreignField": "_id", "as": "product"}},
+    {"$unwind": "$product"},
+    {"$group": {"_id": None, "revenue": {"$sum": {"$multiply": ["$quantity", "$product.price"]}}}},
+])                                                                                # 29.0
+
+# Best 3 products by sales quantity
+db.sales.aggregate([
+    {"$group": {"_id": "$productId", "totalQuantity": {"$sum": "$quantity"}}},
+    {"$sort": {"totalQuantity": -1}},
+    {"$limit": 3},
+    {"$lookup": {"from": "products", "localField": "_id", "foreignField": "_id", "as": "product"}},
+    {"$unwind": "$product"},
+    {"$project": {"_id": 0, "name": "$product.name", "category": "$product.category", "totalQuantity": 1}},
+])                                                                                # Carrot 20、Apple 17、Milk 15
+
+# Best 3 products by sales amount
+db.sales.aggregate([
+    {"$lookup": {"from": "products", "localField": "productId", "foreignField": "_id", "as": "product"}},
+    {"$unwind": "$product"},
+    {"$group": {"_id": "$productId",
+                "name": {"$first": "$product.name"},
+                "category": {"$first": "$product.category"},
+                "totalAmount": {"$sum": {"$multiply": ["$quantity", "$product.price"]}}}},
+    {"$sort": {"totalAmount": -1}},
+    {"$limit": 3},
+])                                                                                # Milk 15.0、Apple 8.5、Carrot 4.0</code></pre>
+
+<h2>自我測驗 Self-test</h2>
+<details class="q"><summary>Q1. 將 RDBMS 嘅 Table、Row、Column 對應到 MongoDB 術語。</summary><p>Table → Collection；Row (Record) → Document；Column (Attribute) → Field；Database 兩邊都叫 Database。</p></details>
+<details class="q"><summary>Q2. 乜嘢係 dynamic schema？舉 slide 9 嘅例子。</summary><p>同一個 collection 嘅 documents 可以有唔同 fields 同 data types。Amy 嘅 Student ID 係 number（101101），Bob 係 string（"s101102"）；Amy 有 Major、Results，Bob 有 Parents、Brothers。</p></details>
+<details class="q"><summary>Q3. 以下應該 embed 定 reference？(a) 用戶同佢嘅 profile 設定；(b) 學生同選修科目（科目資料好多學生共用）；(c) 社交平台用戶同佢所有 posts。</summary><p>(a) Embed：one-to-one、細、通常一齊讀。(b) Reference：many-to-many、child data 被多個 parents 共用。(c) Reference：posts 無上限（unbounded），會超過 16 MB document limit，而且 posts 會被獨立瀏覽。</p></details>
+<details class="q"><summary>Q4. Index 有乜好處同代價？Document 冇 index field 會點？Unique index 有乜效果？</summary><p>好處：用 B+ tree 將 search time 降到 \(O(\lg n)\)。代價：額外 storage 同 index maintenance（每次寫入都要更新 index）。冇 index field 嘅 document 當作 null。Unique index 會 reject 重複值。</p></details>
+<details class="q"><summary>Q5. 描述 ObjectId 嘅組成。點解佢可以按時間排序？</summary><p>12 bytes：4-byte timestamp + 5-byte random value + 3-byte incrementing counter。開頭係 timestamp，所以按 _id 排序大致等於按建立時間排序。ObjectId 睇落似 string 但唔係 string。</p></details>
+<details class="q"><summary>Q6. IM app 要 (a) 平均分散 storage load；(b) 快速讀取某用戶某月嘅 messages。各用乜 sharding？</summary><p>(a) Hashed sharding：hash 後分佈平均。(b) Ranged sharding by (account, datetime)：同一用戶同一段時間嘅 messages 喺同一 chunk，range query 只讀少數 chunks。</p></details>
+<details class="q"><summary>Q7. Replica set 入面，default 情況下 reads 去邊？Secondary 有乜用？Primary 壞咗點算？</summary><p>Reads 同 writes 都去 primary（workload 唔分擔）；可以設定 read from secondary（例如 nearest）。Secondaries 用嚟 backup 同 recovery。Primary 壞咗，剩低嘅 nodes 經 heartbeat 發現，elect 新 primary。</p></details>
+<details class="q"><summary>Q8. 比較 <code>w: 1</code> 同 <code>w: "majority"</code>。Mission-critical data 應該點設？</summary><p><code>w:1</code>：primary apply 就回覆，最快，但 primary 喺 replicate 前壞咗會 lost data。<code>w:"majority"</code>：majority data-bearing members apply 先回覆，最 durable、可 survive failover，但 latency 高。Mission-critical：<code>w: "majority"</code> + <code>j: true</code>（寫入 journal）。</p></details>
+<details class="q"><summary>Q9. Read concern <code>local</code> 同 <code>majority</code> 有乜分別？</summary><p><code>local</code>（default）：回傳當前 member 嘅 data，可能未包括其他 members 嘅 writes，但最快。<code>majority</code>：只回傳 majority acknowledge 咗嘅 data，保證 durable。</p></details>
+<details class="q"><summary>Q10. Sharded cluster 入面 router 同 config server 各做乜？</summary><p>Router（mongos）：接收 query，分配去相關 shards。Config server（replica set）：儲存 cluster 嘅 metadata 同 configuration（例如 data 分佈喺邊個 shard）。</p></details>
+<details class="q"><summary>Q11.（8b，唔考）<code>find({}, {"age": 1, "sex": 0})</code> 會點？<code>$lookup</code> 似 SQL 邊種 join？</summary><p>Error：非 _id fields 唔可以 0 同 1 混用。<code>$lookup</code> 等於 LEFT OUTER JOIN，冇 match 嘅 document 仍然保留，結果 field 係 list。</p></details>
+
+<h2>一頁總結 Cheat sheet</h2>
+<div class="box exam"><span class="label">⭐ 考前速記</span><ul>
+<li>MongoDB：document-based、Top-1 NoSQL、dynamic schema、BASE（可設定 ACID，有 overhead）、horizontal scalability、programming friendly（唔使學 SQL）。</li>
+<li>Database → Collection（Table）→ Document（Row）→ Field（Column）。Hierarchical / nested documents。</li>
+<li>Embed：parent context、細 &amp; bounded、1:1、1:N 專屬、fast reads。Reference：獨立睇、M:N、共用、大 / unbounded。Max document 16 MB。</li>
+<li>Index：B+ tree，\(O(\lg n)\)；asc / desc / 2dsphere（R-tree）/ text；missing → null key（non-sparse）；unique 拒絕重複；代價 = storage + maintenance。</li>
+<li><code>_id</code>：mandatory、unique（sharded 而唔係 shard key → 每 shard 內）、ObjectId 12 bytes = 4 timestamp + 5 random + 3 counter；chronological；唔係 string；可自訂。</li>
+<li>Sharding = horizontal fragmentation；shard key + strategy；hashed（平均分散）vs ranged（range query）；IM 例子：storage → hashed；按月讀 → ranged (account, datetime)。</li>
+<li>Replica set：redundancy &amp; availability，似 Raft；heartbeat；default 讀寫都去 primary；secondaries = backup &amp; recovery；primary 壞 → election。</li>
+<li>Write concern（latency vs durability）：<code>w:1</code> 最快有 lost 風險；<code>w:"majority"</code> 最 durable；<code>j:true</code> journal；best = majority + j。Read concern：local（最快）vs majority（durable）。</li>
+<li>Architecture：Router（mongos）分派 query；Config servers 存 metadata；Shards 各自係 replica set。</li>
+</ul></div>
+
+<nav class="pager">
+  <a href="COM6002-w7.html">← Week 7 NoSQL Databases</a>
+  <a href="../index.html">返回目錄 →</a>
+</nav>
+</main>
+</div>
+</body>
+</html>
